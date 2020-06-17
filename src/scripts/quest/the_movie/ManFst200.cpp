@@ -113,32 +113,37 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00009( player );
+        Scene00003( player );
         break;
       }
       case 3:
       {
-        Scene00012( player );
+        Scene00011( player );
         break;
       }
       case 4:
       {
-        Scene00016( player );
+        Scene00014( player );
         break;
       }
       case 5:
       {
-        Scene00031( player );
+        Scene00017( player );
         break;
       }
       case 6:
       {
-        Scene00036( player );
+        Scene00033( player );
         break;
       }
       case 7:
       {
-        Scene00042( player );
+        Scene00038( player );
+        break;
+      }
+      case 8:
+      {
+        Scene00043( player );
         break;
       }
       case 255:
@@ -178,7 +183,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -236,7 +241,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00009( player );
     };
 
     player.playScene( getId(), 8, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -246,7 +251,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -265,7 +270,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00012( player );
     };
 
     player.playScene( getId(), 11, NONE, callback );
@@ -275,7 +280,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00014( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 12, NONE, callback );
@@ -304,7 +309,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00016( player );
     };
 
     player.playScene( getId(), 15, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -314,7 +319,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -450,7 +455,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00031( player );
     };
 
     player.playScene( getId(), 30, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -460,7 +465,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00033( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 31, NONE, callback );
@@ -499,7 +504,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 6 );
+      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -509,7 +514,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00038( player );
+      player.updateQuest( getId(), 7 );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -558,7 +563,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 7 );
+      Scene00042( player );
     };
 
     player.playScene( getId(), 41, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -568,7 +573,7 @@ class ManFst200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00043( player );
+      player.updateQuest( getId(), 8 );
     };
 
     player.playScene( getId(), 42, NONE, callback );

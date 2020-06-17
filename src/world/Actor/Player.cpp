@@ -2545,3 +2545,23 @@ void* Sapphire::Entity::Player::getTerritoryMgr()
 {
   return &Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
 }
+
+Sapphire::TerritoryPtr Sapphire::Entity::Player::getOrCreatePrivateInstance( uint32_t zoneId )
+{
+  auto instance = m_privateInstanceMap[ zoneId ];
+  if( instance )
+    return instance;
+  auto& terriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+  instance = terriMgr.createTerritoryInstance( zoneId );
+  if( instance )
+  {
+    sendDebug( "Created instance with id: " + std::to_string( instance->getGuId() ) + " -> " + instance->getName() );
+    m_privateInstanceMap[ zoneId ] = instance;
+    return instance;
+  }
+  else
+  {
+    sendDebug( "Failed to create instance with id#{0}", zoneId );
+    return nullptr;
+  }
+}

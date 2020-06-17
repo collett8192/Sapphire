@@ -95,32 +95,32 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00008( player );
+        Scene00002( player );
         break;
       }
       case 2:
       {
-        Scene00014( player );
+        Scene00009( player );
         break;
       }
       case 3:
       {
-        Scene00018( player );
+        Scene00017( player );
         break;
       }
       case 4:
       {
-        Scene00027( player );
+        Scene00019( player );
+        break;
+      }
+      case 5:
+      {
+        Scene00028( player );
         break;
       }
       case 255:
       {
         Scene00029( player );
-        break;
-      }
-      case 5:
-      {
-        Scene00035( player );
         break;
       }
     }
@@ -145,7 +145,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -205,7 +205,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00008( player );
     };
 
     player.playScene( getId(), 7, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -215,7 +215,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -265,7 +265,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00014( player );
     };
 
     player.playScene( getId(), 13, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -275,7 +275,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -303,7 +303,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00018( player );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -313,7 +313,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 18, NONE, callback );
@@ -391,7 +391,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 26, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -401,7 +401,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -477,7 +477,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );
@@ -487,6 +487,7 @@ class StmBda139 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 35, NONE, callback );

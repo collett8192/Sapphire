@@ -79,12 +79,12 @@ class ManFst404 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00002( player );
+        Scene00001( player );
         break;
       }
       case 2:
       {
-        Scene00004( player );
+        Scene00003( player );
         break;
       }
       case 3:
@@ -92,14 +92,14 @@ class ManFst404 : public Sapphire::ScriptAPI::EventScript
         Scene00005( player );
         break;
       }
+      case 4:
+      {
+        Scene00006( player );
+        break;
+      }
       case 255:
       {
         Scene00008( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00009( player );
         break;
       }
     }
@@ -114,7 +114,7 @@ class ManFst404 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00001( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -124,7 +124,7 @@ class ManFst404 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00002( player );
     };
 
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -134,7 +134,7 @@ class ManFst404 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -144,7 +144,7 @@ class ManFst404 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00004( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -164,7 +164,7 @@ class ManFst404 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -210,6 +210,7 @@ class ManFst404 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 9, NONE, callback );

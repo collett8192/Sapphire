@@ -87,10 +87,10 @@ class ClsPgl300 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00005( player );
+        Scene00001( player );
         break;
       }
-      case 3:
+      case 2:
       {
         Scene00008( player );
         break;
@@ -119,7 +119,7 @@ class ClsPgl300 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00001( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -159,7 +159,7 @@ class ClsPgl300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -169,7 +169,7 @@ class ClsPgl300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 5, NONE, callback );

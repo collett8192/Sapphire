@@ -97,14 +97,24 @@ class LucKbb241 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
-      case 255:
+      case 1:
       {
-        Scene00016( player );
+        Scene00001( player );
         break;
       }
       case 2:
       {
-        Scene00017( player );
+        Scene00003( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00018( player );
+        break;
+      }
+      case 255:
+      {
+        Scene00016( player );
         break;
       }
     }
@@ -119,7 +129,7 @@ class LucKbb241 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00001( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -139,7 +149,7 @@ class LucKbb241 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -293,7 +303,7 @@ class LucKbb241 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00018( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 17, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

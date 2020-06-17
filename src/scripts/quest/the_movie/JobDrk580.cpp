@@ -96,22 +96,32 @@ class JobDrk580 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00019( player );
+        Scene00001( player );
         break;
       }
       case 2:
       {
-        Scene00035( player );
+        Scene00002( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00020( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00036( player );
+        break;
+      }
+      case 6:
+      {
+        Scene00046( player );
         break;
       }
       case 255:
       {
         Scene00044( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00045( player );
         break;
       }
     }
@@ -135,7 +145,7 @@ class JobDrk580 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00001( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -145,7 +155,7 @@ class JobDrk580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -307,7 +317,7 @@ class JobDrk580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00019( player );
     };
 
     player.playScene( getId(), 18, NONE, callback );
@@ -317,7 +327,7 @@ class JobDrk580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00020( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 19, NONE, callback );
@@ -463,7 +473,7 @@ class JobDrk580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );
@@ -473,7 +483,7 @@ class JobDrk580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -577,7 +587,7 @@ class JobDrk580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00046( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 45, NONE, callback );

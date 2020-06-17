@@ -112,7 +112,12 @@ class ClsRog200 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00048( player );
+        Scene00003( player );
+        break;
+      }
+      case 2:
+      {
+        Scene00054( player );
         break;
       }
       case 255:
@@ -160,7 +165,7 @@ class ClsRog200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -554,7 +559,7 @@ class ClsRog200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00048( player );
     };
 
     player.playScene( getId(), 43, NONE, callback );
@@ -600,7 +605,7 @@ class ClsRog200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00054( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 48, NONE, callback );

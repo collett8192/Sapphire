@@ -106,7 +106,7 @@ class StmBdy301 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00006( player );
+        Scene00003( player );
         break;
       }
       case 2:
@@ -116,7 +116,12 @@ class StmBdy301 : public Sapphire::ScriptAPI::EventScript
       }
       case 3:
       {
-        Scene00039( player );
+        Scene00008( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00040( player );
         break;
       }
       case 255:
@@ -146,7 +151,7 @@ class StmBdy301 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -185,7 +190,7 @@ class StmBdy301 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00006( player );
     };
 
     player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -205,7 +210,7 @@ class StmBdy301 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00008( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 7, NONE, callback );
@@ -515,7 +520,7 @@ class StmBdy301 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00039( player );
     };
 
     player.playScene( getId(), 38, NONE, callback );
@@ -525,7 +530,7 @@ class StmBdy301 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00040( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 39, NONE, callback );

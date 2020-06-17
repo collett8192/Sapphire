@@ -77,14 +77,19 @@ class JobSmn600 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
+      case 2:
+      {
+        Scene00003( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00012( player );
+        break;
+      }
       case 255:
       {
         Scene00010( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00011( player );
         break;
       }
     }
@@ -119,7 +124,7 @@ class JobSmn600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -213,7 +218,7 @@ class JobSmn600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00012( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 11, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

@@ -99,22 +99,17 @@ class BanMog007 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00018( player );
+        Scene00002( player );
         break;
       }
       case 2:
       {
-        Scene00029( player );
+        Scene00019( player );
         break;
       }
       case 255:
       {
         Scene00030( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00031( player );
         break;
       }
     }
@@ -139,7 +134,7 @@ class BanMog007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -258,7 +253,7 @@ class BanMog007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00018( player );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -304,7 +299,7 @@ class BanMog007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 18, NONE, callback );
@@ -404,7 +399,7 @@ class BanMog007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00029( player );
     };
 
     player.playScene( getId(), 28, NONE, callback );
@@ -440,7 +435,7 @@ class BanMog007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00032( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 31, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

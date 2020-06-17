@@ -32,7 +32,8 @@ public:
       player.eventFinish( 1310721, 0 );
       player.eventFinish( getId(), 1 );
 
-      auto& exdData = Common::Service< Data::ExdDataGenerated >::ref();
+      //auto& exdData = Common::Service< Data::ExdDataGenerated >::ref();
+      auto& exdData = *reinterpret_cast< Sapphire::Data::ExdDataGenerated* >( player.getExdData() );
       auto& popRange = Common::Service< Sapphire::InstanceObjectCache >::ref();
 
       auto warp = exdData.get< Sapphire::Data::Warp >( getId() );
@@ -75,7 +76,8 @@ public:
 
   void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
   {
-    auto& exdData = Common::Service< Sapphire::Data::ExdDataGenerated >::ref();
+    //auto& exdData = Common::Service< Sapphire::Data::ExdDataGenerated >::ref();
+    auto& exdData = *reinterpret_cast< Sapphire::Data::ExdDataGenerated* >( player.getExdData() );
 
     auto warp = exdData.get< Sapphire::Data::Warp >( eventId );
     if( !warp )

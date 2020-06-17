@@ -118,17 +118,17 @@ class ChrHdb104 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00064( player );
+        Scene00002( player );
+        break;
+      }
+      case 2:
+      {
+        Scene00065( player );
         break;
       }
       case 255:
       {
         Scene00069( player );
-        break;
-      }
-      case 2:
-      {
-        Scene00070( player );
         break;
       }
     }
@@ -153,7 +153,7 @@ class ChrHdb104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -743,7 +743,7 @@ class ChrHdb104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00064( player );
     };
 
     player.playScene( getId(), 63, NONE, callback );
@@ -753,7 +753,7 @@ class ChrHdb104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00065( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 64, NONE, callback );
@@ -817,6 +817,7 @@ class ChrHdb104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 70, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

@@ -61,12 +61,17 @@ class SubSea008 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00003( player );
+        Scene00002( player );
         break;
       }
       case 2:
       {
-        Scene00005( player );
+        Scene00004( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00006( player );
         break;
       }
       case 255:
@@ -86,7 +91,7 @@ class SubSea008 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00002( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -105,7 +110,7 @@ class SubSea008 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -115,7 +120,7 @@ class SubSea008 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -125,7 +130,7 @@ class SubSea008 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -135,7 +140,7 @@ class SubSea008 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 5, NONE, callback );

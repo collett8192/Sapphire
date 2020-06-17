@@ -71,7 +71,7 @@ class BanAna506 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00018( player );
+        Scene00002( player );
         break;
       }
       case 255:
@@ -111,7 +111,7 @@ class BanAna506 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -267,7 +267,7 @@ class BanAna506 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00018( player );
     };
 
     player.playScene( getId(), 17, NONE, callback );

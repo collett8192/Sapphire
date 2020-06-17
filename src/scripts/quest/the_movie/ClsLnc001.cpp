@@ -85,6 +85,11 @@ class ClsLnc001 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
+      case 1:
+      {
+        Scene00005( player );
+        break;
+      }
       case 255:
       {
         Scene00010( player );
@@ -119,7 +124,7 @@ class ClsLnc001 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00005( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );

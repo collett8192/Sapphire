@@ -86,20 +86,25 @@ class JobRel103 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00003( player );
+        Scene00001( player );
         break;
       }
       case 2:
       {
-        Scene00004( player );
+        Scene00002( player );
         break;
       }
       case 3:
       {
-        Scene00005( player );
+        Scene00004( player );
         break;
       }
       case 4:
+      {
+        Scene00005( player );
+        break;
+      }
+      case 5:
       {
         Scene00006( player );
         break;
@@ -121,7 +126,7 @@ class JobRel103 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00001( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -131,7 +136,7 @@ class JobRel103 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -141,7 +146,7 @@ class JobRel103 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -151,7 +156,7 @@ class JobRel103 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -161,7 +166,7 @@ class JobRel103 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -171,7 +176,7 @@ class JobRel103 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

@@ -17,63 +17,63 @@ using namespace Sapphire;
 
 class ManFst007 : public Sapphire::ScriptAPI::EventScript
 {
-  private:
-    // Basic quest information 
-    // Quest vars / flags used
-    // GetQuestBitFlag16
-    // GetQuestBitFlag8
-    // GetQuestUI8AH
-    // GetQuestUI8AL
-    // GetQuestUI8BH
+private:
+  // Basic quest information 
+  // Quest vars / flags used
+  // GetQuestBitFlag16
+  // GetQuestBitFlag8
+  // GetQuestUI8AH
+  // GetQuestUI8AL
+  // GetQuestUI8BH
 
-    // Steps in this quest ( 0 is before accepting, 
-    // 1 is first, 255 means ready for turning it in
-    enum Sequence : uint8_t
-    {
-//      Seq0 = 0,
-//      Seq1 = 1,
-//      Seq2 = 2,
-//      Seq3 = 3,
-//      SeqFinish = 255,
-    };
+  // Steps in this quest ( 0 is before accepting, 
+  // 1 is first, 255 means ready for turning it in
+  enum Sequence : uint8_t
+  {
+    //      Seq0 = 0,
+    //      Seq1 = 1,
+    //      Seq2 = 2,
+    //      Seq3 = 3,
+    //      SeqFinish = 255,
+  };
 
-    // Entities found in the script data of the quest
-//    static constexpr auto Actor0 = 1000100;
-//    static constexpr auto Actor1 = 1003061;
-//    static constexpr auto Actor10 = 1000721;
-//    static constexpr auto Actor11 = 1000722;
-//    static constexpr auto Actor12 = 1000723;
-//    static constexpr auto Actor13 = 1000724;
-//    static constexpr auto Actor2 = 1000423;
-//    static constexpr auto Actor3 = 1000456;
-//    static constexpr auto Actor4 = 1000457;
-//    static constexpr auto Actor5 = 1000458;
-//    static constexpr auto Actor6 = 1000463;
-//    static constexpr auto Actor7 = 1000464;
-//    static constexpr auto Actor8 = 1000719;
-//    static constexpr auto Actor9 = 1000720;
-//    static constexpr auto CutScene03 = 60;
-//    static constexpr auto Eobject0 = 2001836;
-//    static constexpr auto Eventrange0 = 3854369;
-//    static constexpr auto EventActionSearch = 1;
-//    static constexpr auto Item0 = 2000249;
-//    static constexpr auto LocAction1 = 961;
-//    static constexpr auto LocActor0 = 1003071;
-//    static constexpr auto LocFace1 = 617;
-//    static constexpr auto LocFace2 = 604;
-//    static constexpr auto LocLip1 = 632;
-//    static constexpr auto Ncut01 = 30;
-//    static constexpr auto Ncut02 = 61;
-//    static constexpr auto Poprange0 = 3884000;
-//    static constexpr auto Questbattle0 = 12;
-//    static constexpr auto Seq0Actor0Lq = 90;
-//    static constexpr auto Territorytype0 = 204;
-//    static constexpr auto Territorytype1 = 226;
-//    static constexpr auto Territorytype2 = 148;
+  // Entities found in the script data of the quest
+  //    static constexpr auto Actor0 = 1000100;
+  //    static constexpr auto Actor1 = 1003061;
+  //    static constexpr auto Actor10 = 1000721;
+  //    static constexpr auto Actor11 = 1000722;
+  //    static constexpr auto Actor12 = 1000723;
+  //    static constexpr auto Actor13 = 1000724;
+  //    static constexpr auto Actor2 = 1000423;
+  //    static constexpr auto Actor3 = 1000456;
+  //    static constexpr auto Actor4 = 1000457;
+  //    static constexpr auto Actor5 = 1000458;
+  //    static constexpr auto Actor6 = 1000463;
+  //    static constexpr auto Actor7 = 1000464;
+  //    static constexpr auto Actor8 = 1000719;
+  //    static constexpr auto Actor9 = 1000720;
+  //    static constexpr auto CutScene03 = 60;
+  //    static constexpr auto Eobject0 = 2001836;
+  //    static constexpr auto Eventrange0 = 3854369;
+  //    static constexpr auto EventActionSearch = 1;
+  //    static constexpr auto Item0 = 2000249;
+  //    static constexpr auto LocAction1 = 961;
+  //    static constexpr auto LocActor0 = 1003071;
+  //    static constexpr auto LocFace1 = 617;
+  //    static constexpr auto LocFace2 = 604;
+  //    static constexpr auto LocLip1 = 632;
+  //    static constexpr auto Ncut01 = 30;
+  //    static constexpr auto Ncut02 = 61;
+  //    static constexpr auto Poprange0 = 3884000;
+  //    static constexpr auto Questbattle0 = 12;
+  //    static constexpr auto Seq0Actor0Lq = 90;
+  //    static constexpr auto Territorytype0 = 204;
+  //    static constexpr auto Territorytype1 = 226;
+  //    static constexpr auto Territorytype2 = 148;
 
-  public:
-    ManFst007() : Sapphire::ScriptAPI::EventScript( 65983 ){}; 
-    ~ManFst007() = default; 
+public:
+  ManFst007() : Sapphire::ScriptAPI::EventScript( 65983 ){}; 
+  ~ManFst007() = default; 
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
@@ -99,7 +99,7 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00005( player );
+        Scene00003( player );
         break;
       }
       case 3:
@@ -107,9 +107,14 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
         Scene00006( player );
         break;
       }
-      case 5:
+      case 4:
       {
         Scene00007( player );
+        break;
+      }
+      case 6:
+      {
+        Scene00020( player );
         break;
       }
       case 255:
@@ -117,16 +122,11 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
         Scene00021( player );
         break;
       }
-      case 7:
-      {
-        Scene00022( player );
-        break;
-      }
     }
   }
 
 
-  private:
+private:
   //////////////////////////////////////////////////////////////////////
   // Available Scenes in this quest, not necessarly all are used
   void Scene00000( Entity::Player& player )
@@ -154,7 +154,7 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -164,7 +164,7 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -183,7 +183,7 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -193,7 +193,7 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -203,7 +203,7 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00020( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 7, NONE, callback );
@@ -347,6 +347,7 @@ class ManFst007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 22, NONE, callback );

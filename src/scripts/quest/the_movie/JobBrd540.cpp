@@ -101,14 +101,19 @@ class JobBrd540 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
+      case 1:
+      {
+        Scene00002( player );
+        break;
+      }
+      case 2:
+      {
+        Scene00041( player );
+        break;
+      }
       case 255:
       {
         Scene00039( player );
-        break;
-      }
-      case 1:
-      {
-        Scene00040( player );
         break;
       }
     }
@@ -141,7 +146,7 @@ class JobBrd540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -528,7 +533,7 @@ class JobBrd540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00041( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 40, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

@@ -79,7 +79,12 @@ class JobAst401 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00022( player );
+        Scene00003( player );
+        break;
+      }
+      case 2:
+      {
+        Scene00023( player );
         break;
       }
       case 255:
@@ -109,7 +114,7 @@ class JobAst401 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -297,7 +302,7 @@ class JobAst401 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00022( player );
     };
 
     player.playScene( getId(), 20, NONE, callback );
@@ -316,7 +321,7 @@ class JobAst401 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00023( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 22, NONE, callback );

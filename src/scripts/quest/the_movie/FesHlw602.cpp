@@ -56,14 +56,19 @@ class FesHlw602 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
+      case 1:
+      {
+        Scene00002( player );
+        break;
+      }
+      case 2:
+      {
+        Scene00006( player );
+        break;
+      }
       case 255:
       {
         Scene00004( player );
-        break;
-      }
-      case 1:
-      {
-        Scene00005( player );
         break;
       }
     }
@@ -88,7 +93,7 @@ class FesHlw602 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -134,7 +139,7 @@ class FesHlw602 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 5, NONE, callback );

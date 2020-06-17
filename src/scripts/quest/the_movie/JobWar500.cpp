@@ -87,14 +87,19 @@ class JobWar500 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
+      case 2:
+      {
+        Scene00012( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00017( player );
+        break;
+      }
       case 255:
       {
         Scene00015( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00016( player );
         break;
       }
     }
@@ -129,7 +134,7 @@ class JobWar500 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00012( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -264,7 +269,7 @@ class JobWar500 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 16, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

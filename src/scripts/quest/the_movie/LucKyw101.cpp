@@ -97,42 +97,47 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00006( player );
+        Scene00002( player );
         break;
       }
       case 2:
       {
-        Scene00010( player );
+        Scene00007( player );
         break;
       }
       case 3:
       {
-        Scene00014( player );
+        Scene00011( player );
         break;
       }
       case 4:
       {
-        Scene00020( player );
+        Scene00015( player );
         break;
       }
       case 5:
       {
-        Scene00022( player );
+        Scene00021( player );
         break;
       }
       case 6:
       {
-        Scene00027( player );
+        Scene00023( player );
+        break;
+      }
+      case 7:
+      {
+        Scene00028( player );
+        break;
+      }
+      case 8:
+      {
+        Scene00031( player );
         break;
       }
       case 255:
       {
         Scene00029( player );
-        break;
-      }
-      case 7:
-      {
-        Scene00030( player );
         break;
       }
     }
@@ -157,7 +162,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -197,7 +202,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00006( player );
     };
 
     player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -207,7 +212,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00007( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -237,7 +242,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00010( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -247,7 +252,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 10, NONE, callback );
@@ -277,7 +282,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00014( player );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -287,7 +292,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -337,7 +342,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00020( player );
     };
 
     player.playScene( getId(), 19, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -347,7 +352,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00021( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 20, NONE, callback );
@@ -357,7 +362,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00022( player );
     };
 
     player.playScene( getId(), 21, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -367,7 +372,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00023( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 22, NONE, callback );
@@ -407,7 +412,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 6 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 26, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -417,7 +422,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
+      player.updateQuest( getId(), 7 );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -453,7 +458,7 @@ class LucKyw101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00031( player );
+      player.updateQuest( getId(), 8 );
     };
 
     player.playScene( getId(), 30, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

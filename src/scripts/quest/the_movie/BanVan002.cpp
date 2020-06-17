@@ -97,14 +97,19 @@ class BanVan002 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
+      case 1:
+      {
+        Scene00002( player );
+        break;
+      }
+      case 2:
+      {
+        Scene00027( player );
+        break;
+      }
       case 255:
       {
         Scene00025( player );
-        break;
-      }
-      case 1:
-      {
-        Scene00026( player );
         break;
       }
     }
@@ -138,7 +143,7 @@ class BanVan002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -387,7 +392,7 @@ class BanVan002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00027( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 26, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

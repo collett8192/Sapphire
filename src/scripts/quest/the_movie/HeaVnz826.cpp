@@ -87,17 +87,17 @@ class HeaVnz826 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00005( player );
+        Scene00002( player );
         break;
       }
       case 2:
       {
-        Scene00026( player );
+        Scene00006( player );
         break;
       }
       case 3:
       {
-        Scene00029( player );
+        Scene00027( player );
         break;
       }
       case 255:
@@ -127,7 +127,7 @@ class HeaVnz826 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -157,7 +157,7 @@ class HeaVnz826 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -167,7 +167,7 @@ class HeaVnz826 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -367,7 +367,7 @@ class HeaVnz826 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00026( player );
     };
 
     player.playScene( getId(), 25, NONE, callback );
@@ -377,7 +377,7 @@ class HeaVnz826 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00027( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -397,7 +397,7 @@ class HeaVnz826 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00029( player );
     };
 
     player.playScene( getId(), 28, NONE, callback );

@@ -69,22 +69,27 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00005( player );
+        Scene00003( player );
         break;
       }
       case 3:
       {
-        Scene00008( player );
+        Scene00006( player );
         break;
       }
       case 4:
       {
-        Scene00011( player );
+        Scene00009( player );
         break;
       }
       case 5:
       {
-        Scene00014( player );
+        Scene00012( player );
+        break;
+      }
+      case 6:
+      {
+        Scene00015( player );
         break;
       }
       case 255:
@@ -124,7 +129,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -144,7 +149,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -154,7 +159,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -174,7 +179,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );
@@ -184,7 +189,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -204,7 +209,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );
@@ -214,7 +219,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00012( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 11, NONE, callback );
@@ -234,7 +239,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00014( player );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -244,7 +249,7 @@ class LucKzb002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 14, NONE, callback );

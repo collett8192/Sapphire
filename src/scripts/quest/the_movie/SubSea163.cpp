@@ -63,7 +63,7 @@ class SubSea163 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00005( player );
+        Scene00003( player );
         break;
       }
       case 255:
@@ -103,7 +103,7 @@ class SubSea163 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -123,7 +123,7 @@ class SubSea163 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );

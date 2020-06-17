@@ -97,7 +97,12 @@ class FesEst103 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00021( player );
+        Scene00002( player );
+        break;
+      }
+      case 2:
+      {
+        Scene00022( player );
         break;
       }
       case 255:
@@ -127,7 +132,7 @@ class FesEst103 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -317,7 +322,7 @@ class FesEst103 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00021( player );
     };
 
     player.playScene( getId(), 20, NONE, callback );
@@ -327,7 +332,7 @@ class FesEst103 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00022( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 21, NONE, callback );

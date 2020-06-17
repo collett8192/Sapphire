@@ -67,12 +67,12 @@ class SubFst031 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00008( player );
+        Scene00007( player );
         break;
       }
       case 255:
       {
-        Scene00088( player );
+        Scene00008( player );
         break;
       }
     }
@@ -94,7 +94,7 @@ class SubFst031 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00007( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -158,7 +158,7 @@ class SubFst031 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 7, NONE, callback );
@@ -168,7 +168,7 @@ class SubFst031 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00088( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );

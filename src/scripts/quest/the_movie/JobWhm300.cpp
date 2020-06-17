@@ -83,11 +83,6 @@ class JobWhm300 : public Sapphire::ScriptAPI::EventScript
         Scene00006( player );
         break;
       }
-      case 3:
-      {
-        Scene00007( player );
-        break;
-      }
     }
   }
 
@@ -173,6 +168,7 @@ class JobWhm300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 7, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

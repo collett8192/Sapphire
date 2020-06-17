@@ -94,7 +94,12 @@ class SubPst001 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00014( player );
+        Scene00003( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00015( player );
         break;
       }
       case 255:
@@ -134,7 +139,7 @@ class SubPst001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -200,7 +205,7 @@ class SubPst001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00014( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -246,7 +251,7 @@ class SubPst001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 14, NONE, callback );

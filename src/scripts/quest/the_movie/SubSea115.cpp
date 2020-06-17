@@ -55,6 +55,11 @@ class SubSea115 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
+      case 1:
+      {
+        Scene00001( player );
+        break;
+      }
       case 255:
       {
         Scene00100( player );
@@ -63,11 +68,11 @@ class SubSea115 : public Sapphire::ScriptAPI::EventScript
     }
   }
 
-  //void onEmote( uint32_t eventId, Entity::Player& player, uint64_t actorId, uint32_t emoteId ) override
-  //{
-  //  auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
-  //  auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
-  //}
+  void onEmote( uint64_t actorId, uint32_t eventId, uint32_t emoteId, Sapphire::Entity::Player& player ) override
+  {
+    auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+    auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+  }
 
 
   private:
@@ -78,7 +83,7 @@ class SubSea115 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00001( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );

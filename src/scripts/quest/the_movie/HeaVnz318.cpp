@@ -58,7 +58,7 @@ class HeaVnz318 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00005( player );
+        Scene00004( player );
         break;
       }
       case 255:
@@ -88,7 +88,7 @@ class HeaVnz318 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -116,7 +116,7 @@ class HeaVnz318 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );

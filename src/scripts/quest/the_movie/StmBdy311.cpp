@@ -108,17 +108,22 @@ class StmBdy311 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00016( player );
+        Scene00002( player );
         break;
       }
-      case 3:
+      case 2:
       {
-        Scene00031( player );
+        Scene00017( player );
         break;
       }
       case 4:
       {
         Scene00032( player );
+        break;
+      }
+      case 5:
+      {
+        Scene00033( player );
         break;
       }
       case 255:
@@ -148,7 +153,7 @@ class StmBdy311 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -288,7 +293,7 @@ class StmBdy311 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00016( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -298,7 +303,7 @@ class StmBdy311 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -436,7 +441,7 @@ class StmBdy311 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00031( player );
     };
 
     player.playScene( getId(), 30, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -456,7 +461,7 @@ class StmBdy311 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00033( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 32, NONE, callback );

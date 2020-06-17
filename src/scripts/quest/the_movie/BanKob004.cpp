@@ -89,12 +89,17 @@ class BanKob004 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00027( player );
+        Scene00002( player );
         break;
       }
       case 2:
       {
-        Scene00031( player );
+        Scene00028( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00032( player );
         break;
       }
       case 255:
@@ -133,7 +138,7 @@ class BanKob004 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -371,7 +376,7 @@ class BanKob004 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -381,7 +386,7 @@ class BanKob004 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -411,7 +416,7 @@ class BanKob004 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00031( player );
     };
 
     player.playScene( getId(), 30, NONE, callback );
@@ -421,7 +426,7 @@ class BanKob004 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00032( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 31, NONE, callback );

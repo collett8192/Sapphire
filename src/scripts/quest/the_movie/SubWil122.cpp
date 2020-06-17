@@ -76,27 +76,32 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00027( player );
+        Scene00001( player );
         break;
       }
       case 2:
       {
-        Scene00031( player );
+        Scene00028( player );
         break;
       }
       case 3:
       {
-        Scene00035( player );
+        Scene00032( player );
         break;
       }
       case 4:
       {
-        Scene00039( player );
+        Scene00036( player );
         break;
       }
       case 5:
       {
-        Scene00043( player );
+        Scene00040( player );
+        break;
+      }
+      case 6:
+      {
+        Scene00044( player );
         break;
       }
       case 255:
@@ -116,7 +121,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00001( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -266,7 +271,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -366,7 +371,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -395,7 +400,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00031( player );
     };
 
     player.playScene( getId(), 30, NONE, callback );
@@ -405,7 +410,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00032( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 31, NONE, callback );
@@ -434,7 +439,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );
@@ -444,7 +449,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -473,7 +478,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00039( player );
     };
 
     player.playScene( getId(), 38, NONE, callback );
@@ -483,7 +488,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00040( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 39, NONE, callback );
@@ -512,7 +517,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00043( player );
     };
 
     player.playScene( getId(), 42, NONE, callback );
@@ -522,7 +527,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00044( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 43, NONE, callback );

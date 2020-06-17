@@ -108,17 +108,17 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00027( player );
+        Scene00005( player );
         break;
       }
       case 2:
       {
-        Scene00029( player );
+        Scene00028( player );
         break;
       }
       case 3:
       {
-        Scene00031( player );
+        Scene00030( player );
         break;
       }
       case 4:
@@ -128,7 +128,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
       }
       case 5:
       {
-        Scene00035( player );
+        Scene00033( player );
         break;
       }
       case 255:
@@ -165,7 +165,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00005( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -409,7 +409,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 26, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -419,7 +419,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -429,7 +429,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00029( player );
     };
 
     player.playScene( getId(), 28, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -439,7 +439,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00030( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 29, NONE, callback );
@@ -449,7 +449,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00031( player );
     };
 
     player.playScene( getId(), 30, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -469,7 +469,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00033( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 32, NONE, callback );
@@ -489,7 +489,7 @@ class BanPix001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );

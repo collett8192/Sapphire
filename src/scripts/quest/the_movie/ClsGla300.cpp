@@ -83,6 +83,43 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    switch( player.getQuestSeq( getId() ) )
+    {
+      case 0:
+      {
+        player.sendUrgent( "This quest contains at least one quest battle, " );
+        player.sendUrgent( "which has a high change to break the script and get stuck." );
+        player.sendUrgent( "Use \"//gm quest sequence <questId> 255\" to skip broken scenes."); 
+        player.sendUrgent( "### Hit NO when asked to enter quest battle ###" );
+        Scene00000( player );
+        break;
+      }
+      case 1:
+      {
+        Scene00001( player );
+        break;
+      }
+      case 2:
+      {
+        Scene00009( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00011( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00012( player );
+        break;
+      }
+      case 255:
+      {
+        Scene00019( player );
+        break;
+      }
+    }
   }
 
 //  void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
@@ -105,6 +142,8 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      if( result.param2 == 1 )
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -114,6 +153,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00003( player );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -132,6 +172,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00006( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -159,6 +200,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00008( player );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -177,6 +219,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -186,6 +229,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00010( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -195,6 +239,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 10, NONE, callback );
@@ -204,6 +249,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 11, NONE, callback );
@@ -213,6 +259,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00014( player );
     };
 
     player.playScene( getId(), 12, NONE, callback );
@@ -231,6 +278,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00016( player );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -249,6 +297,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00019( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -276,6 +325,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00016( player );
     };
 
     player.playScene( getId(), 19, NONE, callback );

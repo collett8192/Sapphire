@@ -73,27 +73,27 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00004( player );
+        Scene00003( player );
         break;
       }
       case 2:
       {
-        Scene00006( player );
+        Scene00005( player );
         break;
       }
       case 3:
       {
-        Scene00008( player );
+        Scene00007( player );
         break;
       }
       case 4:
       {
-        Scene00010( player );
+        Scene00009( player );
         break;
       }
       case 5:
       {
-        Scene00013( player );
+        Scene00011( player );
         break;
       }
       case 255:
@@ -131,7 +131,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -150,7 +150,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00004( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -160,7 +160,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00005( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -170,7 +170,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00006( player );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -180,7 +180,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00007( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -190,7 +190,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );
@@ -200,7 +200,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -210,7 +210,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00010( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -220,7 +220,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 10, NONE, callback );
@@ -240,7 +240,7 @@ class GaiUsb904 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00013( player );
     };
 
     player.playScene( getId(), 12, NONE, callback );
