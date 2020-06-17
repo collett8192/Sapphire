@@ -1,0 +1,405 @@
+// This is an automatically generated C++ script template
+// Content needs to be added by hand to make it function
+// In order for this script to be loaded, move it to the correct folder in <root>/scripts/
+
+#include <Actor/Player.h>
+#include "Manager/EventMgr.h"
+#include <ScriptObject.h>
+#include <Service.h>
+
+// Quest Script: LucKmd116_03621
+// Quest Name: A Fresh Start
+// Quest ID: 69157
+// Start NPC: 1029783
+// End NPC: 1029784
+
+using namespace Sapphire;
+
+class LucKmd116 : public Sapphire::ScriptAPI::EventScript
+{
+  private:
+    // Basic quest information 
+    // Quest vars / flags used
+    // GetQuestBitFlag8
+    // GetQuestUI8AL
+
+    // Steps in this quest ( 0 is before accepting, 
+    // 1 is first, 255 means ready for turning it in
+    enum Sequence : uint8_t
+    {
+//      Seq0 = 0,
+//      Seq1 = 1,
+//      Seq2 = 2,
+//      Seq3 = 3,
+//      SeqFinish = 255,
+    };
+
+    // Entities found in the script data of the quest
+//    static constexpr auto Actor0 = 1029783;
+//    static constexpr auto Actor1 = 1030368;
+//    static constexpr auto Actor10 = 1030161;
+//    static constexpr auto Actor11 = 1030162;
+//    static constexpr auto Actor12 = 5010000;
+//    static constexpr auto Actor13 = 1029784;
+//    static constexpr auto Actor14 = 1029785;
+//    static constexpr auto Actor15 = 1029786;
+//    static constexpr auto Actor16 = 1029787;
+//    static constexpr auto Actor17 = 1029788;
+//    static constexpr auto Actor18 = 1029789;
+//    static constexpr auto Actor2 = 1029779;
+//    static constexpr auto Actor3 = 1029780;
+//    static constexpr auto Actor4 = 1029781;
+//    static constexpr auto Actor5 = 1029782;
+//    static constexpr auto Actor6 = 1030157;
+//    static constexpr auto Actor7 = 1030158;
+//    static constexpr auto Actor8 = 1030159;
+//    static constexpr auto Actor9 = 1030160;
+//    static constexpr auto Eobject0 = 2009922;
+//    static constexpr auto Eventaction0 = 50;
+//    static constexpr auto Instancedungeon0 = 69;
+//    static constexpr auto LocActorAlisaie = 1026567;
+//    static constexpr auto LocActorAlphinaud = 1026568;
+//    static constexpr auto LocActorRyne = 1027137;
+//    static constexpr auto LocActorThancred = 1028873;
+//    static constexpr auto LocActorUrianger = 1026570;
+//    static constexpr auto LocActorYshtola = 1026571;
+//    static constexpr auto LocBindActor0 = 7931538;
+//    static constexpr auto LocBindActor1 = 7931539;
+//    static constexpr auto LocBindActor10 = 7935229;
+//    static constexpr auto LocBindActor11 = 7935234;
+//    static constexpr auto LocBindActor12 = 7935258;
+//    static constexpr auto LocBindActor13 = 7935260;
+//    static constexpr auto LocBindActor14 = 7935261;
+//    static constexpr auto LocBindActor15 = 7935262;
+//    static constexpr auto LocBindActor16 = 7935263;
+//    static constexpr auto LocBindActor17 = 7935264;
+//    static constexpr auto LocBindActor2 = 7931540;
+//    static constexpr auto LocBindActor3 = 7931541;
+//    static constexpr auto LocBindActor4 = 7931542;
+//    static constexpr auto LocBindActor5 = 7936214;
+//    static constexpr auto LocBindActor6 = 7935217;
+//    static constexpr auto LocBindActor7 = 7935208;
+//    static constexpr auto LocBindActor8 = 7935209;
+//    static constexpr auto LocBindActor9 = 7935226;
+//    static constexpr auto NcutEventLuckmd11601 = 2034;
+//    static constexpr auto Poprange0 = 7935268;
+//    static constexpr auto Screenimage0 = 745;
+//    static constexpr auto Territorytype0 = 815;
+
+  public:
+    LucKmd116() : Sapphire::ScriptAPI::EventScript( 69157 ){}; 
+    ~LucKmd116() = default; 
+
+  //////////////////////////////////////////////////////////////////////
+  // Event Handlers
+  void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
+  {
+    auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+    auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    switch( player.getQuestSeq( getId() ) )
+    {
+      case 0:
+      {
+        Scene00000( player );
+        break;
+      }
+      case 255:
+      {
+        Scene00022( player );
+        break;
+      }
+    }
+  }
+
+
+  private:
+  //////////////////////////////////////////////////////////////////////
+  // Available Scenes in this quest, not necessarly all are used
+  void Scene00000( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param2 == 1 )
+        Scene00001( player );
+    };
+
+    player.playScene( getId(), 0, NONE, callback );
+  }
+
+  void Scene00001( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00002( player );
+    };
+
+    player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+  void Scene00002( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00003( player );
+    };
+
+    player.playScene( getId(), 2, NONE, callback );
+  }
+
+  void Scene00003( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00004( player );
+    };
+
+    player.playScene( getId(), 3, NONE, callback );
+  }
+
+  void Scene00004( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00005( player );
+    };
+
+    player.playScene( getId(), 4, NONE, callback );
+  }
+
+  void Scene00005( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00006( player );
+    };
+
+    player.playScene( getId(), 5, NONE, callback );
+  }
+
+  void Scene00006( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00008( player );
+    };
+
+    player.playScene( getId(), 6, NONE, callback );
+  }
+
+  void Scene00007( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 7, NONE, callback );
+  }
+
+  void Scene00008( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00009( player );
+    };
+
+    player.playScene( getId(), 8, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+  void Scene00009( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00010( player );
+    };
+
+    player.playScene( getId(), 9, NONE, callback );
+  }
+
+  void Scene00010( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00011( player );
+    };
+
+    player.playScene( getId(), 10, NONE, callback );
+  }
+
+  void Scene00011( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00012( player );
+    };
+
+    player.playScene( getId(), 11, NONE, callback );
+  }
+
+  void Scene00012( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00013( player );
+    };
+
+    player.playScene( getId(), 12, NONE, callback );
+  }
+
+  void Scene00013( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00014( player );
+    };
+
+    player.playScene( getId(), 13, NONE, callback );
+  }
+
+  void Scene00014( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00015( player );
+    };
+
+    player.playScene( getId(), 14, NONE, callback );
+  }
+
+  void Scene00015( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00016( player );
+    };
+
+    player.playScene( getId(), 15, NONE, callback );
+  }
+
+  void Scene00016( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00017( player );
+    };
+
+    player.playScene( getId(), 16, NONE, callback );
+  }
+
+  void Scene00017( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00018( player );
+    };
+
+    player.playScene( getId(), 17, NONE, callback );
+  }
+
+  void Scene00018( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00019( player );
+    };
+
+    player.playScene( getId(), 18, NONE, callback );
+  }
+
+  void Scene00019( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00020( player );
+    };
+
+    player.playScene( getId(), 19, NONE, callback );
+  }
+
+  void Scene00020( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00021( player );
+    };
+
+    player.playScene( getId(), 20, NONE, callback );
+  }
+
+  void Scene00021( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      player.updateQuest( getId(), 255 );
+    };
+
+    player.playScene( getId(), 21, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+  void Scene00022( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
+          player.finishQuest( getId() );
+        }
+      }
+    };
+
+    player.playScene( getId(), 22, NONE, callback );
+  }
+
+  void Scene00023( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00024( player );
+    };
+
+    player.playScene( getId(), 23, NONE, callback );
+  }
+
+  void Scene00024( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00025( player );
+    };
+
+    player.playScene( getId(), 24, NONE, callback );
+  }
+
+  void Scene00025( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00026( player );
+    };
+
+    player.playScene( getId(), 25, NONE, callback );
+  }
+
+  void Scene00026( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00027( player );
+    };
+
+    player.playScene( getId(), 26, NONE, callback );
+  }
+
+  void Scene00027( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 27, NONE, callback );
+  }
+
+};
+
+EXPOSE_SCRIPT( LucKmd116 );
