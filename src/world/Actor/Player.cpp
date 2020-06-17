@@ -19,6 +19,7 @@
 #include "Manager/HousingMgr.h"
 #include "Manager/TerritoryMgr.h"
 #include "Manager/RNGMgr.h"
+#include <Manager/PlayerMgr.h>
 
 #include "Territory/Territory.h"
 #include "Territory/ZonePosition.h"
@@ -2528,4 +2529,19 @@ bool Sapphire::Entity::Player::gaugeSamHasAnySen()
 void* Sapphire::Entity::Player::getExdData()
 {
   return &Common::Service< Data::ExdDataGenerated >::ref();
+}
+
+void* Sapphire::Entity::Player::getPlayerMgr()
+{
+  return &Common::Service< Sapphire::World::Manager::PlayerMgr >::ref();
+}
+
+void* Sapphire::Entity::Player::getInstanceObjectCache()
+{
+  return &Common::Service< Sapphire::InstanceObjectCache >::ref();
+}
+
+void* Sapphire::Entity::Player::getTerritoryMgr()
+{
+  return &Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
 }

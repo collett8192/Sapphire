@@ -1025,6 +1025,9 @@ namespace Sapphire::Entity
     //////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void* getExdData();
+    void* getPlayerMgr();
+    void* getInstanceObjectCache();
+    void* getTerritoryMgr();
 
     Common::HuntingLogEntry& getHuntingLogEntry( uint8_t index );
 
