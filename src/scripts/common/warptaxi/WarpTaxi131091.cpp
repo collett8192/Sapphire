@@ -20,6 +20,7 @@ public:
   {
     player.eventFinish( getId(), 1 );
     player.sendDebug( "exit the walking sand..." );
+    player.sendUrgent( "to go to other side of the door, walk up against it and type \"!nudge 2\"." );
     player.exitInstance();
   }
 };

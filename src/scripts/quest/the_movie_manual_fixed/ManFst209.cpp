@@ -111,6 +111,11 @@ class ManFst209 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
+        Scene00008( player );
+        break;
+      }
+      case 3:
+      {
         Scene00009( player );
         break;
       }
@@ -126,7 +131,7 @@ class ManFst209 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00052( player );
+        Scene00051( player );
         break;
       }
     }
@@ -161,7 +166,7 @@ class ManFst209 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00008( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -216,7 +221,7 @@ class ManFst209 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -516,7 +521,7 @@ class ManFst209 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00051( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 40, NONE, callback );
@@ -616,7 +621,10 @@ class ManFst209 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      if( result.param2 == 1 )
+      {
+        Scene00052( player );
+      }
     };
 
     player.playScene( getId(), 51, NONE, callback );
@@ -626,11 +634,15 @@ class ManFst209 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      if( result.param2 == 1 )
+      //if( result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
         {
           player.finishQuest( getId() );
+          player.sendUrgent( "type \"/gpose\" to get rid of black screen." );
+          player.sendUrgent( "type \"/gpose\" to get rid of black screen." );
+          player.sendUrgent( "type \"/gpose\" to get rid of black screen." );
+          player.sendUrgent( "type \"/gpose\" to get rid of black screen." );
         }
       }
     };
