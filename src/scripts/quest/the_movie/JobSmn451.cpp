@@ -114,7 +114,7 @@ class JobSmn451 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -172,7 +172,6 @@ class JobSmn451 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 7, NONE, callback );

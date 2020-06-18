@@ -94,11 +94,6 @@ class LucKmg110 : public Sapphire::ScriptAPI::EventScript
         Scene00010( player );
         break;
       }
-      case 4:
-      {
-        Scene00017( player );
-        break;
-      }
       case 255:
       {
         Scene00015( player );
@@ -202,7 +197,7 @@ class LucKmg110 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 8, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00009( Entity::Player& player )
+  void Scene00009( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -282,17 +277,15 @@ class LucKmg110 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
     };
 
-    player.playScene( getId(), 16, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 16, NONE, callback );
   }
 
   void Scene00017( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00018( player );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -302,7 +295,6 @@ class LucKmg110 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
     };
 
     player.playScene( getId(), 18, NONE, callback );
@@ -312,7 +304,6 @@ class LucKmg110 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00020( player );
     };
 
     player.playScene( getId(), 19, NONE, callback );
@@ -322,7 +313,6 @@ class LucKmg110 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00021( player );
     };
 
     player.playScene( getId(), 20, NONE, callback );

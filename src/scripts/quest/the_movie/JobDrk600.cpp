@@ -134,7 +134,7 @@ class JobDrk600 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 3, NONE, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

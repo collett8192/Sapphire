@@ -83,7 +83,7 @@ class SubCts802 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00018( player );
+        Scene00017( player );
         break;
       }
     }
@@ -242,7 +242,7 @@ class SubCts802 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -270,7 +270,7 @@ class SubCts802 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00018( player );
     };
 
     player.playScene( getId(), 17, NONE, callback );

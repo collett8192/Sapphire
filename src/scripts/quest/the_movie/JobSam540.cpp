@@ -100,10 +100,6 @@ class JobSam540 : public Sapphire::ScriptAPI::EventScript
     {
       case 0:
       {
-        player.sendUrgent( "This quest contains at least one quest battle, " );
-        player.sendUrgent( "which has a high change to break the script and get stuck." );
-        player.sendUrgent( "Use \"//gm quest sequence <questId> 255\" to skip broken scenes."); 
-        player.sendUrgent( "### Hit NO when asked to enter quest battle ###" );
         Scene00000( player );
         break;
       }
@@ -114,7 +110,7 @@ class JobSam540 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00023( player );
+        Scene00025( player );
         break;
       }
       case 255:
@@ -354,13 +350,13 @@ class JobSam540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00023( player );
     };
 
     player.playScene( getId(), 22, NONE, callback );
   }
 
-  void Scene00023( Entity::Player& player )
+  void Scene00023( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -374,7 +370,7 @@ class JobSam540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00025( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 24, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -476,7 +472,6 @@ class JobSam540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );

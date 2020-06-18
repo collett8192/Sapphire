@@ -101,7 +101,7 @@ class BanKjn005 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00013( player );
+        Scene00012( player );
         break;
       }
     }
@@ -181,7 +181,7 @@ class BanKjn005 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 6, NONE, callback );
   }
 
-  void Scene00007( Entity::Player& player )
+  void Scene00007( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -223,7 +223,7 @@ class BanKjn005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00012( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 11, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -233,7 +233,7 @@ class BanKjn005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00013( player );
     };
 
     player.playScene( getId(), 12, NONE, callback );
@@ -259,10 +259,9 @@ class BanKjn005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
     };
 
-    player.playScene( getId(), 14, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 14, NONE, callback );
   }
 
 };

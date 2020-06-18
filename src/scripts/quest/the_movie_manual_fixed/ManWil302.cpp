@@ -7,57 +7,56 @@
 #include <ScriptObject.h>
 #include <Service.h>
 
-// Quest Script: ManSea302_00681
-// Quest Name: The Company You Keep (Maelstrom)
-// Quest ID: 66217
-// Start NPC: 1004885
-// End NPC: 1002388
+// Quest Script: ManWil302_00682
+// Quest Name: The Company You Keep (Immortal Flames)
+// Quest ID: 66218
+// Start NPC: 1004883
+// End NPC: 1002391
 
 using namespace Sapphire;
 
-class ManSea302 : public Sapphire::ScriptAPI::EventScript
+class ManWil302 : public Sapphire::ScriptAPI::EventScript
 {
-  private:
-    // Basic quest information 
-    // Quest vars / flags used
-    // GetQuestBitFlag16
-    // GetQuestBitFlag8
-    // GetQuestUI8AH
-    // GetQuestUI8AL
-    // GetQuestUI8BH
+private:
+  // Basic quest information 
+  // Quest vars / flags used
+  // GetQuestBitFlag16
+  // GetQuestBitFlag8
+  // GetQuestUI8AH
+  // GetQuestUI8AL
+  // GetQuestUI8BH
 
-    // Steps in this quest ( 0 is before accepting, 
-    // 1 is first, 255 means ready for turning it in
-    enum Sequence : uint8_t
-    {
-//      Seq0 = 0,
-//      Seq1 = 1,
-//      Seq2 = 2,
-//      SeqFinish = 255,
-    };
+  // Steps in this quest ( 0 is before accepting, 
+  // 1 is first, 255 means ready for turning it in
+  enum Sequence : uint8_t
+  {
+    //      Seq0 = 0,
+    //      Seq1 = 1,
+    //      Seq2 = 2,
+    //      SeqFinish = 255,
+  };
 
-    // Entities found in the script data of the quest
-//    static constexpr auto Actor0 = 1004885;
-//    static constexpr auto Actor1 = 1002388;
-//    static constexpr auto Actor2 = 1004883;
-//    static constexpr auto Actor3 = 1004884;
-//    static constexpr auto Actor4 = 1004888;
-//    static constexpr auto Actor5 = 1004999;
-//    static constexpr auto Actor6 = 1005000;
-//    static constexpr auto Actor7 = 1005001;
-//    static constexpr auto Actor8 = 1005002;
-//    static constexpr auto Eobject0 = 2001656;
-//    static constexpr auto Eobject1 = 2001807;
-//    static constexpr auto Eventrange0 = 4126868;
-//    static constexpr auto EventActionSearch = 1;
-//    static constexpr auto LocActor0 = 1005105;
-//    static constexpr auto Ncut0 = 218;
-//    static constexpr auto Questbattle0 = 48;
-//    static constexpr auto Territorytype0 = 279;
+  // Entities found in the script data of the quest
+  //    static constexpr auto Actor0 = 1004883;
+  //    static constexpr auto Actor1 = 1002391;
+  //    static constexpr auto Actor2 = 1004884;
+  //    static constexpr auto Actor3 = 1004885;
+  //    static constexpr auto Actor4 = 1004887;
+  //    static constexpr auto Actor5 = 1004995;
+  //    static constexpr auto Actor6 = 1004996;
+  //    static constexpr auto Actor7 = 1004997;
+  //    static constexpr auto Eobject0 = 2001714;
+  //    static constexpr auto Eobject1 = 2001808;
+  //    static constexpr auto Eventrange0 = 4126799;
+  //    static constexpr auto EventActionSearch = 1;
+  //    static constexpr auto LocActor0 = 1005106;
+  //    static constexpr auto Ncut0 = 219;
+  //    static constexpr auto Questbattle0 = 47;
+  //    static constexpr auto Territorytype0 = 278;
 
-  public:
-    ManSea302() : Sapphire::ScriptAPI::EventScript( 66217 ){}; 
-    ~ManSea302() = default; 
+public:
+  ManWil302() : Sapphire::ScriptAPI::EventScript( 66218 ){}; 
+  ~ManWil302() = default; 
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
@@ -83,24 +82,19 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00006( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00012( player );
+        Scene00005( player );
         break;
       }
       case 255:
       {
-        Scene00020( player );
+        Scene00018( player );
         break;
       }
     }
   }
 
 
-  private:
+private:
   //////////////////////////////////////////////////////////////////////
   // Available Scenes in this quest, not necessarly all are used
   void Scene00000( Entity::Player& player )
@@ -148,17 +142,17 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00005( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 4, NONE, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -168,7 +162,6 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -196,6 +189,7 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00010( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -205,6 +199,7 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );
@@ -214,6 +209,7 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00012( player );
     };
 
     player.playScene( getId(), 11, NONE, callback );
@@ -229,11 +225,11 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 12, NONE, callback );
   }
 
-  void Scene00013( Entity::Player& player )
+  void Scene00013( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00014( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -243,7 +239,6 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -253,7 +248,6 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -281,24 +275,6 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-    };
-
-    player.playScene( getId(), 18, NONE, callback );
-  }
-
-  void Scene00019( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-    };
-
-    player.playScene( getId(), 19, NONE, callback );
-  }
-
-  void Scene00020( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
       if( result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
@@ -308,6 +284,26 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
       }
     };
 
+    player.playScene( getId(), 18, NONE, callback );
+  }
+
+  void Scene00019( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00020( player );
+    };
+
+    player.playScene( getId(), 19, NONE, callback );
+  }
+
+  void Scene00020( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00021( player );
+    };
+
     player.playScene( getId(), 20, NONE, callback );
   }
 
@@ -315,31 +311,11 @@ class ManSea302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00022( player );
     };
 
     player.playScene( getId(), 21, NONE, callback );
   }
 
-  void Scene00022( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      Scene00023( player );
-    };
-
-    player.playScene( getId(), 22, NONE, callback );
-  }
-
-  void Scene00023( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-    };
-
-    player.playScene( getId(), 23, NONE, callback );
-  }
-
 };
 
-EXPOSE_SCRIPT( ManSea302 );
+EXPOSE_SCRIPT( ManWil302 );

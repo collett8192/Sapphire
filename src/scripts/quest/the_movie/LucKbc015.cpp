@@ -106,7 +106,7 @@ class LucKbc015 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00033( player );
+        Scene00024( player );
         break;
       }
     }
@@ -353,7 +353,7 @@ class LucKbc015 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00024( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 23, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

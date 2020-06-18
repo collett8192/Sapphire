@@ -102,6 +102,11 @@ class HeaVna203 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
+      case 2:
+      {
+        Scene00011( player );
+        break;
+      }
       case 255:
       {
         Scene00034( player );
@@ -190,7 +195,7 @@ class HeaVna203 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 7, NONE, callback );
   }
 
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -204,7 +209,7 @@ class HeaVna203 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 9, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -456,7 +461,6 @@ class HeaVna203 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );

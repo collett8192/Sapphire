@@ -79,7 +79,7 @@ class FesNyr002 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00023( player );
+        Scene00022( player );
         break;
       }
     }
@@ -298,7 +298,7 @@ class FesNyr002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00022( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 21, NONE, callback );
@@ -308,7 +308,7 @@ class FesNyr002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00023( player );
     };
 
     player.playScene( getId(), 22, NONE, callback );

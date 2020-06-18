@@ -91,7 +91,7 @@ class LucKta002 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00025( player );
+        Scene00020( player );
         break;
       }
     }
@@ -296,7 +296,7 @@ class LucKta002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00020( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 19, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -372,7 +372,6 @@ class LucKta002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00027( player );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -382,7 +381,6 @@ class LucKta002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
     };
 
     player.playScene( getId(), 27, NONE, callback );

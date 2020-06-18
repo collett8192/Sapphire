@@ -219,7 +219,6 @@ class HeaVnz305 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00014( player );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -229,7 +228,6 @@ class HeaVnz305 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -239,7 +237,6 @@ class HeaVnz305 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00016( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -249,7 +246,6 @@ class HeaVnz305 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );

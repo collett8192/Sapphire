@@ -120,17 +120,12 @@ class JobRel500 : public Sapphire::ScriptAPI::EventScript
       }
       case 3:
       {
-        Scene00003( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00009( player );
+        Scene00006( player );
         break;
       }
       case 255:
       {
-        Scene00011( player );
+        Scene00008( player );
         break;
       }
     }
@@ -165,7 +160,7 @@ class JobRel500 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -195,7 +190,7 @@ class JobRel500 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -215,7 +210,7 @@ class JobRel500 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00008( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 7, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -225,7 +220,7 @@ class JobRel500 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );

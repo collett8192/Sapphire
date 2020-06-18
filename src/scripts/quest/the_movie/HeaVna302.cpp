@@ -74,11 +74,6 @@ class HeaVna302 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00014( player );
-        break;
-      }
       case 255:
       {
         Scene00012( player );
@@ -232,17 +227,15 @@ class HeaVna302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
     };
 
-    player.playScene( getId(), 13, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 13, NONE, callback );
   }
 
   void Scene00014( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
     };
 
     player.playScene( getId(), 14, NONE, callback );

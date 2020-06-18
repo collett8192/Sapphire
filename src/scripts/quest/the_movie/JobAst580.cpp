@@ -106,42 +106,12 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00008( player );
+        Scene00037( player );
         break;
       }
       case 3:
       {
-        Scene00018( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00027( player );
-        break;
-      }
-      case 5:
-      {
-        Scene00035( player );
-        break;
-      }
-      case 6:
-      {
-        Scene00037( player );
-        break;
-      }
-      case 7:
-      {
         Scene00045( player );
-        break;
-      }
-      case 8:
-      {
-        Scene00054( player );
-        break;
-      }
-      case 9:
-      {
-        Scene00059( player );
         break;
       }
       case 255:
@@ -247,7 +217,7 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );
@@ -344,7 +314,7 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00018( player );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -431,7 +401,7 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -508,7 +478,7 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );
@@ -528,7 +498,7 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 6 );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -558,7 +528,7 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 7 );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 39, NONE, callback );
@@ -688,7 +658,7 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 8 );
+      Scene00054( player );
     };
 
     player.playScene( getId(), 53, NONE, callback );
@@ -738,7 +708,7 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 9 );
+      Scene00059( player );
     };
 
     player.playScene( getId(), 58, NONE, callback );
@@ -814,7 +784,6 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00066( player );
     };
 
     player.playScene( getId(), 65, NONE, callback );
@@ -824,7 +793,6 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00067( player );
     };
 
     player.playScene( getId(), 66, NONE, callback );
@@ -834,7 +802,6 @@ class JobAst580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 67, NONE, callback );

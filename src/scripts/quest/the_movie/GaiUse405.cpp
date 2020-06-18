@@ -136,7 +136,6 @@ class GaiUse405 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -146,7 +145,6 @@ class GaiUse405 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00007( player );
     };
 
     player.playScene( getId(), 6, NONE, callback );

@@ -74,12 +74,12 @@ class GaiUse205 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00008( player );
+        Scene00017( player );
         break;
       }
       case 255:
       {
-        Scene00019( player );
+        Scene00018( player );
         break;
       }
     }
@@ -162,7 +162,7 @@ class GaiUse205 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );
@@ -172,7 +172,7 @@ class GaiUse205 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -254,7 +254,7 @@ class GaiUse205 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00018( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -264,7 +264,7 @@ class GaiUse205 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00019( player );
     };
 
     player.playScene( getId(), 18, NONE, callback );

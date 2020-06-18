@@ -195,7 +195,6 @@ class GaiUse416 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );

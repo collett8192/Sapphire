@@ -95,12 +95,7 @@ class BanMog001 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00008( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00023( player );
+        Scene00009( player );
         break;
       }
       case 255:
@@ -190,7 +185,7 @@ class BanMog001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );
@@ -200,7 +195,7 @@ class BanMog001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -346,17 +341,15 @@ class BanMog001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
     };
 
-    player.playScene( getId(), 22, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 22, NONE, callback );
   }
 
   void Scene00023( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00024( player );
     };
 
     player.playScene( getId(), 23, NONE, callback );
@@ -366,7 +359,6 @@ class BanMog001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00025( player );
     };
 
     player.playScene( getId(), 24, NONE, callback );

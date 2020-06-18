@@ -99,12 +99,22 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00022( player );
+        Scene00014( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00021( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00023( player );
         break;
       }
       case 255:
       {
-        Scene00045( player );
+        Scene00037( player );
         break;
       }
     }
@@ -248,7 +258,7 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00014( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 13, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -318,7 +328,7 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00021( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 20, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -328,7 +338,7 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00022( player );
     };
 
     player.playScene( getId(), 21, NONE, callback );
@@ -338,7 +348,7 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00023( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 22, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -478,7 +488,7 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00037( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 36, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -583,7 +593,6 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00047( player );
     };
 
     player.playScene( getId(), 46, NONE, callback );
@@ -593,7 +602,6 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00048( player );
     };
 
     player.playScene( getId(), 47, NONE, callback );
@@ -603,7 +611,6 @@ class FesNyr105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00049( player );
     };
 
     player.playScene( getId(), 48, NONE, callback );

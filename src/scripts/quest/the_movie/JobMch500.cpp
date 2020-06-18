@@ -333,7 +333,6 @@ class JobMch500 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 22, NONE, callback );

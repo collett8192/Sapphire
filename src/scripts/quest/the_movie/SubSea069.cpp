@@ -238,7 +238,6 @@ class SubSea069 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00016( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -248,7 +247,6 @@ class SubSea069 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );

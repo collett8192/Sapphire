@@ -92,17 +92,17 @@ class ClsAlc580 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00013( player );
+        Scene00014( player );
         break;
       }
       case 3:
       {
-        Scene00024( player );
+        Scene00025( player );
         break;
       }
       case 255:
       {
-        Scene00027( player );
+        Scene00026( player );
         break;
       }
     }
@@ -239,7 +239,7 @@ class ClsAlc580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00013( player );
     };
 
     player.playScene( getId(), 12, NONE, callback );
@@ -249,7 +249,7 @@ class ClsAlc580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00014( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -344,7 +344,7 @@ class ClsAlc580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00024( player );
     };
 
     player.playScene( getId(), 23, NONE, callback );
@@ -354,7 +354,7 @@ class ClsAlc580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00025( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 24, NONE, callback );
@@ -364,7 +364,7 @@ class ClsAlc580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00026( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 25, NONE, callback );
@@ -374,7 +374,7 @@ class ClsAlc580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 26, NONE, callback );

@@ -105,20 +105,10 @@ class ClsThm300 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00002( player );
+        Scene00007( player );
         break;
       }
       case 3:
-      {
-        Scene00004( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00006( player );
-        break;
-      }
-      case 5:
       {
         Scene00021( player );
         break;
@@ -157,7 +147,7 @@ class ClsThm300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00002( player );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -177,7 +167,7 @@ class ClsThm300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00004( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -197,7 +187,7 @@ class ClsThm300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00006( player );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -207,7 +197,7 @@ class ClsThm300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00007( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -343,11 +333,11 @@ class ClsThm300 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 19, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00020( Entity::Player& player )
+  void Scene00020( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 20, NONE, callback );

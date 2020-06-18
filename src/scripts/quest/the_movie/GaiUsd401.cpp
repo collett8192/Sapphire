@@ -398,7 +398,6 @@ class GaiUsd401 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -408,7 +407,6 @@ class GaiUsd401 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00029( player );
     };
 
     player.playScene( getId(), 28, NONE, callback );
@@ -418,7 +416,6 @@ class GaiUsd401 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00030( player );
     };
 
     player.playScene( getId(), 29, NONE, callback );

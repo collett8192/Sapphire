@@ -82,27 +82,12 @@ class ManWil007 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00004( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00005( player );
-        break;
-      }
-      case 4:
-      {
         Scene00009( player );
-        break;
-      }
-      case 6:
-      {
-        Scene00012( player );
         break;
       }
       case 255:
       {
-        Scene00013( player );
+        Scene00012( player );
         break;
       }
     }
@@ -147,7 +132,7 @@ class ManWil007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00004( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -157,7 +142,7 @@ class ManWil007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -191,11 +176,11 @@ class ManWil007 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 7, NONE, callback );
   }
 
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -225,7 +210,7 @@ class ManWil007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 6 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 11, NONE, callback );
@@ -235,7 +220,8 @@ class ManWil007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      if( result.param2 == 1 )
+        Scene00013( player );
     };
 
     player.playScene( getId(), 12, NONE, callback );
@@ -245,7 +231,7 @@ class ManWil007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      if( result.param2 == 1 )
+      if( true )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
         {

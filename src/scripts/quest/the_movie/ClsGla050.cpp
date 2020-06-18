@@ -91,7 +91,7 @@ class ClsGla050 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00041( player );
+        Scene00042( player );
         break;
       }
       case 255:
@@ -518,7 +518,7 @@ class ClsGla050 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00041( player );
     };
 
     player.playScene( getId(), 40, NONE, callback );
@@ -528,7 +528,7 @@ class ClsGla050 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00042( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 41, NONE, callback );
@@ -583,7 +583,6 @@ class ClsGla050 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00047( player );
     };
 
     player.playScene( getId(), 46, NONE, callback );
@@ -593,7 +592,6 @@ class ClsGla050 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00048( player );
     };
 
     player.playScene( getId(), 47, NONE, callback );
@@ -603,7 +601,6 @@ class ClsGla050 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00049( player );
     };
 
     player.playScene( getId(), 48, NONE, callback );

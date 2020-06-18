@@ -102,7 +102,7 @@ class BanAll140 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00013( player );
+        Scene00009( player );
         break;
       }
     }
@@ -197,7 +197,7 @@ class BanAll140 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 8, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -263,7 +263,6 @@ class BanAll140 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -273,7 +272,6 @@ class BanAll140 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00016( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );

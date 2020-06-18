@@ -89,7 +89,7 @@ class ClsPgl150 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00003( player );
+        Scene00005( player );
         break;
       }
       case 3:
@@ -141,7 +141,7 @@ class ClsPgl150 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -151,7 +151,7 @@ class ClsPgl150 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00005( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -255,7 +255,7 @@ class ClsPgl150 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 13, NONE, callback );
   }
 
-  void Scene00014( Entity::Player& player )
+  void Scene00014( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -334,7 +334,6 @@ class ClsPgl150 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00022( player );
     };
 
     player.playScene( getId(), 21, NONE, callback );

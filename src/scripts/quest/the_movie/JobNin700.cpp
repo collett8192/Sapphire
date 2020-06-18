@@ -88,6 +88,11 @@ class JobNin700 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
+      case 3:
+      {
+        Scene00006( player );
+        break;
+      }
       case 255:
       {
         Scene00007( player );
@@ -140,7 +145,7 @@ class JobNin700 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 3, NONE, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -154,7 +159,7 @@ class JobNin700 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -190,10 +195,9 @@ class JobNin700 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
     };
 
-    player.playScene( getId(), 8, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 8, NONE, callback );
   }
 
 };

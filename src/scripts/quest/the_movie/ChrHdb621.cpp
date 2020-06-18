@@ -107,9 +107,14 @@ class ChrHdb621 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
+      case 2:
+      {
+        Scene00008( player );
+        break;
+      }
       case 255:
       {
-        Scene00019( player );
+        Scene00011( player );
         break;
       }
     }
@@ -193,7 +198,7 @@ class ChrHdb621 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00008( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 7, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -222,7 +227,7 @@ class ChrHdb621 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 10, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -325,7 +330,6 @@ class ChrHdb621 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00021( player );
     };
 
     player.playScene( getId(), 20, NONE, callback );
@@ -335,7 +339,6 @@ class ChrHdb621 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00022( player );
     };
 
     player.playScene( getId(), 21, NONE, callback );
@@ -345,7 +348,6 @@ class ChrHdb621 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00023( player );
     };
 
     player.playScene( getId(), 22, NONE, callback );

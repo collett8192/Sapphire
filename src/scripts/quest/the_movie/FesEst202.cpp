@@ -519,7 +519,6 @@ class FesEst202 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00040( player );
     };
 
     player.playScene( getId(), 39, NONE, callback );
@@ -529,7 +528,6 @@ class FesEst202 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00041( player );
     };
 
     player.playScene( getId(), 40, NONE, callback );
@@ -539,7 +537,6 @@ class FesEst202 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00042( player );
     };
 
     player.playScene( getId(), 41, NONE, callback );

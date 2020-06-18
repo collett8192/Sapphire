@@ -439,7 +439,6 @@ class StmBdz327 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00032( player );
     };
 
     player.playScene( getId(), 31, NONE, callback );
@@ -449,7 +448,6 @@ class StmBdz327 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00033( player );
     };
 
     player.playScene( getId(), 32, NONE, callback );
@@ -459,7 +457,6 @@ class StmBdz327 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00034( player );
     };
 
     player.playScene( getId(), 33, NONE, callback );
@@ -469,7 +466,6 @@ class StmBdz327 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );
@@ -479,7 +475,6 @@ class StmBdz327 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );

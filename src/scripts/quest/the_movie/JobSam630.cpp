@@ -342,7 +342,6 @@ class JobSam630 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00025( player );
     };
 
     player.playScene( getId(), 24, NONE, callback );

@@ -112,11 +112,6 @@ class BanAna005 : public Sapphire::ScriptAPI::EventScript
         Scene00012( player );
         break;
       }
-      case 4:
-      {
-        Scene00023( player );
-        break;
-      }
       case 255:
       {
         Scene00021( player );
@@ -234,7 +229,7 @@ class BanAna005 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 10, NONE, callback );
   }
 
-  void Scene00011( Entity::Player& player )
+  void Scene00011( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -349,17 +344,15 @@ class BanAna005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
     };
 
-    player.playScene( getId(), 22, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 22, NONE, callback );
   }
 
   void Scene00023( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00024( player );
     };
 
     player.playScene( getId(), 23, NONE, callback );
@@ -369,7 +362,6 @@ class BanAna005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00025( player );
     };
 
     player.playScene( getId(), 24, NONE, callback );
@@ -379,7 +371,6 @@ class BanAna005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00026( player );
     };
 
     player.playScene( getId(), 25, NONE, callback );

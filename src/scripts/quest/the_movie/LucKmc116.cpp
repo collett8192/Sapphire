@@ -128,7 +128,7 @@ class LucKmc116 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -187,7 +187,6 @@ class LucKmc116 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -197,7 +196,6 @@ class LucKmc116 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00010( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -207,7 +205,6 @@ class LucKmc116 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );

@@ -305,7 +305,7 @@ class ClsRog150 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 18, NONE, callback );
   }
 
-  void Scene00019( Entity::Player& player )
+  void Scene00019( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

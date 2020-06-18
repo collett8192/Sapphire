@@ -85,7 +85,7 @@ class BanVan201 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00021( player );
+        Scene00020( player );
         break;
       }
     }
@@ -220,7 +220,7 @@ class BanVan201 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00020( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -284,7 +284,7 @@ class BanVan201 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00021( player );
     };
 
     player.playScene( getId(), 20, NONE, callback );

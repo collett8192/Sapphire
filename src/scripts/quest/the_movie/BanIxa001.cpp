@@ -83,12 +83,12 @@ class BanIxa001 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00015( player );
+        Scene00016( player );
         break;
       }
       case 255:
       {
-        Scene00036( player );
+        Scene00035( player );
         break;
       }
     }
@@ -235,7 +235,7 @@ class BanIxa001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00015( player );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -245,7 +245,7 @@ class BanIxa001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00016( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -348,7 +348,7 @@ class BanIxa001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00035( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -430,7 +430,7 @@ class BanIxa001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -456,7 +456,6 @@ class BanIxa001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00038( player );
     };
 
     player.playScene( getId(), 37, NONE, callback );

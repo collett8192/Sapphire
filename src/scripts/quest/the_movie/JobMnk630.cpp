@@ -574,7 +574,6 @@ class JobMnk630 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00046( player );
     };
 
     player.playScene( getId(), 45, NONE, callback );
@@ -584,7 +583,6 @@ class JobMnk630 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00050( player );
     };
 
     player.playScene( getId(), 46, NONE, callback );

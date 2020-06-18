@@ -72,7 +72,7 @@ class BanMog203 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00009( player );
+        Scene00010( player );
         break;
       }
       case 255:
@@ -168,7 +168,7 @@ class BanMog203 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -178,7 +178,7 @@ class BanMog203 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00010( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -250,7 +250,6 @@ class BanMog203 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );

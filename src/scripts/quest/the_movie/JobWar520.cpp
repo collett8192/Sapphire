@@ -79,11 +79,6 @@ class JobWar520 : public Sapphire::ScriptAPI::EventScript
         Scene00003( player );
         break;
       }
-      case 4:
-      {
-        Scene00010( player );
-        break;
-      }
       case 255:
       {
         Scene00008( player );
@@ -117,7 +112,7 @@ class JobWar520 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -194,7 +189,6 @@ class JobWar520 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 9, NONE, callback );

@@ -197,7 +197,6 @@ class LucKmc101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );
@@ -207,7 +206,6 @@ class LucKmc101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00012( player );
     };
 
     player.playScene( getId(), 11, NONE, callback );
@@ -217,7 +215,6 @@ class LucKmc101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00013( player );
     };
 
     player.playScene( getId(), 12, NONE, callback );
@@ -227,7 +224,6 @@ class LucKmc101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00014( player );
     };
 
     player.playScene( getId(), 13, NONE, callback );

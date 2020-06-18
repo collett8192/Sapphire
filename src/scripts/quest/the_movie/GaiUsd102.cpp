@@ -7,19 +7,20 @@
 #include <ScriptObject.h>
 #include <Service.h>
 
-// Quest Script: ManFst303_00683
-// Quest Name: Wood's Will Be Done
-// Quest ID: 66219
-// Start NPC: 1002394
-// End NPC: 1005012
+// Quest Script: GaiUsd102_01160
+// Quest Name: Alisaie's Pledge
+// Quest ID: 66696
+// Start NPC: 1007478
+// End NPC: 1007684
 
 using namespace Sapphire;
 
-class ManFst303 : public Sapphire::ScriptAPI::EventScript
+class GaiUsd102 : public Sapphire::ScriptAPI::EventScript
 {
   private:
     // Basic quest information 
     // Quest vars / flags used
+    // GetQuestBitFlag8
     // GetQuestUI8AL
 
     // Steps in this quest ( 0 is before accepting, 
@@ -31,24 +32,20 @@ class ManFst303 : public Sapphire::ScriptAPI::EventScript
     };
 
     // Entities found in the script data of the quest
-//    static constexpr auto Actor0 = 1002394;
-//    static constexpr auto Actor1 = 1005012;
-//    static constexpr auto LocAction1 = 1002;
-//    static constexpr auto LocActor0 = 1003783;
-//    static constexpr auto LocSe1 = 42;
-//    static constexpr auto LocTalkshape1 = 6;
-//    static constexpr auto LogmessageMonsternotePageUnlock = 1017;
-//    static constexpr auto Ncut0 = 220;
-//    static constexpr auto Ncut1 = 391;
-//    static constexpr auto OrderOfTwinAdder = 2;
-//    static constexpr auto Poprange0 = 4148347;
-//    static constexpr auto Reward0 = 22;
-//    static constexpr auto Screenimage0 = 32;
-//    static constexpr auto Screenimage1 = 69;
+//    static constexpr auto Actor0 = 1007478;
+//    static constexpr auto Actor1 = 1007684;
+//    static constexpr auto CutsceneQredo01 = 376;
+//    static constexpr auto CutsceneQredo02 = 377;
+//    static constexpr auto CutsceneQredo03 = 386;
+//    static constexpr auto CutsceneQredo04 = 389;
+//    static constexpr auto CutsceneQredo05 = 390;
+//    static constexpr auto LocActor0 = 1008180;
+//    static constexpr auto LocBgm1 = 93;
+//    static constexpr auto LocPosActor0 = 4330030;
 
   public:
-    ManFst303() : Sapphire::ScriptAPI::EventScript( 66219 ){}; 
-    ~ManFst303() = default; 
+    GaiUsd102() : Sapphire::ScriptAPI::EventScript( 66696 ){}; 
+    ~GaiUsd102() = default; 
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
@@ -68,9 +65,14 @@ class ManFst303 : public Sapphire::ScriptAPI::EventScript
         Scene00001( player );
         break;
       }
+      case 2:
+      {
+        Scene00002( player );
+        break;
+      }
       case 255:
       {
-        Scene00004( player );
+        Scene00003( player );
         break;
       }
     }
@@ -95,33 +97,23 @@ class ManFst303 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 2 );
     };
 
-    player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 1, NONE, callback );
   }
 
   void Scene00002( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
   }
 
   void Scene00003( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      player.updateQuest( getId(), 255 );
-    };
-
-    player.playScene( getId(), 3, NONE, callback );
-  }
-
-  void Scene00004( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -134,9 +126,18 @@ class ManFst303 : public Sapphire::ScriptAPI::EventScript
       }
     };
 
-    player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+  void Scene00100( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 100, NONE, callback );
   }
 
 };
 
-EXPOSE_SCRIPT( ManFst303 );
+EXPOSE_SCRIPT( GaiUsd102 );

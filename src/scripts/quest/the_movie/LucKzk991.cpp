@@ -76,11 +76,6 @@ class LucKzk991 : public Sapphire::ScriptAPI::EventScript
         Scene00003( player );
         break;
       }
-      case 2:
-      {
-        Scene00004( player );
-        break;
-      }
       case 255:
       {
         Scene00009( player );
@@ -127,7 +122,7 @@ class LucKzk991 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00004( player );
     };
 
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -203,7 +198,6 @@ class LucKzk991 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );

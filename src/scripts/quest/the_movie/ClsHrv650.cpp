@@ -85,11 +85,6 @@ class ClsHrv650 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 3:
-      {
-        Scene00026( player );
-        break;
-      }
       case 255:
       {
         Scene00027( player );
@@ -357,7 +352,7 @@ class ClsHrv650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00026( player );
     };
 
     player.playScene( getId(), 25, NONE, callback );
@@ -393,7 +388,6 @@ class ClsHrv650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00029( player );
     };
 
     player.playScene( getId(), 28, NONE, callback );

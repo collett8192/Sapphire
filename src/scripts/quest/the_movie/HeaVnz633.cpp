@@ -276,7 +276,6 @@ class HeaVnz633 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
     };
 
     player.playScene( getId(), 18, NONE, callback );
@@ -286,7 +285,6 @@ class HeaVnz633 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00020( player );
     };
 
     player.playScene( getId(), 19, NONE, callback );

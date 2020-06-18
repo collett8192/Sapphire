@@ -81,27 +81,27 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00028( player );
+        Scene00030( player );
         break;
       }
       case 3:
       {
-        Scene00032( player );
+        Scene00034( player );
         break;
       }
       case 4:
       {
-        Scene00036( player );
+        Scene00038( player );
         break;
       }
       case 5:
       {
-        Scene00040( player );
+        Scene00042( player );
         break;
       }
       case 6:
       {
-        Scene00044( player );
+        Scene00046( player );
         break;
       }
       case 255:
@@ -371,7 +371,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00028( player );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -381,7 +381,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00030( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 28, NONE, callback );
@@ -410,7 +410,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00032( player );
     };
 
     player.playScene( getId(), 31, NONE, callback );
@@ -420,7 +420,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00034( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 32, NONE, callback );
@@ -449,7 +449,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -459,7 +459,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00038( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -488,7 +488,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00040( player );
     };
 
     player.playScene( getId(), 39, NONE, callback );
@@ -498,7 +498,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00042( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 40, NONE, callback );
@@ -527,7 +527,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 6 );
+      Scene00044( player );
     };
 
     player.playScene( getId(), 43, NONE, callback );
@@ -537,7 +537,7 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00046( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 44, NONE, callback );
@@ -582,7 +582,6 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00049( player );
     };
 
     player.playScene( getId(), 48, NONE, callback );
@@ -592,7 +591,6 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00050( player );
     };
 
     player.playScene( getId(), 49, NONE, callback );
@@ -602,7 +600,6 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00051( player );
     };
 
     player.playScene( getId(), 50, NONE, callback );
@@ -612,7 +609,6 @@ class SubWil122 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00052( player );
     };
 
     player.playScene( getId(), 51, NONE, callback );

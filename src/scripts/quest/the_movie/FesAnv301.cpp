@@ -83,16 +83,6 @@ class FesAnv301 : public Sapphire::ScriptAPI::EventScript
         Scene00003( player );
         break;
       }
-      case 2:
-      {
-        Scene00022( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00030( player );
-        break;
-      }
       case 255:
       {
         Scene00034( player );
@@ -298,7 +288,7 @@ class FesAnv301 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00022( player );
     };
 
     player.playScene( getId(), 20, NONE, callback );
@@ -383,7 +373,7 @@ class FesAnv301 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00030( player );
     };
 
     player.playScene( getId(), 29, NONE, callback );

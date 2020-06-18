@@ -71,7 +71,7 @@ class HeaVne101 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00006( player );
+        Scene00004( player );
         break;
       }
     }
@@ -116,7 +116,7 @@ class HeaVne101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -162,7 +162,6 @@ class HeaVne101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );

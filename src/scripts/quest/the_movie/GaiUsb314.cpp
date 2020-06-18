@@ -835,7 +835,6 @@ class GaiUsb314 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00079( player );
     };
 
     player.playScene( getId(), 77, NONE, callback );
@@ -854,7 +853,6 @@ class GaiUsb314 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00080( player );
     };
 
     player.playScene( getId(), 79, NONE, callback );
@@ -864,7 +862,6 @@ class GaiUsb314 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00081( player );
     };
 
     player.playScene( getId(), 80, NONE, callback );
@@ -874,7 +871,6 @@ class GaiUsb314 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00082( player );
     };
 
     player.playScene( getId(), 81, NONE, callback );

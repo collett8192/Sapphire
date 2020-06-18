@@ -76,7 +76,7 @@ class BanGna402 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00019( player );
+        Scene00018( player );
         break;
       }
     }
@@ -221,7 +221,7 @@ class BanGna402 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00018( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -267,7 +267,7 @@ class BanGna402 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00019( player );
     };
 
     player.playScene( getId(), 18, NONE, callback );

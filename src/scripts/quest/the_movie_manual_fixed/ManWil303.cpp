@@ -63,14 +63,9 @@ class ManWil303 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
-      case 1:
-      {
-        Scene00001( player );
-        break;
-      }
       case 255:
       {
-        Scene00004( player );
+        Scene00003( player );
         break;
       }
     }
@@ -85,7 +80,7 @@ class ManWil303 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        player.updateQuest( getId(), 1 );
+        Scene00001( player );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -95,7 +90,7 @@ class ManWil303 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -105,7 +100,7 @@ class ManWil303 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -115,7 +110,8 @@ class ManWil303 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      if( result.param2 == 1 )
+        Scene00004( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -125,7 +121,7 @@ class ManWil303 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      if( result.param2 == 1 )
+      if( true )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
         {

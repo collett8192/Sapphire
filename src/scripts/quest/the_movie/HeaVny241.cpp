@@ -99,31 +99,6 @@ class HeaVny241 : public Sapphire::ScriptAPI::EventScript
         Scene00003( player );
         break;
       }
-      case 2:
-      {
-        Scene00009( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00020( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00021( player );
-        break;
-      }
-      case 5:
-      {
-        Scene00028( player );
-        break;
-      }
-      case 6:
-      {
-        Scene00029( player );
-        break;
-      }
       case 255:
       {
         Scene00032( player );
@@ -220,7 +195,7 @@ class HeaVny241 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -329,7 +304,7 @@ class HeaVny241 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00020( player );
     };
 
     player.playScene( getId(), 19, NONE, callback );
@@ -339,7 +314,7 @@ class HeaVny241 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00021( player );
     };
 
     player.playScene( getId(), 20, NONE, callback );
@@ -408,7 +383,7 @@ class HeaVny241 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00028( player );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -418,7 +393,7 @@ class HeaVny241 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 6 );
+      Scene00029( player );
     };
 
     player.playScene( getId(), 28, NONE, callback );

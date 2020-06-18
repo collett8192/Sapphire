@@ -168,7 +168,6 @@ class SubCts701 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -178,7 +177,6 @@ class SubCts701 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00010( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );

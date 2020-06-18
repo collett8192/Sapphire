@@ -101,11 +101,6 @@ class JobWhm600 : public Sapphire::ScriptAPI::EventScript
         Scene00016( player );
         break;
       }
-      case 4:
-      {
-        Scene00033( player );
-        break;
-      }
       case 255:
       {
         Scene00031( player );
@@ -249,7 +244,7 @@ class JobWhm600 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 12, NONE, callback );
   }
 
-  void Scene00013( Entity::Player& player )
+  void Scene00013( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -446,17 +441,15 @@ class JobWhm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
     };
 
-    player.playScene( getId(), 32, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 32, NONE, callback );
   }
 
   void Scene00033( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00034( player );
     };
 
     player.playScene( getId(), 33, NONE, callback );
@@ -466,7 +459,6 @@ class JobWhm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );
@@ -476,7 +468,6 @@ class JobWhm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -486,7 +477,6 @@ class JobWhm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00037( player );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -496,7 +486,6 @@ class JobWhm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00038( player );
     };
 
     player.playScene( getId(), 37, NONE, callback );

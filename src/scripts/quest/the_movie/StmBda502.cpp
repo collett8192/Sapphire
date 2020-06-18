@@ -537,7 +537,6 @@ class StmBda502 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00044( player );
     };
 
     player.playScene( getId(), 43, NONE, callback );
@@ -547,7 +546,6 @@ class StmBda502 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00045( player );
     };
 
     player.playScene( getId(), 44, NONE, callback );

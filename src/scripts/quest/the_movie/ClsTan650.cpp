@@ -85,12 +85,12 @@ class ClsTan650 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00018( player );
+        Scene00019( player );
         break;
       }
       case 255:
       {
-        Scene00021( player );
+        Scene00020( player );
         break;
       }
     }
@@ -274,7 +274,7 @@ class ClsTan650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00018( player );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -284,7 +284,7 @@ class ClsTan650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 18, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -294,7 +294,7 @@ class ClsTan650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00020( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 19, NONE, callback );
@@ -304,7 +304,7 @@ class ClsTan650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00021( player );
     };
 
     player.playScene( getId(), 20, NONE, callback );

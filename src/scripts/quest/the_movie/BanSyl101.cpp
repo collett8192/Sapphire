@@ -458,7 +458,6 @@ class BanSyl101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00040( player );
     };
 
     player.playScene( getId(), 38, NONE, callback );
@@ -477,7 +476,6 @@ class BanSyl101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00042( player );
     };
 
     player.playScene( getId(), 40, NONE, callback );
@@ -496,7 +494,6 @@ class BanSyl101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00044( player );
     };
 
     player.playScene( getId(), 42, NONE, callback );
@@ -515,7 +512,6 @@ class BanSyl101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00046( player );
     };
 
     player.playScene( getId(), 44, NONE, callback );
@@ -534,7 +530,6 @@ class BanSyl101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00048( player );
     };
 
     player.playScene( getId(), 46, NONE, callback );
@@ -553,7 +548,6 @@ class BanSyl101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00050( player );
     };
 
     player.playScene( getId(), 48, NONE, callback );
@@ -572,7 +566,6 @@ class BanSyl101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00052( player );
     };
 
     player.playScene( getId(), 50, NONE, callback );

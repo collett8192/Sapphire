@@ -156,7 +156,6 @@ class StmBda619 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );

@@ -113,37 +113,32 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00003( player );
+        Scene00016( player );
         break;
       }
       case 3:
       {
-        Scene00011( player );
+        Scene00024( player );
         break;
       }
       case 4:
       {
-        Scene00014( player );
+        Scene00029( player );
         break;
       }
       case 5:
       {
-        Scene00017( player );
+        Scene00035( player );
         break;
       }
       case 6:
       {
-        Scene00033( player );
+        Scene00040( player );
         break;
       }
       case 7:
       {
-        Scene00038( player );
-        break;
-      }
-      case 8:
-      {
-        Scene00043( player );
+        Scene00042( player );
         break;
       }
       case 255:
@@ -183,7 +178,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -251,7 +246,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00011( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -280,7 +275,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00014( player );
     };
 
     player.playScene( getId(), 12, NONE, callback );
@@ -309,7 +304,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00016( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 15, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -319,7 +314,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -387,7 +382,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00024( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 23, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -426,7 +421,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00029( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 27, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -465,7 +460,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 6 );
+      Scene00033( player );
     };
 
     player.playScene( getId(), 31, NONE, callback );
@@ -494,7 +489,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00035( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 34, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -514,7 +509,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 7 );
+      Scene00038( player );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -543,7 +538,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00040( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 39, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -563,7 +558,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00042( player );
+      player.updateQuest( getId(), 7 );
     };
 
     player.playScene( getId(), 41, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -573,7 +568,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 8 );
+      Scene00043( player );
     };
 
     player.playScene( getId(), 42, NONE, callback );
@@ -628,7 +623,6 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00049( player );
     };
 
     player.playScene( getId(), 47, NONE, callback );
@@ -647,7 +641,6 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00050( player );
     };
 
     player.playScene( getId(), 49, NONE, callback );
@@ -657,17 +650,15 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00051( player );
     };
 
-    player.playScene( getId(), 50, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 50, NONE, callback );
   }
 
   void Scene00051( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00052( player );
     };
 
     player.playScene( getId(), 51, NONE, callback );
@@ -679,7 +670,7 @@ class ManSea200 : public Sapphire::ScriptAPI::EventScript
     {
     };
 
-    player.playScene( getId(), 52, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 52, NONE, callback );
   }
 
 };

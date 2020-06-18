@@ -321,7 +321,7 @@ class JobMch401 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 19, NONE, callback );
   }
 
-  void Scene00020( Entity::Player& player )
+  void Scene00020( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

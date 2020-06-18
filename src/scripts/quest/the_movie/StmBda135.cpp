@@ -87,7 +87,7 @@ class StmBda135 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00038( player );
+        Scene00037( player );
         break;
       }
     }
@@ -447,7 +447,7 @@ class StmBda135 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00037( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -457,7 +457,7 @@ class StmBda135 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00038( player );
     };
 
     player.playScene( getId(), 37, NONE, callback );
@@ -510,7 +510,6 @@ class StmBda135 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00043( player );
     };
 
     player.playScene( getId(), 42, NONE, callback );
@@ -520,7 +519,6 @@ class StmBda135 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00044( player );
     };
 
     player.playScene( getId(), 43, NONE, callback );
@@ -530,7 +528,6 @@ class StmBda135 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00045( player );
     };
 
     player.playScene( getId(), 44, NONE, callback );
@@ -540,7 +537,6 @@ class StmBda135 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00046( player );
     };
 
     player.playScene( getId(), 45, NONE, callback );
@@ -550,7 +546,6 @@ class StmBda135 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00047( player );
     };
 
     player.playScene( getId(), 46, NONE, callback );

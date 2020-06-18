@@ -115,7 +115,7 @@ class ClsCnj003 : public Sapphire::ScriptAPI::EventScript
         Scene00018( player );
         break;
       }
-      case 4:
+      case 3:
       {
         Scene00035( player );
         break;
@@ -311,7 +311,7 @@ class ClsCnj003 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 16, NONE, callback );
   }
 
-  void Scene00017( Entity::Player& player )
+  void Scene00017( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -468,11 +468,11 @@ class ClsCnj003 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 33, NONE, callback );
   }
 
-  void Scene00034( Entity::Player& player )
+  void Scene00034( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 34, NONE, callback );

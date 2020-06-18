@@ -94,7 +94,7 @@ class HeaVnz603 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00024( player );
+        Scene00025( player );
         break;
       }
       case 255:
@@ -329,7 +329,7 @@ class HeaVnz603 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00024( player );
     };
 
     player.playScene( getId(), 23, NONE, callback );
@@ -339,7 +339,7 @@ class HeaVnz603 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00025( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 24, NONE, callback );
@@ -451,7 +451,6 @@ class HeaVnz603 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -461,7 +460,6 @@ class HeaVnz603 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00037( player );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -471,7 +469,6 @@ class HeaVnz603 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00038( player );
     };
 
     player.playScene( getId(), 37, NONE, callback );

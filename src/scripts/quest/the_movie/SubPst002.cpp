@@ -101,17 +101,12 @@ class SubPst002 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00003( player );
+        Scene00004( player );
         break;
       }
       case 3:
       {
-        Scene00046( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00059( player );
+        Scene00049( player );
         break;
       }
       case 255:
@@ -151,7 +146,7 @@ class SubPst002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -161,7 +156,7 @@ class SubPst002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -572,7 +567,7 @@ class SubPst002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00046( player );
     };
 
     player.playScene( getId(), 45, NONE, callback );
@@ -582,7 +577,7 @@ class SubPst002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00049( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 46, NONE, callback );
@@ -706,17 +701,15 @@ class SubPst002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
     };
 
-    player.playScene( getId(), 58, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 58, NONE, callback );
   }
 
   void Scene00059( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00060( player );
     };
 
     player.playScene( getId(), 59, NONE, callback );

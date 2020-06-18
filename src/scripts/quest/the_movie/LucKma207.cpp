@@ -92,6 +92,16 @@ class LucKma207 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
+      case 2:
+      {
+        Scene00007( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00009( player );
+        break;
+      }
       case 255:
       {
         Scene00018( player );
@@ -169,7 +179,7 @@ class LucKma207 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00007( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -189,7 +199,7 @@ class LucKma207 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 8, NONE, callback );

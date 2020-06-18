@@ -136,7 +136,7 @@ class JobMnk600 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 3, NONE, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -185,7 +185,6 @@ class JobMnk600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );

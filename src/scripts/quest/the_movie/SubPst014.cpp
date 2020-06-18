@@ -118,22 +118,27 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00003( player );
+        Scene00004( player );
         break;
       }
       case 3:
       {
-        Scene00017( player );
+        Scene00016( player );
         break;
       }
       case 4:
       {
-        Scene00020( player );
+        Scene00018( player );
+        break;
+      }
+      case 5:
+      {
+        Scene00021( player );
         break;
       }
       case 255:
       {
-        Scene00037( player );
+        Scene00036( player );
         break;
       }
     }
@@ -179,7 +184,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -189,7 +194,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -304,7 +309,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00016( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 15, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -314,7 +319,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -324,7 +329,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00018( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -344,7 +349,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00020( player );
     };
 
     player.playScene( getId(), 19, NONE, callback );
@@ -354,7 +359,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00021( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 20, NONE, callback );
@@ -490,7 +495,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 34, NONE, callback );
@@ -509,7 +514,8 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      if( result.param2 == 1 )
+        Scene00037( player );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -519,7 +525,7 @@ class SubPst014 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      if( result.param2 == 1 )
+      if( true )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
         {

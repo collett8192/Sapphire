@@ -119,7 +119,7 @@ class ChrHdb303 : public Sapphire::ScriptAPI::EventScript
       }
       case 3:
       {
-        Scene00017( player );
+        Scene00018( player );
         break;
       }
       case 255:
@@ -290,7 +290,7 @@ class ChrHdb303 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -300,7 +300,7 @@ class ChrHdb303 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00018( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 17, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

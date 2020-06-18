@@ -955,7 +955,6 @@ class FesEst006 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00088( player );
     };
 
     player.playScene( getId(), 87, NONE, callback );
@@ -965,7 +964,6 @@ class FesEst006 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00089( player );
     };
 
     player.playScene( getId(), 88, NONE, callback );

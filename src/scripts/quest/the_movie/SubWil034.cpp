@@ -83,7 +83,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00100( player );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -93,7 +92,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00098( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -103,7 +101,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00096( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -113,7 +110,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00094( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -148,7 +144,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00093( player );
     };
 
     player.playScene( getId(), 94, NONE, callback );
@@ -158,7 +153,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
     };
 
     player.playScene( getId(), 95, NONE, callback );
@@ -168,7 +162,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00095( player );
     };
 
     player.playScene( getId(), 96, NONE, callback );
@@ -178,7 +171,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
     };
 
     player.playScene( getId(), 97, NONE, callback );
@@ -188,7 +180,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00097( player );
     };
 
     player.playScene( getId(), 98, NONE, callback );
@@ -198,7 +189,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
     };
 
     player.playScene( getId(), 99, NONE, callback );
@@ -208,7 +198,6 @@ class SubWil034 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00099( player );
     };
 
     player.playScene( getId(), 100, NONE, callback );

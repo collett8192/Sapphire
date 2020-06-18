@@ -86,7 +86,7 @@ class JobSch540 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00035( player );
+        Scene00034( player );
         break;
       }
     }
@@ -428,7 +428,7 @@ class JobSch540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00034( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 33, NONE, callback );
@@ -438,7 +438,7 @@ class JobSch540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00035( player );
     };
 
     player.playScene( getId(), 34, NONE, callback );

@@ -87,6 +87,11 @@ class JobSam600 : public Sapphire::ScriptAPI::EventScript
         Scene00003( player );
         break;
       }
+      case 2:
+      {
+        Scene00010( player );
+        break;
+      }
       case 255:
       {
         Scene00011( player );
@@ -158,7 +163,7 @@ class JobSam600 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00006( Entity::Player& player )
+  void Scene00006( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -172,7 +177,7 @@ class JobSam600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00010( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 7, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -226,10 +231,9 @@ class JobSam600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
     };
 
-    player.playScene( getId(), 12, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 12, NONE, callback );
   }
 
 };

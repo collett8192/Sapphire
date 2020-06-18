@@ -112,11 +112,6 @@ class BanKjn002 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 3:
-      {
-        Scene00029( player );
-        break;
-      }
       case 255:
       {
         Scene00027( player );
@@ -415,10 +410,9 @@ class BanKjn002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
     };
 
-    player.playScene( getId(), 28, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 28, NONE, callback );
   }
 
   void Scene00029( Entity::Player& player )

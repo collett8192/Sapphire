@@ -66,16 +66,6 @@ class ClsTan005 : public Sapphire::ScriptAPI::EventScript
         Scene00001( player );
         break;
       }
-      case 2:
-      {
-        Scene00002( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00004( player );
-        break;
-      }
       case 255:
       {
         Scene00006( player );
@@ -103,7 +93,7 @@ class ClsTan005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00002( player );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -123,7 +113,7 @@ class ClsTan005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00004( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );

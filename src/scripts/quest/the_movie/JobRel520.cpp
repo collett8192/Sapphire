@@ -133,7 +133,6 @@ class JobRel520 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );

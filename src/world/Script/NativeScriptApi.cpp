@@ -5,6 +5,8 @@
 #include "NativeScriptApi.h"
 #include <cassert>
 
+#include "Actor/Player.h"
+
 #ifdef _MSC_VER
 #define EXPORT __declspec( dllexport )
 #else
@@ -118,6 +120,7 @@ namespace Sapphire::ScriptAPI
 
   void EventScript::onEmote( uint64_t actorId, uint32_t eventId, uint32_t emoteId, Entity::Player& player )
   {
+    player.m_the_movie_hack_flag = 1;
   }
 
   void EventScript::onEnterTerritory( Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 )

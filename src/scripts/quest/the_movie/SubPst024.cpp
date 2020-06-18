@@ -113,12 +113,12 @@ class SubPst024 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00003( player );
+        Scene00004( player );
         break;
       }
       case 255:
       {
-        Scene00058( player );
+        Scene00057( player );
         break;
       }
     }
@@ -153,7 +153,7 @@ class SubPst024 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -163,7 +163,7 @@ class SubPst024 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -628,7 +628,7 @@ class SubPst024 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00057( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 52, NONE, callback );
@@ -674,7 +674,7 @@ class SubPst024 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00058( player );
     };
 
     player.playScene( getId(), 57, NONE, callback );
@@ -700,7 +700,6 @@ class SubPst024 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00060( player );
     };
 
     player.playScene( getId(), 59, NONE, callback );
@@ -710,7 +709,6 @@ class SubPst024 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00061( player );
     };
 
     player.playScene( getId(), 60, NONE, callback );

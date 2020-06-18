@@ -70,7 +70,7 @@ class ClsMin502 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00005( player );
+        Scene00006( player );
         break;
       }
       case 255:
@@ -130,7 +130,7 @@ class ClsMin502 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -140,7 +140,7 @@ class ClsMin502 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -176,7 +176,6 @@ class ClsMin502 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );

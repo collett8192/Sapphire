@@ -360,7 +360,7 @@ class ClsCnj006 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 25, NONE, callback );
   }
 
-  void Scene00026( Entity::Player& player )
+  void Scene00026( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

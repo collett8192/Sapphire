@@ -89,10 +89,6 @@ class ClsExc200 : public Sapphire::ScriptAPI::EventScript
     {
       case 0:
       {
-        player.sendUrgent( "This quest contains at least one quest battle, " );
-        player.sendUrgent( "which has a high change to break the script and get stuck." );
-        player.sendUrgent( "Use \"//gm quest sequence <questId> 255\" to skip broken scenes."); 
-        player.sendUrgent( "### Hit NO when asked to enter quest battle ###" );
         Scene00000( player );
         break;
       }
@@ -102,11 +98,6 @@ class ClsExc200 : public Sapphire::ScriptAPI::EventScript
         break;
       }
       case 2:
-      {
-        Scene00012( player );
-        break;
-      }
-      case 3:
       {
         Scene00017( player );
         break;
@@ -246,17 +237,17 @@ class ClsExc200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00012( player );
     };
 
     player.playScene( getId(), 11, NONE, callback );
   }
 
-  void Scene00012( Entity::Player& player )
+  void Scene00012( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 12, NONE, callback );

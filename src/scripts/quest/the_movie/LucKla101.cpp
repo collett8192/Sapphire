@@ -151,7 +151,6 @@ class LucKla101 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00007( player );
     };
 
     player.playScene( getId(), 6, NONE, callback );

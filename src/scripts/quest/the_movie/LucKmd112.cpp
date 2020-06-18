@@ -115,14 +115,9 @@ class LucKmd112 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00085( player );
-        break;
-      }
       case 255:
       {
-        Scene00086( player );
+        Scene00087( player );
         break;
       }
     }
@@ -962,7 +957,7 @@ class LucKmd112 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 84, NONE, callback );
@@ -972,7 +967,7 @@ class LucKmd112 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00087( player );
     };
 
     player.playScene( getId(), 85, NONE, callback );

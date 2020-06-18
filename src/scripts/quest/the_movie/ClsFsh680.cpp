@@ -102,17 +102,17 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
       }
       case 3:
       {
-        Scene00024( player );
+        Scene00025( player );
         break;
       }
       case 4:
       {
-        Scene00030( player );
+        Scene00031( player );
         break;
       }
       case 5:
       {
-        Scene00037( player );
+        Scene00038( player );
         break;
       }
       case 255:
@@ -361,7 +361,7 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00024( player );
     };
 
     player.playScene( getId(), 23, NONE, callback );
@@ -371,7 +371,7 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00025( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 24, NONE, callback );
@@ -421,7 +421,7 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00030( player );
     };
 
     player.playScene( getId(), 29, NONE, callback );
@@ -431,7 +431,7 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00031( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 30, NONE, callback );
@@ -491,7 +491,7 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00037( player );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -501,7 +501,7 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00038( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 37, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -587,7 +587,6 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00046( player );
     };
 
     player.playScene( getId(), 45, NONE, callback );
@@ -597,7 +596,6 @@ class ClsFsh680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00047( player );
     };
 
     player.playScene( getId(), 46, NONE, callback );

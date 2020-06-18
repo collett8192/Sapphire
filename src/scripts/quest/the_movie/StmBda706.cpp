@@ -112,21 +112,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00014( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00015( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00059( player );
-        break;
-      }
       case 255:
       {
         Scene00057( player );
@@ -274,7 +259,7 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00014( player );
     };
 
     player.playScene( getId(), 13, NONE, callback );
@@ -284,7 +269,7 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00015( player );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -730,17 +715,15 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
     };
 
-    player.playScene( getId(), 58, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 58, NONE, callback );
   }
 
   void Scene00059( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00060( player );
     };
 
     player.playScene( getId(), 59, NONE, callback );
@@ -750,7 +733,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00061( player );
     };
 
     player.playScene( getId(), 60, NONE, callback );
@@ -760,7 +742,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00062( player );
     };
 
     player.playScene( getId(), 61, NONE, callback );
@@ -770,7 +751,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00063( player );
     };
 
     player.playScene( getId(), 62, NONE, callback );
@@ -780,7 +760,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00064( player );
     };
 
     player.playScene( getId(), 63, NONE, callback );
@@ -790,7 +769,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00065( player );
     };
 
     player.playScene( getId(), 64, NONE, callback );
@@ -800,7 +778,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00066( player );
     };
 
     player.playScene( getId(), 65, NONE, callback );
@@ -810,7 +787,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00067( player );
     };
 
     player.playScene( getId(), 66, NONE, callback );
@@ -820,7 +796,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00068( player );
     };
 
     player.playScene( getId(), 67, NONE, callback );
@@ -830,7 +805,6 @@ class StmBda706 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00069( player );
     };
 
     player.playScene( getId(), 68, NONE, callback );

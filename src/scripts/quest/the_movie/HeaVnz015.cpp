@@ -65,7 +65,7 @@ class HeaVnz015 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00008( player );
+        Scene00007( player );
         break;
       }
     }
@@ -138,7 +138,7 @@ class HeaVnz015 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00007( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -148,7 +148,7 @@ class HeaVnz015 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );

@@ -80,11 +80,6 @@ class LucKmb120 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00020( player );
-        break;
-      }
       case 255:
       {
         Scene00018( player );
@@ -298,10 +293,9 @@ class LucKmb120 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
     };
 
-    player.playScene( getId(), 19, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 19, NONE, callback );
   }
 
   void Scene00020( Entity::Player& player )

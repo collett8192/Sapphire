@@ -102,21 +102,6 @@ class HeaVng104 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00010( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00019( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00038( player );
-        break;
-      }
       case 255:
       {
         Scene00036( player );
@@ -224,7 +209,7 @@ class HeaVng104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00010( player );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -314,7 +299,7 @@ class HeaVng104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00019( player );
     };
 
     player.playScene( getId(), 18, NONE, callback );
@@ -510,17 +495,15 @@ class HeaVng104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
     };
 
-    player.playScene( getId(), 37, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 37, NONE, callback );
   }
 
   void Scene00038( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00039( player );
     };
 
     player.playScene( getId(), 38, NONE, callback );
@@ -530,7 +513,6 @@ class HeaVng104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00040( player );
     };
 
     player.playScene( getId(), 39, NONE, callback );
@@ -540,7 +522,6 @@ class HeaVng104 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00041( player );
     };
 
     player.playScene( getId(), 40, NONE, callback );

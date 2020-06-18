@@ -600,7 +600,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00052( player );
     };
 
     player.playScene( getId(), 51, NONE, callback );
@@ -610,7 +609,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00053( player );
     };
 
     player.playScene( getId(), 52, NONE, callback );
@@ -620,7 +618,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00057( player );
     };
 
     player.playScene( getId(), 53, NONE, callback );
@@ -657,7 +654,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00058( player );
     };
 
     player.playScene( getId(), 57, NONE, callback );
@@ -667,7 +663,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00059( player );
     };
 
     player.playScene( getId(), 58, NONE, callback );
@@ -677,7 +672,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00060( player );
     };
 
     player.playScene( getId(), 59, NONE, callback );
@@ -687,7 +681,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00061( player );
     };
 
     player.playScene( getId(), 60, NONE, callback );
@@ -697,7 +690,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00062( player );
     };
 
     player.playScene( getId(), 61, NONE, callback );
@@ -707,7 +699,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00063( player );
     };
 
     player.playScene( getId(), 62, NONE, callback );
@@ -717,7 +708,6 @@ class HeaVna613 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00064( player );
     };
 
     player.playScene( getId(), 63, NONE, callback );

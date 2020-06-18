@@ -86,11 +86,6 @@ class StmBde107 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00021( player );
-        break;
-      }
       case 255:
       {
         Scene00019( player );
@@ -313,10 +308,9 @@ class StmBde107 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
     };
 
-    player.playScene( getId(), 20, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 20, NONE, callback );
   }
 
   void Scene00021( Entity::Player& player )

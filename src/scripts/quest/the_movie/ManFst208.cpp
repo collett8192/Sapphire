@@ -7,24 +7,22 @@
 #include <ScriptObject.h>
 #include <Service.h>
 
-// Quest Script: GaiUsb503_00872
-// Quest Name: You Can't Take It with You
-// Quest ID: 66408
-// Start NPC: 1006672
-// End NPC: 1003958
+// Quest Script: ManFst208_00272
+// Quest Name: Life, Materia and Everything
+// Quest ID: 65808
+// Start NPC: 1005116
+// End NPC: 1005116
 
 using namespace Sapphire;
 
-class GaiUsb503 : public Sapphire::ScriptAPI::EventScript
+class ManFst208 : public Sapphire::ScriptAPI::EventScript
 {
   private:
     // Basic quest information 
     // Quest vars / flags used
-    // GetQuestBitFlag8
     // GetQuestUI8AL
     // GetQuestUI8BH
     // GetQuestUI8BL
-    // GetQuestUI8CH
 
     // Steps in this quest ( 0 is before accepting, 
     // 1 is first, 255 means ready for turning it in
@@ -32,23 +30,19 @@ class GaiUsb503 : public Sapphire::ScriptAPI::EventScript
     {
 //      Seq0 = 0,
 //      Seq1 = 1,
-//      Seq2 = 2,
 //      SeqFinish = 255,
     };
 
     // Entities found in the script data of the quest
-//    static constexpr auto Actor0 = 1006672;
-//    static constexpr auto Actor1 = 1006357;
-//    static constexpr auto Actor2 = 1001679;
-//    static constexpr auto Actor3 = 1003958;
-//    static constexpr auto Item0 = 2000678;
-//    static constexpr auto Item1 = 2000679;
-//    static constexpr auto Item2 = 2000680;
-//    static constexpr auto LocBgm1 = 92;
+//    static constexpr auto Actor0 = 1005116;
+//    static constexpr auto Actor1 = 1001425;
+//    static constexpr auto CutManfst20810 = 83;
+//    static constexpr auto Item0 = 2000461;
+//    static constexpr auto Item1 = 2000462;
 
   public:
-    GaiUsb503() : Sapphire::ScriptAPI::EventScript( 66408 ){}; 
-    ~GaiUsb503() = default; 
+    ManFst208() : Sapphire::ScriptAPI::EventScript( 65808 ){}; 
+    ~ManFst208() = default; 
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
@@ -65,17 +59,12 @@ class GaiUsb503 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00002( player );
-        break;
-      }
-      case 2:
-      {
-        Scene00005( player );
+        Scene00001( player );
         break;
       }
       case 255:
       {
-        Scene00007( player );
+        Scene00003( player );
         break;
       }
     }
@@ -90,7 +79,7 @@ class GaiUsb503 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        Scene00001( player );
+        player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -100,7 +89,7 @@ class GaiUsb503 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      Scene00002( player );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -110,10 +99,10 @@ class GaiUsb503 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 255 );
     };
 
-    player.playScene( getId(), 2, NONE, callback );
+    player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
   void Scene00003( Entity::Player& player )
@@ -130,36 +119,6 @@ class GaiUsb503 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
-    };
-
-    player.playScene( getId(), 4, NONE, callback );
-  }
-
-  void Scene00005( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      Scene00006( player );
-    };
-
-    player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
-  }
-
-  void Scene00006( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      player.updateQuest( getId(), 255 );
-    };
-
-    player.playScene( getId(), 6, NONE, callback );
-  }
-
-  void Scene00007( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
       if( result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
@@ -169,9 +128,9 @@ class GaiUsb503 : public Sapphire::ScriptAPI::EventScript
       }
     };
 
-    player.playScene( getId(), 7, NONE, callback );
+    player.playScene( getId(), 4, NONE, callback );
   }
 
 };
 
-EXPOSE_SCRIPT( GaiUsb503 );
+EXPOSE_SCRIPT( ManFst208 );

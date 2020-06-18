@@ -248,7 +248,7 @@ class ClsArc004 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 15, NONE, callback );
   }
 
-  void Scene00016( Entity::Player& player )
+  void Scene00016( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

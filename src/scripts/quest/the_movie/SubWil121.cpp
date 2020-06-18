@@ -55,14 +55,9 @@ class SubWil121 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
-      case 1:
-      {
-        Scene00001( player );
-        break;
-      }
       case 255:
       {
-        Scene00002( player );
+        Scene00001( player );
         break;
       }
     }
@@ -84,7 +79,7 @@ class SubWil121 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        player.updateQuest( getId(), 1 );
+        player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -94,7 +89,7 @@ class SubWil121 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00002( player );
     };
 
     player.playScene( getId(), 1, NONE, callback );

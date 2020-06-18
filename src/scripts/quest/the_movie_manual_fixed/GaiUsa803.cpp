@@ -7,22 +7,28 @@
 #include <ScriptObject.h>
 #include <Service.h>
 
-// Quest Script: GaiUsa701_00774
-// Quest Name: Helping Horn
-// Quest ID: 66310
-// Start NPC: 1000332
-// End NPC: 1006680
+// Quest Script: GaiUsa803_00787
+// Quest Name: Rock of Rancor
+// Quest ID: 66323
+// Start NPC: 1006241
+// End NPC: 1006241
 
 using namespace Sapphire;
 
-class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
+class GaiUsa803 : public Sapphire::ScriptAPI::EventScript
 {
   private:
     // Basic quest information 
     // Quest vars / flags used
+    // GetQuestBitFlag8
+    // GetQuestUI8AH
     // GetQuestUI8AL
     // GetQuestUI8BH
     // GetQuestUI8BL
+    // GetQuestUI8CH
+    // GetQuestUI8CL
+    // GetQuestUI8DH
+    // GetQuestUI8DL
 
     // Steps in this quest ( 0 is before accepting, 
     // 1 is first, 255 means ready for turning it in
@@ -31,21 +37,24 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
 //      Seq0 = 0,
 //      Seq1 = 1,
 //      Seq2 = 2,
-//      Seq3 = 3,
 //      SeqFinish = 255,
     };
 
     // Entities found in the script data of the quest
-//    static constexpr auto Actor0 = 1000332;
-//    static constexpr auto Actor1 = 1000590;
-//    static constexpr auto Actor2 = 1006680;
-//    static constexpr auto Enemy0 = 4;
-//    static constexpr auto Item0 = 2000612;
-//    static constexpr auto Item1 = 2000613;
+//    static constexpr auto Actor0 = 1006241;
+//    static constexpr auto Eobject0 = 2001983;
+//    static constexpr auto Eobject1 = 2001984;
+//    static constexpr auto Eobject2 = 2001985;
+//    static constexpr auto Eobject3 = 2001986;
+//    static constexpr auto Eobject4 = 2001987;
+//    static constexpr auto Eobject5 = 2001988;
+//    static constexpr auto EventActionSearchMiddle = 3;
+//    static constexpr auto Item0 = 2000616;
+//    static constexpr auto Item1 = 2000617;
 
   public:
-    GaiUsa701() : Sapphire::ScriptAPI::EventScript( 66310 ){}; 
-    ~GaiUsa701() = default; 
+    GaiUsa803() : Sapphire::ScriptAPI::EventScript( 66323 ){}; 
+    ~GaiUsa803() = default; 
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
@@ -60,36 +69,19 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
-      case 1:
+      case 2:
       {
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00003( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00005( player );
-        break;
-      }
       case 255:
       {
-        Scene00007( player );
+        Scene00014( player );
         break;
       }
     }
   }
 
-//  void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
-//  {
-//    switch( npcId )
-//    {
-//      case Enemy0: { break; }
-//    }
-//  }
 
   private:
   //////////////////////////////////////////////////////////////////////
@@ -109,7 +101,7 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 1, NONE, callback );
@@ -119,7 +111,7 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -129,7 +121,7 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -139,7 +131,6 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -149,7 +140,6 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
     };
 
     player.playScene( getId(), 5, NONE, callback );
@@ -159,13 +149,85 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
   }
 
   void Scene00007( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 7, NONE, callback );
+  }
+
+  void Scene00008( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 8, NONE, callback );
+  }
+
+  void Scene00009( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 9, NONE, callback );
+  }
+
+  void Scene00010( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 10, NONE, callback );
+  }
+
+  void Scene00011( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 11, NONE, callback );
+  }
+
+  void Scene00012( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 12, NONE, callback );
+  }
+
+  void Scene00013( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+
+    player.playScene( getId(), 13, NONE, callback );
+  }
+
+  void Scene00014( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00015( player );
+    };
+
+    player.playScene( getId(), 14, NONE, callback );
+  }
+
+  void Scene00015( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -178,9 +240,9 @@ class GaiUsa701 : public Sapphire::ScriptAPI::EventScript
       }
     };
 
-    player.playScene( getId(), 7, NONE, callback );
+    player.playScene( getId(), 15, NONE, callback );
   }
 
 };
 
-EXPOSE_SCRIPT( GaiUsa701 );
+EXPOSE_SCRIPT( GaiUsa803 );

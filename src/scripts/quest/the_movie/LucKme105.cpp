@@ -709,7 +709,6 @@ class LucKme105 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00062( player );
     };
 
     player.playScene( getId(), 61, NONE, callback );

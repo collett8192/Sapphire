@@ -77,11 +77,6 @@ class SubSea118 : public Sapphire::ScriptAPI::EventScript
         Scene00001( player );
         break;
       }
-      case 2:
-      {
-        Scene00022( player );
-        break;
-      }
       case 255:
       {
         Scene00024( player );
@@ -306,7 +301,7 @@ class SubSea118 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00022( player );
     };
 
     player.playScene( getId(), 21, NONE, callback );

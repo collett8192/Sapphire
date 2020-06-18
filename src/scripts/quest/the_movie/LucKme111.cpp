@@ -112,17 +112,7 @@ class LucKme111 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00036( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00038( player );
-        break;
-      }
-      case 4:
-      {
-        Scene00040( player );
+        Scene00041( player );
         break;
       }
       case 255:
@@ -478,7 +468,7 @@ class LucKme111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -498,7 +488,7 @@ class LucKme111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00038( player );
     };
 
     player.playScene( getId(), 37, NONE, callback );
@@ -518,7 +508,7 @@ class LucKme111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00040( player );
     };
 
     player.playScene( getId(), 39, NONE, callback );
@@ -528,7 +518,7 @@ class LucKme111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00041( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 40, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

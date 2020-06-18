@@ -102,7 +102,7 @@ class ClsThm200 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00017( player );
+        Scene00018( player );
         break;
       }
       case 3:
@@ -277,7 +277,7 @@ class ClsThm200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -287,7 +287,7 @@ class ClsThm200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00018( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -312,7 +312,7 @@ class ClsThm200 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 19, NONE, callback );
   }
 
-  void Scene00020( Entity::Player& player )
+  void Scene00020( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

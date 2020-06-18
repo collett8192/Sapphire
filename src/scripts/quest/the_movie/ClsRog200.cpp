@@ -601,7 +601,7 @@ class ClsRog200 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 47, NONE, callback );
   }
 
-  void Scene00048( Entity::Player& player )
+  void Scene00048( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -744,7 +744,6 @@ class ClsRog200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00063( player );
     };
 
     player.playScene( getId(), 62, NONE, callback );

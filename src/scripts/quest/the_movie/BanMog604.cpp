@@ -74,22 +74,22 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00011( player );
+        Scene00012( player );
         break;
       }
       case 3:
       {
-        Scene00016( player );
+        Scene00017( player );
         break;
       }
       case 4:
       {
-        Scene00019( player );
+        Scene00020( player );
         break;
       }
       case 5:
       {
-        Scene00022( player );
+        Scene00023( player );
         break;
       }
       case 255:
@@ -209,7 +209,7 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );
@@ -219,7 +219,7 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00012( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 11, NONE, callback );
@@ -259,7 +259,7 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00016( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -269,7 +269,7 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -289,7 +289,7 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00019( player );
     };
 
     player.playScene( getId(), 18, NONE, callback );
@@ -299,7 +299,7 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00020( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 19, NONE, callback );
@@ -319,7 +319,7 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00022( player );
     };
 
     player.playScene( getId(), 21, NONE, callback );
@@ -329,7 +329,7 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00023( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 22, NONE, callback );
@@ -375,7 +375,6 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00027( player );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -385,7 +384,6 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -395,7 +393,6 @@ class BanMog604 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00029( player );
     };
 
     player.playScene( getId(), 28, NONE, callback );

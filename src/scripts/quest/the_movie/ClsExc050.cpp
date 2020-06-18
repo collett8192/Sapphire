@@ -451,7 +451,7 @@ class ClsExc050 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 32, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00033( Entity::Player& player )
+  void Scene00033( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

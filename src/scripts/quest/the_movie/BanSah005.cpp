@@ -107,17 +107,22 @@ class BanSah005 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00016( player );
+        Scene00019( player );
         break;
       }
       case 3:
       {
-        Scene00040( player );
+        Scene00028( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00036( player );
         break;
       }
       case 255:
       {
-        Scene00042( player );
+        Scene00039( player );
         break;
       }
     }
@@ -283,7 +288,7 @@ class BanSah005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00016( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -293,7 +298,7 @@ class BanSah005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -401,7 +406,7 @@ class BanSah005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 27, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -481,7 +486,7 @@ class BanSah005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 35, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -491,7 +496,7 @@ class BanSah005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00039( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 36, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -519,7 +524,7 @@ class BanSah005 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00040( player );
     };
 
     player.playScene( getId(), 39, NONE, callback );

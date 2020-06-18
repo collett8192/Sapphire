@@ -106,7 +106,7 @@ class JobPld540 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00009( player );
+        Scene00011( player );
         break;
       }
       case 3:
@@ -223,7 +223,7 @@ class JobPld540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -233,7 +233,7 @@ class JobPld540 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 9, NONE, callback );
@@ -372,7 +372,7 @@ class JobPld540 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 23, NONE, callback );
   }
 
-  void Scene00024( Entity::Player& player )
+  void Scene00024( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

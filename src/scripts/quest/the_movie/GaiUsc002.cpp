@@ -69,14 +69,9 @@ class GaiUsc002 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00010( player );
-        break;
-      }
       case 255:
       {
-        Scene00011( player );
+        Scene00010( player );
         break;
       }
     }
@@ -130,7 +125,7 @@ class GaiUsc002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -194,7 +189,7 @@ class GaiUsc002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );

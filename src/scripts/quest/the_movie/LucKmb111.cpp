@@ -89,6 +89,31 @@ class LucKmb111 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
+      case 2:
+      {
+        Scene00015( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00016( player );
+        break;
+      }
+      case 4:
+      {
+        Scene00017( player );
+        break;
+      }
+      case 5:
+      {
+        Scene00018( player );
+        break;
+      }
+      case 6:
+      {
+        Scene00019( player );
+        break;
+      }
       case 255:
       {
         Scene00020( player );
@@ -245,7 +270,7 @@ class LucKmb111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 14, NONE, callback );
@@ -255,7 +280,7 @@ class LucKmb111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00016( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -265,7 +290,7 @@ class LucKmb111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00017( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 16, NONE, callback );
@@ -275,7 +300,7 @@ class LucKmb111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00018( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -285,7 +310,7 @@ class LucKmb111 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
+      player.updateQuest( getId(), 6 );
     };
 
     player.playScene( getId(), 18, NONE, callback );

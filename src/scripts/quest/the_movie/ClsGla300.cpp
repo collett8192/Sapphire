@@ -87,10 +87,6 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
     {
       case 0:
       {
-        player.sendUrgent( "This quest contains at least one quest battle, " );
-        player.sendUrgent( "which has a high change to break the script and get stuck." );
-        player.sendUrgent( "Use \"//gm quest sequence <questId> 255\" to skip broken scenes."); 
-        player.sendUrgent( "### Hit NO when asked to enter quest battle ###" );
         Scene00000( player );
         break;
       }
@@ -100,16 +96,6 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
         break;
       }
       case 2:
-      {
-        Scene00009( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00011( player );
-        break;
-      }
-      case 4:
       {
         Scene00012( player );
         break;
@@ -219,7 +205,7 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );
@@ -239,17 +225,17 @@ class ClsGla300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00011( player );
     };
 
     player.playScene( getId(), 10, NONE, callback );
   }
 
-  void Scene00011( Entity::Player& player )
+  void Scene00011( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 11, NONE, callback );

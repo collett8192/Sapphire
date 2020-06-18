@@ -101,17 +101,12 @@ class BanQiq001 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00021( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00022( player );
+        Scene00009( player );
         break;
       }
       case 255:
       {
-        Scene00023( player );
+        Scene00021( player );
         break;
       }
     }
@@ -205,7 +200,7 @@ class BanQiq001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00009( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 8, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -325,7 +320,7 @@ class BanQiq001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 20, NONE, callback );
@@ -335,7 +330,8 @@ class BanQiq001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      if( result.param2 == 1 )
+        Scene00023( player );
     };
 
     player.playScene( getId(), 21, NONE, callback );
@@ -355,7 +351,7 @@ class BanQiq001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      if( result.param2 == 1 )
+      if( true )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
         {
@@ -398,7 +394,6 @@ class BanQiq001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -408,7 +403,6 @@ class BanQiq001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00029( player );
     };
 
     player.playScene( getId(), 28, NONE, callback );
@@ -418,7 +412,6 @@ class BanQiq001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00030( player );
     };
 
     player.playScene( getId(), 29, NONE, callback );

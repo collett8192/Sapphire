@@ -87,7 +87,7 @@ class JobWhm501 : public Sapphire::ScriptAPI::EventScript
       }
       case 3:
       {
-        Scene00026( player );
+        Scene00027( player );
         break;
       }
       case 255:
@@ -361,7 +361,7 @@ class JobWhm501 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00026( player );
     };
 
     player.playScene( getId(), 25, NONE, callback );
@@ -371,7 +371,7 @@ class JobWhm501 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00027( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -487,7 +487,6 @@ class JobWhm501 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00038( player );
     };
 
     player.playScene( getId(), 37, NONE, callback );
@@ -497,7 +496,6 @@ class JobWhm501 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00039( player );
     };
 
     player.playScene( getId(), 38, NONE, callback );

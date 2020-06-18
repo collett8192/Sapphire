@@ -86,11 +86,6 @@ class ManFst302 : public Sapphire::ScriptAPI::EventScript
         Scene00006( player );
         break;
       }
-      case 4:
-      {
-        Scene00011( player );
-        break;
-      }
       case 255:
       {
         Scene00019( player );
@@ -148,7 +143,7 @@ class ManFst302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00005( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 4, NONE, callback );
@@ -168,7 +163,7 @@ class ManFst302 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 6, NONE, callback );

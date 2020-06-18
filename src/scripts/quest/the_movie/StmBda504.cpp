@@ -81,7 +81,7 @@ class StmBda504 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00043( player );
+        Scene00042( player );
         break;
       }
     }
@@ -504,7 +504,7 @@ class StmBda504 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00042( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 41, NONE, callback );
@@ -514,7 +514,7 @@ class StmBda504 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00043( player );
     };
 
     player.playScene( getId(), 42, NONE, callback );
@@ -540,7 +540,6 @@ class StmBda504 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00045( player );
     };
 
     player.playScene( getId(), 44, NONE, callback );
@@ -550,7 +549,6 @@ class StmBda504 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00046( player );
     };
 
     player.playScene( getId(), 45, NONE, callback );
@@ -560,7 +558,6 @@ class StmBda504 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00047( player );
     };
 
     player.playScene( getId(), 46, NONE, callback );
@@ -570,7 +567,6 @@ class StmBda504 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00048( player );
     };
 
     player.playScene( getId(), 47, NONE, callback );

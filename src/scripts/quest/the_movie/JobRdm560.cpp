@@ -107,11 +107,6 @@ class JobRdm560 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00007( player );
-        break;
-      }
-      case 3:
-      {
         Scene00009( player );
         break;
       }
@@ -192,7 +187,7 @@ class JobRdm560 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00007( player );
     };
 
     player.playScene( getId(), 6, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -208,11 +203,11 @@ class JobRdm560 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 7, NONE, callback );
   }
 
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 8, NONE, callback );

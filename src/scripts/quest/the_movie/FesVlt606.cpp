@@ -75,11 +75,6 @@ class FesVlt606 : public Sapphire::ScriptAPI::EventScript
       }
       case 1:
       {
-        Scene00001( player );
-        break;
-      }
-      case 2:
-      {
         Scene00003( player );
         break;
       }
@@ -100,7 +95,7 @@ class FesVlt606 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        player.updateQuest( getId(), 1 );
+        Scene00001( player );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -110,7 +105,7 @@ class FesVlt606 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      player.updateQuest( getId(), 1 );
     };
 
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

@@ -76,7 +76,7 @@ class ClsArm550 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00020( player );
+        Scene00019( player );
         break;
       }
     }
@@ -258,7 +258,7 @@ class ClsArm550 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 17, NONE, callback );
@@ -277,7 +277,7 @@ class ClsArm550 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00020( player );
     };
 
     player.playScene( getId(), 19, NONE, callback );
@@ -312,7 +312,6 @@ class ClsArm550 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00023( player );
     };
 
     player.playScene( getId(), 22, NONE, callback );

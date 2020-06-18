@@ -758,7 +758,6 @@ class BanIxa007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00067( player );
     };
 
     player.playScene( getId(), 66, NONE, callback );
@@ -768,7 +767,6 @@ class BanIxa007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00068( player );
     };
 
     player.playScene( getId(), 67, NONE, callback );
@@ -778,7 +776,6 @@ class BanIxa007 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00069( player );
     };
 
     player.playScene( getId(), 68, NONE, callback );

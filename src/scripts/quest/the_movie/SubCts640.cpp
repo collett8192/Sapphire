@@ -146,7 +146,6 @@ class SubCts640 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
     };
 
     player.playScene( getId(), 5, NONE, callback );

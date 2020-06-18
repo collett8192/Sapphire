@@ -88,7 +88,7 @@ class LucKla402 : public Sapphire::ScriptAPI::EventScript
       }
       case 3:
       {
-        Scene00022( player );
+        Scene00023( player );
         break;
       }
       case 255:
@@ -318,7 +318,7 @@ class LucKla402 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00022( player );
     };
 
     player.playScene( getId(), 21, NONE, callback );
@@ -328,7 +328,7 @@ class LucKla402 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00023( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 22, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -374,7 +374,6 @@ class LucKla402 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00027( player );
     };
 
     player.playScene( getId(), 26, NONE, callback );

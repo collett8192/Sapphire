@@ -94,6 +94,11 @@ class LucKba231 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
+      case 3:
+      {
+        Scene00023( player );
+        break;
+      }
       case 255:
       {
         Scene00025( player );
@@ -281,7 +286,7 @@ class LucKba231 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 16, NONE, callback );
   }
 
-  void Scene00017( Entity::Player& player )
+  void Scene00017( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -295,7 +300,7 @@ class LucKba231 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00023( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 18, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

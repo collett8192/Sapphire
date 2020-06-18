@@ -84,12 +84,17 @@ class ClsArm600 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00024( player );
+        Scene00003( player );
+        break;
+      }
+      case 3:
+      {
+        Scene00025( player );
         break;
       }
       case 255:
       {
-        Scene00031( player );
+        Scene00030( player );
         break;
       }
     }
@@ -124,7 +129,7 @@ class ClsArm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00003( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -325,7 +330,7 @@ class ClsArm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00024( player );
     };
 
     player.playScene( getId(), 23, NONE, callback );
@@ -335,7 +340,7 @@ class ClsArm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00025( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 24, NONE, callback );
@@ -355,7 +360,7 @@ class ClsArm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00030( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -392,7 +397,7 @@ class ClsArm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00031( player );
     };
 
     player.playScene( getId(), 30, NONE, callback );
@@ -418,7 +423,6 @@ class ClsArm600 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00033( player );
     };
 
     player.playScene( getId(), 32, NONE, callback );

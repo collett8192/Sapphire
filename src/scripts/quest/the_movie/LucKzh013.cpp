@@ -72,7 +72,7 @@ class LucKzh013 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00012( player );
+        Scene00011( player );
         break;
       }
     }
@@ -144,7 +144,7 @@ class LucKzh013 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00011( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 6, NONE, callback );
@@ -190,7 +190,7 @@ class LucKzh013 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00012( player );
     };
 
     player.playScene( getId(), 11, NONE, callback );

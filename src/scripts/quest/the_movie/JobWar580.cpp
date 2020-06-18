@@ -786,7 +786,6 @@ class JobWar580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00066( player );
     };
 
     player.playScene( getId(), 65, NONE, callback );
@@ -796,7 +795,6 @@ class JobWar580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00067( player );
     };
 
     player.playScene( getId(), 66, NONE, callback );

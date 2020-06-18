@@ -94,7 +94,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00030( player );
+        Scene00031( player );
         break;
       }
       case 3:
@@ -104,17 +104,17 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
       }
       case 4:
       {
-        Scene00036( player );
+        Scene00037( player );
         break;
       }
       case 5:
       {
-        Scene00039( player );
+        Scene00040( player );
         break;
       }
       case 255:
       {
-        Scene00042( player );
+        Scene00041( player );
         break;
       }
     }
@@ -408,7 +408,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00030( player );
     };
 
     player.playScene( getId(), 29, NONE, callback );
@@ -418,7 +418,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00031( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 30, NONE, callback );
@@ -467,7 +467,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -477,7 +477,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00037( player );
+      player.updateQuest( getId(), 4 );
     };
 
     player.playScene( getId(), 36, NONE, callback );
@@ -497,7 +497,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 5 );
+      Scene00039( player );
     };
 
     player.playScene( getId(), 38, NONE, callback );
@@ -507,7 +507,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00040( player );
+      player.updateQuest( getId(), 5 );
     };
 
     player.playScene( getId(), 39, NONE, callback );
@@ -517,7 +517,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00041( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 40, NONE, callback );
@@ -527,7 +527,7 @@ class FesHlw002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00042( player );
     };
 
     player.playScene( getId(), 41, NONE, callback );

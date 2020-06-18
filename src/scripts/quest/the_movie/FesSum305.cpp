@@ -100,16 +100,6 @@ class FesSum305 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00003( player );
-        break;
-      }
-      case 3:
-      {
-        Scene00031( player );
-        break;
-      }
       case 255:
       {
         Scene00049( player );
@@ -147,7 +137,7 @@ class FesSum305 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00003( player );
     };
 
     player.playScene( getId(), 2, NONE, callback );
@@ -409,7 +399,7 @@ class FesSum305 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00031( player );
     };
 
     player.playScene( getId(), 30, NONE, callback );

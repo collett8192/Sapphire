@@ -113,12 +113,12 @@ class ChrHdb204 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00033( player );
+        Scene00019( player );
         break;
       }
       case 3:
       {
-        Scene00047( player );
+        Scene00033( player );
         break;
       }
       case 255:
@@ -309,7 +309,7 @@ class ChrHdb204 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00019( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 18, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -444,7 +444,7 @@ class ChrHdb204 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 32, NONE, callback );
@@ -589,17 +589,15 @@ class ChrHdb204 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
     };
 
-    player.playScene( getId(), 46, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 46, NONE, callback );
   }
 
   void Scene00047( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00048( player );
     };
 
     player.playScene( getId(), 47, NONE, callback );
@@ -609,7 +607,6 @@ class ChrHdb204 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00049( player );
     };
 
     player.playScene( getId(), 48, NONE, callback );
@@ -619,7 +616,6 @@ class ChrHdb204 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00050( player );
     };
 
     player.playScene( getId(), 49, NONE, callback );

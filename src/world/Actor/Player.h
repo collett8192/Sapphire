@@ -1026,6 +1026,7 @@ namespace Sapphire::Entity
 
     std::unordered_map< uint32_t, TerritoryPtr > m_privateInstanceMap;
     TerritoryPtr getOrCreatePrivateInstance( uint32_t zoneId );
+    int m_the_movie_hack_flag;
 
     void* getExdData();
     void* getPlayerMgr();

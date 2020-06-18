@@ -81,12 +81,12 @@ class SubSea054 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00034( player );
+        Scene00035( player );
         break;
       }
       case 255:
       {
-        Scene00037( player );
+        Scene00036( player );
         break;
       }
     }
@@ -435,7 +435,7 @@ class SubSea054 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00034( player );
     };
 
     player.playScene( getId(), 33, NONE, callback );
@@ -445,7 +445,7 @@ class SubSea054 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00035( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 34, NONE, callback );
@@ -455,7 +455,7 @@ class SubSea054 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00036( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 35, NONE, callback );
@@ -465,7 +465,7 @@ class SubSea054 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00037( player );
     };
 
     player.playScene( getId(), 36, NONE, callback );

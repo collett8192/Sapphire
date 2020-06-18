@@ -68,7 +68,7 @@ class SubSea115 : public Sapphire::ScriptAPI::EventScript
     }
   }
 
-  void onEmote( uint64_t actorId, uint32_t eventId, uint32_t emoteId, Sapphire::Entity::Player& player ) override
+  void onEmote( uint32_t eventId, Entity::Player& player, uint64_t actorId, uint32_t emoteId, bool dummy )
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );

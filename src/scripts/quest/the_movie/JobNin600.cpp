@@ -479,7 +479,7 @@ class JobNin600 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 36, NONE, callback );
   }
 
-  void Scene00037( Entity::Player& player )
+  void Scene00037( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

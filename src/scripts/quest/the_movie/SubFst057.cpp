@@ -165,7 +165,6 @@ class SubFst057 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00098( player );
     };
 
     player.playScene( getId(), 100, NONE, callback );

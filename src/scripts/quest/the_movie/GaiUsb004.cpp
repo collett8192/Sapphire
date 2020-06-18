@@ -101,7 +101,7 @@ class GaiUsb004 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {

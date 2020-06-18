@@ -108,7 +108,7 @@ class ChrHdb402 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00021( player );
+        Scene00014( player );
         break;
       }
     }
@@ -199,7 +199,7 @@ class ChrHdb402 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00014( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 8, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

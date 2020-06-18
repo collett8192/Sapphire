@@ -7,42 +7,48 @@
 #include <ScriptObject.h>
 #include <Service.h>
 
-// Quest Script: ManFst208_00272
-// Quest Name: Life, Materia and Everything
-// Quest ID: 65808
-// Start NPC: 1005116
-// End NPC: 1005116
+// Quest Script: ManFst303_00683
+// Quest Name: Wood's Will Be Done
+// Quest ID: 66219
+// Start NPC: 1002394
+// End NPC: 1005012
 
 using namespace Sapphire;
 
-class ManFst208 : public Sapphire::ScriptAPI::EventScript
+class ManFst303 : public Sapphire::ScriptAPI::EventScript
 {
   private:
     // Basic quest information 
     // Quest vars / flags used
     // GetQuestUI8AL
-    // GetQuestUI8BH
-    // GetQuestUI8BL
 
     // Steps in this quest ( 0 is before accepting, 
     // 1 is first, 255 means ready for turning it in
     enum Sequence : uint8_t
     {
 //      Seq0 = 0,
-//      Seq1 = 1,
 //      SeqFinish = 255,
     };
 
     // Entities found in the script data of the quest
-//    static constexpr auto Actor0 = 1005116;
-//    static constexpr auto Actor1 = 1001425;
-//    static constexpr auto CutManfst20810 = 83;
-//    static constexpr auto Item0 = 2000461;
-//    static constexpr auto Item1 = 2000462;
+//    static constexpr auto Actor0 = 1002394;
+//    static constexpr auto Actor1 = 1005012;
+//    static constexpr auto LocAction1 = 1002;
+//    static constexpr auto LocActor0 = 1003783;
+//    static constexpr auto LocSe1 = 42;
+//    static constexpr auto LocTalkshape1 = 6;
+//    static constexpr auto LogmessageMonsternotePageUnlock = 1017;
+//    static constexpr auto Ncut0 = 220;
+//    static constexpr auto Ncut1 = 391;
+//    static constexpr auto OrderOfTwinAdder = 2;
+//    static constexpr auto Poprange0 = 4148347;
+//    static constexpr auto Reward0 = 22;
+//    static constexpr auto Screenimage0 = 32;
+//    static constexpr auto Screenimage1 = 69;
 
   public:
-    ManFst208() : Sapphire::ScriptAPI::EventScript( 65808 ){}; 
-    ~ManFst208() = default; 
+    ManFst303() : Sapphire::ScriptAPI::EventScript( 66219 ){}; 
+    ~ManFst303() = default; 
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
@@ -55,16 +61,6 @@ class ManFst208 : public Sapphire::ScriptAPI::EventScript
       case 0:
       {
         Scene00000( player );
-        break;
-      }
-      case 1:
-      {
-        Scene00001( player );
-        break;
-      }
-      case 2:
-      {
-        Scene00002( player );
         break;
       }
       case 255:
@@ -84,7 +80,7 @@ class ManFst208 : public Sapphire::ScriptAPI::EventScript
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param2 == 1 )
-        player.updateQuest( getId(), 1 );
+        Scene00001( player );
     };
 
     player.playScene( getId(), 0, NONE, callback );
@@ -94,10 +90,10 @@ class ManFst208 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00002( player );
+      player.updateQuest( getId(), 255 );
     };
 
-    player.playScene( getId(), 1, NONE, callback );
+    player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
   void Scene00002( Entity::Player& player )
@@ -107,14 +103,15 @@ class ManFst208 : public Sapphire::ScriptAPI::EventScript
       player.updateQuest( getId(), 255 );
     };
 
-    player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 2, NONE, callback );
   }
 
   void Scene00003( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00004( player );
+      if( result.param2 == 1 )
+        Scene00004( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );
@@ -124,7 +121,7 @@ class ManFst208 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      if( result.param2 == 1 )
+      if( true )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
         {
@@ -133,9 +130,9 @@ class ManFst208 : public Sapphire::ScriptAPI::EventScript
       }
     };
 
-    player.playScene( getId(), 4, NONE, callback );
+    player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
 };
 
-EXPOSE_SCRIPT( ManFst208 );
+EXPOSE_SCRIPT( ManFst303 );

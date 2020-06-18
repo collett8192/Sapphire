@@ -87,7 +87,7 @@ class ClsWdk630 : public Sapphire::ScriptAPI::EventScript
       }
       case 2:
       {
-        Scene00020( player );
+        Scene00021( player );
         break;
       }
       case 255:
@@ -297,7 +297,7 @@ class ClsWdk630 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00020( player );
     };
 
     player.playScene( getId(), 19, NONE, callback );
@@ -307,7 +307,7 @@ class ClsWdk630 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00021( player );
+      player.updateQuest( getId(), 2 );
     };
 
     player.playScene( getId(), 20, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

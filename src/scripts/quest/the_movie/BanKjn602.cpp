@@ -83,14 +83,9 @@ class BanKjn602 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00027( player );
-        break;
-      }
       case 255:
       {
-        Scene00029( player );
+        Scene00028( player );
         break;
       }
     }
@@ -371,7 +366,7 @@ class BanKjn602 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 26, NONE, callback );
@@ -381,7 +376,7 @@ class BanKjn602 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00028( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 27, NONE, callback );
@@ -391,7 +386,7 @@ class BanKjn602 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00029( player );
     };
 
     player.playScene( getId(), 28, NONE, callback );

@@ -85,7 +85,7 @@ class GaiUse113 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00017( player );
+        Scene00016( player );
         break;
       }
     }
@@ -254,7 +254,7 @@ class GaiUse113 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00016( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 15, NONE, callback );
@@ -264,7 +264,7 @@ class GaiUse113 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );

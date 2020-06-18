@@ -120,6 +120,11 @@ class JobDrk650 : public Sapphire::ScriptAPI::EventScript
         Scene00021( player );
         break;
       }
+      case 3:
+      {
+        Scene00022( player );
+        break;
+      }
       case 255:
       {
         Scene00037( player );
@@ -337,7 +342,7 @@ class JobDrk650 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 19, NONE, callback );
   }
 
-  void Scene00020( Entity::Player& player )
+  void Scene00020( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -351,7 +356,7 @@ class JobDrk650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00022( player );
+      player.updateQuest( getId(), 3 );
     };
 
     player.playScene( getId(), 21, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -522,7 +527,6 @@ class JobDrk650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00039( player );
     };
 
     player.playScene( getId(), 38, NONE, callback );
@@ -532,7 +536,6 @@ class JobDrk650 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00040( player );
     };
 
     player.playScene( getId(), 39, NONE, callback );

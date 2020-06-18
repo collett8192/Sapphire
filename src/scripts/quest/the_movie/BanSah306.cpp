@@ -104,7 +104,7 @@ class BanSah306 : public Sapphire::ScriptAPI::EventScript
       }
       case 255:
       {
-        Scene00086( player );
+        Scene00085( player );
         break;
       }
     }
@@ -846,7 +846,7 @@ class BanSah306 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00085( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 74, NONE, callback );
@@ -946,7 +946,7 @@ class BanSah306 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00086( player );
     };
 
     player.playScene( getId(), 85, NONE, callback );

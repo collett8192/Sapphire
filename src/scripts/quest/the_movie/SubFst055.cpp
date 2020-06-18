@@ -87,14 +87,9 @@ class SubFst055 : public Sapphire::ScriptAPI::EventScript
         Scene00011( player );
         break;
       }
-      case 4:
-      {
-        Scene00016( player );
-        break;
-      }
       case 255:
       {
-        Scene00018( player );
+        Scene00015( player );
         break;
       }
     }
@@ -155,7 +150,7 @@ class SubFst055 : public Sapphire::ScriptAPI::EventScript
     player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) // battle
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -214,7 +209,7 @@ class SubFst055 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00015( player );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 11, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
@@ -251,7 +246,7 @@ class SubFst055 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 4 );
+      Scene00016( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );
