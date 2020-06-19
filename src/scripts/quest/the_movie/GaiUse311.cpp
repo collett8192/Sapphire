@@ -209,7 +209,7 @@ class GaiUse311 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00012( player );
     };
 
     player.playScene( getId(), 11, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

@@ -85,11 +85,6 @@ class JobBlm580 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00018( player );
-        break;
-      }
       case 255:
       {
         Scene00021( player );
@@ -256,7 +251,7 @@ class JobBlm580 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00018( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );

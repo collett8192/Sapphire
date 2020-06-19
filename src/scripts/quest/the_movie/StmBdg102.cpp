@@ -289,7 +289,7 @@ class StmBdg102 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00018( player );
     };
 
     player.playScene( getId(), 17, NONE, callback );

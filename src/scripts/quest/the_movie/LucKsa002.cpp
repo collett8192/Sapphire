@@ -341,7 +341,7 @@ class LucKsa002 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00023( player );
     };
 
     player.playScene( getId(), 22, NONE, callback );

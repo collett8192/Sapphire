@@ -293,7 +293,7 @@ class ChrEnd102 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00020( player );
     };
 
     player.playScene( getId(), 18, NONE, callback );

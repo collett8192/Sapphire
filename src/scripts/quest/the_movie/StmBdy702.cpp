@@ -173,7 +173,7 @@ class StmBdy702 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00009( player );
     };
 
     player.playScene( getId(), 8, NONE, callback );

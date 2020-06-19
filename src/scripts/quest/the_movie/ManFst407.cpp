@@ -123,11 +123,6 @@ class ManFst407 : public Sapphire::ScriptAPI::EventScript
         Scene00031( player );
         break;
       }
-      case 3:
-      {
-        Scene00036( player );
-        break;
-      }
       case 255:
       {
         Scene00041( player );
@@ -487,7 +482,7 @@ class ManFst407 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 3 );
+      Scene00036( player );
     };
 
     player.playScene( getId(), 35, NONE, callback );

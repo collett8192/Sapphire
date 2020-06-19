@@ -374,7 +374,7 @@ class FesHlw601 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00027( player );
     };
 
     player.playScene( getId(), 26, NONE, callback );

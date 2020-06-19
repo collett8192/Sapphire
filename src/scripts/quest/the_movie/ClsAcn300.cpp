@@ -137,11 +137,6 @@ class ClsAcn300 : public Sapphire::ScriptAPI::EventScript
         Scene00041( player );
         break;
       }
-      case 7:
-      {
-        Scene00056( player );
-        break;
-      }
       case 255:
       {
         Scene00067( player );
@@ -680,7 +675,7 @@ class ClsAcn300 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 7 );
+      Scene00056( player );
     };
 
     player.playScene( getId(), 55, NONE, callback );

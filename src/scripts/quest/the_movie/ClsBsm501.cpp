@@ -150,7 +150,7 @@ class ClsBsm501 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00008( player );
     };
 
     player.playScene( getId(), 7, NONE, callback );

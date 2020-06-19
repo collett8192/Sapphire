@@ -71,11 +71,6 @@ class LucKme109 : public Sapphire::ScriptAPI::EventScript
         Scene00002( player );
         break;
       }
-      case 2:
-      {
-        Scene00005( player );
-        break;
-      }
       case 255:
       {
         Scene00007( player );
@@ -123,7 +118,7 @@ class LucKme109 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00005( player );
     };
 
     player.playScene( getId(), 3, NONE, callback );

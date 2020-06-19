@@ -432,7 +432,7 @@ class JobRdm520 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00032( player );
     };
 
     player.playScene( getId(), 31, NONE, callback );

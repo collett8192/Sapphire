@@ -60,14 +60,9 @@ class SubGsc001 : public Sapphire::ScriptAPI::EventScript
         Scene00000( player );
         break;
       }
-      case 1:
-      {
-        Scene00003( player );
-        break;
-      }
       case 255:
       {
-        Scene00005( player );
+        Scene00003( player );
         break;
       }
     }
@@ -92,7 +87,7 @@ class SubGsc001 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 1 );
+      player.updateQuest( getId(), 255 );
     };
 
     player.playScene( getId(), 1, NONE, callback );

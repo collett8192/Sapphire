@@ -253,7 +253,7 @@ class ClsWvr680 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00017( player );
     };
 
     player.playScene( getId(), 16, NONE, callback );

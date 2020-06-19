@@ -115,11 +115,6 @@ class ClsRog200 : public Sapphire::ScriptAPI::EventScript
         Scene00003( player );
         break;
       }
-      case 2:
-      {
-        Scene00054( player );
-        break;
-      }
       case 255:
       {
         Scene00061( player );
@@ -605,7 +600,7 @@ class ClsRog200 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 2 );
+      Scene00054( player );
     };
 
     player.playScene( getId(), 48, NONE, callback );

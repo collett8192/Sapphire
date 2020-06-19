@@ -263,7 +263,7 @@ class BanAll240 : public Sapphire::ScriptAPI::EventScript
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.updateQuest( getId(), 255 );
+      Scene00016( player );
     };
 
     player.playScene( getId(), 15, NONE, callback );
