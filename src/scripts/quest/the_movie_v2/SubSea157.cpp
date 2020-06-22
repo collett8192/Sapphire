@@ -249,9 +249,8 @@ player.sendDebug( "questId: {}, calling Talk:Scene00010 ", getId() );
     {
 if( result.param1 > 0 && result.param2 == 1 )
 { Scene00012( player ); }
- else { Scene00013( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00011 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00011 +1 ", getId() );
 
     player.playScene( getId(), 11, NONE, callback );
   }
@@ -260,9 +259,9 @@ player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00011 +2 ", getId() 
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//next scene not found
+Scene00013( player );
     };
-player.sendDebug( "questId: {}, calling [sub:Execute](11)Talk, FadeOut:Scene00012 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](11)Talk, FadeOut:Scene00012 +1 ", getId() );
 
     player.playScene( getId(), 12, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -271,9 +270,11 @@ player.sendDebug( "questId: {}, calling [sub:Execute](11)Talk, FadeOut:Scene0001
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//exit event
+if( result.param2 == 1 ){
+if( player.giveQuestRewards( getId(), result.param3 ) ) player.finishQuest( getId() );
+}
     };
-player.sendDebug( "questId: {}, calling [sub:CombinedComplete](11)QuestReward, QuestComplete:Scene00013 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:CombinedComplete](12)QuestReward, QuestComplete:Scene00013 ", getId() );
 
     player.playScene( getId(), 13, NONE, callback );
   }

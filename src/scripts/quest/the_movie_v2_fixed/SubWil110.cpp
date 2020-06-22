@@ -62,11 +62,11 @@ void onWithinRange( Sapphire::Entity::Player& player, uint32_t eventId, uint32_t
 {
 switch( player.getQuestSeq( getId() ) ){
 case 1:{
-Scene00002( player );
+//Scene00002( player );
 break;
 }
 case 255:{
-Scene00019( player );
+//Scene00019( player );
 break;
 }
 }
@@ -82,11 +82,11 @@ break;
 }
 case 1:{
 //ACTOR1, UI8BL, 1, -2, False
-if( actor == 1003942 && player.getQuestUI8BL( getId() ) != 1 ) { Scene00002( player ); }
+if( actorId == 4298942495 && player.getQuestUI8BL( getId() ) != 1 ) { Scene00002( player ); }
 //ACTOR2, UI8AL, 1, -2, False
-if( actor == 1003943 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00003( player ); }
+if( actorId == 4298942496 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00003( player ); }
 //ACTOR3, UI8BH, 1, -2, False
-if( actor == 1003944 && player.getQuestUI8BH( getId() ) != 1 ) { Scene00004( player ); }
+if( actorId == 4298942497 && player.getQuestUI8BH( getId() ) != 1 ) { Scene00004( player ); }
 //EOBJECT0, null, 0, -2, False
 if( actor == 2001663 ) { Scene00005( player ); }
 //EOBJECT1, null, 0, -2, False
@@ -162,7 +162,7 @@ player.setQuestUI8BL( getId(), 0 );
 player.setQuestUI8AL( getId(), 0 );
 player.setQuestUI8BH( getId(), 0 );
 player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
+player.setQuestUI8BH( getId(), 3 );
 }
 }
 }
@@ -185,7 +185,7 @@ player.setQuestUI8BL( getId(), 0 );
 player.setQuestUI8AL( getId(), 0 );
 player.setQuestUI8BH( getId(), 0 );
 player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
+player.setQuestUI8BH( getId(), 3 );
 }
 }
 }
@@ -208,7 +208,7 @@ player.setQuestUI8BL( getId(), 0 );
 player.setQuestUI8AL( getId(), 0 );
 player.setQuestUI8BH( getId(), 0 );
 player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
+player.setQuestUI8BH( getId(), 3 );
 }
 }
 }

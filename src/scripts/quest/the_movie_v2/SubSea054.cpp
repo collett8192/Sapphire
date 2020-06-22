@@ -63,27 +63,6 @@ class SubSea054 : public Sapphire::ScriptAPI::EventScript
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
-void onWithinRange( Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1,float x, float y, float z ) override
-{
-switch( player.getQuestSeq( getId() ) ){
-case 1:{
-Scene00001( player );
-break;
-}
-case 2:{
-Scene00004( player );
-break;
-}
-case 3:{
-Scene00014( player );
-break;
-}
-case 4:{
-Scene00018( player );
-break;
-}
-}
-}
   void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();

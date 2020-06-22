@@ -53,19 +53,6 @@ class SubFst067 : public Sapphire::ScriptAPI::EventScript
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
-void onWithinRange( Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1,float x, float y, float z ) override
-{
-switch( player.getQuestSeq( getId() ) ){
-case 2:{
-Scene00003( player );
-break;
-}
-case 255:{
-Scene00015( player );
-break;
-}
-}
-}
   void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();

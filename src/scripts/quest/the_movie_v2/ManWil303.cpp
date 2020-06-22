@@ -77,11 +77,10 @@ default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId()
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-if( result.param2 == 1 ){
-player.updateQuest( getId(), 255 );
-}
+if( result.param2 == 1 )
+Scene00001( player );
     };
-player.sendDebug( "questId: {}, calling QuestOffer, QuestAccept:Scene00000 ", getId() );
+player.sendDebug( "questId: {}, calling QuestOffer, QuestAccept:Scene00000 +1 ", getId() );
 
     player.playScene( getId(), 0, NONE, callback );
   }
@@ -92,7 +91,7 @@ player.sendDebug( "questId: {}, calling QuestOffer, QuestAccept:Scene00000 ", ge
     {
 player.updateQuest( getId(), 255 );
     };
-player.sendDebug( "questId: {}, calling Talk, CutScene, FadeOut:Scene00001 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:CombinedCutScene](0)Talk, CutScene, FadeOut:Scene00001 ", getId() );
 
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -112,7 +111,8 @@ player.sendDebug( "questId: {}, calling Unknown:Scene00002 ", getId() );
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-{ Scene00004( player ); }
+if( result.param2 == 1 )
+Scene00004( player );
     };
 player.sendDebug( "questId: {}, calling Talk, QuestReward:Scene00003 +1 ", getId() );
 

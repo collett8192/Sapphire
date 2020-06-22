@@ -114,7 +114,8 @@ player.sendDebug( "questId: {}, calling CutScene:Scene00002 ", getId() );
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-{ Scene00004( player ); }
+if( result.param2 == 1 )
+Scene00004( player );
     };
 player.sendDebug( "questId: {}, calling Talk, QuestReward:Scene00003 +1 ", getId() );
 

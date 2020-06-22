@@ -79,20 +79,20 @@ break;
 }
 case 1:{
 //ACTOR2, UI8AL, 1, -2, False
-if( actor == 1007690 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00001( player ); }
+if( actor == 1007690 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00002( player ); }
 //ACTOR0, null, 0, -2, False
-if( actor == 1006492 ) { Scene00002( player ); }
+if( actor == 1006492 ) { Scene00003( player ); }
 //ACTOR1, null, 0, -2, False
-if( actor == 1000106 ) { Scene00003( player ); }
+if( actor == 1000106 ) { Scene00004( player ); }
 break;
 }
 case 2:{
 //ACTOR2, null, 0, -2, False
-if( actor == 1007690 ) { Scene00004( player ); }
+if( actor == 1007690 ) { Scene00005( player ); }
 break;
 }
 case 3:{
-Scene00005( player );
+Scene00006( player );
 break;
 }
 case 255:{
@@ -114,11 +114,10 @@ default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId()
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-if( result.param2 == 1 ){
-player.updateQuest( getId(), 1 );
-}
+if( result.param2 == 1 )
+Scene00001( player );
     };
-player.sendDebug( "questId: {}, calling Talk, QuestOffer, QuestAccept:Scene00000 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, QuestOffer, QuestAccept:Scene00000 +1 ", getId() );
 
     player.playScene( getId(), 0, NONE, callback );
   }
@@ -127,14 +126,9 @@ player.sendDebug( "questId: {}, calling Talk, QuestOffer, QuestAccept:Scene00000
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR2
-player.setQuestUI8AL( getId(), 1 );
-if( player.getQuestUI8AL( getId() ) == 1 ){
-player.setQuestUI8AL( getId(), 0 );
-player.updateQuest( getId(), 2 );
-}
+player.updateQuest( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling CutScene:Scene00001 ACTOR2:UI8AL=-2, 1", getId() );
+player.sendDebug( "questId: {}, calling [sub:CombinedCutScene](0)CutScene:Scene00001 ", getId() );
 
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -143,10 +137,16 @@ player.sendDebug( "questId: {}, calling CutScene:Scene00001 ACTOR2:UI8AL=-2, 1",
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR0
-//does not modify quest vars
+//Target: ACTOR2
+if( result.param2 == 1 ){
+player.setQuestUI8AL( getId(), 1 );
+if( player.getQuestUI8AL( getId() ) == 1 ){
+player.setQuestUI8AL( getId(), 0 );
+player.updateQuest( getId(), 2 );
+}
+}
     };
-player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00002 ACTOR0", getId() );
+player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00002 ACTOR2:UI8AL=-2, 1", getId() );
 
     player.playScene( getId(), 2, NONE, callback );
   }
@@ -155,15 +155,27 @@ player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00002 ACTOR0", getId() 
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR1
+//Target: ACTOR0
 //does not modify quest vars
     };
-player.sendDebug( "questId: {}, calling Talk:Scene00003 ACTOR1", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00003 ACTOR0", getId() );
 
     player.playScene( getId(), 3, NONE, callback );
   }
 
   void Scene00004( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+//Target: ACTOR1
+//does not modify quest vars
+    };
+player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00004 ACTOR1", getId() );
+
+    player.playScene( getId(), 4, NONE, callback );
+  }
+
+  void Scene00005( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
@@ -173,20 +185,7 @@ if( result.param2 == 1 ){
 player.updateQuest( getId(), 3 );
 }
     };
-player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00004 ACTOR2", getId() );
-
-    player.playScene( getId(), 4, NONE, callback );
-  }
-
-  void Scene00005( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-if( result.param2 == 1 ){
-player.updateQuest( getId(), 255 );
-}
-    };
-player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00005 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00005 ACTOR2", getId() );
 
     player.playScene( getId(), 5, NONE, callback );
   }

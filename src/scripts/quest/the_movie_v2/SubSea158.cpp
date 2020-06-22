@@ -55,23 +55,6 @@ class SubSea158 : public Sapphire::ScriptAPI::EventScript
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
-void onWithinRange( Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1,float x, float y, float z ) override
-{
-switch( player.getQuestSeq( getId() ) ){
-case 1:{
-Scene00002( player );
-break;
-}
-case 2:{
-Scene00008( player );
-break;
-}
-case 255:{
-Scene00012( player );
-break;
-}
-}
-}
   void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
@@ -301,9 +284,8 @@ player.sendDebug( "questId: {}, calling Talk:Scene00011 ", getId() );
     {
 if( result.param1 > 0 && result.param2 == 1 )
 { Scene00013( player ); }
- else { Scene00014( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00012 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00012 +1 ", getId() );
 
     player.playScene( getId(), 12, NONE, callback );
   }
@@ -314,9 +296,9 @@ player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00012 +2 ", getId() 
     {
 //Target: ACTOR0
 //no valid quest var detected
-//next scene not found
+Scene00014( player );
     };
-player.sendDebug( "questId: {}, calling [sub:Execute](12)Talk, FadeOut:Scene00013 ACTOR0", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](12)Talk, FadeOut:Scene00013 +1 ACTOR0", getId() );
 
     player.playScene( getId(), 13, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -325,9 +307,11 @@ player.sendDebug( "questId: {}, calling [sub:Execute](12)Talk, FadeOut:Scene0001
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//exit event
+if( result.param2 == 1 ){
+if( player.giveQuestRewards( getId(), result.param3 ) ) player.finishQuest( getId() );
+}
     };
-player.sendDebug( "questId: {}, calling [sub:CombinedComplete](12)QuestReward, QuestComplete:Scene00014 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:CombinedComplete](13)QuestReward, QuestComplete:Scene00014 ", getId() );
 
     player.playScene( getId(), 14, NONE, callback );
   }
