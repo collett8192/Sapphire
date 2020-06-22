@@ -336,7 +336,8 @@ namespace Sapphire::Network::Packets
     ClientTrigger = 0x017D, // updated 5.25
     DiscoveryHandler = 0x02C8, // updated 5.25
 
-    PlaceFieldMarker = 0x013C, // updated 5.0
+    PlaceFieldMarkerPreset = 0x023F, // updated 5.25
+    PlaceFieldMarker = 0x01BA, // updated 5.25
     SkillHandler = 0x0241, // updated 5.25
     GMCommand1 = 0x01EC, // updated 5.25
     GMCommand2 = 0x0368, // updated 5.25
@@ -360,6 +361,7 @@ namespace Sapphire::Network::Packets
 
     ReturnEventHandler = 0x00BB, // updated 5.25
     TradeReturnEventHandler = 0x03B6, // updated 5.25
+    TradeMultipleReturnEventHander = 0x02B0, // updated 5.25
 
     LinkshellEventHandler = 0x016B, // updated 4.5
     LinkshellEventHandler1 = 0x016C, // updated 4.5
