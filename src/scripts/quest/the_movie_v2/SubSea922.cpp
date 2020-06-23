@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: True, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -76,13 +77,14 @@ case 2:{
 //ACTOR1, UI8AL, 1, -1, False
 if( actor == 1000856 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00003( player ); }
 //ACTOR2, null, 0, -1, False
-if( actor == 1008882 ) { Scene00006( player ); }
+if( actor == 1008882 ) { Scene00005( player ); }
 break;
 }
 case 255:{
 //ACTOR1, null, 0, -1, False
 if( actor == 1000856 ) { Scene00006( player ); }
-//if( actor == 1008882 ) { Scene?????( player ); }
+//ACTOR2, null, 0, -1, False
+if( actor == 1008882 ) { Scene00008( player ); }
 break;
 }
 default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId() ) ); break; }
@@ -133,9 +135,8 @@ player.sendDebug( "questId: {}, calling Talk, FadeOut:Scene00002 ", getId() );
     {
 if( result.param1 > 0 && result.param2 == 1 )
 { Scene00004( player ); }
- else { Scene00005( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00003 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00003 +1 ", getId() );
 
     player.playScene( getId(), 3, NONE, callback );
   }
@@ -160,9 +161,10 @@ player.sendDebug( "questId: {}, calling [sub:Execute](3)Talk:Scene00004 ACTOR1:U
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//exit event
+//Target: ACTOR2
+//does not modify quest vars
     };
-player.sendDebug( "questId: {}, calling [sub:Cancel](3)Talk:Scene00005 ", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00005 ACTOR2", getId() );
 
     player.playScene( getId(), 5, NONE, callback );
   }
@@ -173,9 +175,8 @@ player.sendDebug( "questId: {}, calling [sub:Cancel](3)Talk:Scene00005 ", getId(
     {
 if( result.param1 > 0 && result.param2 == 1 )
 { Scene00007( player ); }
- else { Scene00008( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00006 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00006 +1 ", getId() );
 
     player.playScene( getId(), 6, NONE, callback );
   }
@@ -198,9 +199,11 @@ player.sendDebug( "questId: {}, calling [sub:Execute](6)Talk, QuestReward, Quest
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//exit event
+//Target: ACTOR2
+//no valid quest var detected
+//next scene not found
     };
-player.sendDebug( "questId: {}, calling [sub:Cancel](6)Talk:Scene00008 ", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00008 ACTOR2", getId() );
 
     player.playScene( getId(), 8, NONE, callback );
   }

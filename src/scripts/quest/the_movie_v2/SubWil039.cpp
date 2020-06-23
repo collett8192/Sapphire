@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//parsingResult: -2
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -59,12 +60,11 @@ break;
 case 1:{
 //ACTOR1, null, 0, -2, False
 if( actor == 1002005 ) { Scene00001( player ); }
-//ENEMY0, UI8AL, 1, -2, False
-if( actor == 4031174 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00002( player ); }
+//if( actorId == 4031174 && player.getQuestUI8AL( getId() ) != 1 ) { Scene?????( player ); }
 break;
 }
 case 2:{
-Scene00003( player );
+Scene00002( player );
 break;
 }
 case 255:{
@@ -117,14 +117,9 @@ player.sendDebug( "questId: {}, calling Unknown:Scene00001 ACTOR1", getId() );
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ENEMY0
-player.setQuestUI8AL( getId(), 1 );
-if( player.getQuestUI8AL( getId() ) == 1 ){
-player.setQuestUI8AL( getId(), 0 );
-player.updateQuest( getId(), 2 );
-}
+player.updateQuest( getId(), 255 );
     };
-player.sendDebug( "questId: {}, calling Talk, Message:Scene00002 ENEMY0:UI8AL=-2, 1", getId() );
+player.sendDebug( "questId: {}, calling Talk, Message:Scene00002 ", getId() );
 
     player.playScene( getId(), 2, NONE, callback );
   }

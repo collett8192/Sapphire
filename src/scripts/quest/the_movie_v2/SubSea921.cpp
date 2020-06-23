@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -97,7 +98,7 @@ if( result.param2 == 1 ){
 if( player.giveQuestRewards( getId(), result.param3 ) ) player.finishQuest( getId() );
 }
     };
-player.sendDebug( "questId: {}, calling [sub:Execute](1)Talk, QuestReward, QuestComplete:Scene00002 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](1)Talk, QuestReward, QuestComplete, Message:Scene00002 ", getId() );
 
     player.playScene( getId(), 2, NONE, callback );
   }

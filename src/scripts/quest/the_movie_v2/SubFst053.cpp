@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: True, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -63,7 +64,11 @@ Scene00000( player );
 break;
 }
 case 1:{
-//no scene is assigned
+//EOBJECT0, null, 0, -2, False
+if( actor == 2000042 ) { Scene00001( player ); }
+//if( actorId == 1943223 && player.getQuestUI8AL( getId() ) != 3 ) { Scene?????( player ); }
+//if( actorId == 1943224 && player.getQuestUI8AL( getId() ) != 3 ) { Scene?????( player ); }
+//if( actorId == 1943225 && player.getQuestUI8AL( getId() ) != 3 ) { Scene?????( player ); }
 break;
 }
 case 255:{
@@ -93,8 +98,8 @@ onTalk( getId(), player, npcId );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
 if( result.param2 == 1 ){
-player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
+player.updateQuest( getId(), 1 );
+player.setQuestUI8BL( getId(), 1 );
 }
     };
 player.sendDebug( "questId: {}, calling Talk, QuestOffer, QuestAccept:Scene00000 ", getId() );
@@ -106,9 +111,12 @@ player.sendDebug( "questId: {}, calling Talk, QuestOffer, QuestAccept:Scene00000
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//next scene not found
+//Target: EOBJECT0
+//no valid quest var detected
+player.updateQuest( getId(), 255 );
+player.setQuestUI8BH( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling [sub:SkippedMsg](100)Inventory:Scene00001 ", getId() );
+player.sendDebug( "questId: {}, calling Inventory:Scene00001 EOBJECT0", getId() );
 
     player.playScene( getId(), 1, NONE, callback );
   }
@@ -143,7 +151,7 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](100)Empty:Scene00099 ",
     {
 //next scene not found
     };
-player.sendDebug( "questId: {}, calling Message:Scene00100 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Message:Scene00100 +1 ", getId() );
 
     player.playScene( getId(), 100, NONE, callback );
   }

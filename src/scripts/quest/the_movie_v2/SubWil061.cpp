@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -64,11 +65,11 @@ case 1:{
 //EOBJECT0, null, 0, -2, False
 if( actor == 2000741 ) { Scene00002( player ); }
 //ENEMY0, UI8AL, 1, -2, False
-if( actor == 3708948 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00005( player ); }
+if( actorId == 3708948 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00005( player ); }
 //EOBJECT1, null, 0, -2, False
 if( actor == 2000742 ) { Scene00008( player ); }
 //ENEMY1, UI8BH, 1, -2, False
-if( actor == 3708949 && player.getQuestUI8BH( getId() ) != 1 ) { Scene00011( player ); }
+if( actorId == 3708949 && player.getQuestUI8BH( getId() ) != 1 ) { Scene00011( player ); }
 break;
 }
 case 255:{

@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//parsingResult: -2
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -67,16 +68,16 @@ break;
 case 1:{
 //EOBJECT0, null, 0, -2, False
 if( actor == 2001240 ) { Scene00002( player ); }
-//if( actor == 3929271 && player.getQuestUI8AL( getId() ) != 2 ) { Scene?????( player ); }
-//if( actor == 3929272 && player.getQuestUI8AL( getId() ) != 2 ) { Scene?????( player ); }
+//if( actorId == 3929271 && player.getQuestUI8AL( getId() ) != 2 ) { Scene?????( player ); }
+//if( actorId == 3929272 && player.getQuestUI8AL( getId() ) != 2 ) { Scene?????( player ); }
 //EOBJECT1, null, 0, -2, False
 if( actor == 2001241 ) { Scene00005( player ); }
-//if( actor == 3929274 && player.getQuestUI8BH( getId() ) != 2 ) { Scene?????( player ); }
-//if( actor == 3929275 && player.getQuestUI8BH( getId() ) != 2 ) { Scene?????( player ); }
+//if( actorId == 3929274 && player.getQuestUI8BH( getId() ) != 2 ) { Scene?????( player ); }
+//if( actorId == 3929275 && player.getQuestUI8BH( getId() ) != 2 ) { Scene?????( player ); }
 //EOBJECT2, null, 0, -2, False
 if( actor == 2001242 ) { Scene00007( player ); }
-//if( actor == 3929277 && player.getQuestUI8BL( getId() ) != 2 ) { Scene?????( player ); }
-//if( actor == 3929278 && player.getQuestUI8BL( getId() ) != 2 ) { Scene?????( player ); }
+//if( actorId == 3929277 && player.getQuestUI8BL( getId() ) != 2 ) { Scene?????( player ); }
+//if( actorId == 3929278 && player.getQuestUI8BL( getId() ) != 2 ) { Scene?????( player ); }
 break;
 }
 case 255:{

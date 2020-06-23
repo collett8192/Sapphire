@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: True, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -59,7 +60,7 @@ Scene00002( player );
 break;
 }
 case 2:{
-//no scene is assigned
+Scene00004( player );
 break;
 }
 case 255:{
@@ -104,9 +105,8 @@ player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00
     {
 if( result.param1 > 0 && result.param2 == 1 )
 { Scene00003( player ); }
- else { Scene00004( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00002 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00002 +1 ", getId() );
 
     player.playScene( getId(), 2, NONE, callback );
   }
@@ -115,7 +115,7 @@ player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00002 +2 ", getId() 
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-player.updateQuest( getId(), 255 );
+player.updateQuest( getId(), 2 );
 player.setQuestUI8BH( getId(), 1 );
     };
 player.sendDebug( "questId: {}, calling [sub:Execute](2)Talk:Scene00003 ", getId() );
@@ -127,9 +127,10 @@ player.sendDebug( "questId: {}, calling [sub:Execute](2)Talk:Scene00003 ", getId
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//exit event
+player.updateQuest( getId(), 255 );
+player.setQuestUI8BH( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling [sub:Cancel](2)Talk:Scene00004 ", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00004 ", getId() );
 
     player.playScene( getId(), 4, NONE, callback );
   }

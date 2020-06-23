@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: True, A2: True, A3: False, S: False, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -78,11 +79,11 @@ if( actor == 1002463 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00003( pla
 //ACTOR4, null, 0, -2, False
 if( actor == 1002464 ) { Scene00004( player ); }
 //ACTOR5, null, 0, -2, False
-if( actor == 1002465 ) { Scene00005( player ); }
+if( actor == 1002465 ) { Scene00007( player ); }
 //EOBJECT0, null, 0, -2, False
-if( actor == 2000766 ) { Scene00006( player ); }
+if( actor == 2000766 ) { Scene00010( player ); }
 //EOBJECT1, null, 0, -2, False
-if( actor == 2000767 ) { Scene00007( player ); }
+if( actor == 2000767 ) { Scene00011( player ); }
 break;
 }
 case 255:{
@@ -152,10 +153,9 @@ player.sendDebug( "questId: {}, calling Talk, FadeOut:Scene00003 ACTOR3:UI8AL=-2
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR4
-//does not modify quest vars
+{ Scene00005( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk:Scene00004 ACTOR4", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00004 +2 ", getId() );
 
     player.playScene( getId(), 4, NONE, callback );
   }
@@ -164,67 +164,67 @@ player.sendDebug( "questId: {}, calling Talk:Scene00004 ACTOR4", getId() );
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR5
+//Target: ACTOR4
 //does not modify quest vars
     };
-player.sendDebug( "questId: {}, calling Talk:Scene00005 ACTOR5", getId() );
+player.sendDebug( "questId: {}, calling [sub:BranchTrue](4)Talk:Scene00005 ACTOR4", getId() );
 
     player.playScene( getId(), 5, NONE, callback );
   }
 
   void Scene00006( Entity::Player& player )
   {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+//not used because scene condition is not parsed
+    };
+player.sendDebug( "questId: {}, calling [sub:BranchFalse](4)Empty:Scene00006 ", getId() );
 
-
-//Target: EOBJECT0
-//does not modify quest vars
-
-player.sendDebug( "questId: {}, calling Empty:Scene00006 EOBJECT0", getId() );
-
-
+    player.playScene( getId(), 6, NONE, callback );
   }
 
   void Scene00007( Entity::Player& player )
   {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+{ Scene00008( player ); }
+    };
+player.sendDebug( "questId: {}, calling Empty:Scene00007 +2 ", getId() );
 
-
-//Target: EOBJECT1
-//does not modify quest vars
-
-player.sendDebug( "questId: {}, calling Empty:Scene00007 EOBJECT1", getId() );
-
-
+    player.playScene( getId(), 7, NONE, callback );
   }
 
   void Scene00008( Entity::Player& player )
   {
 
 
-player.updateQuest( getId(), 255 );
+//Target: ACTOR5
+//does not modify quest vars
 
-player.sendDebug( "questId: {}, calling Empty:Scene00008 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:BranchTrue](7)Empty:Scene00008 ACTOR5", getId() );
 
 
   }
 
   void Scene00009( Entity::Player& player )
   {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+//not used because scene condition is not parsed
+    };
+player.sendDebug( "questId: {}, calling [sub:BranchFalse](7)Empty:Scene00009 ", getId() );
 
-
-player.updateQuest( getId(), 255 );
-
-player.sendDebug( "questId: {}, calling Empty:Scene00009 ", getId() );
-
-
+    player.playScene( getId(), 9, NONE, callback );
   }
 
   void Scene00010( Entity::Player& player )
   {
 
 
-player.updateQuest( getId(), 255 );
+//Target: EOBJECT0
+//does not modify quest vars
 
-player.sendDebug( "questId: {}, calling Empty:Scene00010 ", getId() );
+player.sendDebug( "questId: {}, calling Empty:Scene00010 EOBJECT0", getId() );
 
 
   }
@@ -233,9 +233,10 @@ player.sendDebug( "questId: {}, calling Empty:Scene00010 ", getId() );
   {
 
 
-player.updateQuest( getId(), 255 );
+//Target: EOBJECT1
+//does not modify quest vars
 
-player.sendDebug( "questId: {}, calling Empty:Scene00011 ", getId() );
+player.sendDebug( "questId: {}, calling Empty:Scene00011 EOBJECT1", getId() );
 
 
   }

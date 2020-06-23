@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: True, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -85,7 +86,24 @@ Scene00000( player );
 break;
 }
 case 1:{
-//no scene is assigned
+//EOBJECT0, null, 0, -2, False
+if( actor == 2000772 ) { Scene00001( player ); }
+//if( actorId == 3782177 && player.getQuestUI8AL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782179 && player.getQuestUI8AL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782180 && player.getQuestUI8AL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782187 && player.getQuestUI8AL( getId() ) != 4 ) { Scene?????( player ); }
+//EOBJECT1, null, 0, -2, False
+if( actor == 2000773 ) { Scene00002( player ); }
+//if( actorId == 3782196 && player.getQuestUI8BL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782197 && player.getQuestUI8BL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782198 && player.getQuestUI8BL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782209 && player.getQuestUI8BL( getId() ) != 4 ) { Scene?????( player ); }
+//EOBJECT2, null, 0, -2, False
+if( actor == 2000774 ) { Scene00003( player ); }
+//if( actorId == 3782220 && player.getQuestUI8CL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782386 && player.getQuestUI8CL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782387 && player.getQuestUI8CL( getId() ) != 4 ) { Scene?????( player ); }
+//if( actorId == 3782389 && player.getQuestUI8CL( getId() ) != 4 ) { Scene?????( player ); }
 break;
 }
 case 255:{
@@ -124,8 +142,8 @@ onTalk( getId(), player, npcId );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
 if( result.param2 == 1 ){
-player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
+player.updateQuest( getId(), 1 );
+player.setQuestUI8DL( getId(), 1 );
 }
     };
 player.sendDebug( "questId: {}, calling Talk, QuestOffer, QuestAccept:Scene00000 ", getId() );
@@ -137,9 +155,12 @@ player.sendDebug( "questId: {}, calling Talk, QuestOffer, QuestAccept:Scene00000
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//next scene not found
+//Target: EOBJECT0
+//no valid quest var detected
+player.updateQuest( getId(), 255 );
+player.setQuestUI8BH( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling [sub:SkippedMsg](100)Inventory:Scene00001 ", getId() );
+player.sendDebug( "questId: {}, calling Inventory:Scene00001 EOBJECT0", getId() );
 
     player.playScene( getId(), 1, NONE, callback );
   }
@@ -148,8 +169,12 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](100)Inventory:Scene0000
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+//Target: EOBJECT1
+//no valid quest var detected
+player.updateQuest( getId(), 255 );
+player.setQuestUI8BH( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling [sub:SkippedMsg](98)Inventory:Scene00002 ", getId() );
+player.sendDebug( "questId: {}, calling Inventory:Scene00002 EOBJECT1", getId() );
 
     player.playScene( getId(), 2, NONE, callback );
   }
@@ -158,8 +183,12 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](98)Inventory:Scene00002
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+//Target: EOBJECT2
+//no valid quest var detected
+player.updateQuest( getId(), 255 );
+player.setQuestUI8BH( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling [sub:SkippedMsg](96)Inventory:Scene00003 ", getId() );
+player.sendDebug( "questId: {}, calling Inventory:Scene00003 EOBJECT2", getId() );
 
     player.playScene( getId(), 3, NONE, callback );
   }
@@ -192,7 +221,7 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](96)Empty:Scene00095 ", 
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
     };
-player.sendDebug( "questId: {}, calling Message:Scene00096 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Message:Scene00096 +1 ", getId() );
 
     player.playScene( getId(), 96, NONE, callback );
   }
@@ -212,7 +241,7 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](98)Empty:Scene00097 ", 
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
     };
-player.sendDebug( "questId: {}, calling Message:Scene00098 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Message:Scene00098 +1 ", getId() );
 
     player.playScene( getId(), 98, NONE, callback );
   }
@@ -234,7 +263,7 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](100)Empty:Scene00099 ",
     {
 //next scene not found
     };
-player.sendDebug( "questId: {}, calling Message:Scene00100 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Message:Scene00100 +1 ", getId() );
 
     player.playScene( getId(), 100, NONE, callback );
   }

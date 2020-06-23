@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -129,7 +130,7 @@ player.sendDebug( "questId: {}, calling Talk, QuestReward:Scene00003 +1 ", getId
 //Target: ACTOR2
 if( player.giveQuestRewards( getId(), result.param3 ) ) player.finishQuest( getId() );
     };
-player.sendDebug( "questId: {}, calling [sub:Complete](3)CutScene, QuestComplete:Scene00004 ACTOR2", getId() );
+player.sendDebug( "questId: {}, calling [sub:Complete](3)CutScene, QuestComplete, Message:Scene00004 ACTOR2", getId() );
 
     player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }

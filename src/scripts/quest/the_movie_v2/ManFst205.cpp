@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//parsingResult: -1
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -166,7 +167,7 @@ player.setQuestUI8AL( getId(), 0 );
 player.updateQuest( getId(), 3 );
 }
     };
-player.sendDebug( "questId: {}, calling Talk:Scene00003 ACTOR2:UI8AL=-2, 1", getId() );
+player.sendDebug( "questId: {}, calling Talk, Message:Scene00003 ACTOR2:UI8AL=-2, 1", getId() );
 
     player.playScene( getId(), 3, NONE, callback );
   }

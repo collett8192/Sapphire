@@ -1,6 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -79,12 +80,11 @@ break;
 case 1:{
 //EOBJECT0, null, 0, -2, False
 if( actor == 2000009 ) { Scene00002( player ); }
-//ENEMY0, UI8AL, 1, -2, False
-if( actor == 2313265 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00004( player ); }
+//if( actorId == 2313265 && player.getQuestUI8AL( getId() ) != 1 ) { Scene?????( player ); }
 break;
 }
 case 2:{
-//no scene is assigned
+Scene00004( player );
 break;
 }
 case 255:{
@@ -127,7 +127,7 @@ player.sendDebug( "questId: {}, calling Talk, QuestOffer, QuestAccept:Scene00000
     {
 //Target: EOBJECT0
 //no valid quest var detected
-player.updateQuest( getId(), 255 );
+player.updateQuest( getId(), 2 );
 player.setQuestUI8BH( getId(), 1 );
     };
 player.sendDebug( "questId: {}, calling [sub:SkippedMsg](2)Unknown:Scene00001 EOBJECT0", getId() );
@@ -139,7 +139,7 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](2)Unknown:Scene00001 EO
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-player.updateQuest( getId(), 255 );
+player.updateQuest( getId(), 2 );
 player.setQuestUI8BH( getId(), 1 );
     };
 player.sendDebug( "questId: {}, calling Message:Scene00002 +2 ", getId() );
@@ -175,15 +175,10 @@ player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00004 +2 ", getId() 
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ENEMY0
-player.setQuestUI8AL( getId(), 1 );
-if( player.getQuestUI8AL( getId() ) == 1 ){
-player.setQuestUI8AL( getId(), 0 );
 player.updateQuest( getId(), 255 );
 player.setQuestUI8BH( getId(), 1 );
-}
     };
-player.sendDebug( "questId: {}, calling [sub:Execute](4)Talk, FadeOut:Scene00005 ENEMY0:UI8AL=-2, 1", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](4)Talk, FadeOut:Scene00005 ", getId() );
 
     player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
