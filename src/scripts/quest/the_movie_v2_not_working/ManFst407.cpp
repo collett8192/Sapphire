@@ -280,6 +280,10 @@ player.sendDebug( "questId: {}, calling Empty:Scene00002 ACTOR1", getId() );
     {
 //Target: ACTOR2
 //does not modify quest vars
+      if( result.param2 == 1 ){
+        player.eventFinish( getId(), 1 );
+        player.setPosAndSendActorMove( 0.64, -158.5, 13.4, 3.13 );
+      }
     };
 player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00003 ACTOR2", getId() );
 
