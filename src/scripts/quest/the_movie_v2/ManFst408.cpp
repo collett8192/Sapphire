@@ -1,7 +1,7 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: False
-//parsingResult: -2
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: False, DBM: False
+//parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
 #include "Manager/EventMgr.h"
@@ -55,13 +55,14 @@ class ManFst408 : public Sapphire::ScriptAPI::EventScript
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
 switch( player.getQuestSeq( getId() ) ){
 case 0:{
-//if( actor == 1006573 && player.getQuestUI8AL( getId() ) != 1 ) { Scene?????( player ); }
-//if( actor == 1004433 ) { Scene?????( player ); }
-Scene00000( player );
+//ACTOR0, UI8AL, 1, -2, False
+if( actor == 1006573 ) { Scene00000( player ); }
+//ACTOR1, null, 0, -2, False
+if( actor == 1004433 ) { Scene00002( player ); }
 break;
 }
 case 1:{
-Scene00002( player );
+Scene00003( player );
 break;
 }
 case 255:{
@@ -94,7 +95,7 @@ player.sendDebug( "questId: {}, calling QuestOffer:Scene00000 +1 ", getId() );
     {
 player.updateQuest( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00001 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00001 ACTOR0:UI8AL=-2, 1", getId() );
 
     player.playScene( getId(), 1, NONE, callback );
   }
@@ -103,11 +104,10 @@ player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-if( result.param2 == 1 ){
-player.updateQuest( getId(), 255 );
-}
+//Target: ACTOR1
+//does not modify quest vars
     };
-player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00002 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00002 ACTOR1", getId() );
 
     player.playScene( getId(), 2, NONE, callback );
   }

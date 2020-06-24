@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: True, A2: True, A3: False, S: True, R: False, DM: False, L: False
+//[switches]A: True, A2: True, A3: False, S: True, R: False, DM: False, L: False, DBM: False
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>

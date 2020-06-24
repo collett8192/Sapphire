@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: True, A2: False, A3: False, S: True, R: False, DM: False, L: False
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: True, DBM: False
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -69,7 +69,7 @@ if( actor == 1003254 && player.getQuestUI8BL( getId() ) != 1 ) { Scene00005( pla
 break;
 }
 case 255:{
-Scene00006( player );
+Scene00005( player );
 break;
 }
 default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId() ) ); break; }
@@ -166,21 +166,10 @@ player.sendDebug( "questId: {}, calling [sub:BranchTrue](3)Talk:Scene00004 ACTOR
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR3
-player.setQuestUI8BL( getId(), 1 );
-if( player.getQuestUI8AL( getId() ) == 1 ){
-if( player.getQuestUI8BH( getId() ) == 1 ){
-if( player.getQuestUI8BL( getId() ) == 1 ){
-player.setQuestUI8AL( getId(), 0 );
-player.setQuestUI8BH( getId(), 0 );
-player.setQuestUI8BL( getId(), 0 );
-player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
-}
-}
-}
+if( result.param1 > 0 && result.param2 == 1 )
+{ Scene00006( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00005 ACTOR3:UI8BL=-2, 1", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00005 +1 ", getId() );
 
     player.playScene( getId(), 5, NONE, callback );
   }
@@ -193,7 +182,7 @@ if( result.param2 == 1 ){
 if( player.giveQuestRewards( getId(), result.param3 ) ) player.finishQuest( getId() );
 }
     };
-player.sendDebug( "questId: {}, calling Talk, QuestReward, QuestComplete:Scene00006 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](5)Talk, QuestReward, QuestComplete:Scene00006 ACTOR3:UI8BL=-2, 1", getId() );
 
     player.playScene( getId(), 6, NONE, callback );
   }
