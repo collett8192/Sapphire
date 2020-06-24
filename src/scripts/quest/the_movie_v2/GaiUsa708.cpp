@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: False
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -65,16 +65,16 @@ break;
 }
 case 1:{
 //EOBJECT0, null, 0, -2, False
-if( actor == 2002549 ) { Scene00003( player ); }
+if( actor == 2002549 ) { Scene00005( player ); }
 //if( actorId == 4284978 && player.getQuestUI8BH( getId() ) != 1 ) { Scene?????( player ); }
 //EOBJECT1, null, 0, -2, False
-if( actor == 2002550 ) { Scene00005( player ); }
+if( actor == 2002550 ) { Scene00007( player ); }
 //if( actorId == 4284980 && player.getQuestUI8BL( getId() ) != 1 ) { Scene?????( player ); }
 //if( actorId == 57 && player.getQuestUI8AL( getId() ) != 4 ) { Scene?????( player ); }
 //ACTOR1, null, 0, -2, False
-if( actor == 1006732 ) { Scene00006( player ); }
+if( actor == 1006732 ) { Scene00008( player ); }
 //ACTOR2, null, 0, -2, False
-if( actor == 1006733 ) { Scene00007( player ); }
+if( actor == 1006733 ) { Scene00009( player ); }
 break;
 }
 case 255:{
@@ -132,11 +132,9 @@ player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: EOBJECT0
-//no valid quest var detected
 player.updateQuest( getId(), 255 );
     };
-player.sendDebug( "questId: {}, calling [sub:SkippedMsg](3)Inventory:Scene00002 EOBJECT0", getId() );
+player.sendDebug( "questId: {}, calling [sub:SkippedMsg](3)Inventory:Scene00002 ", getId() );
 
     player.playScene( getId(), 2, NONE, callback );
   }
@@ -145,9 +143,11 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](3)Inventory:Scene00002 
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+//Target: EOBJECT0
+//no valid quest var detected
 player.updateQuest( getId(), 255 );
     };
-player.sendDebug( "questId: {}, calling Message:Scene00003 +2 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:SkippedMsg](5)Message:Scene00003 +2 EOBJECT0", getId() );
 
     player.playScene( getId(), 3, NONE, callback );
   }
@@ -167,37 +167,33 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](3)Inventory:Scene00004 
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: EOBJECT1
-//no valid quest var detected
 player.updateQuest( getId(), 255 );
     };
-player.sendDebug( "questId: {}, calling Message:Scene00005 EOBJECT1", getId() );
+player.sendDebug( "questId: {}, calling Message:Scene00005 +2 ", getId() );
 
     player.playScene( getId(), 5, NONE, callback );
   }
 
   void Scene00006( Entity::Player& player )
   {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+//don't know how to do with this sub scene
+    };
+player.sendDebug( "questId: {}, calling [sub:SkippedMsg](5)Empty:Scene00006 ", getId() );
 
-
-//Target: ACTOR1
-//no valid quest var detected
-player.updateQuest( getId(), 255 );
-
-player.sendDebug( "questId: {}, calling Empty:Scene00006 ACTOR1", getId() );
-
-
+    player.playScene( getId(), 6, NONE, callback );
   }
 
   void Scene00007( Entity::Player& player )
   {
 
 
-//Target: ACTOR2
+//Target: EOBJECT1
 //no valid quest var detected
 player.updateQuest( getId(), 255 );
 
-player.sendDebug( "questId: {}, calling Empty:Scene00007 ACTOR2", getId() );
+player.sendDebug( "questId: {}, calling Empty:Scene00007 EOBJECT1", getId() );
 
 
   }

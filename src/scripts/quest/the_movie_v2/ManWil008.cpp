@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: True, A2: False, A3: False, S: False, R: False, DM: False
+//[switches]A: True, A2: False, A3: False, S: True, R: False, DM: False, L: False
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -69,11 +69,11 @@ if( actor == 1004002 ) { Scene00003( player ); }
 break;
 }
 case 2:{
-Scene00006( player );
+Scene00005( player );
 break;
 }
 case 255:{
-Scene00007( player );
+Scene00006( player );
 break;
 }
 default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId() ) ); break; }
@@ -132,7 +132,7 @@ player.sendDebug( "questId: {}, calling Talk, YesNo:Scene00002 ACTOR2:UI8AL=-2, 
     {
 { Scene00004( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk:Scene00003 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00003 +1 ", getId() );
 
     player.playScene( getId(), 3, NONE, callback );
   }
@@ -153,9 +153,10 @@ player.sendDebug( "questId: {}, calling [sub:BranchTrue](3)Talk:Scene00004 ACTOR
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//not used because scene condition is not parsed
+player.updateQuest( getId(), 255 );
+player.setQuestUI8BH( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling [sub:BranchFalse](3)Talk:Scene00005 ", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00005 ", getId() );
 
     player.playScene( getId(), 5, NONE, callback );
   }
@@ -164,10 +165,10 @@ player.sendDebug( "questId: {}, calling [sub:BranchFalse](3)Talk:Scene00005 ", g
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
+if( result.param1 > 0 && result.param2 == 1 )
+{ Scene00007( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00006 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00006 +1 ", getId() );
 
     player.playScene( getId(), 6, NONE, callback );
   }
@@ -180,7 +181,7 @@ if( result.param2 == 1 ){
 if( player.giveQuestRewards( getId(), result.param3 ) ) player.finishQuest( getId() );
 }
     };
-player.sendDebug( "questId: {}, calling Talk, QuestReward, QuestComplete:Scene00007 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](6)Talk, QuestReward, QuestComplete:Scene00007 ", getId() );
 
     player.playScene( getId(), 7, NONE, callback );
   }

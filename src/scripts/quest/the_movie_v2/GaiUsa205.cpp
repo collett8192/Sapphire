@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: False
 //parsingResult: -2
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -157,8 +157,8 @@ player.sendDebug( "questId: {}, calling NpcTrade:Scene00002 +1 ", getId() );
 
   void Scene00003( Entity::Player& player )
   {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
+
+
 //Target: ENEMY0
 player.setQuestUI8BL( getId(), 4 );
 if( player.getQuestUI8BL( getId() ) == 4 ){
@@ -170,10 +170,10 @@ player.setQuestUI8BH( getId(), 4 );
 player.setQuestUI8BL( getId(), 2 );
 }
 }
-    };
+
 player.sendDebug( "questId: {}, calling [sub:Execute](2)Empty:Scene00003 ENEMY0:UI8BL=-1, 4", getId() );
 
-    player.playScene( getId(), 3, NONE, callback );
+
   }
 
   void Scene00004( Entity::Player& player )
@@ -191,8 +191,8 @@ player.sendDebug( "questId: {}, calling NpcTrade:Scene00004 +2 ", getId() );
 
   void Scene00005( Entity::Player& player )
   {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
+
+
 //Target: ENEMY1
 player.setQuestUI8CH( getId(), 2 );
 if( player.getQuestUI8BL( getId() ) == 4 ){
@@ -204,10 +204,10 @@ player.setQuestUI8BH( getId(), 4 );
 player.setQuestUI8BL( getId(), 2 );
 }
 }
-    };
+
 player.sendDebug( "questId: {}, calling [sub:Execute](4)Empty:Scene00005 ENEMY1:UI8CH=-1, 2", getId() );
 
-    player.playScene( getId(), 5, NONE, callback );
+
   }
 
   void Scene00006( Entity::Player& player )

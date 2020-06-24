@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: True, A2: True, A3: False, S: True, R: False, DM: False
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: True
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -67,7 +67,7 @@ break;
 }
 case 2:{
 //EOBJECT0, null, 0, -2, False
-if( actor == 2002459 ) { Scene00004( player ); }
+if( actor == 2002459 ) { Scene00003( player ); }
 //if( actorId == 4309478 && player.getQuestUI8AL( getId() ) != 5 ) { Scene?????( player ); }
 //if( actorId == 4309481 && player.getQuestUI8AL( getId() ) != 5 ) { Scene?????( player ); }
 //if( actorId == 4309485 && player.getQuestUI8AL( getId() ) != 5 ) { Scene?????( player ); }
@@ -76,7 +76,7 @@ if( actor == 2002459 ) { Scene00004( player ); }
 break;
 }
 case 3:{
-Scene00005( player );
+Scene00004( player );
 break;
 }
 case 255:{
@@ -130,9 +130,9 @@ player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-{ Scene00003( player ); }
+player.updateQuest( getId(), 2 );
     };
-player.sendDebug( "questId: {}, calling Talk:Scene00002 +1 ", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00002 ", getId() );
 
     player.playScene( getId(), 2, NONE, callback );
   }
@@ -141,9 +141,11 @@ player.sendDebug( "questId: {}, calling Talk:Scene00002 +1 ", getId() );
   {
 
 
-player.updateQuest( getId(), 2 );
+//Target: EOBJECT0
+//no valid quest var detected
+player.updateQuest( getId(), 3 );
 
-player.sendDebug( "questId: {}, calling [sub:BranchTrue](2)Empty:Scene00003 ", getId() );
+player.sendDebug( "questId: {}, calling Empty:Scene00003 EOBJECT0", getId() );
 
 
   }
@@ -152,11 +154,9 @@ player.sendDebug( "questId: {}, calling [sub:BranchTrue](2)Empty:Scene00003 ", g
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: EOBJECT0
-//no valid quest var detected
-player.updateQuest( getId(), 3 );
+{ Scene00005( player ); }
     };
-player.sendDebug( "questId: {}, calling Message:Scene00004 EOBJECT0", getId() );
+player.sendDebug( "questId: {}, calling Message:Scene00004 +1 ", getId() );
 
     player.playScene( getId(), 4, NONE, callback );
   }
@@ -167,7 +167,7 @@ player.sendDebug( "questId: {}, calling Message:Scene00004 EOBJECT0", getId() );
     {
 player.updateQuest( getId(), 255 );
     };
-player.sendDebug( "questId: {}, calling Talk:Scene00005 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:BranchTrue](4)Talk:Scene00005 ", getId() );
 
     player.playScene( getId(), 5, NONE, callback );
   }

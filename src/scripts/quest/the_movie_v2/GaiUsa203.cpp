@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: True, A2: True, A3: False, S: False, R: False, DM: False
+//[switches]A: True, A2: True, A3: False, S: True, R: False, DM: False, L: False
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -71,22 +71,22 @@ Scene00002( player );
 break;
 }
 case 2:{
-Scene00003( player );
-break;
-}
-case 3:{
 Scene00004( player );
 break;
 }
+case 3:{
+Scene00006( player );
+break;
+}
 case 4:{
-Scene00007( player );
+Scene00008( player );
 break;
 }
 case 5:{
 //ACTOR1, UI8AL, 1, -2, False
 if( actor == 1002934 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00010( player ); }
 //ACTOR2, null, 0, -2, False
-if( actor == 1002935 ) { Scene00013( player ); }
+if( actor == 1002935 ) { Scene00012( player ); }
 break;
 }
 case 255:{
@@ -130,24 +130,23 @@ player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00
 
   void Scene00002( Entity::Player& player )
   {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+{ Scene00003( player ); }
+    };
+player.sendDebug( "questId: {}, calling Empty:Scene00002 +1 ", getId() );
 
-
-player.updateQuest( getId(), 2 );
-player.setQuestUI8BH( getId(), 1 );
-
-player.sendDebug( "questId: {}, calling Empty:Scene00002 ", getId() );
-
-
+    player.playScene( getId(), 2, NONE, callback );
   }
 
   void Scene00003( Entity::Player& player )
   {
 
 
-player.updateQuest( getId(), 3 );
+player.updateQuest( getId(), 2 );
 player.setQuestUI8BH( getId(), 1 );
 
-player.sendDebug( "questId: {}, calling Empty:Scene00003 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:BranchTrue](2)Empty:Scene00003 ", getId() );
 
 
   }
@@ -158,7 +157,7 @@ player.sendDebug( "questId: {}, calling Empty:Scene00003 ", getId() );
     {
 { Scene00005( player ); }
     };
-player.sendDebug( "questId: {}, calling Inventory:Scene00004 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Inventory:Scene00004 +1 ", getId() );
 
     player.playScene( getId(), 4, NONE, callback );
   }
@@ -167,9 +166,8 @@ player.sendDebug( "questId: {}, calling Inventory:Scene00004 +2 ", getId() );
   {
 
 
-player.updateQuest( getId(), 4 );
+player.updateQuest( getId(), 3 );
 player.setQuestUI8BH( getId(), 1 );
-player.setQuestUI8BL( getId(), 1 );
 
 player.sendDebug( "questId: {}, calling [sub:BranchTrue](4)Empty:Scene00005 ", getId() );
 
@@ -180,25 +178,38 @@ player.sendDebug( "questId: {}, calling [sub:BranchTrue](4)Empty:Scene00005 ", g
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//not used because scene condition is not parsed
+{ Scene00007( player ); }
     };
-player.sendDebug( "questId: {}, calling [sub:BranchFalse](4)Empty:Scene00006 ", getId() );
+player.sendDebug( "questId: {}, calling Empty:Scene00006 +1 ", getId() );
 
     player.playScene( getId(), 6, NONE, callback );
   }
 
   void Scene00007( Entity::Player& player )
   {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-{ Scene00008( player ); }
-    };
-player.sendDebug( "questId: {}, calling Empty:Scene00007 +2 ", getId() );
 
-    player.playScene( getId(), 7, NONE, callback );
+
+player.updateQuest( getId(), 4 );
+player.setQuestUI8BH( getId(), 1 );
+player.setQuestUI8BL( getId(), 1 );
+
+player.sendDebug( "questId: {}, calling [sub:BranchTrue](6)Empty:Scene00007 ", getId() );
+
+
   }
 
   void Scene00008( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+{ Scene00009( player ); }
+    };
+player.sendDebug( "questId: {}, calling Empty:Scene00008 +1 ", getId() );
+
+    player.playScene( getId(), 8, NONE, callback );
+  }
+
+  void Scene00009( Entity::Player& player )
   {
 
 
@@ -206,20 +217,9 @@ player.updateQuest( getId(), 5 );
 player.setQuestUI8BH( getId(), 1 );
 player.setQuestUI8BL( getId(), 1 );
 
-player.sendDebug( "questId: {}, calling [sub:BranchTrue](7)Empty:Scene00008 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:BranchTrue](8)Empty:Scene00009 ", getId() );
 
 
-  }
-
-  void Scene00009( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-//not used because scene condition is not parsed
-    };
-player.sendDebug( "questId: {}, calling [sub:BranchFalse](7)Empty:Scene00009 ", getId() );
-
-    player.playScene( getId(), 9, NONE, callback );
   }
 
   void Scene00010( Entity::Player& player )
@@ -228,7 +228,7 @@ player.sendDebug( "questId: {}, calling [sub:BranchFalse](7)Empty:Scene00009 ", 
     {
 { Scene00011( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, Inventory:Scene00010 +2 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, Inventory:Scene00010 +1 ", getId() );
 
     player.playScene( getId(), 10, NONE, callback );
   }
@@ -255,9 +255,10 @@ player.sendDebug( "questId: {}, calling [sub:BranchTrue](10)Talk:Scene00011 ACTO
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//not used because scene condition is not parsed
+//Target: ACTOR2
+//does not modify quest vars
     };
-player.sendDebug( "questId: {}, calling [sub:BranchFalse](10)Talk:Scene00012 ", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00012 ACTOR2", getId() );
 
     player.playScene( getId(), 12, NONE, callback );
   }
@@ -281,7 +282,8 @@ player.sendDebug( "questId: {}, calling Talk, QuestReward, QuestComplete:Scene00
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
 //Target: ACTOR2
-//does not modify quest vars
+//no valid quest var detected
+//next scene not found
     };
 player.sendDebug( "questId: {}, calling Talk:Scene00014 ACTOR2", getId() );
 

@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: False
 //parsingResult: -1
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -97,7 +97,7 @@ player.sendDebug( "questId: {}, calling QuestOffer:Scene00000 +1 ", getId() );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
 player.updateQuest( getId(), 255 );
-player.setQuestUI8BL( getId(), 1 );
+player.setQuestUI8BL( getId(), 2 );
     };
 player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00001 ", getId() );
 

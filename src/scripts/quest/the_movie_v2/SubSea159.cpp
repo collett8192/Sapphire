@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: True, A2: False, A3: False, S: True, R: False, DM: False
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: True
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -99,15 +99,15 @@ if( actor == 1007977 ) { Scene00012( player ); }
 //ACTOR9, null, 0, -2, False
 if( actor == 1007796 ) { Scene00013( player ); }
 //ACTOR1, null, 0, -2, False
-if( actor == 1007960 ) { Scene00015( player ); }
+if( actor == 1007960 ) { Scene00014( player ); }
 //ACTOR2, null, 0, -2, False
-if( actor == 1007961 ) { Scene00017( player ); }
+if( actor == 1007961 ) { Scene00015( player ); }
 //ACTOR3, null, 0, -2, False
-if( actor == 1007962 ) { Scene00018( player ); }
+if( actor == 1007962 ) { Scene00016( player ); }
 break;
 }
 case 255:{
-Scene00018( player );
+Scene00017( player );
 break;
 }
 default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId() ) ); break; }
@@ -292,23 +292,24 @@ player.sendDebug( "questId: {}, calling Empty:Scene00012 ACTOR8", getId() );
 
   void Scene00013( Entity::Player& player )
   {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-{ Scene00014( player ); }
-    };
-player.sendDebug( "questId: {}, calling Empty:Scene00013 +1 ", getId() );
 
-    player.playScene( getId(), 13, NONE, callback );
+
+//Target: ACTOR9
+//does not modify quest vars
+
+player.sendDebug( "questId: {}, calling Empty:Scene00013 ACTOR9", getId() );
+
+
   }
 
   void Scene00014( Entity::Player& player )
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR9
+//Target: ACTOR1
 //does not modify quest vars
     };
-player.sendDebug( "questId: {}, calling [sub:BranchTrue](13)Talk:Scene00014 ACTOR9", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00014 ACTOR1", getId() );
 
     player.playScene( getId(), 14, NONE, callback );
   }
@@ -317,9 +318,10 @@ player.sendDebug( "questId: {}, calling [sub:BranchTrue](13)Talk:Scene00014 ACTO
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-{ Scene00016( player ); }
+//Target: ACTOR2
+//does not modify quest vars
     };
-player.sendDebug( "questId: {}, calling Talk:Scene00015 +1 ", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00015 ACTOR2", getId() );
 
     player.playScene( getId(), 15, NONE, callback );
   }
@@ -328,10 +330,10 @@ player.sendDebug( "questId: {}, calling Talk:Scene00015 +1 ", getId() );
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR1
+//Target: ACTOR3
 //does not modify quest vars
     };
-player.sendDebug( "questId: {}, calling [sub:BranchTrue](15)Talk:Scene00016 ACTOR1", getId() );
+player.sendDebug( "questId: {}, calling Talk:Scene00016 ACTOR3", getId() );
 
     player.playScene( getId(), 16, NONE, callback );
   }
@@ -340,10 +342,10 @@ player.sendDebug( "questId: {}, calling [sub:BranchTrue](15)Talk:Scene00016 ACTO
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR2
-//does not modify quest vars
+if( result.param1 > 0 && result.param2 == 1 )
+{ Scene00018( player ); }
     };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00017 ACTOR2", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00017 +1 ", getId() );
 
     player.playScene( getId(), 17, NONE, callback );
   }
@@ -352,12 +354,11 @@ player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00017 ACTOR2", getId
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//Target: ACTOR3
 if( result.param2 == 1 ){
 if( player.giveQuestRewards( getId(), result.param3 ) ) player.finishQuest( getId() );
 }
     };
-player.sendDebug( "questId: {}, calling Talk, QuestReward, QuestComplete:Scene00018 ACTOR3", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](17)Talk, QuestReward, QuestComplete:Scene00018 ", getId() );
 
     player.playScene( getId(), 18, NONE, callback );
   }

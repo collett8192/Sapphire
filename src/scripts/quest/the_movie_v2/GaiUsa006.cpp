@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: True, A2: True, A3: False, S: True, R: False, DM: False
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: True
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -72,9 +72,9 @@ if( actor == 1000615 ) { Scene00008( player ); }
 //EOBJECT0, null, 0, -2, False
 if( actor == 2000720 ) { Scene00009( player ); }
 //EOBJECT1, null, 0, -2, False
-if( actor == 2000721 ) { Scene00011( player ); }
+if( actor == 2000721 ) { Scene00010( player ); }
 //EOBJECT2, null, 0, -2, False
-if( actor == 2000722 ) { Scene00013( player ); }
+if( actor == 2000722 ) { Scene00011( player ); }
 break;
 }
 default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId() ) ); break; }
@@ -206,40 +206,18 @@ player.sendDebug( "questId: {}, calling Talk, QuestReward, QuestComplete:Scene00
 
   void Scene00009( Entity::Player& player )
   {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-{ Scene00010( player ); }
-    };
-player.sendDebug( "questId: {}, calling Empty:Scene00009 +1 ", getId() );
-
-    player.playScene( getId(), 9, NONE, callback );
-  }
-
-  void Scene00010( Entity::Player& player )
-  {
 
 
 //Target: EOBJECT0
 //no valid quest var detected
 //next scene not found
 
-player.sendDebug( "questId: {}, calling [sub:BranchTrue](9)Empty:Scene00010 EOBJECT0", getId() );
+player.sendDebug( "questId: {}, calling Empty:Scene00009 EOBJECT0", getId() );
 
 
   }
 
-  void Scene00011( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-{ Scene00012( player ); }
-    };
-player.sendDebug( "questId: {}, calling Empty:Scene00011 +1 ", getId() );
-
-    player.playScene( getId(), 11, NONE, callback );
-  }
-
-  void Scene00012( Entity::Player& player )
+  void Scene00010( Entity::Player& player )
   {
 
 
@@ -247,23 +225,12 @@ player.sendDebug( "questId: {}, calling Empty:Scene00011 +1 ", getId() );
 //no valid quest var detected
 //next scene not found
 
-player.sendDebug( "questId: {}, calling [sub:BranchTrue](11)Empty:Scene00012 EOBJECT1", getId() );
+player.sendDebug( "questId: {}, calling Empty:Scene00010 EOBJECT1", getId() );
 
 
   }
 
-  void Scene00013( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-{ Scene00014( player ); }
-    };
-player.sendDebug( "questId: {}, calling Empty:Scene00013 +1 ", getId() );
-
-    player.playScene( getId(), 13, NONE, callback );
-  }
-
-  void Scene00014( Entity::Player& player )
+  void Scene00011( Entity::Player& player )
   {
 
 
@@ -271,7 +238,38 @@ player.sendDebug( "questId: {}, calling Empty:Scene00013 +1 ", getId() );
 //no valid quest var detected
 //next scene not found
 
-player.sendDebug( "questId: {}, calling [sub:BranchTrue](13)Empty:Scene00014 EOBJECT2", getId() );
+player.sendDebug( "questId: {}, calling Empty:Scene00011 EOBJECT2", getId() );
+
+
+  }
+
+  void Scene00012( Entity::Player& player )
+  {
+
+
+
+player.sendDebug( "questId: {}, calling Empty:Scene00012 ", getId() );
+
+
+  }
+
+  void Scene00013( Entity::Player& player )
+  {
+
+
+
+player.sendDebug( "questId: {}, calling Empty:Scene00013 ", getId() );
+
+
+  }
+
+  void Scene00014( Entity::Player& player )
+  {
+
+
+//next scene not found
+
+player.sendDebug( "questId: {}, calling Empty:Scene00014 ", getId() );
 
 
   }
