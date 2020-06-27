@@ -689,16 +689,25 @@ void Sapphire::World::Manager::TerritoryMgr::createAndJoinQuestBattle( Entity::P
 
 std::unordered_map< uint32_t, Sapphire::World::Manager::TerritoryMgr::InstanceSpawnInfo > Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo =
 {
-  { 210, { { 0, -0.2f, 8 }, -3.1416 } },
-  { 198, { { 0, 1.605f, 0 }, -3.1516 } },
-  { 204, { { 0, 0.5, 0 }, -3.1516 } },
+  { 212, { { 30, 1, 0 }, -3.1416 } },
+  { 210, { { 0, -0.2, 8 }, -3.1416 } },
+  { 198, { { 0, 1.605, 0 }, -3.1416 } },
+  { 204, { { 0, 0.5, 0 }, -3.1416 } },
   { 205, { { 31, 1.6, 25.5 }, -2.68533 } },
+  { 331, { { -102.31, 3.9, -33.8 }, 1.568 } },
+  { 351, { { -0, -2, 25 }, 3.1416 } },
+  { 395, { { -4, 0, 9 }, -3.1416 } },
 };
 
 std::unordered_map< uint32_t, uint32_t > Sapphire::World::Manager::TerritoryMgr::instanceExitEvent =
 {
+  //{ 131091, 212 }, scripted
   { 131085, 210 },
   { 131123, 198 },
   { 131075, 204 },
-  { 131076, 205 }, 
+  { 131076, 205 },
+  { 131138, 331 },
+  //{ 0, 335 }, no exit
+  { 131145, 351 },
+  { 131167, 395 },
 };
