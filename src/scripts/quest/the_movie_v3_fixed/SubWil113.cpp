@@ -1,4 +1,5 @@
 // FFXIVTheMovie.ParserV3
+//fix: remove credit in range, don't know why it parsed wrong
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -242,8 +243,6 @@ private:
     player.sendDebug( "SubWil113:66157 calling Scene00007: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.setQuestUI8AL( getId(), 2 );
-      checkProgressSeq2( player );
     };
     player.playScene( getId(), 7, NONE, callback );
   }

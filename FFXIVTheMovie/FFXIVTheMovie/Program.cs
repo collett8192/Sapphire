@@ -17,7 +17,7 @@ namespace FFXIVTheMovie
             //ParseV3();
             //return;
             List<string> list = new List<string>();
-            list.Add("ManWil007");
+            list.Add("ManFst300");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, @"C:\work\Sapphire\build\bin\tools\generated");
@@ -88,6 +88,16 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //result.Add("", "");
+                case "ManFst300":
+                    {
+                        result.Add("EOBJECT0", "dummy1");
+                        result.Add("EOBJECT1", "dummy2");
+                        result.Add("ACTOR5", "ZANTHAEL");
+                        result.Add("SCENE_7", "dummy1");
+                        result.Add("SCENE_9", "dummy2");
+                        result.Add("SCENE_11", "ZANTHAEL");
+                        break;
+                    }
                 case "SubWil066":
                     {
                         result.Add("SCENE_5", "KODOMOA");

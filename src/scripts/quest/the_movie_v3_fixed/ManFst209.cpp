@@ -1,4 +1,5 @@
 // FFXIVTheMovie.ParserV3
+//fix: skip dungeon
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -611,6 +612,7 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
+        checkProgressSeq4( player );
       }
     };
     player.playScene( getId(), 26, NONE, callback );
