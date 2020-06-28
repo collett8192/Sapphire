@@ -1,4 +1,5 @@
 // FFXIVTheMovie.ParserV3
+//fix: bnpc id
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -40,7 +41,7 @@ private:
       //seq 1 event item ITEM2 = UI8DH max stack 2
       case 1:
       {
-        if( actor == 12 || actorId == 12 ) // ENEMY0 = unknown
+        if( actor == 12 || actorId == 13 ) // ENEMY0 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 2 )
           {
@@ -48,7 +49,7 @@ private:
             checkProgressSeq1( player );
           }
         }
-        if( actor == 382 || actorId == 382 ) // ENEMY1 = unknown
+        if( actor == 382 || actorId == 636 ) // ENEMY1 = unknown
         {
           if( player.getQuestUI8BH( getId() ) != 2 )
           {
@@ -56,7 +57,7 @@ private:
             checkProgressSeq1( player );
           }
         }
-        if( actor == 389 || actorId == 389 ) // ENEMY2 = unknown
+        if( actor == 389 || actorId == 635 ) // ENEMY2 = unknown
         {
           if( player.getQuestUI8BL( getId() ) != 2 )
           {

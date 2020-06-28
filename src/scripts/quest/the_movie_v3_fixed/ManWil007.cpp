@@ -1,5 +1,5 @@
 // FFXIVTheMovie.ParserV3
-// simple method used
+//fix: skip quest battle
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -46,8 +46,8 @@ private:
       case 0:
       {
         Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=MOMODI
-        // +Callback Scene00001: Normal(CutScene), id=unknown
-        // +Callback Scene00002: Normal(QuestAccept), id=unknown
+                              // +Callback Scene00001: Normal(CutScene), id=unknown
+                              // +Callback Scene00002: Normal(QuestAccept), id=unknown
         break;
       }
       //seq 1 event item ITEM0 = UI8BH max stack 1
@@ -62,7 +62,7 @@ private:
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00004( player ); // Scene00004: NpcTrade(Talk, TargetCanMove), id=unknown
-            // +Callback Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=OWYNE
+                                  // +Callback Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=OWYNE
           }
         }
         break;
@@ -78,30 +78,24 @@ private:
         }
         if( actor == 1004002 || actorId == 1004002 ) // ACTOR2 = unknown
         {
-          Scene00007( player ); // Scene00007: Normal(None), id=unknown
+          Scene00009( player ); 
         }
         break;
       }
-      case 3:
-      {
-        Scene00008( player ); // Scene00008: Normal(QuestBattle, YesNo), id=unknown
-        break;
-      }
+
       case 255:
       {
-        if( actor == 1004005 || actorId == 1004005 ) // ACTOR1 = OWYNE
+        if( actor == 1004005 || actorId == 1004005 )
         {
-          Scene00009( player ); // Scene00009: Normal(Talk, TargetCanMove), id=OWYNE
+          Scene00011( player );
         }
-        if( actor == 1004003 || actorId == 1004003 ) // ACTOR3 = unknown
+        if( actor == 1004003 || actorId == 1004003 ) 
         {
-          Scene00010( player ); // Scene00010: Normal(CutScene), id=unknown
+          Scene00012( player );
         }
-        if( actor == 1004002 || actorId == 1004002 ) // ACTOR2 = SULTANSWORMA
+        if( actor == 1004002 || actorId == 1004002 ) 
         {
-          Scene00011( player ); // Scene00011: Normal(Talk, YesNo, TargetCanMove), id=SULTANSWORMA
-          // +Callback Scene00012: Normal(QuestReward), id=unknown
-          // +Callback Scene00013: Normal(CutScene, QuestComplete), id=unknown
+          Scene00014( player );
         }
         break;
       }
@@ -204,6 +198,8 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
+        player.eventFinish( getId(), 1 );
+        player.enterPredefinedPrivateInstance( 210 );
       }
     };
     player.playScene( getId(), 3, NONE, callback );
@@ -235,8 +231,7 @@ private:
   void Scene00006( Entity::Player& player )
   {
     player.sendDebug( "ManWil007:66087 calling Scene00006: Normal(None), id=unknown" );
-    player.setQuestUI8AL( getId(), 1 );
-    checkProgressSeq2( player );
+    Scene00008( player );
   }
 
   void Scene00007( Entity::Player& player )
@@ -251,7 +246,7 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        checkProgressSeq3( player );
+        Scene00010( player );
       }
     };
     player.playScene( getId(), 8, NONE, callback );
@@ -271,6 +266,9 @@ private:
     player.sendDebug( "ManWil007:66087 calling Scene00010: Normal(CutScene), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      checkProgressSeq3( player );
+      player.eventFinish( getId(), 1 );
+      player.enterPredefinedPrivateInstance( 210 );
     };
     player.playScene( getId(), 10, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -282,7 +280,8 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        Scene00012( player );
+        player.eventFinish( getId(), 1 );
+        player.enterPredefinedPrivateInstance( 210 );
       }
     };
     player.playScene( getId(), 11, NONE, callback );
@@ -308,6 +307,10 @@ private:
         player.finishQuest( getId() );
     };
     player.playScene( getId(), 13, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+  void Scene00014( Entity::Player& player )
+  {
+    player.playScene( getId(), 14, NONE, nullptr );
   }
 };
 

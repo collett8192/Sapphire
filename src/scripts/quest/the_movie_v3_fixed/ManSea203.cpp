@@ -1,4 +1,5 @@
 // FFXIVTheMovie.ParserV3
+//fix: skip dungeon
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -412,6 +413,7 @@ private:
     player.sendDebug( "ManSea203:65781 calling Scene00020: Normal(Talk, TargetCanMove), id=YELLOWJACKET" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      checkProgressSeq4( player );
     };
     player.playScene( getId(), 20, NONE, callback );
   }

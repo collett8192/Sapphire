@@ -1,5 +1,5 @@
 // FFXIVTheMovie.ParserV3
-// simple method used
+//fix: skip equipment check
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -45,18 +45,18 @@ private:
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
-            Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=BARTHOLOMEW
+            Scene00002( player );
           }
         }
-        if( actor == 1004093 || actorId == 1004093 ) // ACTOR2 = BARTHOLOMEW
+        if( actor == 1004093 || actorId == 1004093 ) // ACTOR2
         {
-          Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=BARTHOLOMEW
+          Scene00006( player ); 
         }
         break;
       }
       case 255:
       {
-        Scene00004( player ); // Scene00004: Normal(CutScene), id=unknown
+        Scene00008( player );
         break;
       }
       default:
@@ -99,11 +99,11 @@ private:
   }
   void checkProgressSeq1( Entity::Player& player )
   {
-    if( player.getQuestUI8AL( getId() ) == 1 )
-    {
-      player.setQuestUI8AL( getId(), 0 );
+    //if( player.getQuestUI8AL( getId() ) == 1 )
+    //{
+    //  player.setQuestUI8AL( getId(), 0 );
       player.updateQuest( getId(), 255 );
-    }
+    //}
   }
 
   void Scene00000( Entity::Player& player )
@@ -133,8 +133,7 @@ private:
     player.sendDebug( "ManWil009:66088 calling Scene00002: Normal(Talk, TargetCanMove), id=BARTHOLOMEW" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      player.setQuestUI8AL( getId(), 1 );
-      checkProgressSeq1( player );
+      Scene00003( player );
     };
     player.playScene( getId(), 2, NONE, callback );
   }
@@ -144,6 +143,7 @@ private:
     player.sendDebug( "ManWil009:66088 calling Scene00003: Normal(Talk, TargetCanMove), id=BARTHOLOMEW" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00004( player );
     };
     player.playScene( getId(), 3, NONE, callback );
   }
@@ -153,8 +153,36 @@ private:
     player.sendDebug( "ManWil009:66088 calling Scene00004: Normal(CutScene), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      checkProgressSeq1( player );
     };
     player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+  void Scene00005( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 5, NONE, callback );
+  }
+
+  void Scene00006( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 6, NONE, callback );
+  }
+
+  void Scene00008( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param2 == 1)
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+    };
+    player.playScene( getId(), 8, NONE, callback );
   }
 };
 
