@@ -258,6 +258,13 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
 
 }
 
+void Sapphire::Network::GameConnection::eventHandlerDismountReturn( const Packets::FFXIVARR_PACKET_RAW& inPacket,
+                                                                    Entity::Player& player )
+{
+  eventHandlerReturn( inPacket, player );
+  player.dismount();
+}
+
 void Sapphire::Network::GameConnection::eventHandlerLinkshell( const Packets::FFXIVARR_PACKET_RAW& inPacket,
                                                                Entity::Player& player )
 {
