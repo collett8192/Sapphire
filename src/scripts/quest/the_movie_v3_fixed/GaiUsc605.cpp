@@ -1,4 +1,5 @@
 // FFXIVTheMovie.ParserV3
+//fix: add code to enter workshop, fix event mount, add workaround message for bug
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
