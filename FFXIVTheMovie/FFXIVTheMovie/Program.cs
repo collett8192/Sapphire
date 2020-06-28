@@ -14,10 +14,10 @@ namespace FFXIVTheMovie
         static readonly string SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER = @"C:\work\Sapphire\build\bin\tools\generated";
         static void Main(string[] args)
         {
-            ParseV3();
-            return;
+            //ParseV3();
+            //return;
             List<string> list = new List<string>();
-            list.Add("GaiUse610");
+            list.Add("SubWil073");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, @"C:\work\Sapphire\build\bin\tools\generated");
@@ -88,6 +88,11 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //result.Add("", "");
+                case "SubWil064":
+                    {
+                        result.Add("SCENE_11", "dummy");
+                        break;
+                    }
                 case "GaiUse610":
                     {
                         result.Add("ACTOR3", "TATARU_2");

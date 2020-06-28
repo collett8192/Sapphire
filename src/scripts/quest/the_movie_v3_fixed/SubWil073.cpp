@@ -1,5 +1,5 @@
 // FFXIVTheMovie.ParserV3
-// simple method used
+//fix: weird lua structure, manual rewrite
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -57,51 +57,59 @@ private:
       {
         if( actor == 2000377 || actorId == 2000377 ) // EOBJECT0 = unknown
         {
-          // empty entry
-        }
-        if( actor == 3742257 || actorId == 3742257 ) // ENEMY0 = unknown
-        {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             player.setQuestUI8AL( getId(), 1 );
+            player.setQuestBitFlag8( getId(), 1, true );
+            player.setQuestUI8AH( getId(), player.getQuestUI8AH( getId() ) + 1 );
             checkProgressSeq1( player );
           }
         }
-        if( actor == 2000378 || actorId == 2000378 ) // EOBJECT1 = unknown
+        if( actor == 3742257 || actorId == 3742257 ) // ENEMY0 = unknown
         {
-          // empty entry
+
         }
-        if( actor == 3742258 || actorId == 3742258 ) // ENEMY1 = unknown
+        if( actor == 2000378 || actorId == 2000378 ) // EOBJECT1 = unknown
         {
           if( player.getQuestUI8BL( getId() ) != 1 )
           {
             player.setQuestUI8BL( getId(), 1 );
+            player.setQuestBitFlag8( getId(), 2, true );
+            player.setQuestUI8AH( getId(), player.getQuestUI8AH( getId() ) + 1 );
             checkProgressSeq1( player );
           }
         }
-        if( actor == 2000379 || actorId == 2000379 ) // EOBJECT2 = unknown
+        if( actor == 3742258 || actorId == 3742258 ) // ENEMY1 = unknown
         {
-          // empty entry
+
         }
-        if( actor == 3742259 || actorId == 3742259 ) // ENEMY2 = unknown
+        if( actor == 2000379 || actorId == 2000379 ) // EOBJECT2 = unknown
         {
           if( player.getQuestUI8CL( getId() ) != 1 )
           {
             player.setQuestUI8CL( getId(), 1 );
+            player.setQuestBitFlag8( getId(), 3, true );
+            player.setQuestUI8AH( getId(), player.getQuestUI8AH( getId() ) + 1 );
             checkProgressSeq1( player );
           }
         }
-        if( actor == 2000380 || actorId == 2000380 ) // EOBJECT3 = unknown
+        if( actor == 3742259 || actorId == 3742259 ) // ENEMY2 = unknown
         {
-          // empty entry
+
         }
-        if( actor == 3742261 || actorId == 3742261 ) // ENEMY3 = unknown
+        if( actor == 2000380 || actorId == 2000380 ) // EOBJECT3 = unknown
         {
           if( player.getQuestUI8DL( getId() ) != 1 )
           {
             player.setQuestUI8DL( getId(), 1 );
+            player.setQuestBitFlag8( getId(), 4, true );
+            player.setQuestUI8AH( getId(), player.getQuestUI8AH( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+        }
+        if( actor == 3742261 || actorId == 3742261 ) // ENEMY3 = unknown
+        {
+
         }
         break;
       }

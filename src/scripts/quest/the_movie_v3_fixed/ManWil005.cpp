@@ -1,4 +1,5 @@
 // FFXIVTheMovie.ParserV3
+//fix: skip quest battle
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -180,8 +181,7 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        player.setQuestUI8AL( getId(), 1 );
-        checkProgressSeq1( player );
+        Scene00005( player );
       }
     };
     player.playScene( getId(), 2, NONE, callback );

@@ -541,7 +541,7 @@ namespace FFXIVTheMovie.ParserV3
                         outputCpp.Add($"  void {scene3.SceneFunctionName}( Entity::Player& player )");
                         outputCpp.Add("  {");
                         outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling [{(entry.Var == null ? "BranchChain" : "BranchFalse")}]{scene3}\" );");
-                        if (scene3.Element != LuaScene.SceneElement.None)
+                        //if (scene3.Element != LuaScene.SceneElement.None)
                         {
                             outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
                             outputCpp.Add("    {");
@@ -577,6 +577,7 @@ namespace FFXIVTheMovie.ParserV3
                             outputCpp.Add("    };");
                             outputCpp.Add($"    player.playScene( getId(), {scene3.SceneNumber}, {((scene3.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : "NONE")}, callback );");
                         }
+                        /*
                         else
                         {
                             if (s > 0 && entry.Var != null)
@@ -586,6 +587,7 @@ namespace FFXIVTheMovie.ParserV3
                             if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
                                 outputCpp.Add($"    checkProgressSeq{seq.SeqNumber}( player );");
                         }
+                        */
                         outputCpp.Add("  }");
                     }
                 }

@@ -153,7 +153,7 @@ namespace FFXIVTheMovie.ParserV3
 
         public override bool CanHaveIdentity(string id)
         {
-            return id == "unknown";
+            return id == "unknown" || id.StartsWith("dummy");
         }
     }
 
@@ -178,7 +178,7 @@ namespace FFXIVTheMovie.ParserV3
         
         public override bool CanHaveIdentity(string id)
         {
-            return id == "unknown";
+            return id == "unknown" || id.StartsWith("dummy");
         }
     }
 
@@ -247,7 +247,7 @@ namespace FFXIVTheMovie.ParserV3
 
         public override bool CanHaveIdentity(string id)
         {
-            return id == "unknown";
+            return id == "unknown" || id.StartsWith("dummy");
         }
     }
 }

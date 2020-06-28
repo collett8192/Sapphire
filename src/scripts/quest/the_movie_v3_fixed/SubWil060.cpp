@@ -1,5 +1,5 @@
 // FFXIVTheMovie.ParserV3
-// simple method used
+//fix: no IsAnnounce lua function, manual rewrite
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -47,7 +47,7 @@ private:
       //seq 255 event item ITEM1 = UI8BL max stack 1
       case 255:
       {
-        Scene00003( player ); // Scene00003: Normal(None), id=unknown
+        Scene00004( player );
         break;
       }
       default:
@@ -130,9 +130,25 @@ private:
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "SubWil060:65839 calling Scene00003: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param2 == 1 )
+        Scene00005( player );
+    };
+    player.playScene( getId(), 4, NONE, callback );
+  }
+
+  void Scene00005( Entity::Player& player )
+  {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param2 == 1 )
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+    };
+    player.playScene( getId(), 5, NONE, callback );
   }
 };
 
