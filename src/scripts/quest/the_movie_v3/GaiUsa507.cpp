@@ -53,6 +53,7 @@ private:
         // +Callback Scene00004: Normal(Talk, TargetCanMove), id=HIHIRA
         break;
       }
+      //seq 3 event item ITEM0 = UI8BH max stack 5
       case 3:
       {
         Scene00005( player ); // Scene00005: NpcTrade(Talk), id=unknown
@@ -126,6 +127,11 @@ public:
     onProgress( player, param1, param1, 3, param1 );
   }
 
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
+  }
+
 private:
   void checkProgressSeq0( Entity::Player& player )
   {
@@ -138,11 +144,11 @@ private:
   }
   void checkProgressSeq2( Entity::Player& player )
   {
-    player.setQuestUI8BH( getId(), 0 );
     player.updateQuest( getId(), 3 );
   }
   void checkProgressSeq3( Entity::Player& player )
   {
+    player.setQuestUI8BH( getId(), 0 );
     player.updateQuest( getId(), 4 );
     player.setQuestUI8BH( getId(), 1 );
   }

@@ -58,6 +58,7 @@ private:
         }
         break;
       }
+      //seq 3 event item ITEM0 = UI8BH max stack 1
       case 3:
       {
         if( actor == 1006501 || actorId == 1006501 ) // ACTOR2 = MIMIDOA
@@ -121,6 +122,11 @@ public:
     onProgress( player, param1, param1, 3, param1 );
   }
 
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
+  }
+
 private:
   void checkProgressSeq0( Entity::Player& player )
   {
@@ -135,8 +141,8 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
-      player.setQuestUI8BH( getId(), 0 );
       player.updateQuest( getId(), 3 );
+      player.setQuestUI8BH( getId(), 1 );
     }
   }
   void checkProgressSeq3( Entity::Player& player )
@@ -144,6 +150,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestUI8BH( getId(), 0 );
       player.updateQuest( getId(), 255 );
       player.setQuestUI8BH( getId(), 1 );
     }

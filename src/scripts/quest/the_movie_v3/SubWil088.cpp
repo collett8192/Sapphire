@@ -126,6 +126,11 @@ public:
     onProgress( player, param1, param1, 3, param1 );
   }
 
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
+  }
+
 private:
   void checkProgressSeq0( Entity::Player& player )
   {

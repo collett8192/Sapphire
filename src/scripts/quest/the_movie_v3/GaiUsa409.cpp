@@ -42,6 +42,7 @@ private:
         // +Callback Scene00003: Normal(Talk, TargetCanMove), id=HELMHART
         break;
       }
+      //seq 2 event item ITEM0 = UI8BH max stack 3
       case 2:
       {
         Scene00004( player ); // Scene00004: Normal(Inventory), id=unknown
@@ -86,6 +87,11 @@ public:
     onProgress( player, param1, param1, 3, param1 );
   }
 
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
+  }
+
 private:
   void checkProgressSeq0( Entity::Player& player )
   {
@@ -94,11 +100,11 @@ private:
   }
   void checkProgressSeq1( Entity::Player& player )
   {
-    player.setQuestUI8BH( getId(), 0 );
     player.updateQuest( getId(), 2 );
   }
   void checkProgressSeq2( Entity::Player& player )
   {
+    player.setQuestUI8BH( getId(), 0 );
     player.updateQuest( getId(), 255 );
   }
 
