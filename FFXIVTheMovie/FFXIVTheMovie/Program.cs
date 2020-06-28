@@ -14,10 +14,10 @@ namespace FFXIVTheMovie
         static readonly string SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER = @"C:\work\Sapphire\build\bin\tools\generated";
         static void Main(string[] args)
         {
-            ParseV3();
-            return;
+            //ParseV3();
+            //return;
             List<string> list = new List<string>();
-            list.Add("GaiUsb904");
+            list.Add("GaiUsc605");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, @"C:\work\Sapphire\build\bin\tools\generated");

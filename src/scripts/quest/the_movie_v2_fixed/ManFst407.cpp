@@ -106,7 +106,7 @@ class ManFst407 : public Sapphire::ScriptAPI::EventScript
 switch( player.getQuestSeq( getId() ) ){
 case 0:{
 //ACTOR0, UI8AL, 1, -2, False
-if( actor == 1006555 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00000( player ); }
+if( actor == 1006555 ) { Scene00000( player ); }
 //ACTOR1, null, 0, -2, False
 if( actor == 1006530 ) { Scene00003( player ); }
 break;
@@ -251,11 +251,7 @@ player.sendDebug( "questId: {}, calling QuestOffer:Scene00000 +1 ", getId() );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
 //Target: ACTOR0
-player.setQuestUI8AL( getId(), 1 );
-if( player.getQuestUI8AL( getId() ) == 1 ){
-player.setQuestUI8AL( getId(), 0 );
-player.updateQuest( getId(), 1 );
-}
+      player.updateQuest( getId(), 1 );
     };
 player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept, FadeOut:Scene00001 ACTOR0:UI8AL=-2, 1", getId() );
 
