@@ -17,7 +17,7 @@ namespace FFXIVTheMovie
             //ParseV3();
             //return;
             List<string> list = new List<string>();
-            list.Add("ManFst300");
+            list.Add("GaiUsb904");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, @"C:\work\Sapphire\build\bin\tools\generated");

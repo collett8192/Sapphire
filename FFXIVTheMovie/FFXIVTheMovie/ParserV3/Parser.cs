@@ -229,6 +229,11 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("    onProgress( player, param1, param1, 3, param1 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
+            outputCpp.Add("  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override");
+            outputCpp.Add("  {");
+            outputCpp.Add("    onProgress( player, param1, param2, 4, 0 );");
+            outputCpp.Add("  }");
+            outputCpp.Add("");
             outputCpp.Add("private:");
             for (int s = 0; s < seqList.Count - 1; s++)
             {

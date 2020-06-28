@@ -1,6 +1,6 @@
 // This is an automatically generated C++ script template
 // SapphireTheMovieQuestReparser.ParserV2
-//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False
+//[switches]A: False, A2: False, A3: False, S: False, R: False, DM: False, L: False, DBM: False
 //parsingResult: 0
 #include "Manager/TerritoryMgr.h"
 #include <Actor/Player.h>
@@ -8,15 +8,15 @@
 #include <ScriptObject.h>
 #include <Service.h>
 
-// Quest Script: GaiUsb103_00822
-// Quest Name: When the Worm Turns
-// Quest ID: 66358
-// Start NPC: 1004917
-// End NPC: 1004917
+// Quest Script: GaiUsb512_00881
+// Quest Name: A Tall Drink of Aqua del Sol
+// Quest ID: 66417
+// Start NPC: 1006367
+// End NPC: 1006672
 
 using namespace Sapphire;
 
-class GaiUsb103 : public Sapphire::ScriptAPI::EventScript
+class GaiUsb512 : public Sapphire::ScriptAPI::EventScript
 {
   private:
     // Basic quest information 
@@ -32,25 +32,22 @@ class GaiUsb103 : public Sapphire::ScriptAPI::EventScript
 //      Seq0 = 0,
 //      Seq1 = 1,
 //      Seq2 = 2,
-//      Seq3 = 3,
 //      SeqFinish = 255,
     };
 
     // Entities found in the script data of the quest
-//    static constexpr auto Actor0 = 1004917;
-//    static constexpr auto Actor1 = 1007626;
-//    static constexpr auto Enemy0 = 356;
-//    static constexpr auto Enemy1 = 4293190;
-//    static constexpr auto Eobject0 = 2002046;
-//    static constexpr auto Eobject1 = 2002576;
+//    static constexpr auto Actor0 = 1006367;
+//    static constexpr auto Actor1 = 1006672;
+//    static constexpr auto Enemy0 = 4296986;
+//    static constexpr auto Eobject0 = 2002104;
+//    static constexpr auto EventActionLookoutLong = 41;
 //    static constexpr auto EventActionSearch = 1;
-//    static constexpr auto EventActionWaiting = 10;
-//    static constexpr auto Item0 = 2000645;
-//    static constexpr auto Item1 = 2000833;
+//    static constexpr auto Item0 = 2000688;
+//    static constexpr auto Item1 = 2000689;
 
   public:
-    GaiUsb103() : Sapphire::ScriptAPI::EventScript( 66358 ){}; 
-    ~GaiUsb103() = default; 
+    GaiUsb512() : Sapphire::ScriptAPI::EventScript( 66417 ){}; 
+    ~GaiUsb512() = default; 
 
   //////////////////////////////////////////////////////////////////////
   // Event Handlers
@@ -64,24 +61,18 @@ Scene00000( player );
 break;
 }
 case 1:{
-Scene00002( player );
+//EOBJECT0, null, 0, -2, False
+if( actor == 2002104 ) { Scene00002( player ); }
+//ENEMY0, UI8AL, 1, -2, False
+if( actorId == 4296986 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00003( player ); }
 break;
 }
 case 2:{
-Scene00003( player );
-break;
-}
-case 3:{
-//EOBJECT1, null, 0, -2, False
-if( actor == 2002576 ) { Scene00005( player ); }
-//ENEMY1, UI8AL, 1, -2, False
-if( actorId == 4293190 && player.getQuestUI8AL( getId() ) != 1 ) { Scene00007( player ); }
-//ACTOR1, null, 0, -2, False
-//if( actor == 1007626 ) { Scene00008( player ); }
+Scene00004( player );
 break;
 }
 case 255:{
-Scene00008( player );
+Scene00006( player );
 break;
 }
 default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId() ) ); break; }
@@ -93,7 +84,6 @@ default: { player.sendUrgent( "seq {} not defined.", player.getQuestSeq( getId()
 //    switch( npcId )
 //    {
 //      case Enemy0: { break; }
-//      case Enemy1: { break; }
 //    }
 onTalk( getId(), player, npcId );
   }
@@ -117,7 +107,7 @@ player.sendDebug( "questId: {}, calling QuestOffer:Scene00000 +1 ", getId() );
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-player.updateQuest( getId(), 2 );
+player.updateQuest( getId(), 1 );
 player.setQuestUI8BH( getId(), 1 );
     };
 player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00001 ", getId() );
@@ -127,40 +117,45 @@ player.sendDebug( "questId: {}, calling [sub:Accept](0)Talk, QuestAccept:Scene00
 
   void Scene00002( Entity::Player& player )
   {
-    //auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    //{
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+//Target: EOBJECT0
+//no valid quest var detected
 player.updateQuest( getId(), 2 );
 player.setQuestUI8BH( getId(), 1 );
-    //};
-player.sendDebug( "questId: {}, calling Inventory:Scene00002 ", getId() );
+    };
+player.sendDebug( "questId: {}, calling Unknown:Scene00002 EOBJECT0", getId() );
 
-    //player.playScene( getId(), 2, NONE, callback );
+    player.playScene( getId(), 2, NONE, callback );
   }
 
   void Scene00003( Entity::Player& player )
   {
-
-
-player.updateQuest( getId(), 3 );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+//Target: ENEMY0
+player.setQuestUI8AL( getId(), 1 );
+if( player.getQuestUI8AL( getId() ) == 1 ){
+player.setQuestUI8AL( getId(), 0 );
+player.updateQuest( getId(), 2 );
 player.setQuestUI8BH( getId(), 1 );
+}
+    };
+player.sendDebug( "questId: {}, calling Message:Scene00003 ENEMY0:UI8AL=-2, 1", getId() );
 
-player.sendDebug( "questId: {}, calling Empty:Scene00003 ", getId() );
-
-
+    player.playScene( getId(), 3, NONE, callback );
   }
 
   void Scene00004( Entity::Player& player )
   {
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+if( result.param1 > 0 && result.param2 == 1 )
+{ Scene00005( player ); }
+    };
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00004 +1 ", getId() );
 
-
-//Target: EOBJECT1
-//no valid quest var detected
-player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
-
-player.sendDebug( "questId: {}, calling [sub:SkippedMsg](5)Empty:Scene00004 EOBJECT1", getId() );
-
-
+    player.playScene( getId(), 4, NONE, callback );
   }
 
   void Scene00005( Entity::Player& player )
@@ -170,7 +165,7 @@ player.sendDebug( "questId: {}, calling [sub:SkippedMsg](5)Empty:Scene00004 EOBJ
 player.updateQuest( getId(), 255 );
 player.setQuestUI8BH( getId(), 1 );
     };
-player.sendDebug( "questId: {}, calling Message:Scene00005 +2 ", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](4)Talk:Scene00005 ", getId() );
 
     player.playScene( getId(), 5, NONE, callback );
   }
@@ -179,56 +174,27 @@ player.sendDebug( "questId: {}, calling Message:Scene00005 +2 ", getId() );
   {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-//don't know how to do with this sub scene
+if( result.param1 > 0 && result.param2 == 1 )
+{ Scene00007( player ); }
     };
-player.sendDebug( "questId: {}, calling [sub:SkippedMsg](5)Empty:Scene00006 ", getId() );
+player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00006 +1 ", getId() );
 
     player.playScene( getId(), 6, NONE, callback );
   }
 
   void Scene00007( Entity::Player& player )
   {
-
-
-//Target: ENEMY1
-player.setQuestUI8AL( getId(), 1 );
-if( player.getQuestUI8AL( getId() ) == 1 ){
-player.setQuestUI8AL( getId(), 0 );
-player.updateQuest( getId(), 255 );
-player.setQuestUI8BH( getId(), 1 );
-}
-
-player.sendDebug( "questId: {}, calling Empty:Scene00007 ENEMY1:UI8AL=-2, 1", getId() );
-
-
-  }
-
-  void Scene00008( Entity::Player& player )
-  {
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-if( result.param1 > 0 && result.param2 == 1 )
-{ Scene00009( player ); }
-    };
-player.sendDebug( "questId: {}, calling Talk, NpcTrade:Scene00008 +1 ", getId() );
-
-    player.playScene( getId(), 8, NONE, callback );
-  }
-
-  void Scene00009( Entity::Player& player )
-  {
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-//Target: ACTOR1
 if( result.param2 == 1 ){
 if( player.giveQuestRewards( getId(), result.param3 ) ) player.finishQuest( getId() );
 }
     };
-player.sendDebug( "questId: {}, calling [sub:Execute](8)Talk, QuestReward, QuestComplete:Scene00009 ACTOR1", getId() );
+player.sendDebug( "questId: {}, calling [sub:Execute](6)Talk, QuestReward, QuestComplete:Scene00007 ", getId() );
 
-    player.playScene( getId(), 9, NONE, callback );
+    player.playScene( getId(), 7, NONE, callback );
   }
 
 };
 
-EXPOSE_SCRIPT( GaiUsb103 );
+EXPOSE_SCRIPT( GaiUsb512 );

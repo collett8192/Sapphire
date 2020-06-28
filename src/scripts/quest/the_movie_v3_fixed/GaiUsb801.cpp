@@ -1,4 +1,5 @@
 // FFXIVTheMovie.ParserV3
+//fix: failed to move enemy credit to npc, no pop message
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -47,11 +48,6 @@ private:
         }
         if( actor == 4293113 || actorId == 4293113 ) // ENEMY0 = unknown
         {
-          if( player.getQuestUI8AL( getId() ) != 1 )
-          {
-            player.setQuestUI8AL( getId(), 1 );
-            checkProgressSeq1( player );
-          }
         }
         if( actor == 1006408 || actorId == 1006408 ) // ACTOR2 = NPCA
         {
@@ -143,6 +139,11 @@ public:
     onProgress( player, param1, param1, 3, param1 );
   }
 
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
+  }
+
 private:
   void checkProgressSeq0( Entity::Player& player )
   {
@@ -200,6 +201,11 @@ private:
     player.sendDebug( "GaiUsb801:66446 calling Scene00002: Normal(Talk, TargetCanMove), id=FRANCEL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      if( player.getQuestUI8AL( getId() ) != 1 )
+      {
+        player.setQuestUI8AL( getId(), 1 );
+        checkProgressSeq1( player );
+      }
     };
     player.playScene( getId(), 2, NONE, callback );
   }

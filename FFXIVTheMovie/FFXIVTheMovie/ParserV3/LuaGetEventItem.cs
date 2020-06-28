@@ -107,7 +107,7 @@ namespace FFXIVTheMovie.ParserV3
                                             i += 4;
                                         }
                                     }
-                                    if (itemList.Count > 1)
+                                    if (itemList.Count > 0)
                                     {
                                         result.SeqEventItems.Add(currentSeq, itemList);
                                     }
