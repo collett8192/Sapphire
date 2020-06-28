@@ -178,7 +178,11 @@ private:
   void Scene00097( Entity::Player& player )
   {
     player.sendDebug( "SubFst028:65707 calling [BranchChain]Scene00097: Normal(None), id=unknown" );
-    checkProgressSeq2( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq2( player );
+    };
+    player.playScene( getId(), 97, NONE, callback );
   }
 
   void Scene00003( Entity::Player& player )
@@ -208,6 +212,12 @@ private:
   void Scene00095( Entity::Player& player )
   {
     player.sendDebug( "SubFst028:65707 calling [BranchChain]Scene00095: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( player.giveQuestRewards( getId(), result.param3 ) )
+        player.finishQuest( getId() );
+    };
+    player.playScene( getId(), 95, NONE, callback );
   }
 };
 

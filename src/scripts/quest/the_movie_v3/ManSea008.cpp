@@ -49,6 +49,8 @@ private:
       case 255:
       {
         Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=JNASSHYM
+        // +Callback Scene00004: NpcTrade(Talk, TargetCanMove), id=BADERON
+        // +Callback Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=BADERON
         break;
       }
       default:
@@ -96,6 +98,7 @@ private:
   void checkProgressSeq2( Entity::Player& player )
   {
     player.updateQuest( getId(), 255 );
+    player.setQuestUI8BH( getId(), 1 );
   }
 
   void Scene00000( Entity::Player& player )
@@ -132,8 +135,34 @@ private:
     player.sendDebug( "ManSea008:66226 calling Scene00003: Normal(Talk, TargetCanMove), id=JNASSHYM" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00004( player );
     };
     player.playScene( getId(), 3, NONE, callback );
+  }
+  void Scene00004( Entity::Player& player )
+  {
+    player.sendDebug( "ManSea008:66226 calling [BranchTrue]Scene00004: NpcTrade(Talk, TargetCanMove), id=BADERON" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        Scene00005( player );
+      }
+    };
+    player.playScene( getId(), 4, NONE, callback );
+  }
+  void Scene00005( Entity::Player& player )
+  {
+    player.sendDebug( "ManSea008:66226 calling [BranchChain]Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=BADERON" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 5, NONE, callback );
   }
 };
 

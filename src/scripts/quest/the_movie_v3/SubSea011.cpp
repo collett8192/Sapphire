@@ -33,6 +33,7 @@ private:
       case 255:
       {
         Scene00001( player ); // Scene00001: Normal(None), id=unknown
+        // +Callback Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=HNAANZA
         break;
       }
       default:
@@ -90,6 +91,20 @@ private:
   void Scene00001( Entity::Player& player )
   {
     player.sendDebug( "SubSea011:65657 calling Scene00001: Normal(None), id=unknown" );
+    Scene00002( player );
+  }
+  void Scene00002( Entity::Player& player )
+  {
+    player.sendDebug( "SubSea011:65657 calling [BranchTrue]Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=HNAANZA" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 2, NONE, callback );
   }
 };
 

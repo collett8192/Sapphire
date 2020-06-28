@@ -41,6 +41,7 @@ private:
       case 255:
       {
         Scene00003( player ); // Scene00003: Normal(FadeIn), id=unknown
+        // +Callback Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ELUNED
         break;
       }
       default:
@@ -119,8 +120,22 @@ private:
     player.sendDebug( "GaiUsb508:66413 calling Scene00003: Normal(FadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00004( player );
     };
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+  void Scene00004( Entity::Player& player )
+  {
+    player.sendDebug( "GaiUsb508:66413 calling [BranchTrue]Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ELUNED" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 4, NONE, callback );
   }
 };
 

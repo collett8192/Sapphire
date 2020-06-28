@@ -100,6 +100,8 @@ private:
         if( actor == 1004002 || actorId == 1004002 ) // ACTOR2 = SULTANSWORMA
         {
           Scene00011( player ); // Scene00011: Normal(Talk, YesNo, TargetCanMove), id=SULTANSWORMA
+          // +Callback Scene00012: Normal(QuestReward), id=unknown
+          // +Callback Scene00013: Normal(CutScene, QuestComplete), id=unknown
         }
         break;
       }
@@ -280,9 +282,32 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
+        Scene00012( player );
       }
     };
     player.playScene( getId(), 11, NONE, callback );
+  }
+  void Scene00012( Entity::Player& player )
+  {
+    player.sendDebug( "ManWil007:66087 calling [BranchTrue]Scene00012: Normal(QuestReward), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        Scene00013( player );
+      }
+    };
+    player.playScene( getId(), 12, NONE, callback );
+  }
+  void Scene00013( Entity::Player& player )
+  {
+    player.sendDebug( "ManWil007:66087 calling [BranchChain]Scene00013: Normal(CutScene, QuestComplete), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( player.giveQuestRewards( getId(), result.param3 ) )
+        player.finishQuest( getId() );
+    };
+    player.playScene( getId(), 13, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 };
 

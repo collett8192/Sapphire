@@ -232,7 +232,11 @@ private:
   void Scene00008( Entity::Player& player )
   {
     player.sendDebug( "GaiUsa203:66262 calling [BranchChain]Scene00008: Normal(None), id=unknown" );
-    checkProgressSeq4( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq4( player );
+    };
+    player.playScene( getId(), 8, NONE, callback );
   }
 
   void Scene00009( Entity::Player& player )

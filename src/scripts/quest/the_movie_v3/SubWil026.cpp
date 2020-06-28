@@ -33,6 +33,7 @@ private:
       case 255:
       {
         Scene00001( player ); // Scene00001: Normal(Talk, FadeIn, TargetCanMove), id=DADANEN
+        // +Callback Scene00002: Normal(QuestReward, QuestComplete), id=unknown
         break;
       }
       default:
@@ -92,8 +93,22 @@ private:
     player.sendDebug( "SubWil026:66159 calling Scene00001: Normal(Talk, FadeIn, TargetCanMove), id=DADANEN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00002( player );
     };
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+  void Scene00002( Entity::Player& player )
+  {
+    player.sendDebug( "SubWil026:66159 calling [BranchTrue]Scene00002: Normal(QuestReward, QuestComplete), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 2, NONE, callback );
   }
 };
 

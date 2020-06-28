@@ -322,8 +322,10 @@ private:
   void Scene00015( Entity::Player& player )
   {
     player.sendDebug( "GaiUse214:66894 calling [BranchFalse]Scene00015: Normal(None), id=unknown" );
-    player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-    checkProgressSeq3( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 15, NONE, callback );
   }
 
   void Scene00016( Entity::Player& player )

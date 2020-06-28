@@ -591,6 +591,10 @@ private:
   void Scene00040( Entity::Player& player )
   {
     player.sendDebug( "SubSea110:65943 calling [BranchChain]Scene00040: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 40, NONE, callback );
   }
 
   void Scene00041( Entity::Player& player )
@@ -606,7 +610,11 @@ private:
   void Scene00043( Entity::Player& player )
   {
     player.sendDebug( "SubSea110:65943 calling [BranchChain]Scene00043: Normal(None), id=unknown" );
-    checkProgressSeq3( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq3( player );
+    };
+    player.playScene( getId(), 43, NONE, callback );
   }
 
   void Scene00044( Entity::Player& player )

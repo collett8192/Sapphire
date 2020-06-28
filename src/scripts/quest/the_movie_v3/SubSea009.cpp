@@ -35,6 +35,8 @@ private:
       case 255:
       {
         Scene00001( player ); // Scene00001: Normal(None), id=unknown
+        // +Callback Scene00002: NpcTrade(Talk, TargetCanMove), id=NDELIKA
+        // +Callback Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=NDELIKA
         break;
       }
       default:
@@ -74,6 +76,7 @@ private:
   void checkProgressSeq0( Entity::Player& player )
   {
     player.updateQuest( getId(), 255 );
+    player.setQuestUI8BH( getId(), 1 );
   }
 
   void Scene00000( Entity::Player& player )
@@ -92,6 +95,32 @@ private:
   void Scene00001( Entity::Player& player )
   {
     player.sendDebug( "SubSea009:65655 calling Scene00001: Normal(None), id=unknown" );
+    Scene00002( player );
+  }
+  void Scene00002( Entity::Player& player )
+  {
+    player.sendDebug( "SubSea009:65655 calling [BranchTrue]Scene00002: NpcTrade(Talk, TargetCanMove), id=NDELIKA" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        Scene00003( player );
+      }
+    };
+    player.playScene( getId(), 2, NONE, callback );
+  }
+  void Scene00003( Entity::Player& player )
+  {
+    player.sendDebug( "SubSea009:65655 calling [BranchChain]Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=NDELIKA" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 3, NONE, callback );
   }
 };
 

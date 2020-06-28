@@ -483,6 +483,10 @@ private:
   void Scene00028( Entity::Player& player )
   {
     player.sendDebug( "ManFst300:66047 calling [BranchChain]Scene00028: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 28, NONE, callback );
   }
 
   void Scene00029( Entity::Player& player )

@@ -138,8 +138,10 @@ private:
   void Scene00099( Entity::Player& player )
   {
     player.sendDebug( "SubSea107:65940 calling [BranchFalse]Scene00099: Normal(None), id=unknown" );
-    player.setQuestUI8AL( getId(), 1 );
-    checkProgressSeq1( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 99, NONE, callback );
   }
 
   void Scene00002( Entity::Player& player )
@@ -159,7 +161,11 @@ private:
   void Scene00097( Entity::Player& player )
   {
     player.sendDebug( "SubSea107:65940 calling [BranchChain]Scene00097: Normal(None), id=unknown" );
-    checkProgressSeq1( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq1( player );
+    };
+    player.playScene( getId(), 97, NONE, callback );
   }
 
   void Scene00003( Entity::Player& player )
@@ -189,6 +195,12 @@ private:
   void Scene00095( Entity::Player& player )
   {
     player.sendDebug( "SubSea107:65940 calling [BranchChain]Scene00095: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( player.giveQuestRewards( getId(), result.param3 ) )
+        player.finishQuest( getId() );
+    };
+    player.playScene( getId(), 95, NONE, callback );
   }
 };
 

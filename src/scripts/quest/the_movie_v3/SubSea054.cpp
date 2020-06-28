@@ -319,7 +319,11 @@ private:
   void Scene00005( Entity::Player& player )
   {
     player.sendDebug( "SubSea054:66002 calling [BranchChain]Scene00005: Normal(None), id=unknown" );
-    checkProgressSeq1( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq1( player );
+    };
+    player.playScene( getId(), 5, NONE, callback );
   }
 
   void Scene00006( Entity::Player& player )
@@ -471,8 +475,10 @@ private:
   void Scene00029( Entity::Player& player )
   {
     player.sendDebug( "SubSea054:66002 calling [BranchFalse]Scene00029: Normal(None), id=unknown" );
-    player.setQuestUI8AL( getId(), 1 );
-    checkProgressSeq4( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 29, NONE, callback );
   }
 
   void Scene00030( Entity::Player& player )
@@ -488,7 +494,11 @@ private:
   void Scene00032( Entity::Player& player )
   {
     player.sendDebug( "SubSea054:66002 calling [BranchChain]Scene00032: Normal(None), id=unknown" );
-    checkProgressSeq4( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq4( player );
+    };
+    player.playScene( getId(), 32, NONE, callback );
   }
 
   void Scene00033( Entity::Player& player )
@@ -515,7 +525,11 @@ private:
   void Scene00035( Entity::Player& player )
   {
     player.sendDebug( "SubSea054:66002 calling [BranchChain]Scene00035: Normal(None), id=unknown" );
-    checkProgressSeq5( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq5( player );
+    };
+    player.playScene( getId(), 35, NONE, callback );
   }
 
   void Scene00036( Entity::Player& player )
@@ -545,6 +559,12 @@ private:
   void Scene00038( Entity::Player& player )
   {
     player.sendDebug( "SubSea054:66002 calling [BranchChain]Scene00038: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( player.giveQuestRewards( getId(), result.param3 ) )
+        player.finishQuest( getId() );
+    };
+    player.playScene( getId(), 38, NONE, callback );
   }
 };
 

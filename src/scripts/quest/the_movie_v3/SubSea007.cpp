@@ -52,6 +52,7 @@ private:
       {
         Scene00003( player ); // Scene00003: NpcTrade(Talk, TargetCanMove), id=GODEBERT
         // +Callback Scene00004: Normal(Talk, TargetCanMove), id=GODEBERT
+        // +Callback Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RSUSHMO
         break;
       }
       default:
@@ -148,8 +149,22 @@ private:
     player.sendDebug( "SubSea007:65653 calling [BranchTrue]Scene00004: Normal(Talk, TargetCanMove), id=GODEBERT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00005( player );
     };
     player.playScene( getId(), 4, NONE, callback );
+  }
+  void Scene00005( Entity::Player& player )
+  {
+    player.sendDebug( "SubSea007:65653 calling [BranchChain]Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RSUSHMO" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 5, NONE, callback );
   }
 };
 

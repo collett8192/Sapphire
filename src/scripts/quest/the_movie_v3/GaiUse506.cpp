@@ -555,7 +555,11 @@ private:
   void Scene00024( Entity::Player& player )
   {
     player.sendDebug( "GaiUse506:65904 calling [BranchChain]Scene00024: Normal(None), id=unknown" );
-    checkProgressSeq3( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq3( player );
+    };
+    player.playScene( getId(), 24, NONE, callback );
   }
 
   void Scene00025( Entity::Player& player )
@@ -596,7 +600,11 @@ private:
   void Scene00030( Entity::Player& player )
   {
     player.sendDebug( "GaiUse506:65904 calling [BranchChain]Scene00030: Normal(None), id=unknown" );
-    checkProgressSeq4( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq4( player );
+    };
+    player.playScene( getId(), 30, NONE, callback );
   }
 
   void Scene00031( Entity::Player& player )

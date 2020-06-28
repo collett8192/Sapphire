@@ -611,6 +611,10 @@ private:
   void Scene00032( Entity::Player& player )
   {
     player.sendDebug( "GaiUse402:65589 calling [BranchChain]Scene00032: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 32, NONE, callback );
   }
 
   void Scene00033( Entity::Player& player )

@@ -44,6 +44,8 @@ private:
       case 255:
       {
         Scene00003( player ); // Scene00003: Normal(None), id=unknown
+        // +Callback Scene00004: NpcTrade(Talk, TargetCanMove), id=unknown
+        // +Callback Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=CUTHBERT
         break;
       }
       default:
@@ -87,6 +89,7 @@ private:
   void checkProgressSeq1( Entity::Player& player )
   {
     player.updateQuest( getId(), 255 );
+    player.setQuestUI8BH( getId(), 1 );
   }
 
   void Scene00000( Entity::Player& player )
@@ -120,6 +123,32 @@ private:
   void Scene00003( Entity::Player& player )
   {
     player.sendDebug( "GaiUsa609:66307 calling Scene00003: Normal(None), id=unknown" );
+    Scene00004( player );
+  }
+  void Scene00004( Entity::Player& player )
+  {
+    player.sendDebug( "GaiUsa609:66307 calling [BranchTrue]Scene00004: NpcTrade(Talk, TargetCanMove), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        Scene00005( player );
+      }
+    };
+    player.playScene( getId(), 4, NONE, callback );
+  }
+  void Scene00005( Entity::Player& player )
+  {
+    player.sendDebug( "GaiUsa609:66307 calling [BranchChain]Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=CUTHBERT" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 5, NONE, callback );
   }
 };
 

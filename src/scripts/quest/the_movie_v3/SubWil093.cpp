@@ -288,8 +288,10 @@ private:
   void Scene00017( Entity::Player& player )
   {
     player.sendDebug( "SubWil093:65878 calling [BranchFalse]Scene00017: Normal(None), id=unknown" );
-    player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-    checkProgressSeq1( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 17, NONE, callback );
   }
 
   void Scene00018( Entity::Player& player )

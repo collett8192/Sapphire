@@ -611,6 +611,10 @@ private:
   void Scene00022( Entity::Player& player )
   {
     player.sendDebug( "GaiUse606:65954 calling [BranchChain]Scene00022: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 22, NONE, callback );
   }
 
   void Scene00023( Entity::Player& player )
@@ -626,6 +630,10 @@ private:
   void Scene00025( Entity::Player& player )
   {
     player.sendDebug( "GaiUse606:65954 calling [BranchChain]Scene00025: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 25, NONE, callback );
   }
 
   void Scene00026( Entity::Player& player )
@@ -747,6 +755,10 @@ private:
   void Scene00047( Entity::Player& player )
   {
     player.sendDebug( "GaiUse606:65954 calling [BranchChain]Scene00047: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 47, NONE, callback );
   }
 
   void Scene00048( Entity::Player& player )
@@ -762,6 +774,10 @@ private:
   void Scene00050( Entity::Player& player )
   {
     player.sendDebug( "GaiUse606:65954 calling [BranchChain]Scene00050: Normal(None), id=ACTOR12" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 50, NONE, callback );
   }
 
   void Scene00051( Entity::Player& player )

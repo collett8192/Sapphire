@@ -351,7 +351,11 @@ private:
   void Scene00011( Entity::Player& player )
   {
     player.sendDebug( "GaiUse412:65616 calling [BranchChain]Scene00011: Normal(None), id=unknown" );
-    checkProgressSeq3( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq3( player );
+    };
+    player.playScene( getId(), 11, NONE, callback );
   }
 
   void Scene00012( Entity::Player& player )

@@ -48,6 +48,7 @@ private:
       case 255:
       {
         Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=JOCEA
+        // +Callback Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=PORTELAINE
         break;
       }
       default:
@@ -140,8 +141,22 @@ private:
     player.sendDebug( "GaiUsb605:66423 calling Scene00004: Normal(Talk, TargetCanMove), id=JOCEA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00005( player );
     };
     player.playScene( getId(), 4, NONE, callback );
+  }
+  void Scene00005( Entity::Player& player )
+  {
+    player.sendDebug( "GaiUsb605:66423 calling [BranchTrue]Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=PORTELAINE" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 5, NONE, callback );
   }
 };
 

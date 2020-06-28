@@ -45,6 +45,7 @@ private:
       {
         Scene00002( player ); // Scene00002: NpcTrade(Talk, TargetCanMove), id=SUNDHIMAL
         // +Callback Scene00003: Normal(Talk, TargetCanMove), id=SUNDHIMAL
+        // +Callback Scene00004: NpcTrade(Talk, TargetCanMove), id=LATISHA
         break;
       }
       default:
@@ -127,8 +128,17 @@ private:
     player.sendDebug( "SubSea005:65651 calling [BranchTrue]Scene00003: Normal(Talk, TargetCanMove), id=SUNDHIMAL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00004( player );
     };
     player.playScene( getId(), 3, NONE, callback );
+  }
+  void Scene00004( Entity::Player& player )
+  {
+    player.sendDebug( "SubSea005:65651 calling [BranchChain]Scene00004: NpcTrade(Talk, TargetCanMove), id=LATISHA" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 4, NONE, callback );
   }
 };
 

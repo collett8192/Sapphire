@@ -216,6 +216,12 @@ private:
   void Scene00008( Entity::Player& player )
   {
     player.sendDebug( "ManWil008:66177 calling [BranchChain]Scene00008: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( player.giveQuestRewards( getId(), result.param3 ) )
+        player.finishQuest( getId() );
+    };
+    player.playScene( getId(), 8, NONE, callback );
   }
 };
 

@@ -34,6 +34,7 @@ private:
       case 255:
       {
         Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=SYNTGOHT
+        // +Callback Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=SYNTGOHT
         break;
       }
       default:
@@ -102,8 +103,22 @@ private:
     player.sendDebug( "GaiUsb809:66454 calling Scene00002: Normal(Talk, TargetCanMove), id=SYNTGOHT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00003( player );
     };
     player.playScene( getId(), 2, NONE, callback );
+  }
+  void Scene00003( Entity::Player& player )
+  {
+    player.sendDebug( "GaiUsb809:66454 calling [BranchTrue]Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=SYNTGOHT" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 3, NONE, callback );
   }
 };
 

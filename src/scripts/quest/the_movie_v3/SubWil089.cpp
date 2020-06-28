@@ -236,6 +236,10 @@ private:
   void Scene00009( Entity::Player& player )
   {
     player.sendDebug( "SubWil089:65873 calling [BranchChain]Scene00009: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 9, NONE, callback );
   }
 
   void Scene00010( Entity::Player& player )
@@ -255,6 +259,10 @@ private:
   void Scene00012( Entity::Player& player )
   {
     player.sendDebug( "SubWil089:65873 calling [BranchChain]Scene00012: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 12, NONE, callback );
   }
 
   void Scene00013( Entity::Player& player )
@@ -277,6 +285,10 @@ private:
   void Scene00015( Entity::Player& player )
   {
     player.sendDebug( "SubWil089:65873 calling [BranchChain]Scene00015: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 15, NONE, callback );
   }
 
   void Scene00016( Entity::Player& player )
@@ -292,6 +304,10 @@ private:
   void Scene00018( Entity::Player& player )
   {
     player.sendDebug( "SubWil089:65873 calling [BranchChain]Scene00018: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 18, NONE, callback );
   }
 
   void Scene00019( Entity::Player& player )
@@ -307,6 +323,10 @@ private:
   void Scene00021( Entity::Player& player )
   {
     player.sendDebug( "SubWil089:65873 calling [BranchChain]Scene00021: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 21, NONE, callback );
   }
 };
 

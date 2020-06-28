@@ -251,8 +251,10 @@ private:
   void Scene00008( Entity::Player& player )
   {
     player.sendDebug( "SubFst067:65919 calling [BranchFalse]Scene00008: Normal(None), id=unknown" );
-    player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-    checkProgressSeq2( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 8, NONE, callback );
   }
 
   void Scene00009( Entity::Player& player )
@@ -328,6 +330,10 @@ private:
   void Scene00018( Entity::Player& player )
   {
     player.sendDebug( "SubFst067:65919 calling [BranchChain]Scene00018: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 18, NONE, callback );
   }
 
   void Scene00019( Entity::Player& player )
@@ -343,6 +349,10 @@ private:
   void Scene00021( Entity::Player& player )
   {
     player.sendDebug( "SubFst067:65919 calling [BranchChain]Scene00021: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 21, NONE, callback );
   }
 
   void Scene00022( Entity::Player& player )
@@ -358,6 +368,10 @@ private:
   void Scene00024( Entity::Player& player )
   {
     player.sendDebug( "SubFst067:65919 calling [BranchChain]Scene00024: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 24, NONE, callback );
   }
 };
 

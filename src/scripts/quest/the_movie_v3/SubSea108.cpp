@@ -278,6 +278,12 @@ private:
   void Scene00015( Entity::Player& player )
   {
     player.sendDebug( "SubSea108:65941 calling [BranchChain]Scene00015: Normal(None), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( player.giveQuestRewards( getId(), result.param3 ) )
+        player.finishQuest( getId() );
+    };
+    player.playScene( getId(), 15, NONE, callback );
   }
 };
 

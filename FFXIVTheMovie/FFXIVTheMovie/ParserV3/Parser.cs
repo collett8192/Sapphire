@@ -673,7 +673,14 @@ namespace FFXIVTheMovie.ParserV3
                     }
                 }
                 if (g != sceneGroupList.Count)
-                    throw new Exception();
+                {
+                    if (sceneGroupList[g].ContainsSceneElement(LuaScene.SceneElement.QuestReward))
+                    {
+                        allEntries[allEntries.Count - 1].EntryScene.SceneList.AddRange(sceneGroupList[g].SceneList);
+                    }
+                    else
+                        throw new Exception();
+                }
                 return true;
             }
             catch (Exception) { }

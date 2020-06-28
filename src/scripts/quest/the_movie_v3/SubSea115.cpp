@@ -37,6 +37,7 @@ private:
       case 255:
       {
         Scene00001( player ); // Scene00001: Normal(Talk, TargetCanMove), id=HALDBRODA
+        // +Callback Scene00100: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=HALDBRODA
         break;
       }
       default:
@@ -96,8 +97,22 @@ private:
     player.sendDebug( "SubSea115:65948 calling Scene00001: Normal(Talk, TargetCanMove), id=HALDBRODA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      Scene00100( player );
     };
     player.playScene( getId(), 1, NONE, callback );
+  }
+  void Scene00100( Entity::Player& player )
+  {
+    player.sendDebug( "SubSea115:65948 calling [BranchTrue]Scene00100: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=HALDBRODA" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+          player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 100, NONE, callback );
   }
 };
 
