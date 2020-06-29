@@ -46,14 +46,13 @@ private:
       //seq 1 event item ITEM0 = UI8BH max stack 3
       case 1:
       {
-        Scene00002( player ); // Scene00002: NpcTrade(None), id=unknown
-        // +Callback Scene00003: Normal(None), id=unknown
+
         break;
       }
       //seq 2 event item ITEM0 = UI8BH max stack 3
       case 2:
       {
-        Scene00004( player ); // Scene00004: Normal(None), id=unknown
+        Scene00002( player );
         break;
       }
       case 3:
@@ -143,7 +142,7 @@ public:
 private:
   void checkProgressSeq0( Entity::Player& player )
   {
-    player.updateQuest( getId(), 1 );
+    player.updateQuest( getId(), 2 );
     player.setQuestUI8BH( getId(), 3 );
   }
   void checkProgressSeq1( Entity::Player& player )
@@ -204,18 +203,22 @@ private:
   void Scene00002( Entity::Player& player )
   {
     player.sendDebug( "GaiUsc904:66575 calling Scene00002: NpcTrade(None), id=unknown" );
-    Scene00003( player );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param2 == 1 )
+        Scene00003( player );
+    };
+    player.playScene( getId(), 2, NONE, callback );
   }
   void Scene00003( Entity::Player& player )
   {
     player.sendDebug( "GaiUsc904:66575 calling [BranchTrue]Scene00003: Normal(None), id=unknown" );
-    checkProgressSeq1( player );
+    checkProgressSeq2( player );
   }
 
   void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsc904:66575 calling Scene00004: Normal(None), id=unknown" );
-    checkProgressSeq2( player );
+
   }
 
   void Scene00005( Entity::Player& player )

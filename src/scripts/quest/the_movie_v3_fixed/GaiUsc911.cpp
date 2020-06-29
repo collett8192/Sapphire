@@ -39,7 +39,7 @@ private:
       }
       case 1:
       {
-        if( actor == /*UNKNOWN*/1 || actorId == /*UNKNOWN*/1 ) // ENEMY0 or A3_28 == A0_25.ENEMY1 or A3_28 == A0_25.ENEMY2 or A3_28 == A0_25.ENEMY3 or A3_28 == A0_25.ENEMY4 = unknown
+        if( actorId == 61 || actorId == 53 || actorId == 59 || actorId == 58 || actorId == 60 ) // ENEMY0 or A3_28 == A0_25.ENEMY1 or A3_28 == A0_25.ENEMY2 or A3_28 == A0_25.ENEMY3 or A3_28 == A0_25.ENEMY4 = unknown
         {
           if( player.getQuestUI8BH( getId() ) != 3 )
           {
@@ -47,7 +47,7 @@ private:
             checkProgressSeq1( player );
           }
         }
-        if( actor == /*UNKNOWN*/1 || actorId == /*UNKNOWN*/1 ) // ENEMY5 or A3_28 == A0_25.ENEMY5 or A3_28 == A0_25.ENEMY5 = unknown
+        if( actorId == 269 ) // ENEMY5 or A3_28 == A0_25.ENEMY5 or A3_28 == A0_25.ENEMY5 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 3 )
           {

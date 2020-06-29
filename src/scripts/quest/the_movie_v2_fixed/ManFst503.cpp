@@ -255,6 +255,8 @@ player.sendDebug( "questId: {}, calling Empty:Scene00011 +1 ", getId() );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
 player.updateQuest( getId(), 255 );
+player.eventFinish( getId(), 1 );
+player.enterPredefinedPrivateInstance( 212 );
     };
 player.sendDebug( "questId: {}, calling [sub:CombinedCutScene](11)CutScene:Scene00012 ", getId() );
 
