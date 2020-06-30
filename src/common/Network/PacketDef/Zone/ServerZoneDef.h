@@ -1716,6 +1716,7 @@ namespace Sapphire::Network::Packets::Server
   struct FFXIVIpcMount : FFXIVIpcBasePacket< Mount >
   {
     uint32_t id;
+    uint32_t padding[3];
   };
 
   /**
