@@ -141,8 +141,17 @@ namespace FFXIVTheMovie.ParserV3
                     }
                     else
                     {
-                        var actor = constTable.ContainsKey(entry.TargetObject.Name) ? constTable[entry.TargetObject.Name].ToString() : "/*UNKNOWN*/1";
-                        outputCpp.Add($"        if( actor == {actor} || actorId == {actor} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}");
+
+                        if (entry.TargetObject is ActiveTerritory)
+                        {
+                            outputCpp.Add($"        if( type == 4 ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}");
+                        }
+                        else
+                        {
+                            var actor = constTable.ContainsKey(entry.TargetObject.Name) ? constTable[entry.TargetObject.Name].ToString() : "/*UNKNOWN*/1";
+                            outputCpp.Add($"        if( actor == {actor} || actorId == {actor} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}");
+                        }
+
                         outputCpp.Add("        {");
                         if (seq.SeqNumber > 0 && entry.Var != null)
                         {
@@ -494,7 +503,7 @@ namespace FFXIVTheMovie.ParserV3
                                 }
                             }
 
-                            if (scene3 != null && entry.Var == null)
+                            if (scene3 != null && (entry.Var == null || s == 0))
                             {
                                 outputCpp.Add($"{(hasIf ? "  " : "")}      {scene3.SceneFunctionName}( player );");
                             }
@@ -545,12 +554,12 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         outputCpp.Add($"  void {scene3.SceneFunctionName}( Entity::Player& player )");
                         outputCpp.Add("  {");
-                        outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling [{(entry.Var == null ? "BranchChain" : "BranchFalse")}]{scene3}\" );");
+                        outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling [{((entry.Var == null || s == 0) ? "BranchChain" : "BranchFalse")}]{scene3}\" );");
                         //if (scene3.Element != LuaScene.SceneElement.None)
                         {
                             outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
                             outputCpp.Add("    {");
-                            if (entry.Var == null || entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestComplete))
+                            if ((entry.Var == null || s == 0) || entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestComplete))
                             {
                                 bool hasIf = false;
                                 if ((scene3.Element & LuaScene.SceneElement.QuestReward) > 0)

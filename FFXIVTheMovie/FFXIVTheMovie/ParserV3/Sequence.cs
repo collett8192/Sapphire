@@ -94,6 +94,12 @@ namespace FFXIVTheMovie.ParserV3
                 if (TargetObject == null)
                     return EntryScene.SceneList.Count < 3;
 
+                if (!group.HasSubScenes && group.SceneList[0].Element == LuaScene.SceneElement.CutScene && this.Owner.SeqNumber == 0 && this != this.Owner.EntryList[0])
+                {
+                    if (this.Owner.EntryList[0].EntryScene.SceneList.Count < 3)
+                        return false;
+                }
+
                 if (!this.TargetObject.CanAssignSceneGroup(group))
                     return false;
                 if (EntryScene.SceneList.Count == 0)
@@ -105,15 +111,20 @@ namespace FFXIVTheMovie.ParserV3
                 var s = EntryScene.SceneList[EntryScene.SceneList.Count - 1];
                 if ((s.Element & LuaScene.SceneElement.PopBNpc) > 0 && (group.SceneList[0].Element | LuaScene.SceneElement.Talk) > 0)
                     return false;
+
                 if ((s.Element & LuaScene.SceneElement.CutScene) > 0)
-                    return group.SceneList.Count == 1 && ((group.SceneList[0].Element & LuaScene.SceneElement.QuestComplete) > 0);
+                {
+                    if (group.SceneList.Count == 1 && ((group.SceneList[0].Element & LuaScene.SceneElement.QuestComplete) > 0))
+                        return true;
+                }
+                
                 if (this.Var == null)
                 {
                     if (group.SceneList.Count == 1 && EntryScene.SceneList.Count == 2 && group.SceneList[0].Element != LuaScene.SceneElement.None)
                     {
                         return this.EntryScene.Identity != "unknown" && this.EntryScene.Identity == group.Identity;
                     }
-                }
+                }/*
                 else
                 {
                     if (group.SceneList.Count == 1 && EntryScene.SceneList.Count == 2)
@@ -122,6 +133,7 @@ namespace FFXIVTheMovie.ParserV3
                             return false;
                     }
                 }
+                */
                 return EntryScene.SceneList.Count + group.SceneList.Count <= 3;
             }
 

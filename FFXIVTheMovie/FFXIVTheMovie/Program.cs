@@ -14,14 +14,15 @@ namespace FFXIVTheMovie
         static readonly string SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER = @"C:\work\Sapphire\build\bin\tools\generated";
         static void Main(string[] args)
         {
-            //ParseV3();
-            //return;
+            ParseV3();
+            return;
+            //debug code below
             List<string> list = new List<string>();
-            list.Add("GaiUsc605");
+            list.Add("HeaVna707");
             foreach (var id in list)
             {
-                (var a, var b) = ReadSingleQuest(id, @"C:\work\Sapphire\build\bin\tools\generated");
-                var p = new ParserV3.Parser(id, @"C:\work\Sapphire\src\scripts\quest\the_movie_v3", a, b);
+                (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
+                var p = new ParserV3.Parser(id, Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest", "the_movie_v3"), a, b);
                 foreach (var hint in GetIdHintForQuest(id))
                 {
                     p.AddIdHint(hint.Key, hint.Value);
@@ -46,6 +47,7 @@ namespace FFXIVTheMovie
                 string questId = Path.GetFileNameWithoutExtension(scriptFile.Name);
                 if (implementedQuestIds.Contains(questId))
                     continue;
+                //add or remove any quest prefix
                 if (!questId.StartsWith("ManFst") &&
                     !questId.StartsWith("ManSea") &&
                     !questId.StartsWith("ManWil") &&
@@ -57,7 +59,8 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("GaiUsc") &&
                     !questId.StartsWith("GaiUsd") &&
                     !questId.StartsWith("GaiUse") &&
-                    !questId.StartsWith("GaiUsx")
+                    !questId.StartsWith("GaiUsx") &&
+                    !questId.StartsWith("HeaVna")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -87,7 +90,179 @@ namespace FFXIVTheMovie
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                //id hint used to parse certain quests, do not modify them.
                 //result.Add("", "");
+                case "HeaVna707":
+                    {
+                        result.Add("ENEMY0", "dummy0");
+                        result.Add("ENEMY1", "dummy1");
+                        result.Add("ENEMY2", "dummy2");
+                        result.Add("ENEMY3", "dummy3");
+                        result.Add("ENEMY4", "dummy4");
+                        result.Add("ENEMY5", "dummy5");
+                        result.Add("EOBJECT0", "dummye0");
+                        result.Add("SCENE_3", "dummy0");
+                        result.Add("SCENE_4", "dummy1");
+                        result.Add("SCENE_5", "dummy2");
+                        result.Add("SCENE_6", "dummy3");
+                        result.Add("SCENE_7", "dummy4");
+                        result.Add("SCENE_8", "dummy5");
+                        result.Add("SCENE_9", "dummye0");
+                        break;
+                    }
+                case "HeaVna705":
+                    {
+                        result.Add("SCENE_3", "ESTINIEN");
+                        result.Add("SCENE_7", "dummy0");
+                        result.Add("SCENE_8", "dummy1");
+                        result.Add("SCENE_9", "dummy2");
+                        result.Add("SCENE_10", "dummy3");
+                        result.Add("SCENE_11", "dummy4");
+                        result.Add("SCENE_12", "dummy5");
+                        result.Add("SCENE_13", "dummy6");
+                        result.Add("SCENE_14", "dummye0");
+                        result.Add("ENEMY0", "dummy0");
+                        result.Add("ENEMY1", "dummy1");
+                        result.Add("ENEMY2", "dummy2");
+                        result.Add("ENEMY3", "dummy3");
+                        result.Add("ENEMY4", "dummy4");
+                        result.Add("ENEMY5", "dummy5");
+                        result.Add("ENEMY6", "dummy6");
+                        result.Add("EOBJECT0", "dummye0");
+                        break;
+                    }
+                case "HeaVna704":
+                    {
+                        result.Add("SCENE_35", "dummy");
+                        result.Add("SCENE_36", "dummy");
+                        result.Add("SCENE_38", "GUIDANCESYSTEM");
+                        break;
+                    }
+                case "HeaVna703":
+                    {
+                        result.Add("SCENE_15", "GUIDANCESYSTEM");
+                        break;
+                    }
+                case "HeaVna702":
+                    {
+                        result.Add("EOBJECT0", "dummy0");
+                        result.Add("EOBJECT1", "dummy1");
+                        result.Add("EOBJECT2", "dummy2");
+                        result.Add("EOBJECT3", "dummy3");
+                        result.Add("SCENE_8", "dummy0");
+                        result.Add("SCENE_10", "dummy1");
+                        result.Add("SCENE_12", "dummy2");
+                        result.Add("SCENE_24", "dummy3");
+                        break;
+                    }
+                case "HeaVna613":
+                    {
+                        result.Add("SCENE_35", "EDMONT");
+                        break;
+                    }
+                case "HeaVna604":
+                    {
+                        result.Add("SCENE_13", "TATARU");
+                        break;
+                    }
+                case "HeaVna603":
+                    {
+                        result.Add("SCENE_4", "KANESENNA");
+                        result.Add("SCENE_13", "YMHITRA");
+                        break;
+                    }
+                case "HeaVna507":
+                    {
+                        result.Add("SCENE_2", "ALPHINAUD");
+                        break;
+                    }
+                case "HeaVna405":
+                    {
+                        result.Add("SCENE_3", "AYMERIC");
+                        result.Add("SCENE_5", "AYMERIC");
+                        break;
+                    }
+                case "HeaVna335":
+                    {
+                        result.Add("SCENE_2", "ESTINIEN");
+                        break;
+                    }
+                case "HeaVna333":
+                    {
+                        result.Add("SCENE_3", "CID");
+                        break;
+                    }
+                case "HeaVna332":
+                    {
+                        result.Add("SCENE_13", "TEMPLEKIGHTGATE");
+                        break;
+                    }
+                case "HeaVna330":
+                    {
+                        result.Add("SCENE_4", "BARTHOLOMEW");
+                        break;
+                    }
+                case "HeaVna318":
+                    {
+                        result.Add("SCENE_5", "DOORMANLOTUS");
+                        result.Add("SCENE_12", "ESTINIEN");
+                        break;
+                    }
+                case "HeaVna317":
+                    {
+                        result.Add("EOBJECT0", "dummyESTINIEN");
+                        result.Add("EOBJECT1", "dummy");
+                        result.Add("EOBJECT2", "dummyICEHEART");
+                        result.Add("SCENE_8", "dummyESTINIEN");
+                        result.Add("SCENE_12", "dummyICEHEART");
+                        break;
+                    }
+                case "HeaVna315":
+                    {
+                        result.Add("SCENE_6", "dummy0");
+                        break;
+                    }
+                case "HeaVna314":
+                    {
+                        result.Add("ACTOR5", "ICEHEART");
+                        result.Add("ACTOR6", "null");
+                        result.Add("ACTOR7", "null");
+                        result.Add("ACTOR8", "null");
+                        result.Add("ACTOR9", "null");
+                        result.Add("ACTOR10", "null");
+                        result.Add("ACTOR11", "null");
+                        break;
+                    }
+                case "HeaVna303":
+                    {
+                        result.Add("ENEMY0", "dummy0");
+                        result.Add("ENEMY1", "dummy1");
+                        result.Add("SCENE_13", "dummy0");
+                        result.Add("SCENE_14", "dummy1");
+                        break;
+                    }
+                case "HeaVna302":
+                    {
+                        result.Add("SCENE_9", "TEMPLEKIGHTGATE");
+                        result.Add("SCENE_13", "ALPHINAUD");
+                        break;
+                    }
+                case "HeaVna203":
+                    {
+                        result.Add("SCENE_9", "HOUZAN");
+                        result.Add("SCENE_36", "PAPASHAN_2");
+                        break;
+                    }
+                case "HeaVna113":
+                    {
+                        result.Add("SCENE_19", "MARIELLE_2");
+                        break;
+                    }
+                case "HeaVna105":
+                    {
+                        result.Add("SCENE_25", "ROTHE_2");
+                        break;
+                    }
                 case "ManFst300":
                     {
                         result.Add("EOBJECT0", "dummy1");
