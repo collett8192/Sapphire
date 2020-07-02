@@ -10,8 +10,8 @@ namespace FFXIVTheMovie
 {
     public static class Program
     {
-        static readonly string SAPPHIRE_SRC_FOLDER = @"C:\work\Sapphire\src";
-        static readonly string SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER = @"C:\work\Sapphire\build\bin\tools\generated";
+        static readonly string SAPPHIRE_SRC_FOLDER = @"C:\Users\Null-\Documents\FFXIV\Source\src";
+        static readonly string SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER = @"C:\Users\Null-\Documents\FFXIV\generated";
         static void Main(string[] args)
         {
             ParseV3();
@@ -21,8 +21,8 @@ namespace FFXIVTheMovie
             list.Add("HeaVna707");
             foreach (var id in list)
             {
-                (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
-                var p = new ParserV3.Parser(id, Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest", "the_movie_v3"), a, b);
+                (var a, var b) = ReadSingleQuest(id, @"C:\Users\Null-\Documents\FFXIV\generated");
+                var p = new ParserV3.Parser(id, @"C:\Users\Null-\Documents\FFXIV\collett\src\scripts\quest\the_movie_v3", a, b);
                 foreach (var hint in GetIdHintForQuest(id))
                 {
                     p.AddIdHint(hint.Key, hint.Value);
@@ -37,7 +37,7 @@ namespace FFXIVTheMovie
         {
             HashSet<string> implementedQuestIds = new HashSet<string>();
             string questScriptFolder = Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest");
-            string outputFolder = Path.Combine(questScriptFolder, "the_movie_v3");
+            string outputFolder = Path.Combine(questScriptFolder, "collett");
 
             AddAllScripts(new DirectoryInfo(questScriptFolder), implementedQuestIds);
             int parsed = 0, failed = 0;
