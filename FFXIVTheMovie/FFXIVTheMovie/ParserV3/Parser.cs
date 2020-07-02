@@ -231,6 +231,21 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("  void onBNpcKill( uint32_t npcId, Entity::Player& player ) override");
             outputCpp.Add("  {");
             outputCpp.Add("    onProgress( player, npcId, 0, 2, 0 );");
+            /*outputCpp.Add("    if(npcId != enemy0 ");
+            outputCpp.Add("         return;");
+            outputCpp.Add("");
+            outputCpp.Add("    auto credit = player.getENEMYQUESTUIFLAG( getId() );");
+            outputCpp.Add("");
+            outputCpp.Add("    if( credit + 1 >= VALUE FOR CONTINUE)");
+            outputCpp.Add("    {");
+            outputCpp.Add("         player.sendQuestMessage( getId(), message ID, 0, credit + 1, VALUE FOR CONTINUE);");
+            outputCpp.Add("         player.updateQuest( getId(), NEXT QUEST SEQ);");
+            outputCpp.Add("    }");
+            outputCpp.Add("    else");
+            outputCpp.Add("    {");
+            outputCpp.Add("         player.sendQuestMessage( getId(), message ID, 0, credit + 1, VALUE FOR CONTINUE );");
+            outputCpp.Add("         player.setENEMYQUESTUIFLAG( getId(), credit + 1 );");
+            outputCpp.Add("    }");*/
             outputCpp.Add("  }");
             outputCpp.Add("");
             outputCpp.Add("  void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override");
@@ -244,6 +259,10 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("  }");
             outputCpp.Add("");
             outputCpp.Add("private:");
+            /*outputCpp.Add(" void checkQuestCompletion( Entity::Player& player )");
+            outputCpp.Add(" {");
+            outputCpp.Add("");
+            outputCpp.Add(" };");*/
             for (int s = 0; s < seqList.Count - 1; s++)
             {
                 var seq = seqList[s];
