@@ -98,7 +98,7 @@ namespace FFXIVTheMovie.ParserV3
             }
             outputCpp.Add("");
             outputCpp.Add("private:");
-            outputCpp.Add("  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )");
+            outputCpp.Add("  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )");
             outputCpp.Add("  {");
             outputCpp.Add("    switch( player.getQuestSeq( getId() ) )");
             outputCpp.Add("    {");
@@ -149,7 +149,7 @@ namespace FFXIVTheMovie.ParserV3
                         else
                         {
                             var actor = constTable.ContainsKey(entry.TargetObject.Name) ? constTable[entry.TargetObject.Name].ToString() : "/*UNKNOWN*/1";
-                            outputCpp.Add($"        if( actor == {actor} || actorId == {actor} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}");
+                            outputCpp.Add($"        if( param1 == {actor} || param2 == {actor} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}");
                         }
 
                         outputCpp.Add("        {");
@@ -235,7 +235,7 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("");
             outputCpp.Add("  void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override");
             outputCpp.Add("  {");
-            outputCpp.Add("    onProgress( player, param1, param1, 3, param1 );");
+            outputCpp.Add("    onProgress( player, param1, param1, 3, 0 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
             outputCpp.Add("  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override");
