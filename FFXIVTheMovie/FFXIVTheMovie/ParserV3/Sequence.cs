@@ -149,6 +149,10 @@ namespace FFXIVTheMovie.ParserV3
                     if (this.TargetObject.IsPrefferedGroup(sceneGroup))
                         return true;
                 }
+                if (EntryScene.SceneList.Count > 0 && !sceneGroup.HasSubScenes && sceneGroup.SceneList[0].Element == LuaScene.SceneElement.CutScene && this.Var != null)
+                {
+                    return true;
+                }
                 if (EntryScene.SceneList.Count == 1 && EntryScene.SceneList[0].Element == LuaScene.SceneElement.Inventory)
                 {
                     return true;
