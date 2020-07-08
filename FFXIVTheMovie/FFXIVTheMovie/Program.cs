@@ -18,7 +18,7 @@ namespace FFXIVTheMovie
             return;
             //debug code below
             List<string> list = new List<string>();
-            list.Add("HeaVnc111");
+            list.Add("HeaVnd106");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -62,7 +62,8 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("GaiUsx") &&
                     !questId.StartsWith("HeaVna") &&
                     !questId.StartsWith("HeaVnb") &&
-                    !questId.StartsWith("HeaVnc")
+                    !questId.StartsWith("HeaVnc") &&
+                    !questId.StartsWith("HeaVnd")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -94,6 +95,11 @@ namespace FFXIVTheMovie
             {
                 //id hint used to parse certain quests, do not modify them.
                 //result.Add("", "");
+                case "HeaVnd106":
+                    {
+                        result.Add("SCENE_9", "ALPHINAUD");
+                        break;
+                    }
                 case "HeaVnc111":
                     {
                         result.Add("SCENE_2", "dummy");
