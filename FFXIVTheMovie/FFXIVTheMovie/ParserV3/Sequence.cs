@@ -71,6 +71,8 @@ namespace FFXIVTheMovie.ParserV3
             {
                 if (Var != null)
                     return true;
+                if (this.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestAccept))
+                    return true;
                 if (TargetObject is ActiveActor)
                     return false;
                 return true;
