@@ -63,7 +63,8 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("HeaVna") &&
                     !questId.StartsWith("HeaVnb") &&
                     !questId.StartsWith("HeaVnc") &&
-                    !questId.StartsWith("HeaVnd")
+                    !questId.StartsWith("HeaVnd") &&
+                    !questId.StartsWith("HeaVne")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
