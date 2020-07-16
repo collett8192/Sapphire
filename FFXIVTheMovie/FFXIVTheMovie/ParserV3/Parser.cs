@@ -104,6 +104,20 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("    {");
             foreach (var seq in seqList)
             {
+                foreach (var entry in seq.EntryList)
+                {
+                    int i = 0;
+                    while (entry.EntryScene.SceneList.Count > 1 && i < entry.EntryScene.SceneList.Count)
+                    {
+                        if (entry.EntryScene.SceneList[i].Element == LuaScene.SceneElement.None)
+                            entry.EntryScene.SceneList.RemoveAt(i);
+                        else
+                            i++;
+                    }
+                }
+            }
+            foreach (var seq in seqList)
+            {
                 var eventItemList = fGetEventItem != null ? (fGetEventItem.SeqEventItems.ContainsKey(seq.SeqNumber) ? fGetEventItem.SeqEventItems[seq.SeqNumber] : null) : null;
                 if (eventItemList != null)
                 {
