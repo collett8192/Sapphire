@@ -62,6 +62,7 @@ Sapphire::World::Manager::DebugCommandMgr::DebugCommandMgr()
   registerCommand( "questbattle", &DebugCommandMgr::questBattle, "Quest battle utilities", 1 );
   registerCommand( "qb", &DebugCommandMgr::questBattle, "Quest battle utilities", 1 );
   registerCommand( "housing", &DebugCommandMgr::housing, "Housing utilities", 1 );
+  registerCommand( "black", &DebugCommandMgr::black, "Unstuck from black loading screen", 0 );
 }
 
 // clear all loaded commands
@@ -1286,4 +1287,9 @@ void Sapphire::World::Manager::DebugCommandMgr::housing( char* data, Entity::Pla
   {
     player.sendDebug( "Unknown sub command." );
   }
+}
+
+void Sapphire::World::Manager::DebugCommandMgr::black( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command )
+{
+  player.forceZoneing();
 }

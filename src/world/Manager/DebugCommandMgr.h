@@ -58,6 +58,8 @@ namespace Sapphire::World::Manager
 
     void script( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
 
+    void black( char* data, Entity::Player& player, std::shared_ptr< DebugCommand > command );
+
   };
 
 }
