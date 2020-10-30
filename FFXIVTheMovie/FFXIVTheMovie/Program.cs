@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("LucKbb201");
+            list.Add("StmBdz001");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -100,6 +100,33 @@ namespace FFXIVTheMovie
             {
                 //id hint used to parse certain quests, do not modify them.
                 //result.Add("", "");
+                case "StmBda113":
+                    {
+                        result.Add("ACTOR3", "RAUBAHN");
+                        result.Add("ACTOR4", "ALISAIE");
+                        break;
+                    }
+                case "StmBda112":
+                    {
+                        result.Add("SCENE_5", "RAUBAHN");
+                        break;
+                    }
+                case "StmBda125":
+                    {
+                        result.Add("SCENE_4", "MEFFRID");
+                        break;
+                    }
+                case "StmBda124":
+                    {
+                        result.Add("ENEMY2", "enemy2");
+                        result.Add("ENEMY3", "enemy3");
+                        result.Add("ENEMY4", "enemy4");
+                        result.Add("SCENE_28", "enemy2");
+                        result.Add("SCENE_29", "enemy3");
+                        result.Add("SCENE_30", "enemy4");
+                        result.Add("ACTOR3", "dummy3");
+                        break;
+                    }
                 case "HeaVng101":
                     {
                         result.Add("SCENE_2", "ALISAIE");
