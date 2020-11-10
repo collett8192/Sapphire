@@ -1,5 +1,4 @@
 // FFXIVTheMovie.ParserV3
-//fix: skip scene 3,4 dismount issue
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -69,8 +68,7 @@ private:
       {
         if( type == 4 ) // BASE_ID_TERRITORY_TYPE = unknown
         {
-          //Scene00003( player ); // Scene00003: Normal(CutScene, Dismount), id=unknown
-          checkProgressSeq1( player );
+          Scene00003( player ); // Scene00003: Normal(CutScene, Dismount), id=unknown
         }
         break;
       }
@@ -202,7 +200,7 @@ private:
     player.sendDebug( "HeaVna606:67191 calling Scene00003: Normal(CutScene, Dismount), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      checkProgressSeq1( player );
+      Scene00004( player );
     };
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -212,7 +210,7 @@ private:
     player.sendDebug( "HeaVna606:67191 calling Scene00004: Normal(FadeIn, Dismount), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      checkProgressSeq2( player );
+      checkProgressSeq1( player );
     };
     player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }

@@ -2238,6 +2238,14 @@ namespace Sapphire::Network::Packets::Server
     char memberName[32];
     uint8_t padding[3];
   };
+
+  struct FFXIVIpcLuaDismount : FFXIVIpcBasePacket< LuaDismount >
+  {
+    uint32_t eventId;
+    uint16_t scene;
+    uint16_t unknown;
+    uint64_t padding;
+  };
 }
 
 #endif /*_CORE_NETWORK_PACKETS_SERVER_IPC_H*/

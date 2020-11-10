@@ -221,7 +221,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
-      player.updateQuest( getId(), 255 );
+      player.updateQuest( getId(), 3 );
     }
   }
   void checkProgressSeq3( Entity::Player& player )

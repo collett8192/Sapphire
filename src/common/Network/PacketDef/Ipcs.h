@@ -196,7 +196,7 @@ namespace Sapphire::Network::Packets
 
     EventStart = 0x009A, // updated 5.35 hotfix
     EventFinish = 0x007E, // updated 5.35 hotfix
-
+    LuaDismount = 0x037D, // updated 5.35 hotfix
     EventLinkshell = 0x1169,
 
     QuestActiveList = 0x0117, // updated 5.35 hotfix
@@ -374,7 +374,7 @@ namespace Sapphire::Network::Packets
     OutOfRangeEventHandler = 0x0319, // updated 5.35 hotfix
     EnterTeriEventHandler = 0x0192, // updated 5.35 hotfix
     ShopEventHandler = 0x0156, // updated 5.0
-
+    LuaDismountEventHandler = 0x0128, // updated 5.35 hotfix
     ReturnEventHandler = 0x02B4, // updated 5.35 hotfix
     TradeReturnEventHandler = 0x00A4, // updated 5.35 hotfix
     TradeMultipleReturnEventHander = 0x035C, // updated 5.35 hotfix

@@ -258,10 +258,15 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
 
 }
 
-void Sapphire::Network::GameConnection::eventHandlerDismountReturn( const Packets::FFXIVARR_PACKET_RAW& inPacket,
+void Sapphire::Network::GameConnection::eventHandlerLuaDismount( const Packets::FFXIVARR_PACKET_RAW& inPacket,
                                                                     Entity::Player& player )
 {
-  eventHandlerReturn( inPacket, player );
+  const auto packet = ZoneChannelPacket< Client::FFXIVIpcLuaDismountEventHandler >( inPacket );
+  auto response = makeZonePacket< FFXIVIpcLuaDismount >( player.getId() );
+  response->data().eventId = packet.data().eventId;
+  response->data().scene = packet.data().scene;
+  response->data().unknown = packet.data().unknown;
+  player.queuePacket( response );
   player.dismount();
 }
 

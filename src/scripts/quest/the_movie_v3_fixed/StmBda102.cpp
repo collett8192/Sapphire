@@ -517,12 +517,12 @@ private:
 
   void Scene00021( Entity::Player& player )
   {
-    //player.sendDebug( "StmBda102:67983 calling Scene00021: Normal(CutScene, Dismount), id=unknown" );
-    //auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    //{
+    player.sendDebug( "StmBda102:67983 calling Scene00021: Normal(CutScene, Dismount), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
       checkProgressSeq4( player );
-    //};
-    //player.playScene( getId(), 21, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    };
+    player.playScene( getId(), 21, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
   void Scene00022( Entity::Player& player )

@@ -1,5 +1,4 @@
 // FFXIVTheMovie.ParserV3
-//fix: client doesn't want to load scene 4
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -82,8 +81,7 @@ private:
       {
         if( actor == 4502916 || actorId == 4502916 ) // EVENTRANGE0 = unknown
         {
-          //Scene00004( player ); // Scene00004: Normal(FadeIn, Dismount), id=unknown
-          checkProgressSeq2( player );
+          Scene00004( player ); // Scene00004: Normal(FadeIn, Dismount), id=unknown
         }
         if( actor == 1007750 || actorId == 1007750 ) // ACTOR2 = unknown
         {

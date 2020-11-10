@@ -1,5 +1,4 @@
 // FFXIVTheMovie.ParserV3
-//fix: skip scene 4 need to capture on retail about the dismount thing
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -64,8 +63,7 @@ private:
       {
         if( type == 4 ) // BASE_ID_TERRITORY_TYPE = unknown
         {
-          checkProgressSeq1( player );
-          //Scene00004( player ); // Scene00004: Normal(CutScene, Dismount), id=unknown
+          Scene00004( player ); // Scene00004: Normal(CutScene, Dismount), id=unknown
         }
         break;
       }

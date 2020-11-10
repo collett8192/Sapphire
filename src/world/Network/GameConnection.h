@@ -143,7 +143,7 @@ namespace Sapphire::Network
 
     DECLARE_HANDLER( eventHandlerReturn );
 
-    DECLARE_HANDLER( eventHandlerDismountReturn );
+    DECLARE_HANDLER( eventHandlerLuaDismount );
 
     DECLARE_HANDLER( eventHandlerShop );
 
