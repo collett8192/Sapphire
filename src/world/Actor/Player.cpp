@@ -235,6 +235,10 @@ Sapphire::Common::OnlineStatus Sapphire::Entity::Player::getOnlineStatus() const
 void Sapphire::Entity::Player::setOnlineStatusMask( uint64_t status )
 {
   m_onlineStatus = status;
+  sendToInRangeSet( makeActorControl( getId(), SetStatusIcon, static_cast< uint8_t >( getOnlineStatus() ) ), true );
+  auto statusPacket = makeZonePacket< FFXIVIpcSetOnlineStatus >( getId() );
+  statusPacket->data().onlineStatusFlags = status;
+  queuePacket( statusPacket );
 }
 
 uint64_t Sapphire::Entity::Player::getOnlineStatusMask() const
@@ -1052,7 +1056,6 @@ bool Sapphire::Entity::Player::hasStateFlag( Common::PlayerStateFlag flag ) cons
 
 void Sapphire::Entity::Player::setStateFlag( Common::PlayerStateFlag flag )
 {
-  auto prevOnlineStatus = getOnlineStatus();
   int32_t iFlag = static_cast< uint32_t >( flag );
 
   uint16_t index;
@@ -1061,13 +1064,6 @@ void Sapphire::Entity::Player::setStateFlag( Common::PlayerStateFlag flag )
 
   m_stateFlags[ index ] |= value;
   sendStateFlags();
-
-  auto newOnlineStatus = getOnlineStatus();
-
-  if( prevOnlineStatus != newOnlineStatus )
-    sendToInRangeSet( makeActorControl( getId(), SetStatusIcon,
-                                        static_cast< uint8_t >( getOnlineStatus() ) ), true );
-
 }
 
 void Sapphire::Entity::Player::setStateFlags( std::vector< Common::PlayerStateFlag > flags )
@@ -1088,8 +1084,6 @@ void Sapphire::Entity::Player::unsetStateFlag( Common::PlayerStateFlag flag )
   if( !hasStateFlag( flag ) )
     return;
 
-  auto prevOnlineStatus = getOnlineStatus();
-
   int32_t iFlag = static_cast< uint32_t >( flag );
 
   uint16_t index;
@@ -1098,11 +1092,6 @@ void Sapphire::Entity::Player::unsetStateFlag( Common::PlayerStateFlag flag )
 
   m_stateFlags[ index ] ^= value;
   sendStateFlags();
-
-  auto newOnlineStatus = getOnlineStatus();
-
-  if( prevOnlineStatus != newOnlineStatus )
-    sendToInRangeSet( makeActorControl( getId(), SetStatusIcon, static_cast< uint8_t >( getOnlineStatus() ) ), true );
 }
 
 void Sapphire::Entity::Player::update( uint64_t tickCount )
@@ -1601,14 +1590,18 @@ uint8_t Sapphire::Entity::Player::getEquipDisplayFlags() const
 
 void Sapphire::Entity::Player::mount( uint32_t id )
 {
-  m_mount = id;
-  sendToInRangeSet( makeActorControl( getId(), ActorControlType::SetStatus,
-                                         static_cast< uint8_t >( Common::ActorStatus::Mounted ) ), true );
-  sendToInRangeSet( makeActorControlSelf( getId(), ActorControlType::SetMountSpeed, 12 ), true );
+  if( id > 0 )
+  {
+    m_mount = id;
+    sendToInRangeSet( makeActorControl( getId(), ActorControlType::SetStatus,
+      static_cast< uint8_t >( Common::ActorStatus::Mounted ) ), true );
+    sendToInRangeSet( makeActorControlSelf( getId(), ActorControlType::SetMountSpeed, 12 ), true );
+    sendToInRangeSet( makeActorControlSelf( getId(), 0x107, 1 ), true );
 
-  auto mountPacket = makeZonePacket< FFXIVIpcMount >( getId() );
-  mountPacket->data().id = id;
-  sendToInRangeSet( mountPacket, true );
+    auto mountPacket = makeZonePacket< FFXIVIpcMount >( getId() );
+    mountPacket->data().id = id;
+    sendToInRangeSet( mountPacket, true );
+  }
 }
 
 void Sapphire::Entity::Player::dismount()
@@ -1618,6 +1611,8 @@ void Sapphire::Entity::Player::dismount()
     sendToInRangeSet( makeActorControl( getId(), ActorControlType::SetStatus,
       static_cast< uint8_t >( Common::ActorStatus::Idle ) ), true );
     sendToInRangeSet( makeActorControl( getId(), ActorControlType::Dismount, 1 ), true );
+    sendToInRangeSet( makeActorControlSelf( getId(), 0x393, 1 ), true );
+    sendToInRangeSet( makeActorControlSelf( getId(), 0x107, 0 ), true );
     m_mount = 0;
   }
 }
@@ -1661,7 +1656,6 @@ void Sapphire::Entity::Player::autoAttack( CharaPtr pTarget )
 {
   pTarget->onActionHostile( getAsChara() );
   auto& exdData = Common::Service< Data::ExdDataGenerated >::ref();
-  assert( exdData );
   World::Action::ActionPtr action;
   if( getClass() == ClassJob::Machinist || getClass() == ClassJob::Bard || getClass() == ClassJob::Archer )
   {
@@ -2169,7 +2163,7 @@ void Sapphire::Entity::Player::updateHuntingLog( uint16_t id )
   const auto maxRank = 4;
   auto& pExdData = Common::Service< Data::ExdDataGenerated >::ref();
 
-  auto& logEntry = m_huntingLogEntries[ static_cast< uint8_t >( getClass() ) - 1 ];
+  auto logEntryIndex = static_cast< uint8_t >( getClass() ) - 1;
 
   bool logChanged = false;
 
@@ -2178,6 +2172,10 @@ void Sapphire::Entity::Player::updateHuntingLog( uint16_t id )
   auto classJobInfo = pExdData.get< Sapphire::Data::ClassJob >( currentClass );
   if( !classJobInfo )
     return;
+  if( classJobInfo->classJobParent > 0 )
+    logEntryIndex = classJobInfo->classJobParent;
+
+  auto& logEntry = m_huntingLogEntries[ logEntryIndex ];
 
   bool allSectionsComplete = true;
   for( int i = 1; i <= 10; ++i )
@@ -2307,6 +2305,218 @@ void Sapphire::Entity::Player::clearBuyBackMap()
     }
   }
   m_shopBuyBackMap.clear();
+}
+
+bool Sapphire::Entity::Player::isPartyLeader()
+{
+  if( !m_partyLeader )
+    return false;
+  return m_partyLeader->getId() == getId();
+}
+
+bool Sapphire::Entity::Player::isInParty()
+{
+  return m_partyLeader != nullptr;
+}
+
+Sapphire::Entity::PlayerPtr Sapphire::Entity::Player::getPartyLeader()
+{
+  return m_partyLeader;
+}
+
+bool Sapphire::Entity::Player::createEmptyParty()
+{
+  if( m_partyLeader )
+    return false;
+  m_partyLeader = getAsPlayer();
+  m_partyMemberList.clear();
+  m_partyMemberList.push_back( m_partyLeader );
+  setOnlineStatusMask( 0x0000803000000000ui64 );
+  return true;
+}
+
+void Sapphire::Entity::Player::disbandParty()
+{
+  if( isPartyLeader() )
+  {
+    for( auto member : m_partyMemberList )
+    {
+      if( member->getId() == getId() )
+        continue;
+      member->m_partyLeader = nullptr;
+      member->setOnlineStatusMask( 0x0000800000000000ui64 );
+      member->clearPartyList();
+    }
+    m_partyLeader = nullptr;
+    clearPartyList();
+  }
+}
+
+Sapphire::Entity::PlayerPtr Sapphire::Entity::Player::getPartyInvitationSender()
+{
+  return m_partyInvitationSender;
+}
+
+void Sapphire::Entity::Player::setPartyInvitationSender( PlayerPtr sender )
+{
+  m_partyInvitationSender = sender;
+}
+
+bool Sapphire::Entity::Player::addPartyMember( PlayerPtr member )
+{
+  if( !isPartyLeader() || member->isInParty() || getPartySize() >= 8 )
+    return false;
+  m_partyMemberList.push_back( member );
+  member->m_partyLeader = m_partyLeader;
+  member->setOnlineStatusMask( 0x0000802000000000ui64 );
+  sendPartyListToParty();
+  return true;
+}
+
+bool Sapphire::Entity::Player::removePartyMember( PlayerPtr member )
+{
+  if( member->isInParty() && member->getPartyLeader()->getId() == getId() )
+  {
+    if( member->getId() == member->getPartyLeader()->getId() )
+    {
+      Entity::PlayerPtr nextLeader = nullptr;
+      for( auto it = m_partyMemberList.begin(); it != m_partyMemberList.end(); it++ )
+      {
+        if( !( *it )->isPartyLeader() )
+        {
+          nextLeader = *it;
+          break;
+        }
+      }
+      if( !nextLeader )
+      {
+        disbandParty();
+        return true;
+      }
+      changePartyLeader( nextLeader );
+      return nextLeader->removePartyMember( member );
+    }
+    else
+    {
+      bool flag = false;
+      for( auto it = m_partyMemberList.begin(); it != m_partyMemberList.end(); it++ )
+      {
+        if( ( *it )->getId() == member->getId() )
+        {
+          m_partyMemberList.erase( it );
+          member->m_partyLeader = nullptr;
+          member->setOnlineStatusMask( 0x0000800000000000ui64 );
+          member->clearPartyList();
+          flag = true;
+          break;
+        }
+      }
+      if( flag )
+      {
+        sendPartyListToParty();
+        if( getPartySize() == 1 )
+        {
+          m_partyLeader = nullptr;
+          m_partyMemberList.clear();
+        }
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool Sapphire::Entity::Player::changePartyLeader( PlayerPtr newLeader )
+{
+  if( !isPartyLeader() || !newLeader->isInParty() || newLeader->getPartyLeader()->getId() != getId() )
+    return false;
+
+  for( auto it = m_partyMemberList.begin(); it != m_partyMemberList.end(); it++ )
+  {
+    if( ( *it )->getId() == newLeader->getId() )
+    {
+      newLeader->m_partyMemberList = m_partyMemberList;
+      m_partyMemberList.clear();
+      for( auto m : newLeader->m_partyMemberList )
+      {
+        m->m_partyLeader = newLeader;
+      }
+      newLeader->setOnlineStatusMask( 0x0000803000000000ui64 );
+      setOnlineStatusMask( 0x0000802000000000ui64 );
+      newLeader->sendPartyListToParty();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+uint8_t Sapphire::Entity::Player::getPartySize()
+{
+  if( isInParty() )
+  {
+    return m_partyMemberList.size();
+  }
+  return 0;
+}
+
+void Sapphire::Entity::Player::sendPartyListToParty()
+{
+  assert( isPartyLeader() );
+  FFXIVIpcPartyList partyList = {};
+  int i = 0;
+  int leaderIndex = 0;
+  for( auto member : m_partyMemberList )
+  {
+    assert( i < 8 );
+
+    memcpy( partyList.member[ i ].name, member->getName().c_str(), member->getName().length() + 1 );
+    partyList.member[ i ].contentId = member->getContentId();
+    partyList.member[ i ].charaId = member->getId();
+    partyList.member[ i ].u1 = 0xE0000000;
+    partyList.member[ i ].u2 = 0xE0000000;
+    partyList.member[ i ].hp = member->getHp();
+    partyList.member[ i ].maxHp = member->getMaxHp();
+    partyList.member[ i ].mp = member->getMp();
+    partyList.member[ i ].maxMp = 10000;
+    partyList.member[ i ].u3 = 0x44;
+    partyList.member[ i ].zoneId = member->getCurrentTerritory()->getTerritoryTypeId();
+    partyList.member[ i ].gposeSelectable = 1;
+    partyList.member[ i ].classId = static_cast< uint8_t >( member->getClass() );
+    partyList.member[ i ].level = member->getLevel();
+    if( member->isPartyLeader() )
+      leaderIndex = i;
+    i++;
+  }
+  partyList.someContentId1 = 0x0044000000000001ui64;
+  partyList.someContentId2 = 0x0044000100000001ui64;
+  partyList.leaderIndex = leaderIndex;
+  partyList.partySize = getPartySize();
+
+  for( auto member : m_partyMemberList )
+  {
+    auto packet = makeZonePacket< FFXIVIpcPartyList >( member->getId() );
+    memcpy( &packet->data().member[ 0 ], &partyList, sizeof( partyList ) );
+    member->queuePacket( packet );
+  }
+}
+
+void Sapphire::Entity::Player::clearPartyList()
+{
+  assert( !isInParty() );
+  auto packet = makeZonePacket< FFXIVIpcPartyList >( getId() );
+  queuePacket( packet );
+  m_partyMemberList.clear();
+}
+
+void Sapphire::Entity::Player::foreachPartyMember( std::function< void( PlayerPtr member ) > callback )
+{
+  if( !isPartyLeader() || !callback )
+    return;
+  for( auto member : m_partyMemberList )
+  {
+    callback( member );
+  }
 }
 
 void Sapphire::Entity::Player::gaugeClear()
@@ -2518,7 +2728,6 @@ void Sapphire::Entity::Player::gaugeSamSetSen( Sapphire::Common::SamSen type, bo
 
 void Sapphire::Entity::Player::gaugeSamSetSen( Sapphire::Common::SamSen value )
 {
-  assert( value >= 0 && value <= 7 );
   auto oldValue = gaugeSamGetSenRaw();
   m_gauge.sam.sen = value;
   if( oldValue != value )

@@ -271,9 +271,9 @@ namespace Sapphire::Network::ActorControl
     * Retail sends 12 for mount speed star 1 unlocked and 15 for mount speed star 2 unlocked
     * This also has to be sent before mounting finishes for it to take effect
     */
-    SetMountSpeed = 0x39F,
+    SetMountSpeed = 0x3A0, // updated 5.35 hotfix
 
-    Dismount = 0x3A1, // updated 4.5
+    Dismount = 0x3A2, // updated 5.35 hotfix
 
     // Duty Recorder
     BeginReplayAck = 0x3A2,
@@ -367,7 +367,7 @@ namespace Sapphire::Network::ActorControl
     AllotAttribute = 0x135,
 
     ClearFieldMarkers = 0x13A,
-    CameraMode = 0x13B, // param12, 1 = camera mode enable, 0 = disable
+    CameraMode = 0x13B, // param11, 1 = enable, 0 = disable
     CharaNameReq = 0x13D, // requests character name by content id
     HuntingLogDetails = 0x194,
 
