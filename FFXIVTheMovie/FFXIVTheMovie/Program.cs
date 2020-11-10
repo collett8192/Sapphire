@@ -99,7 +99,6 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
-                //result.Add("", "");
                 case "StmBda113":
                     {
                         result.Add("ACTOR3", "RAUBAHN");
