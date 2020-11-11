@@ -435,6 +435,12 @@ namespace FFXIVTheMovie.ParserV3
                                     hasIf = true;
                                 }
                             }
+                            if (!hasIf && (scene.Element & LuaScene.SceneElement.Menu) > 0)
+                            {
+                                outputCpp.Add("      if( result.param1 == 512 )");
+                                outputCpp.Add("      {");
+                                hasIf = true;
+                            }
 
                             if (scene2 != null)
                             {
@@ -515,6 +521,12 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add("      {");
                                     hasIf = true;
                                 }
+                            }
+                            if (!hasIf && (scene2.Element & LuaScene.SceneElement.Menu) > 0)
+                            {
+                                outputCpp.Add("      if( result.param1 == 512 )");
+                                outputCpp.Add("      {");
+                                hasIf = true;
                             }
 
                             if (scene3 != null && (entry.Var == null || s == 0))

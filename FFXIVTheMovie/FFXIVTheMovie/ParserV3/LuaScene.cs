@@ -217,6 +217,7 @@ namespace FFXIVTheMovie.ParserV3
             FuncNameToSceneElementTable.Add("QuestReward", SceneElement.QuestReward);
             FuncNameToSceneElementTable.Add("Dismount", SceneElement.Dismount);
             FuncNameToSceneElementTable.Add("PlayQuestGimmickReaction", SceneElement.QuestGimmickReaction);
+            FuncNameToSceneElementTable.Add("Menu", SceneElement.Menu);
         }
         public int SceneNumber;
         public string SceneFunctionName => $"Scene{SceneNumber:00000}";
@@ -256,6 +257,7 @@ namespace FFXIVTheMovie.ParserV3
             TargetCanMove = 1 << 13,
             Dismount = 1 << 14,
             QuestGimmickReaction = 1 << 15,
+            Menu = 1 << 16,
         }
 
         public override string ToString()
