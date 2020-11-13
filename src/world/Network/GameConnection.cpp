@@ -134,6 +134,7 @@ Sapphire::Network::GameConnection::GameConnection( Sapphire::Network::HivePtr pH
                   &GameConnection::marketBoardRequestItemListings );
 
   setZoneHandler( ClientZoneIpcType::WorldInteractionHandler, "WorldInteractionHandler", &GameConnection::worldInteractionhandler );
+  setZoneHandler( ClientZoneIpcType::Dive, "Dive", &GameConnection::diveHandler );
 
   setChatHandler( ClientChatIpcType::TellReq, "TellReq", &GameConnection::tellHandler );
   setChatHandler( ClientZoneIpcType::PartyChatHandler, "PartyChatHandler", &GameConnection::partyChatHandler );

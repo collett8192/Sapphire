@@ -425,6 +425,14 @@ struct FFXIVIpcLuaDismountEventHandler :
   uint64_t padding;
 };
 
+struct FFXIVIpcDive :
+  FFXIVIpcBasePacket< Dive >
+{
+  float unknown;
+  Common::FFXIVARR_POSITION3 posTarget;
+  Common::FFXIVARR_POSITION3 posOriginal;
+  uint32_t padding;
+};
 
 }
 
