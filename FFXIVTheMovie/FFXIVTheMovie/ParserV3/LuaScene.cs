@@ -157,6 +157,10 @@ namespace FFXIVTheMovie.ParserV3
                         }
                         result.Element |= element;
                     }
+                    if (f.FuncName == "Skip" && f.ArgList.Count == 1 && f.ArgList[0] == $"{varFramework}.SKIP_FINALIZE_AUTO_FADEIN")
+                    {
+                        result.Element |= SceneElement.AutoFadeIn;
+                    }
                     if ((f.FuncName == "ScenarioMessage" || f.FuncName == "LogMessage") && (f.ArgList[0].Contains("_POP_MESSAGE") || f.ArgList[0].Contains("_POPMESSAGE")))
                     {
                         result.Element |= SceneElement.PopBNpc;
@@ -202,6 +206,7 @@ namespace FFXIVTheMovie.ParserV3
         {
             FuncNameToSceneTypeTable.Add("NpcTrade", SceneType.NpcTrade);
             FuncNameToSceneTypeTable.Add("SetNpcTradeItem", SceneType.NpcTrade);
+            FuncNameToSceneTypeTable.Add("Snipe", SceneType.Snipe);
 
             FuncNameToSceneElementTable.Add("FadeIn", SceneElement.FadeIn);
             FuncNameToSceneElementTable.Add("PlayCutScene", SceneElement.CutScene);
@@ -218,6 +223,8 @@ namespace FFXIVTheMovie.ParserV3
             FuncNameToSceneElementTable.Add("Dismount", SceneElement.Dismount);
             FuncNameToSceneElementTable.Add("PlayQuestGimmickReaction", SceneElement.QuestGimmickReaction);
             FuncNameToSceneElementTable.Add("Menu", SceneElement.Menu);
+            FuncNameToSceneElementTable.Add("SystemTalk", SceneElement.SystemTalk);
+            FuncNameToSceneElementTable.Add("CancelEventScene", SceneElement.CanCancel);
         }
         public int SceneNumber;
         public string SceneFunctionName => $"Scene{SceneNumber:00000}";
@@ -235,6 +242,7 @@ namespace FFXIVTheMovie.ParserV3
         {
             Normal = 0,
             NpcTrade = 5,
+            Snipe = 6,
         }
 
         [Flags]
@@ -258,6 +266,9 @@ namespace FFXIVTheMovie.ParserV3
             Dismount = 1 << 14,
             QuestGimmickReaction = 1 << 15,
             Menu = 1 << 16,
+            AutoFadeIn = 1 << 17,
+            SystemTalk = 1 << 18,
+            CanCancel = 1 << 19,
         }
 
         public override string ToString()

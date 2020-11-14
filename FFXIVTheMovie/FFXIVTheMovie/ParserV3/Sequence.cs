@@ -56,6 +56,7 @@ namespace FFXIVTheMovie.ParserV3
             public ActiveEventObject TargetObject;
             public QuestVar Var;
             public SceneGroup EntryScene = new SceneGroup();
+            public int AssignedGroupCount = 0;
 
             public bool CanExistWithoutScene
             {
@@ -81,6 +82,14 @@ namespace FFXIVTheMovie.ParserV3
             public bool CanAddSceneGroup(SceneGroup group)
             {
                 if (!EntryScene.IsIdentityCompatible(group.Identity))
+                {
+                    return false;
+                }
+
+                if (EntryScene.Identity != "unknown" && EntryScene.Identity == group.Identity) // assume one id can only exist as a single entity in one seq
+                    return true;
+
+                if (TargetObject is ActiveActor && EntryScene.SceneList.Count == 0 && group.ContainsSceneType(LuaScene.SceneType.Snipe))
                 {
                     return false;
                 }
@@ -162,6 +171,10 @@ namespace FFXIVTheMovie.ParserV3
                 if (EntryScene.SceneList.Count > 0 && EntryScene.SceneList.Count < 3)
                 {
                     var s = EntryScene.SceneList[EntryScene.SceneList.Count - 1];
+                    if (s.Element == LuaScene.SceneElement.None && (sceneGroup.ContainsSceneElement(LuaScene.SceneElement.Message) || sceneGroup.ContainsSceneElement(LuaScene.SceneElement.SystemTalk)))
+                    {
+                        return true;
+                    }
                     if (s.Element == LuaScene.SceneElement.CutScene && sceneGroup.SceneList[0].Element == (LuaScene.SceneElement.FadeIn | LuaScene.SceneElement.QuestReward | LuaScene.SceneElement.QuestComplete))
                     {
                         return true;
@@ -180,6 +193,15 @@ namespace FFXIVTheMovie.ParserV3
             public bool HasSubScenes => this.SceneList.Count > 1;
             public List<LuaScene> SceneList = new List<LuaScene>();
 
+            public bool ContainsSceneType(LuaScene.SceneType type)
+            {
+                foreach (var scene in SceneList)
+                {
+                    if (scene.Type == type)
+                        return true;
+                }
+                return false;
+            }
             public bool ContainsSceneElement(LuaScene.SceneElement element)
             {
                 foreach (var scene in SceneList)

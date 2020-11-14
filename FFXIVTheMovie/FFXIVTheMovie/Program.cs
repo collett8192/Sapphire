@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("StmBda207");
+            list.Add("StmBda321");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -49,7 +49,7 @@ namespace FFXIVTheMovie
                 if (implementedQuestIds.Contains(questId))
                     continue;
                 //add or remove any quest prefix
-                if (!questId.StartsWith("ManFst") &&
+                if (/*!questId.StartsWith("ManFst") &&
                     !questId.StartsWith("ManSea") &&
                     !questId.StartsWith("ManWil") &&
                     !questId.StartsWith("SubFst") &&
@@ -67,7 +67,7 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("HeaVnd") &&
                     !questId.StartsWith("HeaVne") &&
                     !questId.StartsWith("HeaVnf") &&
-                    !questId.StartsWith("HeaVng") &&
+                    !questId.StartsWith("HeaVng") &&*/
                     !questId.StartsWith("StmBda")
                     )
                     continue;
@@ -99,6 +99,25 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "StmBda320":
+                    {
+                        result.Add("ACTOR4", "BIGSOLDIER02496");
+                        result.Add("ACTOR5", "SMALLSOLDIER02496");
+                        result.Add("ACTOR6", "MIDDLESOLDIER02496");
+                        result.Add("SCENE_16", "BIGSOLDIER02496");
+                        result.Add("SCENE_19", "SMALLSOLDIER02496");
+                        result.Add("SCENE_22", "MIDDLESOLDIER02496");
+                        break;
+                    }
+                case "StmBda312":
+                    {
+                        result.Add("EVENTRANGE1", "range1");
+                        result.Add("SCENE_10", "range1");
+                        result.Add("ACTOR5", "LYSE");
+                        result.Add("ACTOR6", "dummy6");
+                        result.Add("ACTOR7", "dummy7");
+                        break;
+                    }
                 case "StmBda113":
                     {
                         result.Add("ACTOR3", "RAUBAHN");

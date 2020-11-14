@@ -56,7 +56,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.1");
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -184,12 +184,24 @@ namespace FFXIVTheMovie.ParserV3
                             {
                                 outputCpp.Add($"            // +Callback {scene2}");
                             }
-                            outputCpp.Add("          }");
                             if (scene3 != null)
                             {
-                                outputCpp.Add("          else");
-                                outputCpp.Add("          {");
-                                outputCpp.Add($"            {scene3.SceneFunctionName}( player ); // {scene3}");
+                                if (entry.AssignedGroupCount >= 3)
+                                {
+                                    outputCpp.Add("          }");
+                                    outputCpp.Add("          else");
+                                    outputCpp.Add("          {");
+                                    outputCpp.Add($"            {scene3.SceneFunctionName}( player ); // {scene3}");
+                                    outputCpp.Add("          }");
+                                }
+                                else
+                                {
+                                    outputCpp.Add($"            // +Callback {scene3}");
+                                    outputCpp.Add("          }");
+                                }
+                            }
+                            else
+                            {
                                 outputCpp.Add("          }");
                             }
                         }
@@ -435,7 +447,7 @@ namespace FFXIVTheMovie.ParserV3
                                     hasIf = true;
                                 }
                             }
-                            if (!hasIf && (scene.Element & LuaScene.SceneElement.Menu) > 0)
+                            if (!hasIf && ((scene.Element & LuaScene.SceneElement.Menu) > 0 || (scene.Element & LuaScene.SceneElement.CanCancel) > 0 || scene.Type == LuaScene.SceneType.Snipe))
                             {
                                 outputCpp.Add("      if( result.param1 == 512 )");
                                 outputCpp.Add("      {");
@@ -451,7 +463,15 @@ namespace FFXIVTheMovie.ParserV3
                                 if ((scene.Element & LuaScene.SceneElement.QuestComplete) > 0)
                                 {
                                     outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
+                                    outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
                                     outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
+                                    if ((scene.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
+                                    }
+                                    outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
                                 }
                                 else
                                 {
@@ -461,6 +481,12 @@ namespace FFXIVTheMovie.ParserV3
                                     }
                                     if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
                                         outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
+                                    if ((scene.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing();");
+                                    }
                                 }
                             }
 
@@ -469,7 +495,10 @@ namespace FFXIVTheMovie.ParserV3
                                 outputCpp.Add("      }");
                             }
                             outputCpp.Add("    };");
-                            outputCpp.Add($"    player.playScene( getId(), {scene.SceneNumber}, {((scene.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : "NONE")}, callback );");
+                            string baseSceneFlag = scene.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
+                            string extraSceneFlag = (scene.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
+                            string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
+                            outputCpp.Add($"    player.playScene( getId(), {scene.SceneNumber}, {fullSceneFlag}, callback );");
                         }
                         else
                         {
@@ -493,7 +522,7 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         outputCpp.Add($"  void {scene2.SceneFunctionName}( Entity::Player& player )");
                         outputCpp.Add("  {");
-                        outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling [BranchTrue]{scene2}\" );");
+                        outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling {scene2}\" );");
                         if (scene2.Element != LuaScene.SceneElement.None)
                         {
                             outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
@@ -522,14 +551,14 @@ namespace FFXIVTheMovie.ParserV3
                                     hasIf = true;
                                 }
                             }
-                            if (!hasIf && (scene2.Element & LuaScene.SceneElement.Menu) > 0)
+                            if (!hasIf && ((scene2.Element & LuaScene.SceneElement.Menu) > 0 || (scene2.Element & LuaScene.SceneElement.CanCancel) > 0 || scene2.Type == LuaScene.SceneType.Snipe))
                             {
                                 outputCpp.Add("      if( result.param1 == 512 )");
                                 outputCpp.Add("      {");
                                 hasIf = true;
                             }
 
-                            if (scene3 != null && (entry.Var == null || s == 0))
+                            if (scene3 != null && (entry.Var == null || s == 0 || entry.AssignedGroupCount < 3))
                             {
                                 outputCpp.Add($"{(hasIf ? "  " : "")}      {scene3.SceneFunctionName}( player );");
                             }
@@ -538,7 +567,15 @@ namespace FFXIVTheMovie.ParserV3
                                 if ((scene.Element & LuaScene.SceneElement.QuestComplete) > 0 || (scene2.Element & LuaScene.SceneElement.QuestComplete) > 0)
                                 {
                                     outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
+                                    outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
                                     outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
+                                    if ((scene2.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
+                                    }
+                                    outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
                                 }
                                 else
                                 {
@@ -548,6 +585,12 @@ namespace FFXIVTheMovie.ParserV3
                                     }
                                     if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
                                         outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
+                                    if ((scene2.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing();");
+                                    }
                                 }
                             }
 
@@ -556,7 +599,10 @@ namespace FFXIVTheMovie.ParserV3
                                 outputCpp.Add("      }");
                             }
                             outputCpp.Add("    };");
-                            outputCpp.Add($"    player.playScene( getId(), {scene2.SceneNumber}, {((scene2.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : "NONE")}, callback );");
+                            string baseSceneFlag = scene2.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
+                            string extraSceneFlag = (scene2.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
+                            string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
+                            outputCpp.Add($"    player.playScene( getId(), {scene2.SceneNumber}, {fullSceneFlag}, callback );");
                         }
                         else
                         {
@@ -580,12 +626,12 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         outputCpp.Add($"  void {scene3.SceneFunctionName}( Entity::Player& player )");
                         outputCpp.Add("  {");
-                        outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling [{((entry.Var == null || s == 0) ? "BranchChain" : "BranchFalse")}]{scene3}\" );");
+                        outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling {scene3}\" );");
                         //if (scene3.Element != LuaScene.SceneElement.None)
                         {
                             outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
                             outputCpp.Add("    {");
-                            if ((entry.Var == null || s == 0) || entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestComplete))
+                            if ((entry.Var == null || s == 0 || entry.AssignedGroupCount < 3) || entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestComplete))
                             {
                                 bool hasIf = false;
                                 if ((scene3.Element & LuaScene.SceneElement.QuestReward) > 0)
@@ -594,11 +640,25 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add("      {");
                                     hasIf = true;
                                 }
+                                if (!hasIf && ((scene3.Element & LuaScene.SceneElement.Menu) > 0 || (scene3.Element & LuaScene.SceneElement.CanCancel) > 0 || scene3.Type == LuaScene.SceneType.Snipe))
+                                {
+                                    outputCpp.Add("      if( result.param1 == 512 )");
+                                    outputCpp.Add("      {");
+                                    hasIf = true;
+                                }
 
                                 if ((scene2.Element & LuaScene.SceneElement.QuestComplete) > 0 || (scene3.Element & LuaScene.SceneElement.QuestComplete) > 0)
                                 {
                                     outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
+                                    outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
                                     outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
+                                    if ((scene3.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
+                                    }
+                                    outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
                                 }
                                 else
                                 {
@@ -608,6 +668,12 @@ namespace FFXIVTheMovie.ParserV3
                                     }
                                     if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
                                         outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
+                                    if ((scene3.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing();");
+                                    }
                                 }
                                 if (hasIf)
                                 {
@@ -615,7 +681,10 @@ namespace FFXIVTheMovie.ParserV3
                                 }
                             }
                             outputCpp.Add("    };");
-                            outputCpp.Add($"    player.playScene( getId(), {scene3.SceneNumber}, {((scene3.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : "NONE")}, callback );");
+                            string baseSceneFlag = scene3.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
+                            string extraSceneFlag = (scene3.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
+                            string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
+                            outputCpp.Add($"    player.playScene( getId(), {scene3.SceneNumber}, {fullSceneFlag}, callback );");
                         }
                         /*
                         else
@@ -808,6 +877,7 @@ namespace FFXIVTheMovie.ParserV3
                 if (assigned == 0)
                     break;
                 total += assigned;
+                entry.AssignedGroupCount++;
                 if (flag == 0 && (g + 1) < sceneGroupList.Count && entry.EntryScene.SceneList.Count < 2 && entry.IsPrefferedGroup(sceneGroupList[g + 1]))
                 {
                     var tmpIdTable2 = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(tmpIdTable);
@@ -817,6 +887,7 @@ namespace FFXIVTheMovie.ParserV3
                         flag = 1;
                         tmpIdTable = tmpIdTable2;
                         total += assigned;
+                        entry.AssignedGroupCount++;
                         g++;
                     }
                 }
@@ -831,6 +902,7 @@ namespace FFXIVTheMovie.ParserV3
             {
                 entry.EntryScene.SceneList.RemoveAt(entry.EntryScene.SceneList.Count - 1);
                 total--;
+                entry.AssignedGroupCount--;
             }
             if (flag == 1)
             {
@@ -847,7 +919,7 @@ namespace FFXIVTheMovie.ParserV3
             if (!entry.CanAddSceneGroup(sceneGroupList[i]))
                 return 0;
             var group = sceneGroupList[i];
-            if (group.HasSubScenes && entry.EntryScene.SceneList.Count > 0)
+            if (!group.ContainsSceneType(LuaScene.SceneType.Snipe) && group.HasSubScenes && entry.EntryScene.SceneList.Count > 0)
                 return 0;
             if (entry.TargetObject != null)
             {
@@ -1042,6 +1114,12 @@ namespace FFXIVTheMovie.ParserV3
                         var sub = tmpList[1];
                         if (sub.Type != LuaScene.SceneType.Normal)
                             throw new Exception($"[InitSceneGroupList]Scene{sub.SceneNumber} cannot be added as sub scene.");
+                        nextGroup.SceneList.Add(sub);
+                    }
+                    else if (tmpList.Count > 1 && scene.Type == LuaScene.SceneType.Snipe)
+                    {
+                        var sub = tmpList[1];
+                        if ((sub.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0)
                         nextGroup.SceneList.Add(sub);
                     }
                 }
