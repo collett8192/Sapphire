@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("StmBda321");
+            list.Add("StmBda418");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -49,7 +49,7 @@ namespace FFXIVTheMovie
                 if (implementedQuestIds.Contains(questId))
                     continue;
                 //add or remove any quest prefix
-                if (/*!questId.StartsWith("ManFst") &&
+                if (!questId.StartsWith("ManFst") &&
                     !questId.StartsWith("ManSea") &&
                     !questId.StartsWith("ManWil") &&
                     !questId.StartsWith("SubFst") &&
@@ -67,7 +67,7 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("HeaVnd") &&
                     !questId.StartsWith("HeaVne") &&
                     !questId.StartsWith("HeaVnf") &&
-                    !questId.StartsWith("HeaVng") &&*/
+                    !questId.StartsWith("HeaVng") &&
                     !questId.StartsWith("StmBda")
                     )
                     continue;
@@ -99,6 +99,50 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "StmBda414":
+                    {
+                        result.Add("EVENTRANGE0", "r0");
+                        result.Add("SCENE_3", "r0");
+                        result.Add("SCENE_4", "r0");
+                        result.Add("SCENE_5", "r0");
+                        break;
+                    }
+                case "StmBda411":
+                    {
+                        result.Add("ACTOR6", "sheep1");
+                        result.Add("ACTOR7", "sheep2");
+                        result.Add("ACTOR8", "sheep3");
+                        result.Add("ACTOR9", "sheep4");
+                        result.Add("SCENE_8", "sheep1");
+                        result.Add("SCENE_10", "sheep2");
+                        result.Add("SCENE_12", "sheep3");
+                        result.Add("SCENE_14", "sheep4");
+                        break;
+                    }
+                case "StmBda407":
+                    {
+                        result.Add("ACTOR5", "CIRINA_3");
+                        result.Add("ACTOR6", "CIRINA_2");
+                        result.Add("ACTOR7", "LYSE");
+                        result.Add("ACTOR10", "dead1");
+                        result.Add("ACTOR11", "dead2");
+                        result.Add("ACTOR12", "dead3");
+                        result.Add("SCENE_7", "CIRINA_3");
+                        result.Add("SCENE_8", "CIRINA_2");
+                        result.Add("SCENE_18", "CIRINA_2");
+                        result.Add("SCENE_24", "CIRINA_2");
+                        result.Add("SCENE_34", "CIRINA_2");
+                        result.Add("SCENE_41", "CIRINA_2");
+                        break;
+                    }
+                case "StmBda405":
+                    {
+                        result.Add("ENEMY10", "e10");
+                        result.Add("ENEMY11", "e11");
+                        result.Add("SCENE_40", "e10");
+                        result.Add("SCENE_42", "e11");
+                        break;
+                    }
                 case "StmBda320":
                     {
                         result.Add("ACTOR4", "BIGSOLDIER02496");

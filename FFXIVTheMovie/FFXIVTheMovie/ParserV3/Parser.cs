@@ -56,7 +56,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.1");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.2");
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -152,6 +152,7 @@ namespace FFXIVTheMovie.ParserV3
                         {
                             outputCpp.Add($"        // +Callback {scene3}");
                         }
+                        outputCpp.Add("        break;");
                     }
                     else
                     {
@@ -186,23 +187,26 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             if (scene3 != null)
                             {
-                                if (entry.AssignedGroupCount >= 3)
+                                if (entry.AssignedGroupCount >= 3 && entry.TargetObject is ActiveActor)
                                 {
                                     outputCpp.Add("          }");
                                     outputCpp.Add("          else");
                                     outputCpp.Add("          {");
                                     outputCpp.Add($"            {scene3.SceneFunctionName}( player ); // {scene3}");
                                     outputCpp.Add("          }");
+                                    outputCpp.Add("          break;");
                                 }
                                 else
                                 {
                                     outputCpp.Add($"            // +Callback {scene3}");
                                     outputCpp.Add("          }");
+                                    outputCpp.Add("          break;");
                                 }
                             }
                             else
                             {
                                 outputCpp.Add("          }");
+                                outputCpp.Add("          break;");
                             }
                         }
                         else
@@ -223,6 +227,7 @@ namespace FFXIVTheMovie.ParserV3
                             {
                                 outputCpp.Add($"          // +Callback {scene3}");
                             }
+                            outputCpp.Add("          break;");
                         }
                         outputCpp.Add("        }");
                     }
@@ -283,9 +288,9 @@ namespace FFXIVTheMovie.ParserV3
                 var eventItemList = fGetEventItem != null ? (fGetEventItem.SeqEventItems.ContainsKey(seq.SeqNumber) ? fGetEventItem.SeqEventItems[seq.SeqNumber] : null) : null;
                 var nextEventItemList = fGetEventItem != null ? (fGetEventItem.SeqEventItems.ContainsKey(nextSeq.SeqNumber) ? fGetEventItem.SeqEventItems[nextSeq.SeqNumber] : null) : null;
                 var varList = new List<QuestVar>();
-                seq.EntryList.ForEach(e => { if (e.Var != null) { varList.Add(e.Var); } });
+                seq.EntryList.ForEach(e => { if (e.Var != null && varList.SingleOrDefault(v => v.Name == e.Var.Name) == null) { varList.Add(e.Var); } });
                 var nextVarList = new List<QuestVar>();
-                nextSeq.EntryList.ForEach(e => { if (e.Var != null) { nextVarList.Add(e.Var); } });
+                nextSeq.EntryList.ForEach(e => { if (e.Var != null && nextVarList.SingleOrDefault(v => v.Name == e.Var.Name) == null) { nextVarList.Add(e.Var); } });
                 
                 outputCpp.Add($"  void checkProgressSeq{seq.SeqNumber}( Entity::Player& player )");
                 outputCpp.Add("  {");
@@ -434,7 +439,13 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             if (!hasIf && (scene.Element & LuaScene.SceneElement.YesNo) > 0)
                             {
-                                if (scene2 != null && (scene2.Element & LuaScene.SceneElement.CutScene) > 0)
+                                if ((scene.Element & LuaScene.SceneElement.CanCancel) > 0)
+                                {
+                                    outputCpp.Add("      if( result.param1 == 512 )");
+                                    outputCpp.Add("      {");
+                                    hasIf = true;
+                                }
+                                else if (scene2 != null && (scene2.Element & LuaScene.SceneElement.CutScene) > 0)
                                 {
                                     outputCpp.Add("      if( result.param1 != 50 )");
                                     outputCpp.Add("      {");
@@ -538,7 +549,13 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             if (!hasIf && (scene2.Element & LuaScene.SceneElement.YesNo) > 0)
                             {
-                                if (scene3 != null && (scene3.Element & LuaScene.SceneElement.CutScene) > 0)
+                                if ((scene2.Element & LuaScene.SceneElement.CanCancel) > 0)
+                                {
+                                    outputCpp.Add("      if( result.param1 == 512 )");
+                                    outputCpp.Add("      {");
+                                    hasIf = true;
+                                }
+                                else if (scene3 != null && (scene3.Element & LuaScene.SceneElement.CutScene) > 0)
                                 {
                                     outputCpp.Add("      if( result.param1 != 50 )");
                                     outputCpp.Add("      {");
@@ -558,7 +575,7 @@ namespace FFXIVTheMovie.ParserV3
                                 hasIf = true;
                             }
 
-                            if (scene3 != null && (entry.Var == null || s == 0 || entry.AssignedGroupCount < 3))
+                            if (scene3 != null && (entry.Var == null || s == 0 || entry.AssignedGroupCount < 3 || !(entry.TargetObject is ActiveActor)))
                             {
                                 outputCpp.Add($"{(hasIf ? "  " : "")}      {scene3.SceneFunctionName}( player );");
                             }
@@ -631,7 +648,7 @@ namespace FFXIVTheMovie.ParserV3
                         {
                             outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
                             outputCpp.Add("    {");
-                            if ((entry.Var == null || s == 0 || entry.AssignedGroupCount < 3) || entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestComplete))
+                            if ((entry.Var == null || s == 0 || entry.AssignedGroupCount < 3 || !(entry.TargetObject is ActiveActor)) || entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestComplete))
                             {
                                 bool hasIf = false;
                                 if ((scene3.Element & LuaScene.SceneElement.QuestReward) > 0)
