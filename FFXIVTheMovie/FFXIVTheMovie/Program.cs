@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("StmBda705");
+            list.Add("XxaFst034");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -68,7 +68,8 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("HeaVne") &&
                     !questId.StartsWith("HeaVnf") &&
                     !questId.StartsWith("HeaVng") &&
-                    !questId.StartsWith("StmBda")
+                    !questId.StartsWith("StmBda") &&
+                    !questId.StartsWith("Xxa")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -151,10 +152,10 @@ namespace FFXIVTheMovie
                     }
                 case "StmBda405":
                     {
-                        result.Add("ENEMY10", "e10");
-                        result.Add("ENEMY11", "e11");
-                        result.Add("SCENE_40", "e10");
-                        result.Add("SCENE_42", "e11");
+                        result.Add("ENEMY10", "dummye10");
+                        result.Add("ENEMY11", "dummye11");
+                        result.Add("SCENE_40", "dummye10");
+                        result.Add("SCENE_42", "dummye11");
                         break;
                     }
                 case "StmBda320":

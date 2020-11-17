@@ -152,7 +152,6 @@ namespace FFXIVTheMovie.ParserV3
                         {
                             outputCpp.Add($"        // +Callback {scene3}");
                         }
-                        outputCpp.Add("        break;");
                     }
                     else
                     {
@@ -280,7 +279,7 @@ namespace FFXIVTheMovie.ParserV3
                 var seq = seqList[s];
                 var s2 = s + 1;
                 var nextSeq = seqList[s2];
-                while (nextSeq.EntryList.Count == 1 && nextSeq.EntryList[0].EntryScene.SceneList.Count == 0)
+                while (s2 < seqList.Count - 1 && nextSeq.EntryList.Count == 1 && nextSeq.EntryList[0].EntryScene.SceneList.Count == 0)
                 {
                     s2++;
                     nextSeq = seqList[s2];
