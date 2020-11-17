@@ -204,6 +204,8 @@ private:
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq2( player );
+      player.eventFinish( getId(), 1 );
+      player.forceZoneing();
     };
     player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
