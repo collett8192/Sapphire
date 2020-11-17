@@ -441,7 +441,7 @@ namespace FFXIVTheMovie.ParserV3
                             {
                                 if ((scene.Element & LuaScene.SceneElement.CanCancel) > 0)
                                 {
-                                    outputCpp.Add("      if( result.param1 == 512 )");
+                                    outputCpp.Add("      if( result.param1 == 512 || ( result.param1 > 0 && result.param2 == 1 ) )");
                                     outputCpp.Add("      {");
                                     hasIf = true;
                                 }
@@ -551,7 +551,7 @@ namespace FFXIVTheMovie.ParserV3
                             {
                                 if ((scene2.Element & LuaScene.SceneElement.CanCancel) > 0)
                                 {
-                                    outputCpp.Add("      if( result.param1 == 512 )");
+                                    outputCpp.Add("      if( result.param1 == 512 || ( result.param1 > 0 && result.param2 == 1 ) )");
                                     outputCpp.Add("      {");
                                     hasIf = true;
                                 }
@@ -664,7 +664,7 @@ namespace FFXIVTheMovie.ParserV3
                                     hasIf = true;
                                 }
 
-                                if ((scene2.Element & LuaScene.SceneElement.QuestComplete) > 0 || (scene3.Element & LuaScene.SceneElement.QuestComplete) > 0)
+                                if ((scene.Element & LuaScene.SceneElement.QuestComplete) > 0 || (scene2.Element & LuaScene.SceneElement.QuestComplete) > 0 || (scene3.Element & LuaScene.SceneElement.QuestComplete) > 0)
                                 {
                                     outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {{");

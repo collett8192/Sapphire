@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("StmBda502");
+            list.Add("StmBda705");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -99,6 +99,12 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "StmBda705":
+                    {
+                        result.Add("SCENE_20", "actor5");
+                        result.Add("SCENE_28", "HAKURO");
+                        break;
+                    }
                 case "StmBda502":
                     {
                         result.Add("EOBJECT0", "dummye0");
@@ -590,10 +596,10 @@ namespace FFXIVTheMovie
             return (cpp, lua);
         }
 
-        public static string GetStringBetween(this string str, string from, string to)
+        public static string GetStringBetween(this string str, string from, string to, int startIndex = 0)
         {
-            int start = from == null ? 0 : str.IndexOf(from);
-            if (start < 0)
+            int start = from == null ? startIndex : str.IndexOf(from, startIndex);
+            if (start < startIndex)
                 return null;
             int offset = from == null ? 0 : from.Length;
             string remaining = str.Substring(start + offset);

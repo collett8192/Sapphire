@@ -10,10 +10,6 @@ namespace FFXIVTheMovie.ParserV3
     {
         public static LuaScene ParseLuaCode(List<string> codeBlock, int sceneNum)
         {
-            if (sceneNum == 10)
-            {
-                int a = 1;
-            }
             LuaScene result = new LuaScene(sceneNum);
             if (codeBlock.Count > 0)
             {
@@ -138,6 +134,7 @@ namespace FFXIVTheMovie.ParserV3
                         var element = FuncNameToSceneElementTable[f.FuncName];
                         if ((element & SceneElement.Talk) > 0 && f.VarName == varTarget)
                         {
+                            result.Element |= SceneElement.TargetCanMove;
                             var textArg = f.ArgList.FirstOrDefault(a => a.Contains($"{varFramework}.TEXT_"));
                             if (textArg != null)
                             {
@@ -180,17 +177,26 @@ namespace FFXIVTheMovie.ParserV3
         private static LuaFunctionCall ParseLuaFunction(string line)
         {
             bool usingDot = false;
-            int index = line.IndexOf(':');
+            bool offByOne = false;
+            int index = line.IndexOf("):");
+            if (index < 0)
+                index = line.IndexOf(':');
+            else
+                offByOne = true;
             if (index < 0)
             {
-                index = line.IndexOf('.');
+                index = line.IndexOf(").");
+                if (index < 0)
+                    index = line.IndexOf('.');
+                else
+                    offByOne = true;
                 usingDot = true;
             }
-            if (index > 0 && line[0] == 'A' && line.IndexOf('(') > 0 && line.IndexOf(')') > 0)
+            if (index > 0 && (line[0] == 'A' || line[0] == 'L') && line.IndexOf('(', index) > 0 && line.IndexOf(')', index) > 0)
             {
-                var varName = line.Substring(0, index);
-                var funcName = line.GetStringBetween(usingDot ? "." : ":", "(");
-                var argDef = line.GetStringBetween("(", ")");
+                var varName = line.Substring(0, index + (offByOne ? 1 : 0));
+                var funcName = line.GetStringBetween(usingDot ? "." : ":", "(", index);
+                var argDef = line.GetStringBetween("(", ")", index);
                 var luaFunction = new LuaFunctionCall();
                 luaFunction.VarName = varName;
                 luaFunction.FuncName = funcName;

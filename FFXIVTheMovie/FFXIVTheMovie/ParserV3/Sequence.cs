@@ -94,6 +94,11 @@ namespace FFXIVTheMovie.ParserV3
                     return false;
                 }
 
+                if (TargetObject is ActiveActor && EntryScene.SceneList.Count > 0 && !EntryScene.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove) && group.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove))
+                {
+                    return false;
+                }
+
                 if (group.ContainsSceneElement(LuaScene.SceneElement.QuestReward) || group.ContainsSceneElement(LuaScene.SceneElement.QuestComplete))
                 {
                     if (this.Owner.SeqNumber != 255)
@@ -120,7 +125,7 @@ namespace FFXIVTheMovie.ParserV3
                     return EntryScene.SceneList.Count < 1;
                 
                 var s = EntryScene.SceneList[EntryScene.SceneList.Count - 1];
-                if (((s.Element & LuaScene.SceneElement.PopBNpc) > 0 || (s.Element & LuaScene.SceneElement.CutScene) > 0 || (s.Element & LuaScene.SceneElement.FadeIn) > 0) && ((group.SceneList[0].Element & LuaScene.SceneElement.Talk) > 0 && (group.SceneList[0].Element & LuaScene.SceneElement.FadeIn) == 0))
+                if (((s.Element & LuaScene.SceneElement.PopBNpc) > 0 || (s.Element & LuaScene.SceneElement.CutScene) > 0 || (s.Element & LuaScene.SceneElement.FadeIn) > 0) && ((group.SceneList[0].Element & LuaScene.SceneElement.TargetCanMove) > 0 && (group.SceneList[0].Element & LuaScene.SceneElement.FadeIn) == 0))
                     return false;
 
                 if ((s.Element & LuaScene.SceneElement.CutScene) > 0)

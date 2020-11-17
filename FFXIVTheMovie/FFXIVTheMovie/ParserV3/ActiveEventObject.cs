@@ -97,11 +97,6 @@ namespace FFXIVTheMovie.ParserV3
         {
             return true;
         }
-
-        public override bool IsPrefferedGroup(Sequence.SceneGroup group)
-        {
-            return base.IsPrefferedGroup(group);
-        }
     }
 
     public class ActiveEObject : ActiveEventObject
@@ -118,10 +113,6 @@ namespace FFXIVTheMovie.ParserV3
         {
             foreach (var s in group.SceneList)
             {
-                if ((s.Element & LuaScene.SceneElement.Talk) > 0 && s.Identity != "unknown" && !s.Identity.StartsWith("dummy"))
-                {
-                    return false;
-                }
                 if ((s.Element & LuaScene.SceneElement.TargetCanMove) > 0 && s.Identity != "unknown" && !s.Identity.StartsWith("dummy"))
                 {
                     return false;
@@ -136,6 +127,8 @@ namespace FFXIVTheMovie.ParserV3
 
         public override bool IsPrefferedGroup(Sequence.SceneGroup group)
         {
+            if (!CanHaveIdentity(group.Identity))
+                return false;
             if (group.SceneList.Count == 1 && (group.SceneList[0].Element & LuaScene.SceneElement.PopBNpc) > 0)
             {
                 return true;
@@ -173,6 +166,8 @@ namespace FFXIVTheMovie.ParserV3
 
         public override bool CanAssignSceneGroup(Sequence.SceneGroup group)
         {
+            if (!CanHaveIdentity(group.Identity))
+                return false;
             if (group.SceneList.Count == 1 && group.SceneList[0].Element == LuaScene.SceneElement.None)
                 return true;
             if (group.SceneList.Count == 1 && group.SceneList[0].Element == (LuaScene.SceneElement.Message | LuaScene.SceneElement.PopBNpc))
@@ -183,6 +178,13 @@ namespace FFXIVTheMovie.ParserV3
         public override bool CanHaveIdentity(string id)
         {
             return id == "unknown" || id.StartsWith("dummy");
+        }
+
+        public override bool IsPrefferedGroup(Sequence.SceneGroup group)
+        {
+            if (group.SceneList.Count == 1 && (group.SceneList[0].Element & (LuaScene.SceneElement.Message | LuaScene.SceneElement.PopBNpc)) > 0)
+                return true;
+            return false;
         }
     }
 
