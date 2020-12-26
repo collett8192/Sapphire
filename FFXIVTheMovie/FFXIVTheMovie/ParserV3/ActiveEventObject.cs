@@ -83,12 +83,6 @@ namespace FFXIVTheMovie.ParserV3
                 {
                     return false;
                 }
-                /*
-                if ((s.Element & LuaScene.SceneElement.PopBNpc) > 0 && (s.Element & LuaScene.SceneElement.Talk) == 0 && (s.Element & LuaScene.SceneElement.TargetCanMove) == 0)
-                {
-                    return false;
-                }
-                */
             }
             return true;
         }
