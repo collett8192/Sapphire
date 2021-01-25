@@ -71,6 +71,7 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("StmBda") &&
                     !questId.StartsWith("StmBdb") &&
                     !questId.StartsWith("StmBdc") &&
+                    !questId.StartsWith("StmBdd") &&
                     !questId.StartsWith("Xxa")
                     )
                     continue;

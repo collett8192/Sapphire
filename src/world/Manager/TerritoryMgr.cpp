@@ -726,7 +726,8 @@ std::unordered_map< uint32_t, Sapphire::World::Manager::TerritoryMgr::InstanceSp
   { 727, { { -454, 383, -127 }, 1.578 } },
   { 738, { { 0, -2, 55 }, -3.14 } },
   { 737, { { 250, 122, -346 }, -3.14 } },
-  { 744, { { 0, 0, 0 }, 0 } },
+  { 744, { { 0, 0, 0 }, -3.14 } },
+  { 786, { { 0, -8, 43.5 }, 3.14 } },
 };
 
 std::unordered_map< uint32_t, uint32_t > Sapphire::World::Manager::TerritoryMgr::instanceExitEvent =
@@ -755,4 +756,5 @@ std::unordered_map< uint32_t, uint32_t > Sapphire::World::Manager::TerritoryMgr:
   { 131286, 738 },
   { 131289, 737 },
   { 131294, 744 },
+  { 131296, 786 },
 };
