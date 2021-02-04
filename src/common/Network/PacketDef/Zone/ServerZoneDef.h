@@ -2239,12 +2239,12 @@ namespace Sapphire::Network::Packets::Server
     uint8_t padding[3];
   };
 
-  struct FFXIVIpcLuaDismount : FFXIVIpcBasePacket< LuaDismount >
+  struct FFXIVIpcEventYield : FFXIVIpcBasePacket< EventYield >
   {
     uint32_t eventId;
     uint16_t scene;
     uint16_t unknown;
-    uint64_t padding;
+    uint64_t unknown2;
   };
 }
 

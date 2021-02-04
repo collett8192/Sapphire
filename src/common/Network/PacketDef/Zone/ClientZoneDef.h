@@ -416,13 +416,13 @@ struct FFXIVIpcDisbandPartyHandler :
   uint64_t empty;
 };
 
-struct FFXIVIpcLuaDismountEventHandler :
-  FFXIVIpcBasePacket< LuaDismountEventHandler >
+struct FFXIVIpcLuaEventYieldHandler :
+  FFXIVIpcBasePacket< EventYieldHandler >
 {
   uint32_t eventId;
   uint16_t scene;
   uint16_t unknown;
-  uint64_t padding;
+  uint64_t unknown2;
 };
 
 struct FFXIVIpcDive :
