@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -45,7 +45,7 @@ public:
   //UNLOCKADDNEWCONTENTTOCF = 3702
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -62,25 +62,27 @@ private:
       }
       case 2:
       {
-        if( actor == 2004430 || actorId == 2004430 ) // EOBJECT0 = unknown
+        if( param1 == 2004430 || param2 == 2004430 ) // EOBJECT0 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
-            Scene00003( player ); // Scene00003: Normal(None), id=unknown
+            Scene00004( player ); // Scene00004: Normal(Message), id=unknown
           }
+          break;
         }
-        if( actor == 1000587 || actorId == 1000587 ) // ACTOR1 = unknown
+        if( param1 == 1000587 || param2 == 1000587 ) // ACTOR1 = DELLEXIA
         {
-          Scene00004( player ); // Scene00004: Normal(Message), id=unknown
+          Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=DELLEXIA
+          break;
         }
         break;
       }
       case 3:
       {
-        if( actor == 1000587 || actorId == 1000587 ) // ACTOR1 = DELLEXIA
+        if( param1 == 1000587 || param2 == 1000587 ) // ACTOR1 = DELLEXIA
         {
-          Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=DELLEXIA
-          // +Callback Scene00006: Normal(Talk, TargetCanMove), id=DELLEXIA
+          Scene00006( player ); // Scene00006: Normal(Talk, TargetCanMove), id=DELLEXIA
+          break;
         }
         break;
       }
@@ -119,7 +121,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -163,7 +165,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd019:67066 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=SCARLET" );
+    player.sendDebug( "GaiUsd019:67066 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=SCARLET" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -181,18 +183,13 @@ private:
     player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "GaiUsd019:67066 calling Scene00003: Normal(None), id=unknown" );
-    player.setQuestUI8AL( getId(), 1 );
-    checkProgressSeq2( player );
-  }
-
   void Scene00004( Entity::Player& player )
   {
     player.sendDebug( "GaiUsd019:67066 calling Scene00004: Normal(Message), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.setQuestUI8AL( getId(), 1 );
+      checkProgressSeq2( player );
     };
     player.playScene( getId(), 4, NONE, callback );
   }
@@ -202,13 +199,13 @@ private:
     player.sendDebug( "GaiUsd019:67066 calling Scene00005: Normal(Talk, TargetCanMove), id=DELLEXIA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      Scene00006( player );
     };
     player.playScene( getId(), 5, NONE, callback );
   }
+
   void Scene00006( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd019:67066 calling [BranchTrue]Scene00006: Normal(Talk, TargetCanMove), id=DELLEXIA" );
+    player.sendDebug( "GaiUsd019:67066 calling Scene00006: Normal(Talk, TargetCanMove), id=DELLEXIA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
     };
@@ -223,7 +220,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 7, NONE, callback );

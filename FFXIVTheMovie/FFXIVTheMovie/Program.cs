@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("StmBdg102");
+            list.Add("GaiUsd601");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -106,6 +106,11 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "GaiUsd601":
+                    {
+                        result.Add("SCENE_3", "WEDGE");
+                        break;
+                    }
                 case "StmBdg102":
                     {
                         result.Add("SCENE_3", "RAUBAHN");

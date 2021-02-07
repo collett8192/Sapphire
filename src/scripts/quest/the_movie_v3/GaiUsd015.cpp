@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 // simple method used
 #include <Actor/Player.h>
 #include <ScriptObject.h>
@@ -27,7 +27,7 @@ public:
   //ITEM2 = 2001144
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -88,7 +88,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -123,7 +123,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd015:66734 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=URIANGER" );
+    player.sendDebug( "GaiUsd015:66734 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=URIANGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -145,7 +145,7 @@ private:
   }
   void Scene00003( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd015:66734 calling [BranchTrue]Scene00003: Normal(Talk, TargetCanMove), id=ROWENA" );
+    player.sendDebug( "GaiUsd015:66734 calling Scene00003: Normal(Talk, TargetCanMove), id=ROWENA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq1( player );
@@ -167,13 +167,15 @@ private:
   }
   void Scene00005( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd015:66734 calling [BranchTrue]Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=LARAINA" );
+    player.sendDebug( "GaiUsd015:66734 calling Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=LARAINA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 5, NONE, callback );

@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -62,7 +62,7 @@ public:
   //UNLOCKIMAGEDUNGEON = 257
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -80,79 +80,91 @@ private:
       }
       case 2:
       {
-        if( actor == 1009770 || actorId == 1009770 ) // ACTOR2 = INVESTIGATORB00043
+        if( param1 == 1009770 || param2 == 1009770 ) // ACTOR2 = INVESTIGATORB00043
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
-            Scene00004( player ); // Scene00004: Normal(None), id=unknown
-            // +Callback Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=INVESTIGATORB00043
+            Scene00005( player ); // Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=INVESTIGATORB00043
           }
+          break;
         }
-        if( actor == 1009769 || actorId == 1009769 ) // ACTOR1 = INVESTIGATORA00043
+        if( param1 == 1009769 || param2 == 1009769 ) // ACTOR1 = INVESTIGATORA00043
         {
           Scene00006( player ); // Scene00006: Normal(Talk, TargetCanMove), id=INVESTIGATORA00043
+          break;
         }
         break;
       }
       case 3:
       {
-        if( actor == 1009771 || actorId == 1009771 ) // ACTOR3 = URIANGER
+        if( param1 == 1009771 || param2 == 1009771 ) // ACTOR3 = URIANGER
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00007( player ); // Scene00007: Normal(Talk, FadeIn, TargetCanMove), id=URIANGER
           }
+          break;
         }
-        if( actor == 1010765 || actorId == 1010765 ) // ACTOR4 = INVESTIGATORB00043
+        if( param1 == 1010765 || param2 == 1010765 ) // ACTOR4 = INVESTIGATORB00043
         {
           Scene00008( player ); // Scene00008: Normal(Talk, TargetCanMove), id=INVESTIGATORB00043
+          break;
         }
         break;
       }
       case 4:
       {
-        if( actor == 1009772 || actorId == 1009772 ) // ACTOR5 = ALISAIE
+        if( param1 == 1009772 || param2 == 1009772 ) // ACTOR5 = ALISAIE
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00009( player ); // Scene00009: Normal(Talk, FadeIn, TargetCanMove), id=ALISAIE
           }
+          break;
         }
-        if( actor == 1009773 || actorId == 1009773 ) // ACTOR6 = URIANGER
+        if( param1 == 1009773 || param2 == 1009773 ) // ACTOR6 = URIANGER
         {
           Scene00010( player ); // Scene00010: Normal(Talk, TargetCanMove), id=URIANGER
+          break;
         }
-        if( actor == 2004607 || actorId == 2004607 ) // EOBJECT0 = unknown
+        if( param1 == 2004607 || param2 == 2004607 ) // EOBJECT0 = unknown
         {
           Scene00011( player ); // Scene00011: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1009774 || actorId == 1009774 ) // ACTOR7 = unknown
+        if( param1 == 1009774 || param2 == 1009774 ) // ACTOR7 = unknown
         {
           Scene00012( player ); // Scene00012: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1009775 || actorId == 1009775 ) // ACTOR8 = unknown
+        if( param1 == 1009775 || param2 == 1009775 ) // ACTOR8 = unknown
         {
           Scene00013( player ); // Scene00013: Normal(None), id=unknown
+          break;
         }
         break;
       }
       case 255:
       {
-        if( actor == 1009768 || actorId == 1009768 ) // ACTOR9 = ERKENRAD
+        if( param1 == 1009768 || param2 == 1009768 ) // ACTOR9 = ERKENRAD
         {
           Scene00014( player ); // Scene00014: Normal(Talk, Message, QuestReward, QuestComplete, TargetCanMove), id=ERKENRAD
+          break;
         }
-        if( actor == 2004607 || actorId == 2004607 ) // EOBJECT0 = unknown
+        if( param1 == 2004607 || param2 == 2004607 ) // EOBJECT0 = unknown
         {
           Scene00015( player ); // Scene00015: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1009774 || actorId == 1009774 ) // ACTOR7 = unknown
+        if( param1 == 1009774 || param2 == 1009774 ) // ACTOR7 = unknown
         {
           Scene00016( player ); // Scene00016: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1009775 || actorId == 1009775 ) // ACTOR8 = unknown
+        if( param1 == 1009775 || param2 == 1009775 ) // ACTOR8 = unknown
         {
           Scene00017( player ); // Scene00017: Normal(None), id=unknown
+          break;
         }
         break;
       }
@@ -186,7 +198,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -242,7 +254,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd501:65579 calling [BranchTrue]Scene00001: Normal(Talk, TargetCanMove), id=URIANGER" );
+    player.sendDebug( "GaiUsd501:65579 calling Scene00001: Normal(Talk, TargetCanMove), id=URIANGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       Scene00002( player );
@@ -251,7 +263,7 @@ private:
   }
   void Scene00002( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd501:65579 calling [BranchChain]Scene00002: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=URIANGER" );
+    player.sendDebug( "GaiUsd501:65579 calling Scene00002: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=URIANGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -269,14 +281,9 @@ private:
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00004( Entity::Player& player )
-  {
-    player.sendDebug( "GaiUsd501:65579 calling Scene00004: Normal(None), id=unknown" );
-    Scene00005( player );
-  }
   void Scene00005( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd501:65579 calling [BranchTrue]Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=INVESTIGATORB00043" );
+    player.sendDebug( "GaiUsd501:65579 calling Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=INVESTIGATORB00043" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
@@ -358,7 +365,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 14, NONE, callback );

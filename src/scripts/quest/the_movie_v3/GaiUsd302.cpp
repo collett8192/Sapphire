@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -31,27 +31,29 @@ public:
   //LOCPOSACTOR1 = 4667123
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(YesNo, QuestOffer, TargetCanMove), id=unknown
+        Scene00000( player ); // Scene00000: Normal(YesNo, QuestOffer, TargetCanMove, SystemTalk), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ALISAIE
         break;
       }
       case 255:
       {
-        if( actor == 1007478 || actorId == 1007478 ) // ACTOR1 = URIANGER
+        if( param1 == 1007478 || param2 == 1007478 ) // ACTOR1 = URIANGER
         {
           Scene00002( player ); // Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=URIANGER
           // +Callback Scene00003: Normal(Talk, FadeIn, TargetCanMove), id=URIANGER
+          break;
         }
-        if( actor == 1008540 || actorId == 1008540 ) // ACTOR0 = ALISAIE
+        if( param1 == 1008540 || param2 == 1008540 ) // ACTOR0 = ALISAIE
         {
           Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=ALISAIE
           // +Callback Scene00100: Normal(CutScene, FadeIn, QuestOffer), id=unknown
+          break;
         }
         break;
       }
@@ -85,7 +87,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -101,7 +103,7 @@ private:
 
   void Scene00000( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd302:66850 calling Scene00000: Normal(YesNo, QuestOffer, TargetCanMove), id=unknown" );
+    player.sendDebug( "GaiUsd302:66850 calling Scene00000: Normal(YesNo, QuestOffer, TargetCanMove, SystemTalk), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -113,7 +115,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd302:66850 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ALISAIE" );
+    player.sendDebug( "GaiUsd302:66850 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ALISAIE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -135,11 +137,13 @@ private:
   }
   void Scene00003( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd302:66850 calling [BranchTrue]Scene00003: Normal(Talk, FadeIn, TargetCanMove), id=URIANGER" );
+    player.sendDebug( "GaiUsd302:66850 calling Scene00003: Normal(Talk, FadeIn, TargetCanMove), id=URIANGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( player.giveQuestRewards( getId(), result.param3 ) )
+      {
         player.finishQuest( getId() );
+      }
     };
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -155,7 +159,7 @@ private:
   }
   void Scene00100( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd302:66850 calling [BranchTrue]Scene00100: Normal(CutScene, FadeIn, QuestOffer), id=unknown" );
+    player.sendDebug( "GaiUsd302:66850 calling Scene00100: Normal(CutScene, FadeIn, QuestOffer), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )

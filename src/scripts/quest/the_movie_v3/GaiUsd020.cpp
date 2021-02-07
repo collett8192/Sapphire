@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -36,7 +36,7 @@ public:
   //UNLOCKADDNEWCONTENTTOCF = 3702
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -48,86 +48,100 @@ private:
       }
       case 1:
       {
-        if( actor == 1006444 || actorId == 1006444 ) // ACTOR1 = DRILLEMONT
+        if( param1 == 1006444 || param2 == 1006444 ) // ACTOR1 = DRILLEMONT
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00002( player ); // Scene00002: Normal(Talk, FadeIn, TargetCanMove), id=DRILLEMONT
           }
+          break;
         }
-        if( actor == 1007478 || actorId == 1007478 ) // ACTOR0 = URIANGER
+        if( param1 == 1007478 || param2 == 1007478 ) // ACTOR0 = URIANGER
         {
           Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=URIANGER
+          break;
         }
         break;
       }
       case 2:
       {
-        if( actor == 1010054 || actorId == 1010054 ) // ACTOR2 = TEMPLER00075
+        if( param1 == 1010054 || param2 == 1010054 ) // ACTOR2 = TEMPLER00075
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00004( player ); // Scene00004: Normal(Talk, Message, TargetCanMove), id=TEMPLER00075
           }
+          break;
         }
-        if( actor == 1007478 || actorId == 1007478 ) // ACTOR0 = URIANGER
+        if( param1 == 1007478 || param2 == 1007478 ) // ACTOR0 = URIANGER
         {
           Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=URIANGER
+          break;
         }
-        if( actor == 1006444 || actorId == 1006444 ) // ACTOR1 = DRILLEMONT
+        if( param1 == 1006444 || param2 == 1006444 ) // ACTOR1 = DRILLEMONT
         {
           Scene00006( player ); // Scene00006: Normal(Talk, TargetCanMove), id=DRILLEMONT
+          break;
         }
         break;
       }
       case 3:
       {
-        if( actor == 1007478 || actorId == 1007478 ) // ACTOR0 = URIANGER
+        if( param1 == 1007478 || param2 == 1007478 ) // ACTOR0 = URIANGER
         {
           Scene00007( player ); // Scene00007: Normal(Talk, TargetCanMove), id=URIANGER
+          break;
         }
-        if( actor == 1006444 || actorId == 1006444 ) // ACTOR1 = DRILLEMONT
+        if( param1 == 1006444 || param2 == 1006444 ) // ACTOR1 = DRILLEMONT
         {
           Scene00008( player ); // Scene00008: Normal(Talk, TargetCanMove), id=DRILLEMONT
+          break;
         }
-        if( actor == 1010054 || actorId == 1010054 ) // ACTOR2 = TEMPLER00075
+        if( param1 == 1010054 || param2 == 1010054 ) // ACTOR2 = TEMPLER00075
         {
           Scene00009( player ); // Scene00009: Normal(Talk, TargetCanMove), id=TEMPLER00075
+          break;
         }
         break;
       }
       case 4:
       {
-        if( actor == 1006444 || actorId == 1006444 ) // ACTOR1 = DRILLEMONT
+        if( param1 == 1006444 || param2 == 1006444 ) // ACTOR1 = DRILLEMONT
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00010( player ); // Scene00010: Normal(Talk, TargetCanMove), id=DRILLEMONT
           }
+          break;
         }
-        if( actor == 1007478 || actorId == 1007478 ) // ACTOR0 = URIANGER
+        if( param1 == 1007478 || param2 == 1007478 ) // ACTOR0 = URIANGER
         {
           Scene00011( player ); // Scene00011: Normal(Talk, TargetCanMove), id=URIANGER
+          break;
         }
-        if( actor == 1010054 || actorId == 1010054 ) // ACTOR2 = TEMPLER00075
+        if( param1 == 1010054 || param2 == 1010054 ) // ACTOR2 = TEMPLER00075
         {
           Scene00012( player ); // Scene00012: Normal(Talk, TargetCanMove), id=TEMPLER00075
+          break;
         }
         break;
       }
       case 255:
       {
-        if( actor == 1007478 || actorId == 1007478 ) // ACTOR0 = URIANGER
+        if( param1 == 1007478 || param2 == 1007478 ) // ACTOR0 = URIANGER
         {
           Scene00013( player ); // Scene00013: Normal(Talk, NpcDespawn, QuestReward, QuestComplete, TargetCanMove), id=URIANGER
+          break;
         }
-        if( actor == 1006444 || actorId == 1006444 ) // ACTOR1 = DRILLEMONT
+        if( param1 == 1006444 || param2 == 1006444 ) // ACTOR1 = DRILLEMONT
         {
           Scene00014( player ); // Scene00014: Normal(Talk, TargetCanMove), id=DRILLEMONT
+          break;
         }
-        if( actor == 1010054 || actorId == 1010054 ) // ACTOR2 = TEMPLER00075
+        if( param1 == 1010054 || param2 == 1010054 ) // ACTOR2 = TEMPLER00075
         {
           Scene00015( player ); // Scene00015: Normal(Talk, TargetCanMove), id=TEMPLER00075
+          break;
         }
         break;
       }
@@ -161,7 +175,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -217,7 +231,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd020:65626 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=URIANGER" );
+    player.sendDebug( "GaiUsd020:65626 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=URIANGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -338,7 +352,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 13, NONE, callback );

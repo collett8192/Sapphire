@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -27,7 +27,7 @@ public:
   //UNLOCKIMAGEDUNGEON = 118
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -44,17 +44,18 @@ private:
       }
       case 2:
       {
-        if( actor == 2002609 || actorId == 2002609 ) // EOBJECT0 = unknown
+        if( param1 == 2002609 || param2 == 2002609 ) // EOBJECT0 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
-            Scene00003( player ); // Scene00003: Normal(None), id=unknown
-            // +Callback Scene00004: Normal(None), id=unknown
+            Scene00004( player ); // Scene00004: Normal(None), id=unknown
           }
+          break;
         }
-        if( actor == 1007685 || actorId == 1007685 ) // ACTOR1 = ALISAIE
+        if( param1 == 1007685 || param2 == 1007685 ) // ACTOR1 = ALISAIE
         {
           Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=ALISAIE
+          break;
         }
         break;
       }
@@ -93,7 +94,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -133,7 +134,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd101:66695 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=URIANGER" );
+    player.sendDebug( "GaiUsd101:66695 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=URIANGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -151,14 +152,9 @@ private:
     player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "GaiUsd101:66695 calling Scene00003: Normal(None), id=unknown" );
-    Scene00004( player );
-  }
   void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsd101:66695 calling [BranchTrue]Scene00004: Normal(None), id=unknown" );
+    player.sendDebug( "GaiUsd101:66695 calling Scene00004: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), 1 );
     checkProgressSeq2( player );
   }
@@ -180,7 +176,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 6, NONE, callback );
