@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("StmBdc108");
+            list.Add("StmBdg102");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -61,6 +61,7 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("GaiUsd") &&
                     !questId.StartsWith("GaiUse") &&
                     !questId.StartsWith("GaiUsx") &&
+                    !questId.StartsWith("Xxa") &&
                     !questId.StartsWith("HeaVna") &&
                     !questId.StartsWith("HeaVnb") &&
                     !questId.StartsWith("HeaVnc") &&
@@ -72,7 +73,9 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("StmBdb") &&
                     !questId.StartsWith("StmBdc") &&
                     !questId.StartsWith("StmBdd") &&
-                    !questId.StartsWith("Xxa")
+                    !questId.StartsWith("StmBde") &&
+                    !questId.StartsWith("StmBdf") &&
+                    !questId.StartsWith("StmBdg")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -103,6 +106,41 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "StmBdg102":
+                    {
+                        result.Add("SCENE_3", "RAUBAHN");
+                        result.Add("EOBJECT0", "dummye0");
+                        result.Add("SCENE_6", "dummyt0");
+                        break;
+                    }
+                case "StmBdf105":
+                    {
+                        result.Add("ACROT0", "LYSE");
+                        result.Add("SCENE_2", "LYSE");
+                        result.Add("ACTOR1", "outter_gate_keeper_before_quest");
+                        result.Add("SCENE_3", "outter_gate_keeper_before_quest");
+                        result.Add("ACTOR3", "RESISTANCEGATEKEEPER");
+                        result.Add("SCENE_13", "HOARYBOULDER");
+                        break;
+                    }
+                case "StmBdf103":
+                    {
+                        result.Add("SCENE_15", "HIEN");
+                        result.Add("ACTOR11", "TANSUI2");
+                        result.Add("SCENE_12", "TANSUI2");
+                        result.Add("SCENE_28", "TANSUI2");
+                        result.Add("SCENE_36", "TANSUI2");
+                        result.Add("ACTOR12", "CIRINA2");
+                        result.Add("SCENE_13", "CIRINA2");
+                        result.Add("SCENE_29", "CIRINA2");
+                        result.Add("SCENE_37", "CIRINA2");
+                        break;
+                    }
+                case "StmBde107":
+                    {
+                        result.Add("SCENE_2", "ALISAIE");
+                        break;
+                    }
                 case "StmBdc108":
                     {
                         result.Add("ACTOR4", "actor4");

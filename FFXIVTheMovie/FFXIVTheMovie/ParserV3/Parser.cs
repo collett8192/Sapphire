@@ -420,7 +420,7 @@ namespace FFXIVTheMovie.ParserV3
                     var scene3 = entry.EntryScene.SceneList.Count > 2 ? entry.EntryScene.SceneList[2] : null;
                     var scene4 = entry.EntryScene.SceneList.Count > 3 ? entry.EntryScene.SceneList[3] : null;
                     outputCpp.Add("");
-                    Action<LuaScene, LuaScene> createSceneCppFunction = (current, next) =>
+                    Action<LuaScene, LuaScene, bool> createSceneCppFunction = (current, next, afterComplete) =>
                     {
                         if (current != null)
                         {
@@ -474,7 +474,7 @@ namespace FFXIVTheMovie.ParserV3
                                 }
                                 else
                                 {
-                                    if ((current.Element & LuaScene.SceneElement.QuestComplete) > 0)
+                                    if (afterComplete)
                                     {
                                         outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
                                         outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
@@ -533,11 +533,14 @@ namespace FFXIVTheMovie.ParserV3
                             outputCpp.Add("  }");
                         }
                     };
-
-                    createSceneCppFunction(scene, scene2);
-                    createSceneCppFunction(scene2, scene3);
-                    createSceneCppFunction(scene3, scene4);
-                    createSceneCppFunction(scene4, null);
+                    bool c = (scene != null && ((scene.Element & LuaScene.SceneElement.QuestComplete) > 0));
+                    createSceneCppFunction(scene, scene2, c);
+                    c = c || (scene2 != null && ((scene2.Element & LuaScene.SceneElement.QuestComplete) > 0));
+                    createSceneCppFunction(scene2, scene3, c);
+                    c = c || (scene3 != null && ((scene3.Element & LuaScene.SceneElement.QuestComplete) > 0));
+                    createSceneCppFunction(scene3, scene4, c);
+                    c = c || (scene4 != null && ((scene4.Element & LuaScene.SceneElement.QuestComplete) > 0));
+                    createSceneCppFunction(scene4, null, c);
                 }
              }
 
