@@ -463,7 +463,14 @@ namespace FFXIVTheMovie.ParserV3
                                 }
                                 if (!hasIf && ((current.Element & LuaScene.SceneElement.Menu) > 0 || (current.Element & LuaScene.SceneElement.CanCancel) > 0 || current.Type == LuaScene.SceneType.Snipe))
                                 {
-                                    outputCpp.Add("      if( result.param1 == 512 )");
+                                    if (next == null || next.Type != LuaScene.SceneType.CardGame)
+                                    {
+                                        outputCpp.Add("      if( result.param1 == 512 )");
+                                    }
+                                    else
+                                    {
+                                        outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
+                                    }
                                     outputCpp.Add("      {");
                                     hasIf = true;
                                 }

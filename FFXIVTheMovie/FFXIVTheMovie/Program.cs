@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("GaiUsd601");
+            list.Add("LucKma305");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -75,7 +75,8 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("StmBdd") &&
                     !questId.StartsWith("StmBde") &&
                     !questId.StartsWith("StmBdf") &&
-                    !questId.StartsWith("StmBdg")
+                    !questId.StartsWith("StmBdg") &&
+                    !questId.StartsWith("LucKma")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -106,6 +107,75 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "LucKma305":
+                    {
+                        result.Add("SCENE_10", "dummye3");
+                        result.Add("SCENE_14", "dummye5");
+                        result.Add("SCENE_18", "dummye7");
+                        result.Add("EOBJECT0", "dummye0");
+                        result.Add("EOBJECT1", "dummye1");
+                        result.Add("EOBJECT2", "dummye2");
+                        result.Add("EOBJECT3", "dummye3");
+                        result.Add("EOBJECT4", "dummye4");
+                        result.Add("EOBJECT5", "dummye5");
+                        result.Add("EOBJECT6", "dummye6");
+                        result.Add("EOBJECT7", "dummye7");
+                        break;
+                    }
+                case "LucKma304":
+                    {
+                        result.Add("SCENE_17", "dummye1");
+                        result.Add("SCENE_19", "dummye2");
+                        result.Add("ENEMY1", "dummye1");
+                        result.Add("ENEMY2", "dummye2");
+                        break;
+                    }
+                case "LucKma303":
+                    {
+                        result.Add("SCENE_3", "dummye0");
+                        result.Add("SCENE_5", "dummye1");
+                        result.Add("SCENE_7", "dummye2");
+                        result.Add("EOBJECT0", "dummye0");
+                        result.Add("EOBJECT1", "dummye1");
+                        result.Add("EOBJECT2", "dummye2");
+                        break;
+                    }
+                case "LucKma301":
+                    {
+                        result.Add("ACTOR6", "CASSARD");
+                        result.Add("SCENE_6", "CASSARD");
+                        result.Add("SCENE_22", "dummye0");
+                        result.Add("EOBJECT0", "dummye0");
+                        break;
+                    }
+                case "LucKma207":
+                    {
+                        result.Add("SCENE_6", "card1");
+                        result.Add("SCENE_7", "card1");
+                        result.Add("SCENE_8", "card2");
+                        result.Add("SCENE_9", "card2");
+                        result.Add("SCENE_10", "card2");
+                        result.Add("ACTOR4", "actor4");
+                        result.Add("SCENE_12", "actor4");
+                        break;
+                    }
+                case "LucKma206":
+                    {
+                        result.Add("SCENE_6", "actor2");
+                        result.Add("SCENE_7", "actor3");
+                        break;
+                    }
+                case "LucKma204":
+                    {
+                        result.Add("ACTOR5", "ALPHINAUD");
+                        break;
+                    }
+                case "LucKma203":
+                    {
+                        result.Add("SCENE_15", "dummye0");
+                        result.Add("ACTOR4", "ALPHINAUD");
+                        break;
+                    }
                 case "GaiUsd601":
                     {
                         result.Add("SCENE_3", "WEDGE");

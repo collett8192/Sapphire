@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,13 +63,15 @@ namespace FFXIVTheMovie.ParserV3
                         {
                             varNames[i] = varNames[i].Trim();
                             varValues[i] = varValues[i].Trim();
+                            if (varValues[i].StartsWith($"{varFramework}.CARD_0"))
+                                result.Type = SceneType.CardGame;
                             if (localVarTable.ContainsKey(varNames[i]))
                             {
                                 localVarTable[varNames[i]] = varValues[i].ExpandLocalVar(localVarTable);
                             }
                             else
                             {
-                                throw new Exception($"[LuaScene]Unknown local var {varNames[i]}.");
+                                Console.WriteLine($"[LuaScene]Unknown local var {varNames[i]}.");
                             }
                         }
                         continue;
@@ -249,6 +252,7 @@ namespace FFXIVTheMovie.ParserV3
             Normal = 0,
             NpcTrade = 5,
             Snipe = 6,
+            CardGame = 7,
         }
 
         [Flags]
