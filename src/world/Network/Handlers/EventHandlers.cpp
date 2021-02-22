@@ -87,6 +87,12 @@ void Sapphire::Network::GameConnection::eventHandlerTalk( const Packets::FFXIVAR
 
 }
 
+void Sapphire::Network::GameConnection::eventHandlerSay( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
+{
+  player.sendUrgent( "Say event handler not implemented." );
+  player.sendStateFlags();
+}
+
 void Sapphire::Network::GameConnection::eventHandlerEmote( const Packets::FFXIVARR_PACKET_RAW& inPacket,
                                                            Entity::Player& player )
 {

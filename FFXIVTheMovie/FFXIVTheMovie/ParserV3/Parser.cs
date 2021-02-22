@@ -70,7 +70,10 @@ namespace FFXIVTheMovie.ParserV3
                 outputCpp.Add("// id hint used:");
                 foreach (var hint in idHint)
                 {
-                    outputCpp.Add($"//{hint.Key} = {hint.Value}");
+                    if(hint.Value != null)
+                        outputCpp.Add($"//{hint.Key} = {hint.Value}");
+                    else
+                        outputCpp.Add($"//{hint.Key} REMOVED!!");
                 }
             }
             outputCpp.Add("#include <Actor/Player.h>");
@@ -674,12 +677,21 @@ namespace FFXIVTheMovie.ParserV3
                         var scene = g.SceneList.FirstOrDefault(s => s.SceneNumber == sceneNum);
                         if (scene != null)
                         {
-                            scene.Identity = hint.Value;
+                            if (hint.Value == null)
+                            {
+                                g.SceneList.Remove(scene);
+                                if (g.SceneList.Count == 0)
+                                    sceneGroupList.Remove(g);
+                            }
+                            else
+                            {
+                                scene.Identity = hint.Value;
+                            }
                             break;
                         }
                     }
                 }
-                else
+                else if (hint.Value != null)
                 {
                     idTable.Add(hint.Key, new Tuple<string, int>(hint.Value, -1));
                 }

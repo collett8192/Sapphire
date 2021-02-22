@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("LucKma305");
+            list.Add("SubGsc001");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -76,7 +76,8 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("StmBde") &&
                     !questId.StartsWith("StmBdf") &&
                     !questId.StartsWith("StmBdg") &&
-                    !questId.StartsWith("LucKma")
+                    !questId.StartsWith("LucKma") &&
+                    !questId.StartsWith("LucKmb")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -107,6 +108,31 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "SubGsc001":
+                    {
+                        result.Add("ACTOR1", "dummy1");
+                        result.Add("SCENE_2", "dummy1");
+                        result.Add("SCENE_5", "ELYENORA");
+                        break;
+                    }
+                case "LucKmb109":
+                    {
+                        result.Add("SCENE_2", null);
+                        result.Add("SCENE_8", null);
+                        result.Add("SCENE_14", null);
+                        result.Add("SCENE_3", "dummyFEOUL");
+                        result.Add("SCENE_9", "dummyFEOUL");
+                        result.Add("SCENE_15", "dummyFEOUL");
+                        break;
+                    }
+                case "LucKmb105":
+                    {
+                        result.Add("SCENE_10", "dummye0");
+                        result.Add("SCENE_12", "dummye1");
+                        result.Add("SCENE_14", "dummye2");
+                        result.Add("SCENE_21", "THANCRED");
+                        break;
+                    }
                 case "LucKma305":
                     {
                         result.Add("SCENE_10", "dummye3");

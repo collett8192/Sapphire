@@ -161,6 +161,13 @@ struct FFXIVIpcEventHandlerTalk :
   /* 0008 */ uint32_t eventId;
 };
 
+struct FFXIVIpcEventHandlerSay :
+  FFXIVIpcBasePacket< SayEventHandler >
+{
+  /* 0000 */ uint64_t actorId;
+  /* 0008 */ uint32_t eventId;
+};
+
 struct FFXIVIpcPingHandler :
   FFXIVIpcBasePacket< PingHandler >
 {
