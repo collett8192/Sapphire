@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("SubGsc001");
+            list.Add("LucKmb119");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -108,6 +108,24 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "LucKmb119":
+                    {
+                        result.Add("EOBJECT0", "dummye0");
+                        result.Add("SCENE_3", "dummye0");
+                        break;
+                    }
+                case "LucKmb112":
+                    {
+                        result.Add("EVENTRANGE1", "dummyr1");
+                        result.Add("SCENE_14", "dummyr1");
+                        result.Add("SCENE_15", "dummyr1");
+                        break;
+                    }
+                case "LucKmb111":
+                    {
+                        result.Add("SCENE_8", "dummyBOSSOFFUATH");
+                        break;
+                    }
                 case "SubGsc001":
                     {
                         result.Add("ACTOR1", "dummy1");
