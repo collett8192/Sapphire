@@ -443,6 +443,28 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add("      {");
                                     hasIf = true;
                                 }
+                                if (!hasIf && current.Type == LuaScene.SceneType.MsqDungeon)
+                                {
+                                    outputCpp.Add("      if( result.param1 == 768 ) // cancel");
+                                    outputCpp.Add("      {");
+                                    if (s < seqList.Count - 1)
+                                    {
+                                        var nextSeq = seqList[s + 1];
+                                        if (nextSeq.EntryList.Count > 0 && nextSeq.EntryList[0].EntryScene.SceneList.Count > 0)
+                                        {
+                                            if (nextSeq.EntryList[0].TargetObject is ActiveTerritory)
+                                            {
+                                                outputCpp.Add("        //dungeon auto skip");
+                                                outputCpp.Add($"        {nextSeq.EntryList[0].EntryScene.SceneList[0].SceneFunctionName}( player );");
+                                                outputCpp.Add("      }");
+                                                outputCpp.Add("      else");
+                                                outputCpp.Add("      {");
+                                                outputCpp.Add("        player.sendUrgent( \"Select anyone and hit cancel to progress.\" );");
+                                            }
+                                        }
+                                    }
+                                    hasIf = true;
+                                }
                                 if (!hasIf && (current.Element & LuaScene.SceneElement.YesNo) > 0)
                                 {
                                     if ((current.Element & LuaScene.SceneElement.CanCancel) > 0)
