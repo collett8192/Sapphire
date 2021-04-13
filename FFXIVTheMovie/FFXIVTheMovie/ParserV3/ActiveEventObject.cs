@@ -219,6 +219,10 @@ namespace FFXIVTheMovie.ParserV3
             {
                 return true;
             }
+            if (group.SceneList.Count == 1 && (group.SceneList[0].Element & LuaScene.SceneElement.QuestGimmickReaction) > 0)
+            {
+                return true;
+            }
             return base.IsPrefferedGroup(group);
         }
     }

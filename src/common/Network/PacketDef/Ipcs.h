@@ -390,7 +390,7 @@ namespace Sapphire::Network::Packets
     BuildPresetHandler = 0x01D7, // updated 5.45 hotfix
 
     TalkEventHandler = 0x00C2, // updated 5.45 hotfix
-    SayEventHandler = 0x012C, // updated 5.35 hotfix
+    SayEventHandler = 0x009B, // updated 5.45 hotfix
     EmoteEventHandler = 0x03D5, // updated 5.45 hotfix
     WithinRangeEventHandler = 0x0171, // updated 5.45 hotfix
     OutOfRangeEventHandler = 0x019B, // updated 5.45 hotfix

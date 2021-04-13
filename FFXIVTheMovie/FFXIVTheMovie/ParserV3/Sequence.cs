@@ -121,7 +121,7 @@ namespace FFXIVTheMovie.ParserV3
                 if (EntryScene.SceneList.Count == 0)
                     return true;
 
-                if (TargetObject is ActiveRange || TargetObject is ActiveTerritory)
+                if (TargetObject is ActiveTerritory)
                     return EntryScene.SceneList.Count < 1;
                 
                 var s = EntryScene.SceneList[EntryScene.SceneList.Count - 1];

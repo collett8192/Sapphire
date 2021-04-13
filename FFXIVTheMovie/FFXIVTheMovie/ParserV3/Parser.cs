@@ -736,6 +736,8 @@ namespace FFXIVTheMovie.ParserV3
             return 1;
         }
 
+        public static bool PrintDebugInfo = false;
+
         private static bool AssignScenesNextStep(List<EventEntry> entryList, List<SceneGroup> sceneGroupList, Dictionary<string, Tuple<string, int>> idTable, int e, int g)
         {
             if (e >= entryList.Count)
@@ -743,6 +745,11 @@ namespace FFXIVTheMovie.ParserV3
             if (g >= sceneGroupList.Count)
                 return false;
             var entry = entryList[e];
+            //if (PrintDebugInfo) Console.WriteLine($"Assign step: {entry}");
+            /*if (entry.TargetObject != null && entry.TargetObject.Name == "EOBJECT2")
+            {
+                Debugger.Break();
+            }*/
             var tmpIdTable = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(idTable);
             if (entry.CanExistWithoutScene && !entry.IsPrefferedGroup(sceneGroupList[g]))
             {

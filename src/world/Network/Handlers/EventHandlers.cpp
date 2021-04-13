@@ -89,7 +89,7 @@ void Sapphire::Network::GameConnection::eventHandlerTalk( const Packets::FFXIVAR
 
 void Sapphire::Network::GameConnection::eventHandlerSay( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
 {
-  player.sendUrgent( "Say event handler not implemented." );
+  player.sendUrgent( "Say event handler not implemented, and the client will lock itself. Relogin and talk to npc instead." );
   player.sendStateFlags();
 }
 
