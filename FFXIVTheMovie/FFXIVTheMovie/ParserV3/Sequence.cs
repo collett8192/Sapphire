@@ -136,7 +136,7 @@ namespace FFXIVTheMovie.ParserV3
                 
                 if (this.Var == null)
                 {
-                    if (group.SceneList.Count == 1 && EntryScene.SceneList.Count == 2 && group.SceneList[0].Element != LuaScene.SceneElement.None)
+                    if (group.SceneList.Count == 1 && EntryScene.SceneList.Count == 2 && group.SceneList[0].Element != LuaScene.SceneElement.None && !group.ContainsSceneElement(LuaScene.SceneElement.CutScene))
                     {
                         return this.EntryScene.Identity != "unknown" && this.EntryScene.Identity == group.Identity;
                     }

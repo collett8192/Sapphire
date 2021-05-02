@@ -70,8 +70,17 @@ namespace FFXIVTheMovie.ParserV3
                 outputCpp.Add("// id hint used:");
                 foreach (var hint in idHint)
                 {
-                    if(hint.Value != null)
-                        outputCpp.Add($"//{hint.Key} = {hint.Value}");
+                    if (hint.Value != null)
+                    {
+                        if (hint.Key[0] != '_')
+                        {
+                            outputCpp.Add($"//{hint.Key} = {hint.Value}");
+                        }
+                        else
+                        {
+                            outputCpp.Add($"//{hint.Key} SET!!");
+                        }
+                    }
                     else
                         outputCpp.Add($"//{hint.Key} REMOVED!!");
                 }
@@ -745,11 +754,11 @@ namespace FFXIVTheMovie.ParserV3
             if (g >= sceneGroupList.Count)
                 return false;
             var entry = entryList[e];
-            //if (PrintDebugInfo) Console.WriteLine($"Assign step: {entry}");
-            /*if (entry.TargetObject != null && entry.TargetObject.Name == "EOBJECT2")
+            if (PrintDebugInfo) Console.WriteLine($"Assign step: {entry}");
+            if (entry.TargetObject != null && entry.TargetObject.Name == "ACTOR2")
             {
-                Debugger.Break();
-            }*/
+                //Debugger.Break();
+            }
             var tmpIdTable = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(idTable);
             if (entry.CanExistWithoutScene && !entry.IsPrefferedGroup(sceneGroupList[g]))
             {
@@ -802,9 +811,7 @@ namespace FFXIVTheMovie.ParserV3
             }
             return false;
         }
-        private static int AssignNextScene(EventEntry entry, 
-            List<SceneGroup> sceneGroupList, int i,
-            Dictionary<string, Tuple<string, int>> idTable)
+        private static int AssignNextScene(EventEntry entry, List<SceneGroup> sceneGroupList, int i, Dictionary<string, Tuple<string, int>> idTable)
         {
             if (!entry.CanAddSceneGroup(sceneGroupList[i]))
                 return 0;
@@ -815,10 +822,24 @@ namespace FFXIVTheMovie.ParserV3
             {
                 var groupId = group.Identity;
                 string entryId = null;
+                string entryFlag = "";
                 Tuple<string, int> tmp = null;
                 var entryHasId = idTable != null ? idTable.TryGetValue(entry.TargetObject.Name, out tmp) : false;
+                var entryhasFlag = false;
                 if (entryHasId)
+                {
                     entryId = tmp.Item1;
+                    entryhasFlag = idTable.TryGetValue("_" + entry.TargetObject.Name, out tmp);
+                    if (entryhasFlag)
+                    {
+                        entryFlag = tmp.Item1;
+                        if (entryFlag.Contains('S'))
+                        {
+                            if (group.Identity == "unknown" || group.Identity != entryId)
+                                return 0;
+                        }
+                    }
+                }
                 if (!entryHasId)
                 {
                     entryId = entry.EntryScene.Identity;

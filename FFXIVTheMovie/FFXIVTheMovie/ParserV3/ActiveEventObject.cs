@@ -77,13 +77,6 @@ namespace FFXIVTheMovie.ParserV3
 
         public override bool CanAssignSceneGroup(Sequence.SceneGroup group)
         {
-            foreach (var s in group.SceneList)
-            {
-                if ((s.Element & LuaScene.SceneElement.Dismount) > 0)
-                {
-                    return false;
-                }
-            }
             return true;
         }
 
