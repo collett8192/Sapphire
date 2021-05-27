@@ -157,7 +157,7 @@ namespace FFXIVTheMovie.ParserV3
                 return false;
             if (group.SceneList.Count == 1 && group.SceneList[0].Element == LuaScene.SceneElement.None)
                 return true;
-            if (group.SceneList.Count == 1 && group.SceneList[0].Element == (LuaScene.SceneElement.Message | LuaScene.SceneElement.PopBNpc))
+            if (group.SceneList.Count == 1 && (group.SceneList[0].Element & ~(LuaScene.SceneElement.Message | LuaScene.SceneElement.PopBNpc)) == LuaScene.SceneElement.None)
                 return true;
             return false;
         }

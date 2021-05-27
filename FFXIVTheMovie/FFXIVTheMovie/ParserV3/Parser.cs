@@ -495,7 +495,7 @@ namespace FFXIVTheMovie.ParserV3
                                         hasIf = true;
                                     }
                                 }
-                                if (!hasIf && ((current.Element & LuaScene.SceneElement.Menu) > 0 || (current.Element & LuaScene.SceneElement.CanCancel) > 0 || current.Type == LuaScene.SceneType.Snipe))
+                                if (!hasIf && !afterComplete && ((current.Element & LuaScene.SceneElement.Menu) > 0 || (current.Element & LuaScene.SceneElement.CanCancel) > 0 || current.Type == LuaScene.SceneType.Snipe))
                                 {
                                     if (next == null || next.Type != LuaScene.SceneType.CardGame)
                                     {
@@ -755,7 +755,7 @@ namespace FFXIVTheMovie.ParserV3
                 return false;
             var entry = entryList[e];
             if (PrintDebugInfo) Console.WriteLine($"Assign step: {entry}");
-            if (entry.TargetObject != null && entry.TargetObject.Name == "ACTOR2")
+            if (entry.TargetObject != null && entry.TargetObject.Name == "ACTOR1")
             {
                 //Debugger.Break();
             }

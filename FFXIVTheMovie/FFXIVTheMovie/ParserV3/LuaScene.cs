@@ -137,20 +137,23 @@ namespace FFXIVTheMovie.ParserV3
                         var element = FuncNameToSceneElementTable[f.FuncName];
                         if ((element & SceneElement.Talk) > 0 && f.VarName == varTarget)
                         {
-                            result.Element |= SceneElement.TargetCanMove;
                             var textArg = f.ArgList.FirstOrDefault(a => a.Contains($"{varFramework}.TEXT_"));
                             if (textArg != null)
                             {
-                                var text = textArg.ExpandLocalVar(localVarTable).GetStringBetween($"{varFramework}.", null);
-                                var tmp = text == null ? null : text.Split('_');
-                                if (tmp != null)
+                                if (f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.SPEAK_NONE")
                                 {
-                                    if (tmp.Length == 6)
+                                    result.Element |= SceneElement.TargetCanMove;
+                                    var text = textArg.ExpandLocalVar(localVarTable).GetStringBetween($"{varFramework}.", null);
+                                    var tmp = text == null ? null : text.Split('_');
+                                    if (tmp != null)
                                     {
-                                        var identity = tmp[3];
-                                        if (result.Identity != "unknown" && result.Identity != identity)
-                                            throw new Exception($"[LuaScene]Multiple scene identity detected at Scene{sceneNum}");
-                                        result.Identity = identity;
+                                        if (tmp.Length == 6)
+                                        {
+                                            var identity = tmp[3];
+                                            if (result.Identity != "unknown" && result.Identity != identity)
+                                                throw new Exception($"[LuaScene]Multiple scene identity detected at Scene{sceneNum}");
+                                            result.Identity = identity;
+                                        }
                                     }
                                 }
                             }
