@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("LucKme107");
+            list.Add("LucKmf111");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -80,7 +80,9 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("LucKmb") &&
                     !questId.StartsWith("LucKmc") &&
                     !questId.StartsWith("LucKmd") &&
-                    !questId.StartsWith("LucKme")
+                    !questId.StartsWith("LucKme") &&
+                    !questId.StartsWith("LucKmf") &&
+                    !questId.StartsWith("LucKba")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -111,6 +113,61 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "LucKmf111":
+                    {
+                        result.Add("SCENE_46", "TATARU");
+                        result.Add("SCENE_32", "A14");
+                        result.Add("SCENE_33", "A14");
+                        result.Add("SCENE_34", "A14");
+                        result.Add("SCENE_35", "dummyt");
+                        break;
+                    }
+                case "LucKmf110":
+                    {
+                        result.Add("SCENE_6", "dummye0");
+                        result.Add("ACTOR2", "OFFICIALA03653");
+                        result.Add("_ACTOR2", "S");
+                        result.Add("ACTOR3", "AMAUROTADMINISTRATOR");
+                        result.Add("_ACTOR3", "S");
+                        break;
+                    }
+                case "LucKmf108":
+                    {
+                        result.Add("SCENE_3", "dummy_seq1");
+                        result.Add("SCENE_4", "dummy_seq1");
+                        break;
+                    }
+                case "LucKba101":
+                    {
+                        result.Add("ACTOR2", "GRANSON_SEQ2");
+                        result.Add("_ACTOR2", "S");
+                        result.Add("SCENE_9", "GRANSON_SEQ2");
+                        result.Add("ACTOR3", "GRANSON_SEQ3");
+                        result.Add("_ACTOR3", "S");
+                        result.Add("SCENE_15", "GRANSON_SEQ3");
+                        break;
+                    }
+                case "LucKmf106":
+                    {
+                        result.Add("SCENE_3", "dummye0");
+                        result.Add("SCENE_4", "dummye0");
+                        result.Add("SCENE_5", "dummye1");
+                        result.Add("SCENE_6", "dummye1");
+                        result.Add("SCENE_9", "dummye2");
+                        result.Add("SCENE_10", "dummye2");
+                        break;
+                    }
+                case "LucKmf105":
+                    {
+                        result.Add("SCENE_7", "A6");
+                        result.Add("SCENE_8", "A6");
+                        break;
+                    }
+                case "LucKmf103":
+                    {
+                        result.Add("SCENE_3", "CRYSTALGATEKEEPER");
+                        break;
+                    }
                 case "LucKme106":
                     {
                         result.Add("ACTOR1", "ALPHINAUD");

@@ -755,7 +755,7 @@ namespace FFXIVTheMovie.ParserV3
                 return false;
             var entry = entryList[e];
             if (PrintDebugInfo) Console.WriteLine($"Assign step: {entry}");
-            if (entry.TargetObject != null && entry.TargetObject.Name == "ACTOR1")
+            if (entry.TargetObject != null && entry.TargetObject.Name == "ACTOR23")
             {
                 //Debugger.Break();
             }
