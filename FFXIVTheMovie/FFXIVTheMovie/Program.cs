@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("LucKmf111");
+            list.Add("LucKba311");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -113,6 +113,49 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "LucKba251":
+                    {
+                        result.Add("ACTOR1", "GIOTT");
+                        result.Add("_ACTOR1", "S");
+                        break;
+                    }
+                case "LucKba241":
+                    {
+                        result.Add("SCENE_0", "SEQ0");
+                        result.Add("SCENE_1", "SEQ0");
+                        result.Add("SCENE_2", "SEQ1");
+                        result.Add("ACTOR2", "GIOTT");
+                        result.Add("SCENE_3", "GIOTT");
+                        result.Add("SCENE_4", "GIOTT");
+                        result.Add("ACTOR3", "A3");
+                        break;
+                    }
+                case "LucKba231":
+                    {
+                        result.Add("ACTOR2", "GIOTT");
+                        result.Add("_ACTOR2", "S");
+                        result.Add("ACTOR3", "GIOTT");
+                        result.Add("_ACTOR3", "S");
+                        break;
+                    }
+                case "LucKba221":
+                    {
+                        result.Add("SCENE_13", "A13");
+                        result.Add("SCENE_14", "A13");
+                        result.Add("ACTOR3", "A13");
+                        break;
+                    }
+                case "LucKba211":
+                    {
+                        result.Add("ACTOR2", "GIOTT");
+                        result.Add("_ACTOR2", "S");
+                        result.Add("ACTOR3", "GIOTT");
+                        result.Add("_ACTOR3", "S");
+                        result.Add("SCENE_16", "GIOTT");
+                        result.Add("SCENE_17", "GIOTT");
+                        result.Add("ACTOR4", "A4");
+                        break;
+                    }
                 case "LucKmf111":
                     {
                         result.Add("SCENE_46", "TATARU");
