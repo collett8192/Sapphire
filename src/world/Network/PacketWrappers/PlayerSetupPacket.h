@@ -25,7 +25,7 @@ namespace Sapphire::Network::Packets::Server
   private:
     void initialize( Entity::Player& player )
     {
-      memset( &m_data.unknownOword[ 0 ], 255, reinterpret_cast< uint64_t >( &m_data.unknown5_45d ) - reinterpret_cast< uint64_t >( &m_data.unknownOword[ 0 ] ) );
+      memset( &m_data.unknownOword[ 0 ], 255, reinterpret_cast< uint64_t >( &m_data.unknown5_55c ) - reinterpret_cast< uint64_t >( &m_data.unknownOword[ 0 ] ) );
 
       m_data.contentId = player.getContentId();
 
@@ -65,7 +65,6 @@ namespace Sapphire::Network::Packets::Server
       //m_data.orchestrionMask[0] = 0xFE;
       //memcpy( m_data.mountGuideMask, player.getMountGuideBitmask(), sizeof( m_data.mountGuideMask ) );
       memset( m_data.mountGuideMask, 0xFF, sizeof( m_data.mountGuideMask ) );
-      m_data.mountGuideMask[21] = 0xBF; // mask out the broken mount
       
       //memcpy( m_data.unlockBitmask, player.getUnlockBitmask(), sizeof( m_data.unlockBitmask ) );
       //m_data.unlockBitmask[0] = 0xFD;

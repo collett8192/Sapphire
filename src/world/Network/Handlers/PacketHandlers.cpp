@@ -645,7 +645,7 @@ void Sapphire::Network::GameConnection::performNoteHandler( const Packets::FFXIV
                                                             Entity::Player& player )
 {
   auto performPacket = makeZonePacket< FFXIVIpcPerformNote >( player.getId() );
-  memcpy( &performPacket->data().data[ 0 ], &inPacket.data[ 0x10 ], 32 );
+  memcpy( &performPacket->data().data[ 0 ], &inPacket.data[ 0x10 ], 16 );
   player.sendToInRangeSet( performPacket );
 }
 
@@ -729,10 +729,10 @@ void Sapphire::Network::GameConnection::reqMoveHousingItem( const Packets::FFXIV
   housingMgr.reqMoveHousingItem( player, data.ident, data.slot, data.pos, data.rotation );
 }
 
-void Sapphire::Network::GameConnection::housingEditExterior( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
+void Sapphire::Network::GameConnection::housingEditAppearance( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
 {
   auto& housingMgr = Common::Service< HousingMgr >::ref();
-  const auto packet = ZoneChannelPacket< Client::FFXIVIpcHousingEditExterior >( inPacket );
+  const auto packet = ZoneChannelPacket< Client::FFXIVIpcHousingEditAppearance >( inPacket );
 
   std::vector< uint16_t > containerList;
   std::vector< uint8_t > slotList;

@@ -90,7 +90,7 @@ Sapphire::Network::GameConnection::GameConnection( Sapphire::Network::HivePtr pH
   setZoneHandler( ClientZoneIpcType::ReqPlaceHousingItem, "ReqPlaceHousingItem", &GameConnection::reqPlaceHousingItem );
   setZoneHandler( ClientZoneIpcType::HousingUpdateObjectPosition, "HousingUpdateObjectPosition",
                   &GameConnection::reqMoveHousingItem );
-  setZoneHandler( ClientZoneIpcType::HousingEditExterior, "HousingEditExterior", &GameConnection::housingEditExterior );
+  setZoneHandler( ClientZoneIpcType::HousingEditAppearance, "HousingEditAppearance", &GameConnection::housingEditAppearance );
 
   setZoneHandler( ClientZoneIpcType::TalkEventHandler, "EventHandlerTalk", &GameConnection::eventHandlerTalk );
   setZoneHandler( ClientZoneIpcType::SayEventHandler, "EventHandlerSay", &GameConnection::eventHandlerSay );
@@ -102,10 +102,10 @@ Sapphire::Network::GameConnection::GameConnection( Sapphire::Network::HivePtr pH
   setZoneHandler( ClientZoneIpcType::EnterTeriEventHandler, "EventHandlerEnterTeri",
                   &GameConnection::eventHandlerEnterTerritory );
 
-  setZoneHandler( ClientZoneIpcType::ReturnEventHandler, "EventHandlerReturn", &GameConnection::eventHandlerReturn );
-  setZoneHandler( ClientZoneIpcType::TradeReturnEventHandler, "EventHandlerReturn",
+  setZoneHandler( ClientZoneIpcType::ReturnEventHandler, "ReturnEventHandler", &GameConnection::eventHandlerReturn );
+  setZoneHandler( ClientZoneIpcType::TradeReturnEventHandler, "TradeReturnEventHandler",
                   &GameConnection::eventHandlerReturn );
-  setZoneHandler( ClientZoneIpcType::TradeMultipleReturnEventHander, "EventHandlerReturn", &GameConnection::eventHandlerReturn );
+  setZoneHandler( ClientZoneIpcType::TradeReturnEventHandler2, "TradeReturnEventHandler2", &GameConnection::eventHandlerReturn );
 
   setZoneHandler( ClientZoneIpcType::EventYieldHandler, "EventYieldHandler", &GameConnection::eventHandlerYield);
 
