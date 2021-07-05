@@ -461,7 +461,7 @@ namespace FFXIVTheMovie.ParserV3
                                         var nextSeq = seqList[s + 1];
                                         if (nextSeq.EntryList.Count > 0 && nextSeq.EntryList[0].EntryScene.SceneList.Count > 0)
                                         {
-                                            if (nextSeq.EntryList[0].TargetObject is ActiveTerritory)
+                                            if (nextSeq.EntryList[0].TargetObject == null || nextSeq.EntryList[0].TargetObject is ActiveTerritory)
                                             {
                                                 outputCpp.Add("        //dungeon auto skip");
                                                 outputCpp.Add($"        {nextSeq.EntryList[0].EntryScene.SceneList[0].SceneFunctionName}( player );");
