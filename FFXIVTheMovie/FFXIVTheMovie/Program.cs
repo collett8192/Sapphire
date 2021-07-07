@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("LucKmg103");
+            list.Add("LucKmh108");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -83,7 +83,8 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("LucKme") &&
                     !questId.StartsWith("LucKmf") &&
                     !questId.StartsWith("LucKba") &&
-                    !questId.StartsWith("LucKmg")
+                    !questId.StartsWith("LucKmg") &&
+                    !questId.StartsWith("LucKmh")
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -114,6 +115,11 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "LucKmh108":
+                    {
+                        result.Add("SCENE_9", "URIANGER");
+                        break;
+                    }
                 case "LucKmg103":
                     {
                         result.Add("SCENE_14", "VOYNE");
