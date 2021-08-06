@@ -238,6 +238,7 @@ namespace FFXIVTheMovie.ParserV3
             FuncNameToSceneElementTable.Add("Menu", SceneElement.Menu);
             FuncNameToSceneElementTable.Add("SystemTalk", SceneElement.SystemTalk);
             FuncNameToSceneElementTable.Add("CancelEventScene", SceneElement.CanCancel);
+            FuncNameToSceneElementTable.Add("SetWeddingFestivalParam", SceneElement.SetWeddingFestivalParam);
         }
         public int SceneNumber;
         public string SceneFunctionName => $"Scene{SceneNumber:00000}";
@@ -284,6 +285,7 @@ namespace FFXIVTheMovie.ParserV3
             AutoFadeIn = 1 << 17,
             SystemTalk = 1 << 18,
             CanCancel = 1 << 19,
+            SetWeddingFestivalParam = 1 << 20,
         }
 
         public override string ToString()

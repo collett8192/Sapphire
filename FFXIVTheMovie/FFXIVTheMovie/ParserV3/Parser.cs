@@ -754,11 +754,6 @@ namespace FFXIVTheMovie.ParserV3
             if (g >= sceneGroupList.Count)
                 return false;
             var entry = entryList[e];
-            if (PrintDebugInfo) Console.WriteLine($"Assign step: {entry}");
-            if (entry.TargetObject != null && entry.TargetObject.Name == "ACTOR23")
-            {
-                //Debugger.Break();
-            }
             var tmpIdTable = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(idTable);
             if (entry.CanExistWithoutScene && !entry.IsPrefferedGroup(sceneGroupList[g]))
             {
@@ -772,14 +767,19 @@ namespace FFXIVTheMovie.ParserV3
         label1:
             while (g < sceneGroupList.Count)
             {
+                if (PrintDebugInfo) Console.WriteLine($"Assigning: seq{entry.Owner.SeqNumber}, {entry} <- {sceneGroupList[g]}");
                 int assigned = AssignNextScene(entry, sceneGroupList, g, tmpIdTable);
                 if (assigned == 0)
+                {
+                    if (PrintDebugInfo) Console.WriteLine($"Failed.");
                     break;
+                }
                 total += assigned;
                 entry.AssignedGroupCount++;
                 if (flag == 0 && (g + 1) < sceneGroupList.Count && entry.EntryScene.SceneList.Count < 2 && entry.IsPrefferedGroup(sceneGroupList[g + 1]))
                 {
                     var tmpIdTable2 = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(tmpIdTable);
+                    if (PrintDebugInfo) Console.WriteLine($"Assigning: seq{entry.Owner.SeqNumber}, {entry} <- {sceneGroupList[g + 1]}");
                     assigned = AssignNextScene(entry, sceneGroupList, g + 1, tmpIdTable);
                     if (assigned != 0)
                     {
@@ -789,6 +789,8 @@ namespace FFXIVTheMovie.ParserV3
                         entry.AssignedGroupCount++;
                         g++;
                     }
+                    else
+                        if (PrintDebugInfo) Console.WriteLine($"Failed.");
                 }
                 var tmpIdTable3 = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(tmpIdTable);
                 if (AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable3, e + 1, g + 1))

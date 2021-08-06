@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("LucKmh108");
+            list.Add("SubCts999");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -84,7 +84,9 @@ namespace FFXIVTheMovie
                     !questId.StartsWith("LucKmf") &&
                     !questId.StartsWith("LucKba") &&
                     !questId.StartsWith("LucKmg") &&
-                    !questId.StartsWith("LucKmh")
+                    !questId.StartsWith("LucKmh") &&
+                    !questId.StartsWith("LucKmi")
+
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
@@ -115,6 +117,13 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "SubCts999":
+                    {
+                        result.Add("ACTOR1", "CEREMONYSHOP01578");
+                        result.Add("_ACTOR1", "S");
+                        result.Add("SCENE_100", null);
+                        break;
+                    }
                 case "LucKmh108":
                     {
                         result.Add("SCENE_9", "URIANGER");
@@ -1025,7 +1034,10 @@ namespace FFXIVTheMovie
             {
                 depth++;
                 if (depth > 5)
-                    throw new Exception("Too many local var expands.");
+                {
+                    Console.WriteLine($"Too many local var expands: {code}");
+                    return code;
+                }
                 flag = false;
                 foreach (var entry in localVarTable)
                 {
@@ -1034,6 +1046,8 @@ namespace FFXIVTheMovie
                         while (code.Contains(entry.Key))
                         {
                             code = code.Replace(entry.Key, entry.Value);
+                            if (entry.Value.Contains(entry.Key))
+                                break;
                             flag = true;
                         }
                     }
