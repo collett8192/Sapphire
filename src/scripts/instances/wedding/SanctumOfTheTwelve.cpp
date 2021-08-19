@@ -367,6 +367,7 @@ public:
       case 5:
       {
         //first half of sec5
+        const uint16_t textIds[ 11 ] = { 1010, 1011, 1015, 1103, 1019, 1107, 1020, 1021, 1125, 1126, 1127 };
         switch( v4 )
         {
           case 0:
@@ -388,16 +389,7 @@ public:
               packetData.directorId = instance.getDirectorId();
               packetData.flags = 3;
               packetData.bNPCName = 1010505;
-              packetData.textId = v4 == 0 ? 1010 :
-                ( v4 == 1 ? 1011 :
-                ( v4 == 2 ? 1015 :
-                ( v4 == 3 ? 1103 :
-                ( v4 == 4 ? 1019 :
-                ( v4 == 5 ? 1107 :
-                ( v4 == 6 ? 1020 :
-                ( v4 == 7 ? 1021 :
-                ( v4 == 8 ? 1125 :
-                ( v4 == 9 ? 1126 : 1127 ) ) ) ) ) ) ) ) ); //FIX THIS SHIT BEFORE PR
+              packetData.textId = textIds[ v4 ];
               packetData.popupTimeMs = 6000;
               packetData.param[ 0 ] = 1024;
               packetData.param[ 1 ] = instance.getCustomVar( 1 );
