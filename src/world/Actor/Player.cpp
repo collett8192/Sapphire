@@ -25,6 +25,8 @@
 #include "Territory/Territory.h"
 #include "Territory/ZonePosition.h"
 #include "Territory/InstanceContent.h"
+#include "Territory/QuestBattle.h"
+#include "Territory/PublicContent.h"
 #include "Territory/InstanceObjectCache.h"
 #include "Territory/Land.h"
 
@@ -84,6 +86,7 @@ Sapphire::Entity::Player::Player() :
   m_onEnterEventDone( false ),
   m_falling( false ),
   m_pQueuedAction( nullptr ),
+  m_cfNotifiedContent( 0 ),
   m_the_movie_hack_flag( 0 )
 {
   m_id = 0;
@@ -246,13 +249,16 @@ uint64_t Sapphire::Entity::Player::getOnlineStatusMask() const
   return m_onlineStatus;
 }
 
-void Sapphire::Entity::Player::prepareZoning( uint16_t targetZone, bool fadeOut, uint8_t fadeOutTime, uint16_t animation )
+void Sapphire::Entity::Player::prepareZoning( uint16_t targetZone, bool fadeOut, uint8_t fadeOutTime, uint16_t animation, uint8_t param4, uint8_t param7, uint8_t unknown )
 {
   auto preparePacket = makeZonePacket< FFXIVIpcPrepareZoning >( getId() );
   preparePacket->data().targetZone = targetZone;
   preparePacket->data().fadeOutTime = fadeOutTime;
   preparePacket->data().animation = animation;
   preparePacket->data().fadeOut = static_cast< uint8_t >( fadeOut ? 1 : 0 );
+  preparePacket->data().param4 = param4;
+  preparePacket->data().param7 = param7;
+  preparePacket->data().unknown = unknown;
   queuePacket( preparePacket );
 }
 
@@ -496,7 +502,7 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance )
   return teriMgr.movePlayer( instance, getAsPlayer() );
 }
 
-bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance, Common::FFXIVARR_POSITION3 pos )
+bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance, Common::FFXIVARR_POSITION3 pos, float rot )
 {
   m_onEnterEventDone = false;
   if( !instance )
@@ -514,10 +520,16 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance, Common::FFXIV
     m_prevTerritoryId = getTerritoryId();
   }
 
+  m_pos = pos;
+  m_rot = rot;
   if( teriMgr.movePlayer( instance, getAsPlayer() ) )
   {
-    m_pos = pos;
     return true;
+  }
+  else
+  {
+    m_pos = m_prevPos;
+    m_rot= m_prevRot;
   }
 
   return false;
@@ -527,8 +539,34 @@ bool Sapphire::Entity::Player::exitInstance()
 {
   auto& teriMgr = Common::Service< TerritoryMgr >::ref();
 
-  auto pZone = getCurrentTerritory();
-  auto pInstance = pZone->getAsInstanceContent();
+  auto d = getCurrentTerritory()->getAsDirector();
+  if( d && d->getContentFinderConditionId() > 0 )
+  {
+    auto p = makeZonePacket< FFXIVDirectorUnk4 >( getId() );
+    p->data().param[0] = d->getDirectorId();
+    p->data().param[1] = 1534;
+    p->data().param[2] = 1;
+    p->data().param[3] = d->getContentFinderConditionId();
+    queuePacket( p );
+
+    struct UNK038D : FFXIVIpcBasePacket< 0x038D >
+    {
+      uint32_t unknown[2];
+    };
+    auto p3 = makeZonePacket< UNK038D >( getId() );
+    queuePacket( p3 );
+
+    struct UNK00EA : FFXIVIpcBasePacket< 0x00EA >
+    {
+      uint32_t unknown[4];
+    };
+    auto p2 = makeZonePacket< UNK00EA >( getId() );
+    p2->data().unknown[0] = d->getContentFinderConditionId();
+    p2->data().unknown[1] = 5;
+    queuePacket( p2 );
+
+    prepareZoning( 0, 1, 1, 0, 0, 1, 9 );
+  }
 
   resetHp();
   resetMp();
@@ -1793,14 +1831,14 @@ void Sapphire::Entity::Player::sendZonePackets()
   //setStateFlag( PlayerStateFlag::BetweenAreas );
   //setStateFlag( PlayerStateFlag::BetweenAreas1 );
 
-  if( isActionLearned( static_cast< uint8_t >( Common::UnlockEntry::HuntingLog ) ) )
-    sendHuntingLog();
-
   sendStats();
 
   // only initialize the UI if the player in fact just logged in.
   if( isLogin() )
   {
+    if( isActionLearned( static_cast< uint8_t >( Common::UnlockEntry::HuntingLog ) ) )
+      sendHuntingLog();
+
     auto contentFinderList = makeZonePacket< FFXIVIpcCFAvailableContents >( getId() );
 
     for( auto i = 0; i < sizeof( contentFinderList->data().contents ); i++ )
@@ -1851,7 +1889,28 @@ void Sapphire::Entity::Player::sendZonePackets()
   initZonePacket->data().pos.x = getPos().x;
   initZonePacket->data().pos.y = getPos().y;
   initZonePacket->data().pos.z = getPos().z;
+  if( auto d = getCurrentTerritory()->getAsDirector() )
+  {
+    initZonePacket->data().contentfinderConditionId = d->getContentFinderConditionId();
+    initZonePacket->data().bitmask = 0xFF;
+    initZonePacket->data().bitmask1 = 0x2A;
+  }
   queuePacket( initZonePacket );
+
+  if( auto d = getCurrentTerritory()->getAsDirector() )
+  {
+    if( d->getContentFinderConditionId() > 0 )
+    {
+      struct UNK00EA : FFXIVIpcBasePacket< 0x00EA >
+      {
+        uint32_t unknown[4];
+      };
+      auto p2 = makeZonePacket< UNK00EA >( getId() );
+      p2->data().unknown[0] = d->getContentFinderConditionId();
+      p2->data().unknown[1] = 4;
+      queuePacket( p2 );
+    }
+  }
 
   getCurrentTerritory()->onPlayerZoneIn( *this );
 
@@ -1866,6 +1925,8 @@ void Sapphire::Entity::Player::sendZonePackets()
 
 //  if( getLastPing() == 0 )
 //    sendQuestInfo();
+
+  sendPartyList();
 
   m_bMarkedForZoning = false;
 }
@@ -2478,7 +2539,7 @@ uint8_t Sapphire::Entity::Player::getPartySize()
   return 0;
 }
 
-void Sapphire::Entity::Player::sendPartyListToParty()
+void Sapphire::Entity::Player::sendPartyListToParty( PlayerPtr filter )
 {
   assert( isPartyLeader() );
   FFXIVIpcPartyList partyList = {};
@@ -2513,9 +2574,25 @@ void Sapphire::Entity::Player::sendPartyListToParty()
 
   for( auto member : m_partyMemberList )
   {
-    auto packet = makeZonePacket< FFXIVIpcPartyList >( member->getId() );
-    memcpy( &packet->data().member[ 0 ], &partyList, sizeof( partyList ) );
-    member->queuePacket( packet );
+    if( !filter || member->getId() == filter->getId() )
+    {
+      auto packet = makeZonePacket< FFXIVIpcPartyList >( member->getId() );
+      memcpy( &packet->data().member[ 0 ], &partyList, sizeof( partyList ) );
+      member->queuePacket( packet );
+    }
+  }
+}
+
+void Sapphire::Entity::Player::sendPartyList()
+{
+  if( !isInParty() )
+  {
+    auto packet = makeZonePacket< FFXIVIpcPartyList >( getId() );
+    queuePacket( packet );
+  }
+  else
+  {
+    getPartyLeader()->sendPartyListToParty( getAsPlayer() );
   }
 }
 
@@ -2763,7 +2840,7 @@ bool Sapphire::Entity::Player::gaugeSamHasAnySen()
   return static_cast< uint8_t >( m_gauge.sam.sen ) > 0;
 }
 
-void Sapphire::Entity::Player::setPosAndSendActorMove( float x, float y, float z, float rot )
+void Sapphire::Entity::Player::setPosAndNotifyClient( float x, float y, float z, float rot )
 {
   setRot( rot );
   setPos( x, y, z, true );
@@ -2805,12 +2882,7 @@ bool Sapphire::Entity::Player::enterPredefinedPrivateInstance( uint32_t zoneId )
 
     auto instance = getOrCreatePrivateInstance( zoneId );
     if( instance )
-    {
-      auto result = setInstance( instance, info.pos );
-      if( result )
-        setRot( info.rot );
-      return result;
-    }
+      return setInstance( instance, info.pos, info.rot );
   }
   sendUrgent( "instance id: {} is not defined.", zoneId );
   auto instance = getOrCreatePrivateInstance( zoneId );

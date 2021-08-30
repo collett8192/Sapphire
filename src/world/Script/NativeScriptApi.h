@@ -46,6 +46,8 @@ namespace Sapphire::ScriptAPI
     * @return The hash_code of the script
     */
     virtual std::size_t getType() const;
+
+    virtual void onDebug( Sapphire::Entity::Player& player, uint32_t param );
   };
 
 
@@ -172,6 +174,8 @@ namespace Sapphire::ScriptAPI
                                             uint32_t catalogId );
 
     virtual void onEObjHit( Sapphire::Entity::Player& player, uint64_t actorId, uint32_t actionId );
+
+    virtual void onEventYield( Sapphire::Entity::Player& player, uint16_t scene, std::vector< uint32_t > param );
   };
 
   /*!
@@ -241,6 +245,23 @@ namespace Sapphire::ScriptAPI
 
     virtual void onEnterTerritory( Sapphire::QuestBattle& instance, Sapphire::Entity::Player& player, uint32_t eventId,
                                    uint16_t param1, uint16_t param2 );
+  };
+
+  class PublicContentScript : public ScriptObject
+  {
+  public:
+    explicit PublicContentScript( uint32_t contentId );
+
+    virtual void onInit( Sapphire::PublicContent& instance );
+
+    virtual void onUpdate( Sapphire::PublicContent& instance, uint64_t tickCount );
+
+    virtual void onPlayerZoneIn( Sapphire::PublicContent& instance, Sapphire::Entity::Player& player );
+
+    virtual void onLeaveTerritory( Sapphire::PublicContent& instance, Sapphire::Entity::Player& player );
+
+    virtual void onEnterTerritory( Sapphire::PublicContent& instance, Sapphire::Entity::Player& player, uint32_t eventId,
+      uint16_t param1, uint16_t param2 );
   };
 
 }

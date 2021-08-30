@@ -212,6 +212,8 @@ namespace Sapphire::Network
     DECLARE_HANDLER( kickPartyMemberHandler );
 
     DECLARE_HANDLER( disbandPartyHandler );
+
+    DECLARE_HANDLER( eventYieldHandler );
   };
 
 }

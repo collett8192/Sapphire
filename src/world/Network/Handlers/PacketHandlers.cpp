@@ -380,15 +380,18 @@ void Sapphire::Network::GameConnection::pingHandler( const Packets::FFXIVARR_PAC
 void Sapphire::Network::GameConnection::finishLoadingHandler( const Packets::FFXIVARR_PACKET_RAW& inPacket,
                                                               Entity::Player& player )
 {
-  player.sendQuestInfo();
+  if( player.isLogin() )
+  {
+    player.sendQuestInfo();
 
-  // TODO: load and save this data instead of hardcoding
-  auto gcPacket = makeZonePacket< FFXIVGCAffiliation >( player.getId() );
-  gcPacket->data().gcId = player.getGc();
-  gcPacket->data().gcRank[ 0 ] = player.getGcRankArray()[ 0 ];
-  gcPacket->data().gcRank[ 1 ] = player.getGcRankArray()[ 1 ];
-  gcPacket->data().gcRank[ 2 ] = player.getGcRankArray()[ 2 ];
-  player.queuePacket( gcPacket );
+    // TODO: load and save this data instead of hardcoding
+    auto gcPacket = makeZonePacket< FFXIVGCAffiliation >( player.getId() );
+    gcPacket->data().gcId = player.getGc();
+    gcPacket->data().gcRank[ 0 ] = player.getGcRankArray()[ 0 ];
+    gcPacket->data().gcRank[ 1 ] = player.getGcRankArray()[ 1 ];
+    gcPacket->data().gcRank[ 2 ] = player.getGcRankArray()[ 2 ];
+    player.queuePacket( gcPacket );
+  }
 
   player.getCurrentTerritory()->onFinishLoading( player );
 
@@ -874,12 +877,12 @@ void Sapphire::Network::GameConnection::worldInteractionhandler( const Packets::
           break;
 
         player.setPos( packet.data().position );
+        player.setRot( Util::floatFromUInt16Rot( param4 ) );
         if( emote == 0x32 && player.hasInRangeActor() )
         {
           auto setpos = makeZonePacket< FFXIVIpcActorSetPos >( player.getId() );
           setpos->data().r16 = param4;
           setpos->data().waitForLoad = 18;
-          setpos->data().unknown1 = 1;
           setpos->data().x = packet.data().position.x;
           setpos->data().y = packet.data().position.y;
           setpos->data().z = packet.data().position.z;
@@ -909,7 +912,6 @@ void Sapphire::Network::GameConnection::worldInteractionhandler( const Packets::
           auto setpos = makeZonePacket< FFXIVIpcActorSetPos >( player.getId() );
           setpos->data().r16 = param2;
           setpos->data().waitForLoad = 18;
-          setpos->data().unknown1 = 2;
           setpos->data().x = packet.data().position.x;
           setpos->data().y = packet.data().position.y;
           setpos->data().z = packet.data().position.z;

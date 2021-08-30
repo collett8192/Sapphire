@@ -52,6 +52,8 @@ namespace Sapphire::Scripting
      */
     void watchDirectories();
 
+    void onDebug( uint32_t id, Entity::Player& player, uint32_t param );
+
     void onPlayerFirstEnterWorld( Entity::Player& player );
 
     bool onTalk( Entity::Player& player, uint64_t actorId, uint32_t eventId );
@@ -117,6 +119,18 @@ namespace Sapphire::Scripting
                                    uint16_t param2 );
 
     bool onDutyComplete( QuestBattlePtr instance, Entity::Player& player );
+
+    bool onEventYield( Entity::Player& player, uint32_t eventId, uint16_t scene, std::vector< uint32_t > param );
+
+    bool onPublicContentInit( PublicContentPtr instance );
+
+    bool onPublicContentUpdate( PublicContentPtr instance, uint64_t tickCount );
+
+    bool onPublicContentPlayerZoneIn( PublicContentPtr instance, Entity::Player& player );
+
+    bool onPublicContentLeaveTerritory( PublicContentPtr instance, Entity::Player& player );
+
+    bool onPublicContentEnterTerritory( PublicContentPtr instance, Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 );
 
     bool loadDir( const std::string& dirname, std::set< std::string >& files, const std::string& ext );
 

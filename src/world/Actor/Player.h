@@ -111,6 +111,8 @@ namespace Sapphire::Entity
     void playSceneChain( uint32_t eventId, uint32_t scene, uint32_t flags,
                          Event::EventHandler::SceneChainCallback sceneChainCallback );
 
+    void playScene16( uint32_t eventId, uint32_t scene, uint32_t flags, uint32_t param3, std::vector< uint32_t > paramList, Event::EventHandler::SceneReturnCallback eventReturnCallback );
+
     /*! setup the event and return a ptr to it */
     Event::EventHandlerPtr bootstrapSceneEvent( uint32_t eventId, uint32_t flags );
 
@@ -490,7 +492,7 @@ namespace Sapphire::Entity
     bool setInstance( TerritoryPtr instance );
 
     /*! sets the players instance & initiates zoning process */
-    bool setInstance( Sapphire::TerritoryPtr instance, Sapphire::Common::FFXIVARR_POSITION3 pos );
+    bool setInstance( Sapphire::TerritoryPtr instance, Sapphire::Common::FFXIVARR_POSITION3 pos, float rot );
 
     /*! returns the player to their position before zoning into an instance */
     bool exitInstance();
@@ -547,7 +549,7 @@ namespace Sapphire::Entity
     void dyeItemFromDyeingInfo();
 
     /*! prepares zoning / fades out the screen */
-    void prepareZoning( uint16_t targetZone, bool fadeOut, uint8_t fadeOutTime = 0, uint16_t animation = 0 );
+    void prepareZoning( uint16_t targetZone, bool fadeOut, uint8_t fadeOutTime = 0, uint16_t animation = 0, uint8_t param4 = 0, uint8_t param7 = 0, uint8_t unknown = 0 );
 
     /*! get player's title list (available titles) */
     uint8_t* getTitleList();
@@ -1031,7 +1033,8 @@ namespace Sapphire::Entity
     PlayerPtr m_partyInvitationSender;
     std::vector< PlayerPtr > m_partyMemberList;
     void clearPartyList();
-    void sendPartyListToParty();
+    void sendPartyListToParty( PlayerPtr filter = nullptr );
+    void sendPartyList();
   public:
     bool isPartyLeader();
     bool isInParty();
@@ -1047,7 +1050,7 @@ namespace Sapphire::Entity
     void foreachPartyMember( std::function< void( PlayerPtr member ) > callback);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    void setPosAndSendActorMove( float x, float y, float z, float rot );
+    void setPosAndNotifyClient( float x, float y, float z, float rot );
     std::unordered_map< uint32_t, TerritoryPtr > m_privateInstanceMap;
     TerritoryPtr getOrCreatePrivateInstance( uint32_t zoneId );
     bool enterPredefinedPrivateInstance( uint32_t zoneId );
@@ -1065,6 +1068,7 @@ namespace Sapphire::Entity
     uint64_t m_lastMoveTime;
     uint8_t m_lastMoveflag;
     bool m_falling;
+    uint16_t m_cfNotifiedContent;
 
     std::vector< ShopBuyBackEntry >& getBuyBackListForShop( uint32_t shopId );
     void addBuyBackItemForShop( uint32_t shopId, const ShopBuyBackEntry& entry );
