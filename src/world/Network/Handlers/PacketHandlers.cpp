@@ -876,13 +876,13 @@ void Sapphire::Network::GameConnection::worldInteractionhandler( const Packets::
         if( !emoteData )
           break;
 
-        player.setPos( packet.data().position );
+        player.setPos( packet.data().position, false );
+        player.setRot( Util::floatFromUInt16Rot( param4 ) );
         if( emote == 0x32 && player.hasInRangeActor() )
         {
           auto setpos = makeZonePacket< FFXIVIpcActorSetPos >( player.getId() );
           setpos->data().r16 = param4;
           setpos->data().waitForLoad = 18;
-          setpos->data().unknown1 = 1;
           setpos->data().x = packet.data().position.x;
           setpos->data().y = packet.data().position.y;
           setpos->data().z = packet.data().position.z;
@@ -912,7 +912,6 @@ void Sapphire::Network::GameConnection::worldInteractionhandler( const Packets::
           auto setpos = makeZonePacket< FFXIVIpcActorSetPos >( player.getId() );
           setpos->data().r16 = param2;
           setpos->data().waitForLoad = 18;
-          setpos->data().unknown1 = 2;
           setpos->data().x = packet.data().position.x;
           setpos->data().y = packet.data().position.y;
           setpos->data().z = packet.data().position.z;
