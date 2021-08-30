@@ -2840,6 +2840,11 @@ bool Sapphire::Entity::Player::gaugeSamHasAnySen()
   return static_cast< uint8_t >( m_gauge.sam.sen ) > 0;
 }
 
+void Sapphire::Entity::Player::setPosAndSendActorMove( float x, float y, float z, float rot )
+{
+  setPosAndNotifyClient( x, y, z, rot );
+}
+
 void Sapphire::Entity::Player::setPosAndNotifyClient( float x, float y, float z, float rot )
 {
   setRot( rot );

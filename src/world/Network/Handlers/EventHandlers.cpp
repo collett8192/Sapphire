@@ -352,7 +352,7 @@ void Sapphire::Network::GameConnection::eventYieldHandler( const Packets::FFXIVA
   auto response = makeZonePacket< FFXIVIpcEventContinue >( player.getId() );
   response->data().eventId = eventId;
   response->data().scene = scene;
-  if( opcode == EventYieldHandler )
+  if( opcode == EventYield2Handler )
     player.dismount();
   player.queuePacket( response );
 }

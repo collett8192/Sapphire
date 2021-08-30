@@ -1050,6 +1050,7 @@ namespace Sapphire::Entity
     void foreachPartyMember( std::function< void( PlayerPtr member ) > callback);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
+    void setPosAndSendActorMove( float x, float y, float z, float rot );
     void setPosAndNotifyClient( float x, float y, float z, float rot );
     std::unordered_map< uint32_t, TerritoryPtr > m_privateInstanceMap;
     TerritoryPtr getOrCreatePrivateInstance( uint32_t zoneId );
