@@ -390,10 +390,10 @@ namespace Sapphire::Network::Packets
     OutOfRangeEventHandler = 0x0294, // updated 5.58
     EnterTeriEventHandler = 0x00C1, // updated 5.58
     ShopEventHandler = 0x02B8, // updated 5.58
-    EventYieldHandler = 0x03A2, // updated 5.58
     ReturnEventHandler = 0x0333, // updated 5.58
     TradeReturnEventHandler = 0x0179, // updated 5.58
     TradeReturnEventHandler2 = 0x02E1, // updated 5.58
+    EventYield2Handler = 0x03A2, // updated 5.58
     EventYield16Handler = 0x03D7, // updated 5.58
 
     LinkshellEventHandler = 0x016B, // updated 4.5
