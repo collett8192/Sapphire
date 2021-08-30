@@ -439,7 +439,7 @@ public:
           }
         }
         //second half of seq5
-        const uint16_t textIds[ 4 ] = { 1022, 1023, 1131, 1025 };
+        const uint16_t textIds2[ 4 ] = { 1022, 1023, 1131, 1025 };
         switch( v4 )
         {
           case 101:
@@ -454,7 +454,7 @@ public:
               packetData.directorId = instance.getDirectorId();
               packetData.flags = 3;
               packetData.bNPCName = 1010505;
-              packetData.textId = textIds[ v4 - 101 ];
+              packetData.textId = textIds2[ v4 - 101 ];
               packetData.popupTimeMs = 6000;
               packetData.param[ 0 ] = 1024;
               packetData.param[ 1 ] = instance.getCustomVar( 1 );
