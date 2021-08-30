@@ -876,7 +876,7 @@ void Sapphire::Network::GameConnection::worldInteractionhandler( const Packets::
         if( !emoteData )
           break;
 
-        player.setPos( packet.data().position, false );
+        player.setPos( packet.data().position );
         player.setRot( Util::floatFromUInt16Rot( param4 ) );
         if( emote == 0x32 && player.hasInRangeActor() )
         {
