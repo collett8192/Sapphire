@@ -278,19 +278,6 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
 
 }
 
-void Sapphire::Network::GameConnection::eventHandlerYield( const Packets::FFXIVARR_PACKET_RAW& inPacket,
-                                                                    Entity::Player& player )
-{
-  const auto packet = ZoneChannelPacket< Client::FFXIVIpcLuaEventYieldHandler >( inPacket );
-  auto response = makeZonePacket< FFXIVIpcEventYield >( player.getId() );
-  response->data().eventId = packet.data().eventId;
-  response->data().scene = packet.data().scene;
-  response->data().unknown = packet.data().unknown;
-  response->data().unknown2 = packet.data().unknown2;
-  player.queuePacket( response );
-  player.dismount();
-}
-
 void Sapphire::Network::GameConnection::eventHandlerLinkshell( const Packets::FFXIVARR_PACKET_RAW& inPacket,
                                                                Entity::Player& player )
 {
@@ -362,6 +349,8 @@ void Sapphire::Network::GameConnection::eventYieldHandler( const Packets::FFXIVA
   auto response = makeZonePacket< FFXIVIpcEventContinue >( player.getId() );
   response->data().eventId = eventId;
   response->data().scene = scene;
+  if( opcode == EventYieldHandler )
+    player.dismount();
   player.queuePacket( response );
 }
 

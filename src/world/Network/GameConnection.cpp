@@ -110,8 +110,6 @@ Sapphire::Network::GameConnection::GameConnection( Sapphire::Network::HivePtr pH
   setZoneHandler( ClientZoneIpcType::EventYieldHandler, "EventYieldHandler", &GameConnection::eventYieldHandler );
   setZoneHandler( ClientZoneIpcType::EventYield16Handler, "EventYield16Handler", &GameConnection::eventYieldHandler );
 
-  setZoneHandler( ClientZoneIpcType::EventYieldHandler, "EventYieldHandler", &GameConnection::eventHandlerYield);
-
   setZoneHandler( ClientZoneIpcType::ShopEventHandler, "ShopEventHandler",
                   &GameConnection::eventHandlerShop );
 
