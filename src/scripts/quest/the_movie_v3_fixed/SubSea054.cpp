@@ -71,39 +71,15 @@ private:
       {
         if( actor == 1002641 || actorId == 1002641 ) // ACTOR2 = AYLMER
         {
-          if( player.getQuestUI8AL( getId() ) != 3 )
-          {
-            Scene00006( player ); // Scene00006: Normal(None), id=unknown
-            // +Callback Scene00007: Normal(None), id=unknown
-          }
-          else
-          {
-            Scene00008( player ); // Scene00008: Normal(Talk, NpcDespawn, TargetCanMove), id=AYLMER
-          }
+          Scene00008( player ); // Scene00008: Normal(Talk, NpcDespawn, TargetCanMove), id=AYLMER
         }
         if( actor == 1002642 || actorId == 1002642 ) // ACTOR3 = EYRIMHUS
         {
-          if( player.getQuestUI8AL( getId() ) != 3 )
-          {
-            Scene00009( player ); // Scene00009: Normal(None), id=unknown
-            // +Callback Scene00010: Normal(None), id=unknown
-          }
-          else
-          {
-            Scene00011( player ); // Scene00011: Normal(Talk, NpcDespawn, TargetCanMove), id=EYRIMHUS
-          }
+          Scene00011( player ); // Scene00011: Normal(Talk, NpcDespawn, TargetCanMove), id=EYRIMHUS
         }
         if( actor == 1002643 || actorId == 1002643 ) // ACTOR4 = SOZAIRARZAI
         {
-          if( player.getQuestUI8AL( getId() ) != 3 )
-          {
-            Scene00012( player ); // Scene00012: Normal(None), id=unknown
-            // +Callback Scene00013: Normal(None), id=unknown
-          }
-          else
-          {
-            Scene00014( player ); // Scene00014: Normal(Talk, NpcDespawn, TargetCanMove), id=SOZAIRARZAI
-          }
+          Scene00014( player ); // Scene00014: Normal(Talk, NpcDespawn, TargetCanMove), id=SOZAIRARZAI
         }
         if( actor == 3929588 || actorId == 3929588 ) // EVENTRANGE0 = unknown
         {
@@ -246,14 +222,10 @@ private:
   void checkProgressSeq2( Entity::Player& player )
   {
     if( player.getQuestUI8AL( getId() ) == 3 )
-      if( player.getQuestUI8AL( getId() ) == 3 )
-        if( player.getQuestUI8AL( getId() ) == 3 )
-        {
-          player.setQuestUI8AL( getId(), 0 );
-          player.setQuestUI8AL( getId(), 0 );
-          player.setQuestUI8AL( getId(), 0 );
-          player.updateQuest( getId(), 3 );
-        }
+    {
+      player.setQuestUI8AL( getId(), 0 );
+      player.updateQuest( getId(), 3 );
+    }
   }
   void checkProgressSeq3( Entity::Player& player )
   {
@@ -265,13 +237,9 @@ private:
   }
   void checkProgressSeq4( Entity::Player& player )
   {
-    if( player.getQuestUI8AL( getId() ) == 1 )
-    {
-      player.setQuestUI8AL( getId(), 0 );
-      player.updateQuest( getId(), 5 );
-      player.setQuestUI8BH( getId(), 1 );
-      player.setQuestUI8BL( getId(), 1 );
-    }
+    player.updateQuest( getId(), 5 );
+    player.setQuestUI8BH( getId(), 1 );
+    player.setQuestUI8BL( getId(), 1 );
   }
   void checkProgressSeq5( Entity::Player& player )
   {
@@ -338,14 +306,16 @@ private:
   }
   void Scene00007( Entity::Player& player )
   {
-    player.sendDebug( "SubSea054:66002 calling [BranchTrue]Scene00007: Normal(None), id=unknown" );
+    player.sendDebug( "SubSea054:66002 calling Scene00007: Normal(None), id=unknown" );
     Scene00008( player );
   }
   void Scene00008( Entity::Player& player )
   {
-    player.sendDebug( "SubSea054:66002 calling [BranchFalse]Scene00008: Normal(Talk, NpcDespawn, TargetCanMove), id=AYLMER" );
+    player.sendDebug( "SubSea054:66002 calling Scene00008: Normal(Talk, NpcDespawn, TargetCanMove), id=AYLMER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+      checkProgressSeq2( player );
     };
     player.playScene( getId(), 8, NONE, callback );
   }
@@ -357,14 +327,16 @@ private:
   }
   void Scene00010( Entity::Player& player )
   {
-    player.sendDebug( "SubSea054:66002 calling [BranchTrue]Scene00010: Normal(None), id=unknown" );
+    player.sendDebug( "SubSea054:66002 calling Scene00010: Normal(None), id=unknown" );
     Scene00011( player );
   }
   void Scene00011( Entity::Player& player )
   {
-    player.sendDebug( "SubSea054:66002 calling [BranchFalse]Scene00011: Normal(Talk, NpcDespawn, TargetCanMove), id=EYRIMHUS" );
+    player.sendDebug( "SubSea054:66002 calling Scene00011: Normal(Talk, NpcDespawn, TargetCanMove), id=EYRIMHUS" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+      checkProgressSeq2( player );
     };
     player.playScene( getId(), 11, NONE, callback );
   }
@@ -376,14 +348,16 @@ private:
   }
   void Scene00013( Entity::Player& player )
   {
-    player.sendDebug( "SubSea054:66002 calling [BranchTrue]Scene00013: Normal(None), id=unknown" );
+    player.sendDebug( "SubSea054:66002 calling Scene00013: Normal(None), id=unknown" );
     Scene00014( player );
   }
   void Scene00014( Entity::Player& player )
   {
-    player.sendDebug( "SubSea054:66002 calling [BranchFalse]Scene00014: Normal(Talk, NpcDespawn, TargetCanMove), id=SOZAIRARZAI" );
+    player.sendDebug( "SubSea054:66002 calling Scene00014: Normal(Talk, NpcDespawn, TargetCanMove), id=SOZAIRARZAI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+      checkProgressSeq2( player );
     };
     player.playScene( getId(), 14, NONE, callback );
   }
@@ -391,7 +365,6 @@ private:
   void Scene00015( Entity::Player& player )
   {
     player.sendDebug( "SubSea054:66002 calling Scene00015: Normal(None), id=unknown" );
-    checkProgressSeq2( player );
   }
 
   void Scene00016( Entity::Player& player )
@@ -399,7 +372,6 @@ private:
     player.sendDebug( "SubSea054:66002 calling Scene00016: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      checkProgressSeq2( player );
     };
     player.playScene( getId(), 16, NONE, callback );
   }
@@ -482,6 +454,7 @@ private:
     player.sendDebug( "SubSea054:66002 calling [BranchFalse]Scene00029: Normal(None), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      checkProgressSeq4( player );
     };
     player.playScene( getId(), 29, NONE, callback );
   }

@@ -46,7 +46,7 @@ private:
       //seq 2 event item ITEM0 = UI8CH max stack 3
       case 2:
       {
-        if( actor == 2001237 || actorId == 2001237 ) // EOBJECT0 = unknown
+        if( actor == 2001237 || actorId == 4298896562 ) // EOBJECT0 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
@@ -58,7 +58,7 @@ private:
             Scene00099( player ); // Scene00099: Normal(None), id=unknown
           }
         }
-        if( actor == 2001238 || actorId == 2001238 ) // EOBJECT1 = unknown
+        if( actor == 2001238 || actorId == 4298896563 ) // EOBJECT1 = unknown
         {
           if( player.getQuestUI8BH( getId() ) != 1 )
           {
@@ -70,7 +70,7 @@ private:
             Scene00097( player ); // Scene00097: Normal(None), id=unknown
           }
         }
-        if( actor == 2001239 || actorId == 2001239 ) // EOBJECT2 = unknown
+        if( actor == 2001239 || actorId == 4298896564 ) // EOBJECT2 = unknown
         {
           if( player.getQuestUI8BL( getId() ) != 1 )
           {
@@ -141,17 +141,8 @@ private:
   }
   void checkProgressSeq2( Entity::Player& player )
   {
-    if( player.getQuestUI8AL( getId() ) == 1 )
-      if( player.getQuestUI8BH( getId() ) == 1 )
-        if( player.getQuestUI8BL( getId() ) == 1 )
-        {
-          player.setQuestUI8AL( getId(), 0 );
-          player.setQuestUI8BH( getId(), 0 );
-          player.setQuestUI8BL( getId(), 0 );
-          player.setQuestUI8CH( getId(), 0 );
-          player.updateQuest( getId(), 255 );
-          player.setQuestUI8BH( getId(), 3 );
-        }
+    player.updateQuest( getId(), 255 );
+    player.setQuestUI8BH( getId(), 3 );
   }
 
   void Scene00000( Entity::Player& player )
@@ -180,7 +171,7 @@ private:
   void Scene00002( Entity::Player& player )
   {
     player.sendDebug( "SubSea055:66003 calling Scene00002: Normal(None), id=unknown" );
-    Scene00100( player );
+    checkProgressSeq2( player );
   }
   void Scene00100( Entity::Player& player )
   {
@@ -199,7 +190,7 @@ private:
   void Scene00003( Entity::Player& player )
   {
     player.sendDebug( "SubSea055:66003 calling Scene00003: Normal(None), id=unknown" );
-    Scene00098( player );
+    checkProgressSeq2( player );
   }
   void Scene00098( Entity::Player& player )
   {
@@ -218,7 +209,7 @@ private:
   void Scene00004( Entity::Player& player )
   {
     player.sendDebug( "SubSea055:66003 calling Scene00004: Normal(None), id=unknown" );
-    Scene00096( player );
+    checkProgressSeq2( player );
   }
   void Scene00096( Entity::Player& player )
   {

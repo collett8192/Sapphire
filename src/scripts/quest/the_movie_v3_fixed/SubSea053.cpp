@@ -36,35 +36,35 @@ private:
       }
       case 1:
       {
-        if( actor == 1002635 || actorId == 1002635 ) // ACTOR1 = SEVRIN
+        if( actor == 1002635 || actorId == 4298896548 ) // ACTOR1 = SEVRIN
         {
           if( player.getQuestUI8AL( getId() ) != 5 )
           {
             Scene00001( player ); // Scene00001: Normal(Talk, NpcDespawn, TargetCanMove), id=SEVRIN
           }
         }
-        if( actor == 1002636 || actorId == 1002636 ) // ACTOR2 = AYLMER
+        if( actor == 1002636 || actorId == 4298896549 ) // ACTOR2 = AYLMER
         {
           if( player.getQuestUI8AL( getId() ) != 5 )
           {
             Scene00002( player ); // Scene00002: Normal(Talk, NpcDespawn, TargetCanMove), id=AYLMER
           }
         }
-        if( actor == 1002637 || actorId == 1002637 ) // ACTOR3 = EYRIMHUS
+        if( actor == 1002637 || actorId == 4298896550 ) // ACTOR3 = EYRIMHUS
         {
           if( player.getQuestUI8AL( getId() ) != 5 )
           {
             Scene00003( player ); // Scene00003: Normal(Talk, NpcDespawn, TargetCanMove), id=EYRIMHUS
           }
         }
-        if( actor == 1002638 || actorId == 1002638 ) // ACTOR4 = SOZAIRARZAI
+        if( actor == 1002638 || actorId == 4298896551 ) // ACTOR4 = SOZAIRARZAI
         {
           if( player.getQuestUI8AL( getId() ) != 5 )
           {
             Scene00004( player ); // Scene00004: Normal(Talk, NpcDespawn, TargetCanMove), id=SOZAIRARZAI
           }
         }
-        if( actor == 1002639 || actorId == 1002639 ) // ACTOR5 = WAUTER
+        if( actor == 1002639 || actorId == 4298896552 ) // ACTOR5 = WAUTER
         {
           if( player.getQuestUI8AL( getId() ) != 5 )
           {
@@ -124,18 +124,10 @@ private:
   void checkProgressSeq1( Entity::Player& player )
   {
     if( player.getQuestUI8AL( getId() ) == 5 )
-      if( player.getQuestUI8AL( getId() ) == 5 )
-        if( player.getQuestUI8AL( getId() ) == 5 )
-          if( player.getQuestUI8AL( getId() ) == 5 )
-            if( player.getQuestUI8AL( getId() ) == 5 )
-            {
-              player.setQuestUI8AL( getId(), 0 );
-              player.setQuestUI8AL( getId(), 0 );
-              player.setQuestUI8AL( getId(), 0 );
-              player.setQuestUI8AL( getId(), 0 );
-              player.setQuestUI8AL( getId(), 0 );
-              player.updateQuest( getId(), 255 );
-            }
+    {
+      player.setQuestUI8AL( getId(), 0 );
+      player.updateQuest( getId(), 255 );
+    }
   }
 
   void Scene00000( Entity::Player& player )
