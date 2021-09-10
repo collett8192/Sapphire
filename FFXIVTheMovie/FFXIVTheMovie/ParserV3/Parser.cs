@@ -444,6 +444,7 @@ namespace FFXIVTheMovie.ParserV3
                                 outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
                                 outputCpp.Add("    {");
                                 bool hasIf = false;
+                                bool skipBody = false;
                                 if (current.Type == LuaScene.SceneType.NpcTrade ||
                                     ((current.Element & LuaScene.SceneElement.QuestReward) > 0) ||
                                     ((current.Element & LuaScene.SceneElement.QuestOffer) > 0))
@@ -470,6 +471,7 @@ namespace FFXIVTheMovie.ParserV3
                                                 outputCpp.Add("      {");
                                                 outputCpp.Add("        player.sendUrgent( \"Select anyone and hit cancel to progress.\" );");
                                             }
+                                            skipBody = true;
                                         }
                                     }
                                     hasIf = true;
@@ -494,6 +496,22 @@ namespace FFXIVTheMovie.ParserV3
                                         outputCpp.Add("      {");
                                         hasIf = true;
                                     }
+                                    if ((current.Element & LuaScene.SceneElement.QuestBattle) > 0)
+                                    {
+                                        if (s < seqList.Count - 1)
+                                        {
+                                            var nextSeq = seqList[s + 1];
+                                            if (nextSeq.EntryList.Count > 0 && nextSeq.EntryList[0].EntryScene.SceneList.Count > 0)
+                                            {
+                                                if (nextSeq.EntryList[0].TargetObject == null || nextSeq.EntryList[0].TargetObject is ActiveTerritory)
+                                                {
+                                                    outputCpp.Add("        //quest battle auto skip");
+                                                    outputCpp.Add($"        {nextSeq.EntryList[0].EntryScene.SceneList[0].SceneFunctionName}( player );");
+                                                }
+                                                skipBody = true;
+                                            }
+                                        }
+                                    }
                                 }
                                 if (!hasIf && !afterComplete && ((current.Element & LuaScene.SceneElement.Menu) > 0 || (current.Element & LuaScene.SceneElement.CanCancel) > 0 || current.Type == LuaScene.SceneType.Snipe))
                                 {
@@ -509,38 +527,41 @@ namespace FFXIVTheMovie.ParserV3
                                     hasIf = true;
                                 }
 
-                                if (next != null)
+                                if (!skipBody)
                                 {
-                                    outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( player );");
-                                }
-                                else
-                                {
-                                    if (afterComplete)
+                                    if (next != null)
                                     {
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
-                                        if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
-                                        {
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
-                                        }
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( player );");
                                     }
                                     else
                                     {
-                                        if (s > 0 && entry.Var != null)
+                                        if (afterComplete)
                                         {
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppExprOperation()};");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
+                                            if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                            {
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
+                                            }
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
                                         }
-                                        if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
-                                        if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                        else
                                         {
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing();");
+                                            if (s > 0 && entry.Var != null)
+                                            {
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppExprOperation()};");
+                                            }
+                                            if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
+                                            if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                            {
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing();");
+                                            }
                                         }
                                     }
                                 }

@@ -1,5 +1,4 @@
-// FFXIVTheMovie.ParserV3
-//fix: skip quest battle
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -42,7 +41,7 @@ public:
   //TERRITORYTYPE1 = 141
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -54,50 +53,57 @@ private:
       }
       case 1:
       {
-        if( actor == 1003996 || actorId == 1003996 ) // ACTOR1 = LILILA
+        if( param1 == 1003996 || param2 == 1003996 ) // ACTOR1 = LILILA
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
-            Scene00002( player ); // Scene00002: Normal(Talk, QuestBattle, YesNo), id=LILILA
+            Scene00002( player ); // Scene00002: Normal(Talk, QuestBattle, YesNo, TargetCanMove, SystemTalk), id=LILILA
           }
+          break;
         }
-        if( actor == 2001853 || actorId == 2001853 ) // EOBJECT0 = unknown
+        if( param1 == 2001853 || param2 == 2001853 ) // EOBJECT0 = unknown
         {
-          Scene00003( player ); // Scene00003: Normal(None), id=unknown
-          // +Callback Scene00004: Normal(None), id=unknown
+          Scene00004( player ); // Scene00004: Normal(None), id=unknown
+          break;
         }
         break;
       }
       case 2:
       {
-        Scene00005( player ); // Scene00005: Normal(CutScene), id=unknown
+        Scene00005( player ); // Scene00005: Normal(CutScene, AutoFadeIn), id=unknown
         break;
       }
       case 255:
       {
-        if( actor == 1003995 || actorId == 1003995 ) // ACTOR0 = unknown
+        if( param1 == 1003995 || param2 == 1003995 ) // ACTOR0 = unknown
         {
           Scene00006( player ); // Scene00006: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=unknown
+          break;
         }
-        if( actor == 1003997 || actorId == 1003997 ) // ACTOR2 = unknown
+        if( param1 == 1003997 || param2 == 1003997 ) // ACTOR2 = unknown
         {
           Scene00007( player ); // Scene00007: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1003998 || actorId == 1003998 ) // ACTOR3 = unknown
+        if( param1 == 1003998 || param2 == 1003998 ) // ACTOR3 = unknown
         {
           Scene00008( player ); // Scene00008: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1003999 || actorId == 1003999 ) // ACTOR4 = unknown
+        if( param1 == 1003999 || param2 == 1003999 ) // ACTOR4 = unknown
         {
           Scene00009( player ); // Scene00009: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1004000 || actorId == 1004000 ) // ACTOR5 = unknown
+        if( param1 == 1004000 || param2 == 1004000 ) // ACTOR5 = unknown
         {
           Scene00010( player ); // Scene00010: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1004001 || actorId == 1004001 ) // ACTOR6 = unknown
+        if( param1 == 1004001 || param2 == 1004001 ) // ACTOR6 = unknown
         {
           Scene00011( player ); // Scene00011: Normal(None), id=unknown
+          break;
         }
         break;
       }
@@ -131,7 +137,12 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
+  }
+
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
   }
 
 private:
@@ -166,7 +177,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "ManWil005:66086 calling [BranchTrue]Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=unknown" );
+    player.sendDebug( "ManWil005:66086 calling Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -176,34 +187,31 @@ private:
 
   void Scene00002( Entity::Player& player )
   {
-    player.sendDebug( "ManWil005:66086 calling Scene00002: Normal(Talk, QuestBattle, YesNo), id=LILILA" );
+    player.sendDebug( "ManWil005:66086 calling Scene00002: Normal(Talk, QuestBattle, YesNo, TargetCanMove, SystemTalk), id=LILILA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
+        //quest battle auto skip
         Scene00005( player );
       }
     };
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "ManWil005:66086 calling Scene00003: Normal(None), id=unknown" );
-    Scene00004( player );
-  }
   void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "ManWil005:66086 calling [BranchTrue]Scene00004: Normal(None), id=unknown" );
+    player.sendDebug( "ManWil005:66086 calling Scene00004: Normal(None), id=unknown" );
     checkProgressSeq1( player );
   }
 
   void Scene00005( Entity::Player& player )
   {
-    player.sendDebug( "ManWil005:66086 calling Scene00005: Normal(CutScene), id=unknown" );
+    player.sendDebug( "ManWil005:66086 calling Scene00005: Normal(CutScene, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq2( player );
+      player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
       player.eventFinish( getId(), 1 );
       player.forceZoneing();
     };
@@ -218,7 +226,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 6, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

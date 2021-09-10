@@ -274,12 +274,12 @@ void Sapphire::World::Manager::MapMgr::insertQuest( Entity::Player& player, uint
     auto script = scriptMgr.getNativeScriptHandler().getScript< Sapphire::ScriptAPI::EventScript >( questId );
 
     // Just don't show quests on map, that aren't implemented yet
-    if( script )
+    //if( script )
     {                        
       EventData eventData;
       eventData.eventId = questId;
 
-      auto eventState = script->getQuestAvailability( player, questId );
+      auto eventState = script ? script->getQuestAvailability( player, questId ) : Event::EventHandler::QuestAvailability::Available;
 
       if( eventState == Event::EventHandler::QuestAvailability::Available || eventState == Event::EventHandler::QuestAvailability::Locked )
       {
@@ -615,6 +615,7 @@ void Sapphire::World::Manager::MapMgr::fillPacket( EventSet& mapData, uint32_t* 
 
 void Sapphire::World::Manager::MapMgr::sendPackets( Entity::Player& player, EventSet& mapData, UpdateMode updateMode )
 {
+  player.sendDebug( "MapMgr::sendPackets() begin" );
   player.queuePacket( makeActorControlSelf( player.getId(), Network::ActorControl::BeginMapUpdate, updateMode ) );
 
   if( mapData.size() <= 2 )
@@ -682,4 +683,5 @@ void Sapphire::World::Manager::MapMgr::sendPackets( Entity::Player& player, Even
   }
 
   player.queuePacket( makeActorControlSelf( player.getId(), Network::ActorControl::FinishMapUpdate ) );
+  player.sendDebug( "MapMgr::sendPackets() end" );
 }

@@ -1,5 +1,4 @@
-// FFXIVTheMovie.ParserV3
-//fix: skip quest battle
+// FFXIVTheMovie.ParserV3.2
 // id hint used:
 //SCENE_5 = KODOMOA
 //SCENE_8 = KODOMOB
@@ -61,6 +60,7 @@ public:
   //LOCPOSENPC6 = 4162156
   //LOCPOSENPC7 = 4162311
   //LOGMESSAGERECOMMENDLISTUNLOCK = 3701
+  //QSTACCEPTCHECK = 65863
   //QUESTBATTLE0 = 18
   //REWARD0 = 9
   //REWARDLEVE = 5
@@ -72,13 +72,13 @@ public:
   //UNLOCKIMAGELEVE = 20
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=ZUZUMEDA
+        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=ZUZUMEDA
         // +Callback Scene00001: Normal(QuestAccept), id=unknown
         break;
       }
@@ -91,57 +91,46 @@ private:
       //seq 2 event item ITEM0 = UI8CL max stack 1
       case 2:
       {
-        if( actor == 1002948 || actorId == 1002948 ) // ACTOR2 = KODOMOA
+        if( param1 == 1002948 || param2 == 1002948 ) // ACTOR2 = KODOMOA
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00003( player ); // Scene00003: NpcTrade(Talk, TargetCanMove), id=unknown
             // +Callback Scene00004: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOA
           }
-          else
-          {
-            Scene00005( player ); // Scene00005: Normal(None), id=KODOMOA
-          }
+          break;
         }
-        if( actor == 1002949 || actorId == 1002949 ) // ACTOR3 = KODOMOB
+        if( param1 == 1002949 || param2 == 1002949 ) // ACTOR3 = KODOMOB
         {
           if( player.getQuestUI8BH( getId() ) != 1 )
           {
             Scene00006( player ); // Scene00006: NpcTrade(Talk, TargetCanMove), id=unknown
             // +Callback Scene00007: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOB
           }
-          else
-          {
-            Scene00008( player ); // Scene00008: Normal(None), id=KODOMOB
-          }
+          break;
         }
-        if( actor == 1002950 || actorId == 1002950 ) // ACTOR4 = KODOMOC
+        if( param1 == 1002950 || param2 == 1002950 ) // ACTOR4 = KODOMOC
         {
           if( player.getQuestUI8BL( getId() ) != 1 )
           {
             Scene00009( player ); // Scene00009: NpcTrade(Talk, TargetCanMove), id=unknown
             // +Callback Scene00010: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOC
           }
-          else
-          {
-            Scene00011( player ); // Scene00011: Normal(None), id=KODOMOC
-          }
+          break;
         }
-        if( actor == 1002951 || actorId == 1002951 ) // ACTOR5 = KODOMOD
+        if( param1 == 1002951 || param2 == 1002951 ) // ACTOR5 = KODOMOD
         {
           if( player.getQuestUI8CH( getId() ) != 1 )
           {
             Scene00012( player ); // Scene00012: NpcTrade(Talk, TargetCanMove), id=unknown
             // +Callback Scene00013: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOD
           }
-          else
-          {
-            Scene00014( player ); // Scene00014: Normal(None), id=KODOMOD
-          }
+          break;
         }
-        if( actor == 1002947 || actorId == 1002947 ) // ACTOR1 = WYSTAN
+        if( param1 == 1002947 || param2 == 1002947 ) // ACTOR1 = WYSTAN
         {
           Scene00015( player ); // Scene00015: Normal(Talk, TargetCanMove), id=WYSTAN
+          break;
         }
         break;
       }
@@ -152,47 +141,54 @@ private:
       }
       case 4:
       {
-        if( actor == 1002955 || actorId == 1002955 ) // ACTOR6 = unknown
+        if( param1 == 1002955 || param2 == 1002955 ) // ACTOR6 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00017( player ); // Scene00017: Normal(QuestBattle, YesNo), id=unknown
           }
+          break;
         }
-        if( actor == 1002952 || actorId == 1002952 ) // ACTOR7 = unknown
+        if( param1 == 1002952 || param2 == 1002952 ) // ACTOR7 = unknown
         {
           Scene00018( player ); // Scene00018: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1002953 || actorId == 1002953 ) // ACTOR8 = unknown
+        if( param1 == 1002953 || param2 == 1002953 ) // ACTOR8 = unknown
         {
           Scene00019( player ); // Scene00019: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1002954 || actorId == 1002954 ) // ACTOR9 = unknown
+        if( param1 == 1002954 || param2 == 1002954 ) // ACTOR9 = unknown
         {
           Scene00020( player ); // Scene00020: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1002956 || actorId == 1002956 ) // ACTOR10 = unknown
+        if( param1 == 1002956 || param2 == 1002956 ) // ACTOR10 = unknown
         {
           Scene00021( player ); // Scene00021: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1002957 || actorId == 1002957 ) // ACTOR11 = unknown
+        if( param1 == 1002957 || param2 == 1002957 ) // ACTOR11 = unknown
         {
           Scene00022( player ); // Scene00022: Normal(None), id=unknown
+          break;
         }
-        if( actor == 1002958 || actorId == 1002958 ) // ACTOR12 = unknown
+        if( param1 == 1002958 || param2 == 1002958 ) // ACTOR12 = unknown
         {
           Scene00023( player ); // Scene00023: Normal(None), id=unknown
+          break;
         }
-        if( actor == 2001851 || actorId == 2001851 ) // EOBJECT0 = unknown
+        if( param1 == 2001851 || param2 == 2001851 ) // EOBJECT0 = unknown
         {
-          Scene00024( player ); // Scene00024: Normal(None), id=unknown
-          // +Callback Scene00025: Normal(None), id=unknown
+          Scene00025( player ); // Scene00025: Normal(None), id=unknown
+          break;
         }
         break;
       }
       case 5:
       {
-        Scene00026( player ); // Scene00026: Normal(CutScene), id=unknown
+        Scene00026( player ); // Scene00026: Normal(CutScene, AutoFadeIn), id=unknown
         break;
       }
       case 6:
@@ -202,7 +198,7 @@ private:
       }
       case 255:
       {
-        Scene00028( player ); // Scene00028: Normal(Talk, Message, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=MOMODI
+        Scene00028( player ); // Scene00028: Normal(Talk, Message, FadeIn, QuestReward, QuestComplete, TargetCanMove, SystemTalk), id=MOMODI
         break;
       }
       default:
@@ -235,7 +231,12 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
+  }
+
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
   }
 
 private:
@@ -287,7 +288,7 @@ private:
 
   void Scene00000( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=ZUZUMEDA" );
+    player.sendDebug( "SubWil066:65856 calling Scene00000: Normal(Talk, QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=ZUZUMEDA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -299,7 +300,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling [BranchTrue]Scene00001: Normal(QuestAccept), id=unknown" );
+    player.sendDebug( "SubWil066:65856 calling Scene00001: Normal(QuestAccept), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -331,21 +332,13 @@ private:
   }
   void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling [BranchTrue]Scene00004: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOA" );
+    player.sendDebug( "SubWil066:65856 calling Scene00004: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 4, NONE, callback );
-  }
-  void Scene00005( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil066:65856 calling [BranchFalse]Scene00005: Normal(None), id=KODOMOA" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-    };
-    player.playScene( getId(), 5, NONE, callback );
   }
 
   void Scene00006( Entity::Player& player )
@@ -362,21 +355,13 @@ private:
   }
   void Scene00007( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling [BranchTrue]Scene00007: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOB" );
+    player.sendDebug( "SubWil066:65856 calling Scene00007: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOB" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8BH( getId(), 1 );
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 7, NONE, callback );
-  }
-  void Scene00008( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil066:65856 calling [BranchFalse]Scene00008: Normal(None), id=KODOMOB" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-    };
-    player.playScene( getId(), 8, NONE, callback );
   }
 
   void Scene00009( Entity::Player& player )
@@ -393,21 +378,13 @@ private:
   }
   void Scene00010( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling [BranchTrue]Scene00010: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOC" );
+    player.sendDebug( "SubWil066:65856 calling Scene00010: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOC" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8BL( getId(), 1 );
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 10, NONE, callback );
-  }
-  void Scene00011( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil066:65856 calling [BranchFalse]Scene00011: Normal(None), id=KODOMOC" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-    };
-    player.playScene( getId(), 11, NONE, callback );
   }
 
   void Scene00012( Entity::Player& player )
@@ -424,21 +401,13 @@ private:
   }
   void Scene00013( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling [BranchTrue]Scene00013: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOD" );
+    player.sendDebug( "SubWil066:65856 calling Scene00013: Normal(Talk, NpcDespawn, TargetCanMove), id=KODOMOD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8CH( getId(), 1 );
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 13, NONE, callback );
-  }
-  void Scene00014( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil066:65856 calling [BranchFalse]Scene00014: Normal(None), id=KODOMOD" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-    };
-    player.playScene( getId(), 14, NONE, callback );
   }
 
   void Scene00015( Entity::Player& player )
@@ -467,6 +436,7 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
+        //quest battle auto skip
         Scene00026( player );
       }
     };
@@ -503,23 +473,21 @@ private:
     player.sendDebug( "SubWil066:65856 calling Scene00023: Normal(None), id=unknown" );
   }
 
-  void Scene00024( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil066:65856 calling Scene00024: Normal(None), id=unknown" );
-    Scene00025( player );
-  }
   void Scene00025( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling [BranchTrue]Scene00025: Normal(None), id=unknown" );
+    player.sendDebug( "SubWil066:65856 calling Scene00025: Normal(None), id=unknown" );
     checkProgressSeq4( player );
   }
 
   void Scene00026( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling Scene00026: Normal(CutScene), id=unknown" );
+    player.sendDebug( "SubWil066:65856 calling Scene00026: Normal(CutScene, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq5( player );
+      player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
+      player.eventFinish( getId(), 1 );
+      player.forceZoneing();
     };
     player.playScene( getId(), 26, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -536,13 +504,15 @@ private:
 
   void Scene00028( Entity::Player& player )
   {
-    player.sendDebug( "SubWil066:65856 calling Scene00028: Normal(Talk, Message, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=MOMODI" );
+    player.sendDebug( "SubWil066:65856 calling Scene00028: Normal(Talk, Message, FadeIn, QuestReward, QuestComplete, TargetCanMove, SystemTalk), id=MOMODI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 28, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

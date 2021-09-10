@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 // id hint used:
 //SCENE_11 = dummy
 #include <Actor/Player.h>
@@ -27,7 +27,7 @@ public:
   //ITEM0 = 2000212
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -40,39 +40,36 @@ private:
       //seq 1 event item ITEM0 = UI8BH max stack ?
       case 1:
       {
-        if( actor == 2000268 || actorId == 2000268 ) // EOBJECT0 = unknown
+        if( param1 == 2000268 || param2 == 2000268 ) // EOBJECT0 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 3 )
           {
             Scene00001( player ); // Scene00001: Normal(Inventory), id=unknown
             // +Callback Scene00002: Normal(Message, PopBNpc), id=unknown
           }
+          break;
         }
-        if( actor == 3785130 || actorId == 3785130 ) // ENEMY0 = unknown
+        if( param1 == 3785130 || param2 == 3785130 ) // ENEMY0 = unknown
         {
-          Scene00003( player ); // Scene00003: Normal(None), id=unknown
-          // +Callback Scene00004: Normal(None), id=unknown
-          // +Callback Scene00005: Normal(Message, PopBNpc), id=unknown
+          Scene00005( player ); // Scene00005: Normal(Message, PopBNpc), id=unknown
+          break;
         }
-        if( actor == 3785131 || actorId == 3785131 ) // ENEMY1 = unknown
+        if( param1 == 3785131 || param2 == 3785131 ) // ENEMY1 = unknown
         {
-          Scene00006( player ); // Scene00006: Normal(None), id=unknown
-          // +Callback Scene00007: Normal(None), id=unknown
-          // +Callback Scene00008: Normal(Message, PopBNpc), id=unknown
+          Scene00008( player ); // Scene00008: Normal(Message, PopBNpc), id=unknown
+          break;
         }
-        if( actor == 3785134 || actorId == 3785134 ) // ENEMY2 = dummy
+        if( param1 == 3785134 || param2 == 3785134 ) // ENEMY2 = dummy
         {
-          Scene00009( player ); // Scene00009: Normal(None), id=unknown
-          // +Callback Scene00010: Normal(None), id=unknown
-          // +Callback Scene00011: Normal(Message, PopBNpc), id=dummy
+          Scene00011( player ); // Scene00011: Normal(Message, PopBNpc), id=dummy
+          break;
         }
         break;
       }
       //seq 255 event item ITEM0 = UI8BH max stack ?
       case 255:
       {
-        Scene00012( player ); // Scene00012: Normal(None), id=unknown
-        // +Callback Scene00013: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WARIN
+        Scene00013( player ); // Scene00013: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WARIN
         break;
       }
       default:
@@ -105,7 +102,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -151,7 +148,7 @@ private:
   }
   void Scene00002( Entity::Player& player )
   {
-    player.sendDebug( "SubWil064:65843 calling [BranchTrue]Scene00002: Normal(Message, PopBNpc), id=unknown" );
+    player.sendDebug( "SubWil064:65843 calling Scene00002: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 3 );
@@ -160,19 +157,9 @@ private:
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil064:65843 calling Scene00003: Normal(None), id=unknown" );
-    Scene00004( player );
-  }
-  void Scene00004( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil064:65843 calling [BranchTrue]Scene00004: Normal(None), id=unknown" );
-    Scene00005( player );
-  }
   void Scene00005( Entity::Player& player )
   {
-    player.sendDebug( "SubWil064:65843 calling [BranchChain]Scene00005: Normal(Message, PopBNpc), id=unknown" );
+    player.sendDebug( "SubWil064:65843 calling Scene00005: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq1( player );
@@ -180,19 +167,9 @@ private:
     player.playScene( getId(), 5, NONE, callback );
   }
 
-  void Scene00006( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil064:65843 calling Scene00006: Normal(None), id=unknown" );
-    Scene00007( player );
-  }
-  void Scene00007( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil064:65843 calling [BranchTrue]Scene00007: Normal(None), id=unknown" );
-    Scene00008( player );
-  }
   void Scene00008( Entity::Player& player )
   {
-    player.sendDebug( "SubWil064:65843 calling [BranchChain]Scene00008: Normal(Message, PopBNpc), id=unknown" );
+    player.sendDebug( "SubWil064:65843 calling Scene00008: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq1( player );
@@ -200,19 +177,9 @@ private:
     player.playScene( getId(), 8, NONE, callback );
   }
 
-  void Scene00009( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil064:65843 calling Scene00009: Normal(None), id=unknown" );
-    Scene00010( player );
-  }
-  void Scene00010( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil064:65843 calling [BranchTrue]Scene00010: Normal(None), id=unknown" );
-    Scene00011( player );
-  }
   void Scene00011( Entity::Player& player )
   {
-    player.sendDebug( "SubWil064:65843 calling [BranchChain]Scene00011: Normal(Message, PopBNpc), id=dummy" );
+    player.sendDebug( "SubWil064:65843 calling Scene00011: Normal(Message, PopBNpc), id=dummy" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq1( player );
@@ -220,20 +187,17 @@ private:
     player.playScene( getId(), 11, NONE, callback );
   }
 
-  void Scene00012( Entity::Player& player )
-  {
-    player.sendDebug( "SubWil064:65843 calling Scene00012: Normal(None), id=unknown" );
-    Scene00013( player );
-  }
   void Scene00013( Entity::Player& player )
   {
-    player.sendDebug( "SubWil064:65843 calling [BranchTrue]Scene00013: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WARIN" );
+    player.sendDebug( "SubWil064:65843 calling Scene00013: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WARIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 13, NONE, callback );
