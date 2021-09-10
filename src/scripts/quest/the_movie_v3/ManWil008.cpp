@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -27,35 +27,39 @@ public:
   //TERRITORYTYPE0 = 210
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        if( actor == 1004002 || actorId == 1004002 ) // ACTOR0 = OWYNE
+        if( param1 == 1004002 || param2 == 1004002 ) // ACTOR0 = OWYNE
         {
           Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
           // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=OWYNE
+          break;
         }
-        if( actor == 1004005 || actorId == 1004005 ) // ACTOR1 = unknown
+        if( param1 == 1004005 || param2 == 1004005 ) // ACTOR1 = unknown
         {
           Scene00002( player ); // Scene00002: Normal(YesNo, TargetCanMove), id=unknown
+          break;
         }
         break;
       }
       case 1:
       {
-        if( actor == 1001353 || actorId == 1001353 ) // ACTOR2 = MOMODI
+        if( param1 == 1001353 || param2 == 1001353 ) // ACTOR2 = MOMODI
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=MOMODI
           }
+          break;
         }
-        if( actor == 1004002 || actorId == 1004002 ) // ACTOR0 = OWYNE
+        if( param1 == 1004002 || param2 == 1004002 ) // ACTOR0 = OWYNE
         {
           Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=OWYNE
+          break;
         }
         break;
       }
@@ -70,7 +74,6 @@ private:
       {
         Scene00006( player ); // Scene00006: NpcTrade(Talk, TargetCanMove), id=unknown
         // +Callback Scene00007: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MOMODI
-        // +Callback Scene00008: Normal(None), id=unknown
         break;
       }
       default:
@@ -103,7 +106,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -144,7 +147,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "ManWil008:66177 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=OWYNE" );
+    player.sendDebug( "ManWil008:66177 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=OWYNE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -208,25 +211,18 @@ private:
   }
   void Scene00007( Entity::Player& player )
   {
-    player.sendDebug( "ManWil008:66177 calling [BranchTrue]Scene00007: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MOMODI" );
+    player.sendDebug( "ManWil008:66177 calling Scene00007: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MOMODI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        Scene00008( player );
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
+          player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 7, NONE, callback );
-  }
-  void Scene00008( Entity::Player& player )
-  {
-    player.sendDebug( "ManWil008:66177 calling [BranchChain]Scene00008: Normal(None), id=unknown" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      if( player.giveQuestRewards( getId(), result.param3 ) )
-        player.finishQuest( getId() );
-    };
-    player.playScene( getId(), 8, NONE, callback );
   }
 };
 

@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 // simple method used
 #include <Actor/Player.h>
 #include <ScriptObject.h>
@@ -22,7 +22,7 @@ public:
   //ITEM0 = 2000381
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -68,7 +68,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -110,13 +110,15 @@ private:
   }
   void Scene00002( Entity::Player& player )
   {
-    player.sendDebug( "SubWil084:65868 calling [BranchTrue]Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=unknown" );
+    player.sendDebug( "SubWil084:65868 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 2, NONE, callback );

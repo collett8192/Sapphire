@@ -268,7 +268,7 @@ private:
     {
       checkProgressSeq3( player );
       player.eventFinish( getId(), 1 );
-      player.enterPredefinedPrivateInstance( 210 );
+      player.forceZoneing();
     };
     player.playScene( getId(), 10, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }

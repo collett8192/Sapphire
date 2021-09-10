@@ -470,8 +470,8 @@ namespace FFXIVTheMovie.ParserV3
                                                 outputCpp.Add("      else");
                                                 outputCpp.Add("      {");
                                                 outputCpp.Add("        player.sendUrgent( \"Select anyone and hit cancel to progress.\" );");
+                                                skipBody = true;
                                             }
-                                            skipBody = true;
                                         }
                                     }
                                     hasIf = true;
@@ -501,14 +501,14 @@ namespace FFXIVTheMovie.ParserV3
                                         if (s < seqList.Count - 1)
                                         {
                                             var nextSeq = seqList[s + 1];
-                                            if (nextSeq.EntryList.Count > 0 && nextSeq.EntryList[0].EntryScene.SceneList.Count > 0)
+                                            if (nextSeq.EntryList.Count > 0 && nextSeq.EntryList[0].EntryScene.SceneList.Count > 0 && nextSeq.EntryList[0].EntryScene.ContainsSceneElement(LuaScene.SceneElement.CutScene))
                                             {
                                                 if (nextSeq.EntryList[0].TargetObject == null || nextSeq.EntryList[0].TargetObject is ActiveTerritory)
                                                 {
                                                     outputCpp.Add("        //quest battle auto skip");
                                                     outputCpp.Add($"        {nextSeq.EntryList[0].EntryScene.SceneList[0].SceneFunctionName}( player );");
+                                                    skipBody = true;
                                                 }
-                                                skipBody = true;
                                             }
                                         }
                                     }
