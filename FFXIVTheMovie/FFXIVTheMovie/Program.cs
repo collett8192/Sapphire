@@ -19,7 +19,7 @@ namespace FFXIVTheMovie
 
             //debug code below
             List<string> list = new List<string>();
-            list.Add("SubCts999");
+            list.Add("ManSea009");
             foreach (var id in list)
             {
                 (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
@@ -117,6 +117,29 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "SubSea105":
+                    {
+                        result.Add("SCENE_100", null);
+                        result.Add("SCENE_99", null);
+                        result.Add("SCENE_98", null);
+                        result.Add("SCENE_97", null);
+                        result.Add("SCENE_96", null);
+                        result.Add("SCENE_95", null);
+                        result.Add("SCENE_94", null);
+                        result.Add("SCENE_93", null);
+                        result.Add("SCENE_92", null);
+                        result.Add("SCENE_91", null);
+                        result.Add("SCENE_89", null);
+                        result.Add("SCENE_88", null);
+                        result.Add("SCENE_87", null);
+                        result.Add("SCENE_86", null);
+                        result.Add("SCENE_85", null);
+                        result.Add("SCENE_84", null);
+                        result.Add("SCENE_83", null);
+                        result.Add("SCENE_82", null);
+                        result.Add("SCENE_81", null);
+                        break;
+                    }
                 case "SubCts999":
                     {
                         result.Add("ACTOR1", "CEREMONYSHOP01578");

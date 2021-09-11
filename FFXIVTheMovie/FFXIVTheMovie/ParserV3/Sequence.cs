@@ -94,7 +94,7 @@ namespace FFXIVTheMovie.ParserV3
                     return false;
                 }
 
-                if (TargetObject is ActiveActor && EntryScene.SceneList.Count > 0 && !EntryScene.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove) && group.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove))
+                if (TargetObject is ActiveActor && EntryScene.HasNonEmptyScene() && !EntryScene.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove) && group.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove))
                 {
                     return false;
                 }
@@ -242,6 +242,16 @@ namespace FFXIVTheMovie.ParserV3
             {
                 var t = this.Identity;
                 return id == "unknown" || t == "unknown" || t == id;
+            }
+
+            public bool HasNonEmptyScene()
+            {
+                foreach (var scene in SceneList)
+                {
+                    if (scene.Element != LuaScene.SceneElement.None)
+                        return true;
+                }
+                return false;
             }
 
             public override string ToString()

@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -40,7 +40,7 @@ public:
   //TERRITORYTYPE1 = 138
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -60,35 +60,39 @@ private:
       }
       case 2:
       {
-        if( actor == 1003283 || actorId == 1003283 ) // ACTOR2 = RYSSFLOH
+        if( param1 == 1003283 || param2 == 1003283 ) // ACTOR2 = RYSSFLOH
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00004( player ); // Scene00004: Normal(Talk, QuestBattle, YesNo, TargetCanMove), id=RYSSFLOH
           }
+          break;
         }
-        if( actor == 1003284 || actorId == 1003284 ) // ACTOR3 = GLAZRAEL
+        if( param1 == 1003284 || param2 == 1003284 ) // ACTOR3 = GLAZRAEL
         {
           Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=GLAZRAEL
+          break;
         }
-        if( actor == 1003285 || actorId == 1003285 ) // ACTOR4 = YELLOWJACKETA
+        if( param1 == 1003285 || param2 == 1003285 ) // ACTOR4 = YELLOWJACKETA
         {
           Scene00006( player ); // Scene00006: Normal(Talk, TargetCanMove), id=YELLOWJACKETA
+          break;
         }
-        if( actor == 1003286 || actorId == 1003286 ) // ACTOR5 = YELLOWJACKETB
+        if( param1 == 1003286 || param2 == 1003286 ) // ACTOR5 = YELLOWJACKETB
         {
           Scene00007( player ); // Scene00007: Normal(Talk, TargetCanMove), id=YELLOWJACKETB
+          break;
         }
-        if( actor == 2001739 || actorId == 2001739 ) // EOBJECT0 = unknown
+        if( param1 == 2001739 || param2 == 2001739 ) // EOBJECT0 = unknown
         {
-          Scene00008( player ); // Scene00008: Normal(None), id=unknown
-          // +Callback Scene00009: Normal(None), id=unknown
+          Scene00009( player ); // Scene00009: Normal(None), id=unknown
+          break;
         }
         break;
       }
       case 3:
       {
-        Scene00010( player ); // Scene00010: Normal(CutScene), id=unknown
+        Scene00010( player ); // Scene00010: Normal(CutScene, AutoFadeIn), id=unknown
         break;
       }
       case 255:
@@ -127,7 +131,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -173,7 +177,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "ManSea007:66080 calling [BranchTrue]Scene00001: Normal(CutScene, QuestAccept), id=unknown" );
+    player.sendDebug( "ManSea007:66080 calling Scene00001: Normal(CutScene, QuestAccept), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -195,7 +199,7 @@ private:
   }
   void Scene00003( Entity::Player& player )
   {
-    player.sendDebug( "ManSea007:66080 calling [BranchTrue]Scene00003: Normal(Talk, FadeIn, TargetCanMove), id=REYNER" );
+    player.sendDebug( "ManSea007:66080 calling Scene00003: Normal(Talk, FadeIn, TargetCanMove), id=REYNER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq1( player );
@@ -210,8 +214,8 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        player.setQuestUI8AL( getId(), 1 );
-        checkProgressSeq2( player );
+        //quest battle auto skip
+        Scene00010( player );
       }
     };
     player.playScene( getId(), 4, NONE, callback );
@@ -244,23 +248,21 @@ private:
     player.playScene( getId(), 7, NONE, callback );
   }
 
-  void Scene00008( Entity::Player& player )
-  {
-    player.sendDebug( "ManSea007:66080 calling Scene00008: Normal(None), id=unknown" );
-    Scene00009( player );
-  }
   void Scene00009( Entity::Player& player )
   {
-    player.sendDebug( "ManSea007:66080 calling [BranchTrue]Scene00009: Normal(None), id=unknown" );
+    player.sendDebug( "ManSea007:66080 calling Scene00009: Normal(None), id=unknown" );
     checkProgressSeq2( player );
   }
 
   void Scene00010( Entity::Player& player )
   {
-    player.sendDebug( "ManSea007:66080 calling Scene00010: Normal(CutScene), id=unknown" );
+    player.sendDebug( "ManSea007:66080 calling Scene00010: Normal(CutScene, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq3( player );
+      player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
+      player.eventFinish( getId(), 1 );
+      player.forceZoneing();
     };
     player.playScene( getId(), 10, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -276,13 +278,15 @@ private:
   }
   void Scene00012( Entity::Player& player )
   {
-    player.sendDebug( "ManSea007:66080 calling [BranchTrue]Scene00012: Normal(CutScene, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=unknown" );
+    player.sendDebug( "ManSea007:66080 calling Scene00012: Normal(CutScene, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 12, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

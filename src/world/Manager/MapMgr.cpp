@@ -615,7 +615,6 @@ void Sapphire::World::Manager::MapMgr::fillPacket( EventSet& mapData, uint32_t* 
 
 void Sapphire::World::Manager::MapMgr::sendPackets( Entity::Player& player, EventSet& mapData, UpdateMode updateMode )
 {
-  player.sendDebug( "MapMgr::sendPackets() begin" );
   player.queuePacket( makeActorControlSelf( player.getId(), Network::ActorControl::BeginMapUpdate, updateMode ) );
 
   if( mapData.size() <= 2 )
@@ -683,5 +682,4 @@ void Sapphire::World::Manager::MapMgr::sendPackets( Entity::Player& player, Even
   }
 
   player.queuePacket( makeActorControlSelf( player.getId(), Network::ActorControl::FinishMapUpdate ) );
-  player.sendDebug( "MapMgr::sendPackets() end" );
 }
