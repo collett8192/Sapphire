@@ -1,5 +1,4 @@
-// FFXIVTheMovie.ParserV3
-//fix: skip dungeon and quest battle
+// FFXIVTheMovie.ParserV3.2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -43,7 +42,7 @@ public:
   //UNLOCKIMAGEDUNGEONCOPPERBELL = 75
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -60,61 +59,70 @@ private:
       }
       case 2:
       {
-        if( actor == 1002285 || actorId == 1002285 ) // ACTOR2 = STONETORCH
+        if( param1 == 1002285 || param2 == 1002285 ) // ACTOR2 = STONETORCH
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00003( player ); // Scene00003: Normal(Talk, Message, TargetCanMove), id=STONETORCH
           }
+          break;
         }
-        if( actor == 1004623 || actorId == 1004623 ) // ACTOR3 = ISILDAURE
+        if( param1 == 1004623 || param2 == 1004623 ) // ACTOR3 = ISILDAURE
         {
           Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=ISILDAURE
+          break;
         }
-        if( actor == 1004624 || actorId == 1004624 ) // ACTOR4 = ALIANNE
+        if( param1 == 1004624 || param2 == 1004624 ) // ACTOR4 = ALIANNE
         {
           Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=ALIANNE
+          break;
         }
-        if( actor == 1004621 || actorId == 1004621 ) // ACTOR1 = PAINTEDMESA
+        if( param1 == 1004621 || param2 == 1004621 ) // ACTOR1 = PAINTEDMESA
         {
           Scene00006( player ); // Scene00006: Normal(Talk, TargetCanMove), id=PAINTEDMESA
+          break;
         }
         break;
       }
       case 3:
       {
-        if( actor == 1004623 || actorId == 1004623 ) // ACTOR3 = ISILDAURE
+        if( param1 == 1004623 || param2 == 1004623 ) // ACTOR3 = ISILDAURE
         {
           Scene00007( player ); // Scene00007: Normal(Talk, TargetCanMove), id=ISILDAURE
+          break;
         }
-        if( actor == 1004624 || actorId == 1004624 ) // ACTOR4 = ALIANNE
+        if( param1 == 1004624 || param2 == 1004624 ) // ACTOR4 = ALIANNE
         {
           Scene00008( player ); // Scene00008: Normal(Talk, TargetCanMove), id=ALIANNE
+          break;
         }
-        if( actor == 1002285 || actorId == 1002285 ) // ACTOR2 = STONETORCH
+        if( param1 == 1002285 || param2 == 1002285 ) // ACTOR2 = STONETORCH
         {
           Scene00009( player ); // Scene00009: Normal(Talk, TargetCanMove), id=STONETORCH
+          break;
         }
         break;
       }
       case 4:
       {
-        if( actor == 1004621 || actorId == 1004621 ) // ACTOR1 = unknown
+        if( param1 == 1004621 || param2 == 1004621 ) // ACTOR1 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00010( player ); // Scene00010: Normal(QuestBattle, YesNo), id=unknown
           }
+          break;
         }
-        if( actor == 2001854 || actorId == 2001854 ) // EOBJECT0 = unknown
+        if( param1 == 2001854 || param2 == 2001854 ) // EOBJECT0 = unknown
         {
           Scene00011( player ); // Scene00011: Normal(None), id=unknown
+          break;
         }
         break;
       }
       case 5:
       {
-        Scene00012( player ); // Scene00012: Normal(CutScene), id=unknown
+        Scene00012( player ); // Scene00012: Normal(CutScene, AutoFadeIn), id=unknown
         break;
       }
       case 255:
@@ -152,7 +160,12 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
+  }
+
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
   }
 
 private:
@@ -203,7 +216,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "ManFst205:66196 calling [BranchTrue]Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=MOMODI" );
+    player.sendDebug( "ManFst205:66196 calling Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=MOMODI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -282,7 +295,6 @@ private:
     player.sendDebug( "ManFst205:66196 calling Scene00009: Normal(Talk, TargetCanMove), id=STONETORCH" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      checkProgressSeq3( player );
     };
     player.playScene( getId(), 9, NONE, callback );
   }
@@ -294,6 +306,7 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
+        //quest battle auto skip
         Scene00012( player );
       }
     };
@@ -308,10 +321,13 @@ private:
 
   void Scene00012( Entity::Player& player )
   {
-    player.sendDebug( "ManFst205:66196 calling Scene00012: Normal(CutScene), id=unknown" );
+    player.sendDebug( "ManFst205:66196 calling Scene00012: Normal(CutScene, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq5( player );
+      player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
+      player.eventFinish( getId(), 1 );
+      player.forceZoneing();
     };
     player.playScene( getId(), 12, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -324,7 +340,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 13, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "Actor/Player.h"
+#include "Territory/InstanceContent.h"
 
 #ifdef _MSC_VER
 #define EXPORT __declspec( dllexport )
@@ -34,6 +35,32 @@ namespace Sapphire::ScriptAPI
 
   void ScriptObject::onDebug( Entity::Player& player, uint32_t param )
   {
+  }
+
+  void ScriptObject::the_movie_callback( Sapphire::Entity::Player& player, const Sapphire::Event::SceneResult& result, uint32_t questId, uint8_t targetSeq, const uint32_t* sceneList )
+  {
+    auto instance = player.getCurrentInstance();
+    int i = 0;
+    while( sceneList[ i ] != result.param2 )
+    {
+      i++;
+      if( i > 8 )
+      {
+        player.sendUrgent( "Something is wrong, check the script." );
+        return;
+      }
+    }
+    auto nextScene = sceneList[ i + 1 ];
+    if( nextScene == 0 )
+    {
+      player.eventFinish( instance->getDirectorId(), 1 );
+      player.updateQuest( questId, targetSeq );
+      player.exitInstance();
+    }
+    else
+    {
+      player.playScene( instance->getDirectorId(), 3, 3074, 0, 1, nextScene, std::bind( &ScriptObject::the_movie_callback, this, std::placeholders::_1, std::placeholders::_2, questId, targetSeq, sceneList ) );
+    }
   }
 
   ///////////////////////////////////////////////////////////////////
