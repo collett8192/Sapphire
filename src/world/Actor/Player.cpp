@@ -562,7 +562,6 @@ bool Sapphire::Entity::Player::exitInstance()
     queuePacket( p2 );
 
     prepareZoning( 0, 1, 1, 0, 0, 1, 9 );
-    queuePacket( makeActorControlSelf( getId(), 263, 1, 0, 0, 0, 0, 0 ) );
   }
 
   resetHp();
