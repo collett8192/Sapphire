@@ -542,6 +542,7 @@ bool Sapphire::Entity::Player::exitInstance()
   auto d = getCurrentTerritory()->getAsDirector();
   if( d && d->getContentFinderConditionId() > 0 )
   {
+    // shows correct name when leaving dungeon
     auto p = makeZonePacket< FFXIVDirectorUnk4 >( getId() );
     p->data().param[0] = d->getDirectorId();
     p->data().param[1] = 1534;
@@ -549,23 +550,18 @@ bool Sapphire::Entity::Player::exitInstance()
     p->data().param[3] = d->getContentFinderConditionId();
     queuePacket( p );
 
-    struct UNK038D : FFXIVIpcBasePacket< 0x038D >
-    {
-      uint32_t unknown[2];
-    };
-    auto p3 = makeZonePacket< UNK038D >( getId() );
-    queuePacket( p3 );
-
-    struct UNK00EA : FFXIVIpcBasePacket< 0x00EA >
+    // clears CF state, otherwise the UI stays locked
+    struct UNK00A0 : FFXIVIpcBasePacket< 0x00A0 >
     {
       uint32_t unknown[4];
     };
-    auto p2 = makeZonePacket< UNK00EA >( getId() );
+    auto p2 = makeZonePacket< UNK00A0 >( getId() );
     p2->data().unknown[0] = d->getContentFinderConditionId();
     p2->data().unknown[1] = 5;
     queuePacket( p2 );
 
     prepareZoning( 0, 1, 1, 0, 0, 1, 9 );
+    queuePacket( makeActorControlSelf( getId(), 263, 1, 0, 0, 0, 0, 0 ) );
   }
 
   resetHp();
@@ -1912,11 +1908,11 @@ void Sapphire::Entity::Player::sendZonePackets()
   {
     if( d->getContentFinderConditionId() > 0 )
     {
-      struct UNK00EA : FFXIVIpcBasePacket< 0x00EA >
+      struct UNK00A0 : FFXIVIpcBasePacket< 0x00A0 >
       {
         uint32_t unknown[4];
       };
-      auto p2 = makeZonePacket< UNK00EA >( getId() );
+      auto p2 = makeZonePacket< UNK00A0 >( getId() );
       p2->data().unknown[0] = d->getContentFinderConditionId();
       p2->data().unknown[1] = 4;
       queuePacket( p2 );
