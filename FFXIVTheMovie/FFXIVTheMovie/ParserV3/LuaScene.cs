@@ -219,7 +219,7 @@ namespace FFXIVTheMovie.ParserV3
             FuncNameToSceneTypeTable.Add("NpcTrade", SceneType.NpcTrade);
             FuncNameToSceneTypeTable.Add("SetNpcTradeItem", SceneType.NpcTrade);
             FuncNameToSceneTypeTable.Add("Snipe", SceneType.Snipe);
-            FuncNameToSceneTypeTable.Add("OpenDawnUI", SceneType.MsqDungeon);
+            FuncNameToSceneTypeTable.Add("OpenDawnUI", SceneType.Trust);
 
             FuncNameToSceneElementTable.Add("FadeIn", SceneElement.FadeIn);
             FuncNameToSceneElementTable.Add("PlayCutScene", SceneElement.CutScene);
@@ -258,7 +258,7 @@ namespace FFXIVTheMovie.ParserV3
             NpcTrade = 5,
             Snipe = 6,
             CardGame = 7,
-            MsqDungeon = 8,
+            Trust = 8,
         }
 
         [Flags]
