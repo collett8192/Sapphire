@@ -820,7 +820,7 @@ std::unordered_map< uint32_t, Sapphire::World::Manager::TerritoryMgr::InstanceSp
 
 std::unordered_map< uint32_t, uint32_t > Sapphire::World::Manager::TerritoryMgr::instanceExitEvent =
 {
-  //{ 131091, 212 }, scripted
+  { 131089, 212 },
   { 131085, 210 },
   { 131123, 198 },
   { 131075, 204 },
