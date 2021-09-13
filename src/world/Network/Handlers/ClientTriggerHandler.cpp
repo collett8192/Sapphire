@@ -521,11 +521,11 @@ void Sapphire::Network::GameConnection::clientTriggerHandler( const Packets::FFX
     {
       if( param11 == 1 )
       {
-        player.setOnlineStatusMask( player.getOnlineStatusMask() | 0x0000000000040000ui64 );
+        player.setOnlineStatusMask( player.getOnlineStatusMask() | 0x0000000000040000 );
       }
       else
       {
-        player.setOnlineStatusMask( player.getOnlineStatusMask() & 0xFFFFFFFFFFFBFFFFui64 );
+        player.setOnlineStatusMask( player.getOnlineStatusMask() & 0xFFFFFFFFFFFBFFFF );
       }
       break;
     }

@@ -16,6 +16,9 @@
 #include "DebugCommand/DebugCommand.h"
 #include "DebugCommandMgr.h"
 
+#include <datReader/DatCategories/bg/LgbTypes.h>
+#include <datReader/DatCategories/bg/lgb.h>
+
 #include "Network/PacketWrappers/ServerNoticePacket.h"
 #include "Network/PacketWrappers/ActorControlPacket.h"
 #include "Network/PacketWrappers/ActorControlSelfPacket.h"
@@ -33,6 +36,7 @@
 #include "Territory/InstanceContent.h"
 #include "Territory/QuestBattle.h"
 #include "Territory/PublicContent.h"
+#include "Territory/InstanceObjectCache.h"
 #include "Manager/TerritoryMgr.h"
 #include "Event/EventDefs.h"
 
@@ -679,6 +683,18 @@ void Sapphire::World::Manager::DebugCommandMgr::get( char* data, Entity::Player&
       player.sendNotice( "Public content info:\nContentId: {}, DirectorId: {}\nSequence: {}, Branch: {}",
         instance->getContentId(), instance->getDirectorId(), instance->getSequence(),
         instance->getBranch() );
+    }
+  }
+  if( ( subCommand == "poprange" ) )
+  {
+    uint32_t id, param;
+    sscanf( params.c_str(), "%u", &id );
+
+    auto& instanceObjectCache = Common::Service< InstanceObjectCache >::ref();
+    auto pPopRange = instanceObjectCache.getPopRange( player.getCurrentTerritory()->getTerritoryTypeId(), id );
+    if( pPopRange )
+    {
+      player.sendNotice( "x:{}, y:{}, z:{}", pPopRange->header.transform.translation.x, pPopRange->header.transform.translation.y, pPopRange->header.transform.translation.z );
     }
   }
   else
