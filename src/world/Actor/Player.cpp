@@ -539,7 +539,7 @@ bool Sapphire::Entity::Player::exitInstance()
 {
   auto& teriMgr = Common::Service< TerritoryMgr >::ref();
 
-  auto d = getCurrentTerritory()->getAsDirector();
+  auto d = getCurrentTerritory()->getAsInstanceContent();
   if( d && d->getContentFinderConditionId() > 0 )
   {
     // shows correct name when leaving dungeon
@@ -547,7 +547,7 @@ bool Sapphire::Entity::Player::exitInstance()
     p->data().param[0] = d->getDirectorId();
     p->data().param[1] = 1534;
     p->data().param[2] = 1;
-    p->data().param[3] = d->getContentFinderConditionId();
+    p->data().param[3] = d->getContentId();
     queuePacket( p );
 
     // clears CF state, otherwise the UI stays locked
@@ -1903,7 +1903,7 @@ void Sapphire::Entity::Player::sendZonePackets()
   }
   queuePacket( initZonePacket );
 
-  if( auto d = getCurrentTerritory()->getAsDirector() )
+  if( auto d = getCurrentTerritory()->getAsInstanceContent() )
   {
     if( d->getContentFinderConditionId() > 0 )
     {
@@ -2418,7 +2418,7 @@ bool Sapphire::Entity::Player::createEmptyParty()
   m_partyLeader = getAsPlayer();
   m_partyMemberList.clear();
   m_partyMemberList.push_back( m_partyLeader );
-  setOnlineStatusMask( 0x0000803000000000ui64 );
+  setOnlineStatusMask( 0x0000803000000000 );
   return true;
 }
 
@@ -2431,7 +2431,7 @@ void Sapphire::Entity::Player::disbandParty()
       if( member->getId() == getId() )
         continue;
       member->m_partyLeader = nullptr;
-      member->setOnlineStatusMask( 0x0000800000000000ui64 );
+      member->setOnlineStatusMask( 0x0000800000000000 );
       member->clearPartyList();
     }
     m_partyLeader = nullptr;
@@ -2455,7 +2455,7 @@ bool Sapphire::Entity::Player::addPartyMember( PlayerPtr member )
     return false;
   m_partyMemberList.push_back( member );
   member->m_partyLeader = m_partyLeader;
-  member->setOnlineStatusMask( 0x0000802000000000ui64 );
+  member->setOnlineStatusMask( 0x0000802000000000 );
   sendPartyListToParty();
   return true;
 }
@@ -2492,7 +2492,7 @@ bool Sapphire::Entity::Player::removePartyMember( PlayerPtr member )
         {
           m_partyMemberList.erase( it );
           member->m_partyLeader = nullptr;
-          member->setOnlineStatusMask( 0x0000800000000000ui64 );
+          member->setOnlineStatusMask( 0x0000800000000000 );
           member->clearPartyList();
           flag = true;
           break;
@@ -2528,8 +2528,8 @@ bool Sapphire::Entity::Player::changePartyLeader( PlayerPtr newLeader )
       {
         m->m_partyLeader = newLeader;
       }
-      newLeader->setOnlineStatusMask( 0x0000803000000000ui64 );
-      setOnlineStatusMask( 0x0000802000000000ui64 );
+      newLeader->setOnlineStatusMask( 0x0000803000000000 );
+      setOnlineStatusMask( 0x0000802000000000 );
       newLeader->sendPartyListToParty();
       return true;
     }
@@ -2575,8 +2575,8 @@ void Sapphire::Entity::Player::sendPartyListToParty( PlayerPtr filter )
       leaderIndex = i;
     i++;
   }
-  partyList.someContentId1 = 0x0044000000000001ui64;
-  partyList.someContentId2 = 0x0044000100000001ui64;
+  partyList.someContentId1 = 0x0044000000000001;
+  partyList.someContentId2 = 0x0044000100000001;
   partyList.leaderIndex = leaderIndex;
   partyList.partySize = getPartySize();
 
