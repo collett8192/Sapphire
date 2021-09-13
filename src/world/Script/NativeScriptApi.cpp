@@ -37,20 +37,18 @@ namespace Sapphire::ScriptAPI
   {
   }
 
-  void ScriptObject::the_movie_callback( Sapphire::Entity::Player& player, const Sapphire::Event::SceneResult& result, uint32_t questId, uint8_t targetSeq, const uint32_t* sceneList )
+  void ScriptObject::the_movie_callback( Sapphire::Entity::Player& player, const Sapphire::Event::SceneResult& result, uint32_t questId, uint8_t targetSeq, const uint32_t* sceneList, uint32_t index )
   {
-    auto instance = player.getCurrentInstance();
-    int i = 0;
-    while( sceneList[ i ] != result.param2 )
+    auto instance = player.getCurrentTerritory()->getAsDirector();
+    int mode = 1;
+    if( player.getCurrentQuestBattle() )
+      mode = 2;
+    if( index > 8 )
     {
-      i++;
-      if( i > 8 )
-      {
-        player.sendUrgent( "Something is wrong, check the script." );
-        return;
-      }
+      player.sendUrgent( "Something is wrong, check the script." );
+      return;
     }
-    auto nextScene = sceneList[ i + 1 ];
+    auto nextScene = sceneList[ index + 1 ];
     if( nextScene == 0 )
     {
       player.eventFinish( instance->getDirectorId(), 1 );
@@ -59,7 +57,19 @@ namespace Sapphire::ScriptAPI
     }
     else
     {
-      player.playScene( instance->getDirectorId(), 3, 3074, 0, 1, nextScene, std::bind( &ScriptObject::the_movie_callback, this, std::placeholders::_1, std::placeholders::_2, questId, targetSeq, sceneList ) );
+      switch( mode )
+      {
+        case 1:
+        {
+          player.playScene( instance->getDirectorId(), 3, 3074, 0, 1, nextScene, std::bind( &ScriptObject::the_movie_callback, this, std::placeholders::_1, std::placeholders::_2, questId, targetSeq, sceneList, index + 1 ) );
+          break;
+        }
+        case 2:
+        {
+          player.playScene( instance->getDirectorId(), nextScene, 3074, 0, 0, 0, std::bind( &ScriptObject::the_movie_callback, this, std::placeholders::_1, std::placeholders::_2, questId, targetSeq, sceneList, index + 1 ) );
+          break;
+        }
+      }
     }
   }
 

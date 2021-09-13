@@ -50,7 +50,7 @@ namespace Sapphire::ScriptAPI
 
     virtual void onDebug( Sapphire::Entity::Player& player, uint32_t param );
 
-    void the_movie_callback( Sapphire::Entity::Player& player, const Sapphire::Event::SceneResult& result, uint32_t questId, uint8_t targetSeq, const uint32_t* sceneList );
+    void the_movie_callback( Sapphire::Entity::Player& player, const Sapphire::Event::SceneResult& result, uint32_t questId, uint8_t targetSeq, const uint32_t* sceneList, uint32_t index );
   };
 
 
