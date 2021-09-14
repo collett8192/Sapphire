@@ -685,7 +685,7 @@ void Sapphire::World::Manager::DebugCommandMgr::get( char* data, Entity::Player&
         instance->getBranch() );
     }
   }
-  if( ( subCommand == "poprange" ) )
+  else if( ( subCommand == "poprange" ) )
   {
     uint32_t id, param;
     sscanf( params.c_str(), "%u", &id );
