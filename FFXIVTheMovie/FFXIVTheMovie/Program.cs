@@ -12,25 +12,68 @@ namespace FFXIVTheMovie
     {
         static readonly string SAPPHIRE_SRC_FOLDER = @"C:\work\Sapphire\src";
         static readonly string SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER = @"C:\work\Sapphire\build\bin\tools\generated";
+        static readonly string PARSER_OUTPUT_FOLDER = Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest", "the_movie_v3");
         static void Main(string[] args)
         {
-            ParseV3();
-            return;
-
-            //debug code below
-            List<string> list = new List<string>();
-            list.Add("ManFst209");
-            foreach (var id in list)
+            string questScriptFolder = Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest");
+            if (!Directory.Exists(questScriptFolder))
             {
-                (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
-                var p = new ParserV3.Parser(id, Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest", "the_movie_v3"), a, b);
-                foreach (var hint in GetIdHintForQuest(id))
-                {
-                    p.AddIdHint(hint.Key, hint.Value);
-                }
-                p.GenerateQuestScript();
+                Console.WriteLine("SAPPHIRE_SRC_FOLDER is not setup correctly.");
+                Console.ReadKey();
+                return;
             }
-            Console.WriteLine("All Done.");
+
+            if (!File.Exists(Path.Combine(SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER, "ManWil200.cpp")))
+            {
+                Console.WriteLine("SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER is not setup correctly.");
+                Console.ReadKey();
+                return;
+            }
+
+            if (!Directory.Exists(PARSER_OUTPUT_FOLDER))
+            {
+                Console.WriteLine("PARSER_OUTPUT_FOLDER does not exist.");
+                Console.ReadKey();
+                return;
+            }
+
+            List<string> list = new List<string>();
+            //list.Add("ManFst209");
+
+            if (list.Count == 0)
+            {
+                Console.WriteLine("Input quest id (XxxXxx000) to parse:");
+                Console.WriteLine("(ALL for all non-implemented quests)");
+                string id = Console.ReadLine();
+                if (id == "ALL")
+                {
+                    ParseV3();
+                    return;
+                }
+                else
+                {
+                    list.Add(id);
+                }
+            }
+
+            try
+            {
+                foreach (var id in list)
+                {
+                    (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
+                    var p = new ParserV3.Parser(id, PARSER_OUTPUT_FOLDER, a, b);
+                    foreach (var hint in GetIdHintForQuest(id))
+                    {
+                        p.AddIdHint(hint.Key, hint.Value);
+                    }
+                    p.GenerateQuestScript();
+                }
+                Console.WriteLine("All Done.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             Console.ReadKey();
         }
 
@@ -38,7 +81,6 @@ namespace FFXIVTheMovie
         {
             HashSet<string> implementedQuestIds = new HashSet<string>();
             string questScriptFolder = Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest");
-            string outputFolder = Path.Combine(questScriptFolder, "the_movie_v3");
 
             AddAllScripts(new DirectoryInfo(questScriptFolder), implementedQuestIds);
             int parsed = 0, failed = 0;
@@ -48,7 +90,6 @@ namespace FFXIVTheMovie
                 string questId = Path.GetFileNameWithoutExtension(scriptFile.Name);
                 if (implementedQuestIds.Contains(questId))
                     continue;
-                //add or remove any quest prefix
                 if (!questId.StartsWith("ManFst") &&
                     !questId.StartsWith("ManSea") &&
                     !questId.StartsWith("ManWil") &&
@@ -93,7 +134,7 @@ namespace FFXIVTheMovie
                 (var cpp, var lua) = ReadSingleQuest(questId, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
                 try
                 {
-                    var p = new ParserV3.Parser(questId, outputFolder, cpp, lua);
+                    var p = new ParserV3.Parser(questId, PARSER_OUTPUT_FOLDER, cpp, lua);
                     foreach (var hint in GetIdHintForQuest(questId))
                     {
                         p.AddIdHint(hint.Key, hint.Value);
