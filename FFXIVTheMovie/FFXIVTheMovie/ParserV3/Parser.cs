@@ -498,19 +498,18 @@ namespace FFXIVTheMovie.ParserV3
                                     }
                                     if ((current.Element & LuaScene.SceneElement.QuestBattle) > 0)
                                     {
-                                        if (s < seqList.Count - 1)
+                                        outputCpp.Add("        //quest battle");
+                                        outputCpp.Add("        player.eventFinish( getId(), 1 );");
+                                        outputCpp.Add("        auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();");
+                                        if (constTable.ContainsKey("QUESTBATTLE0"))
                                         {
-                                            var nextSeq = seqList[s + 1];
-                                            if (nextSeq.EntryList.Count > 0 && nextSeq.EntryList[0].EntryScene.SceneList.Count > 0 && nextSeq.EntryList[0].EntryScene.ContainsSceneElement(LuaScene.SceneElement.CutScene))
-                                            {
-                                                if (nextSeq.EntryList[0].TargetObject == null || nextSeq.EntryList[0].TargetObject is ActiveTerritory)
-                                                {
-                                                    outputCpp.Add("        //quest battle auto skip");
-                                                    outputCpp.Add($"        {nextSeq.EntryList[0].EntryScene.SceneList[0].SceneFunctionName}( player );");
-                                                    skipBody = true;
-                                                }
-                                            }
+                                            outputCpp.Add($"        pTeriMgr.createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
                                         }
+                                        else
+                                        {
+                                            outputCpp.Add($"        //pTeriMgr.createAndJoinQuestBattle( player, ??? );");
+                                        }
+                                        skipBody = true;
                                     }
                                 }
                                 if (!hasIf && !afterComplete && ((current.Element & LuaScene.SceneElement.Menu) > 0 || (current.Element & LuaScene.SceneElement.CanCancel) > 0 || current.Type == LuaScene.SceneType.Snipe))
