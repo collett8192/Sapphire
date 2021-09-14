@@ -35,28 +35,19 @@ namespace FFXIVTheMovie.ParserV3
             InitSeqList();
             bool isSimpleParse = false;
             int buildResult = 0;
-            if (fIsAnnounce == null)
+            buildResult = BuildSeqList();
+            if (buildResult < 0)
             {
                 isSimpleParse = true;
                 if (!BuildSeqListSimple())
                     throw new Exception("Failed");
-            }
-            else
-            {
-                buildResult = BuildSeqList();
-                if (buildResult < 0)
-                {
-                    isSimpleParse = true;
-                    if (!BuildSeqListSimple())
-                        throw new Exception("Failed");
-                }
             }
             InitEventItems();
             BNpcHack(); // see comment inside
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.2");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.3");
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -64,6 +55,10 @@ namespace FFXIVTheMovie.ParserV3
             else if (buildResult != 1)
             {
                 outputCpp.Add("// id table disabled");
+            }
+            if (fIsAnnounce.IsFake)
+            {
+                outputCpp.Add("// fake IsAnnounce table");
             }
             else if (idHint.Count > 0)
             {
@@ -746,6 +741,10 @@ namespace FFXIVTheMovie.ParserV3
                 {
                     idTable.Add(hint.Key, new Tuple<string, int>(hint.Value, -1));
                 }
+            }
+            if (fIsAnnounce == null)
+            {
+                fIsAnnounce = LuaIsAnnounce.CreateFakeAnnounce(seqList);
             }
             List <EventEntry> allEntries = new List<EventEntry>();
             foreach (var seq in seqList)

@@ -9,6 +9,7 @@ namespace FFXIVTheMovie.ParserV3
     public class LuaIsAnnounce
     {
         public Dictionary<int, List<ActiveObjectToEntryConditionMap>> SeqTargetConditionTable = new Dictionary<int, List<ActiveObjectToEntryConditionMap>>();
+        public bool IsFake = false;
 
         public static LuaIsAnnounce ParseLuaCode(List<string> codeBlock)
         {
@@ -143,6 +144,13 @@ namespace FFXIVTheMovie.ParserV3
                     result.SeqTargetConditionTable.Add(currentSeq, currentList);
                 }
             }
+            return result;
+        }
+
+        public static LuaIsAnnounce CreateFakeAnnounce(List<Sequence> seqList)
+        {
+            LuaIsAnnounce result = new LuaIsAnnounce();
+            result.IsFake = true;
             return result;
         }
 
