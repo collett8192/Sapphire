@@ -90,8 +90,9 @@ void Sapphire::QuestBattle::onLeaveTerritory( Entity::Player& player )
 
 void Sapphire::QuestBattle::onEnterSceneFinish( Entity::Player& player )
 {
-  player.eventStart( player.getId(), getDirectorId(), Event::EventHandler::GameProgress, 1, 0 );
-  player.playScene( getDirectorId(), 60000, 0x40000 /*unmapped*/ );
+  //player.eventStart( player.getId(), getDirectorId(), Event::EventHandler::GameProgress, 1, 0 );
+  //player.playScene( getDirectorId(), 60000, 0x40000 /*unmapped*/ );
+  // disabled for the_movie to prevent bgm issue
   setSequence( 2 );
 }
 

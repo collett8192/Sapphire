@@ -265,12 +265,8 @@ private:
       {
         //quest battle
         player.eventFinish( getId(), 1 );
-        //auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
-        //pTeriMgr.createAndJoinQuestBattle( player, 13 );
-        player.sendUrgent( "quest battle 13 missing" );
-        player.setQuestUI8AL( getId(), 1 );
-        checkProgressSeq4( player );
-        player.forceZoneing();
+        auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+        pTeriMgr.createAndJoinQuestBattle( player, 13 );
       }
     };
     player.playScene( getId(), 8, NONE, callback );
