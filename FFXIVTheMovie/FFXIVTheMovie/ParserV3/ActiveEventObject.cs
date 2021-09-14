@@ -169,8 +169,6 @@ namespace FFXIVTheMovie.ParserV3
 
         public override bool IsPrefferedGroup(Sequence.SceneGroup group)
         {
-            if (group.SceneList.Count == 1 && (group.SceneList[0].Element & ~(LuaScene.SceneElement.Message | LuaScene.SceneElement.PopBNpc)) == LuaScene.SceneElement.None)
-                return true;
             return false;
         }
     }

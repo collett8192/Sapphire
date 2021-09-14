@@ -8,20 +8,30 @@
 
 using namespace Sapphire;
 
-class ManFst304 : public Sapphire::ScriptAPI::EventScript
+class ManSea303 : public Sapphire::ScriptAPI::EventScript
 {
 public:
-  ManFst304() : Sapphire::ScriptAPI::EventScript( 66049 ){}; 
-  ~ManFst304() = default; 
+  ManSea303() : Sapphire::ScriptAPI::EventScript( 66220 ){}; 
+  ~ManSea303() = default; 
 
   //SEQ_0, 1 entries
   //SEQ_255, 1 entries
 
-  //ACTOR0 = 1005128
-  //ACTOR1 = 1000168
-  //CUTMANFST30410 = 0
-  //CUTMANFST30420 = 150
-  //SEQ0ACTOR0NQ = 50
+  //ACTOR0 = 1002388
+  //ACTOR1 = 1005012
+  //GCRANK01 = 1
+  //LOCACTION1 = 1002
+  //LOCACTOR0 = 1003783
+  //LOCSE1 = 42
+  //LOCTALKSHAPE1 = 6
+  //LOGMESSAGEMONSTERNOTEPAGEUNLOCK = 1018
+  //NCUT0 = 221
+  //NCUT1 = 391
+  //ORDEROFMAELSTROM = 1
+  //POPRANGE0 = 4148347
+  //REWARD0 = 22
+  //SCREENIMAGE0 = 32
+  //SCREENIMAGE1 = 69
 
 private:
   void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
@@ -31,12 +41,13 @@ private:
       case 0:
       {
         Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
-        // +Callback Scene00001: Normal(CutScene, QuestAccept, AutoFadeIn), id=unknown
+        // +Callback Scene00001: Normal(Talk, CutScene, FadeIn, QuestAccept, TargetCanMove, SystemTalk), id=STORMPERSONNEL
         break;
       }
       case 255:
       {
-        Scene00002( player ); // Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=VORSAILE
+        Scene00003( player ); // Scene00003: Normal(Talk, QuestReward, TargetCanMove), id=GUIDE
+        // +Callback Scene00004: Normal(CutScene, QuestComplete, AutoFadeIn), id=unknown
         break;
       }
       default:
@@ -85,7 +96,7 @@ private:
 
   void Scene00000( Entity::Player& player )
   {
-    player.sendDebug( "ManFst304:66049 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
+    player.sendDebug( "ManSea303:66220 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -97,32 +108,41 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "ManFst304:66049 calling Scene00001: Normal(CutScene, QuestAccept, AutoFadeIn), id=unknown" );
+    player.sendDebug( "ManSea303:66220 calling Scene00001: Normal(Talk, CutScene, FadeIn, QuestAccept, TargetCanMove, SystemTalk), id=STORMPERSONNEL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
-      player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
-      player.eventFinish( getId(), 1 );
-      player.forceZoneing();
     };
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00003( Entity::Player& player )
   {
-    player.sendDebug( "ManFst304:66049 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=VORSAILE" );
+    player.sendDebug( "ManSea303:66220 calling Scene00003: Normal(Talk, QuestReward, TargetCanMove), id=GUIDE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        if( player.giveQuestRewards( getId(), result.param3 ) )
-        {
-          player.finishQuest( getId() );
-        }
+        Scene00004( player );
       }
     };
-    player.playScene( getId(), 2, NONE, callback );
+    player.playScene( getId(), 3, NONE, callback );
+  }
+  void Scene00004( Entity::Player& player )
+  {
+    player.sendDebug( "ManSea303:66220 calling Scene00004: Normal(CutScene, QuestComplete, AutoFadeIn), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( player.giveQuestRewards( getId(), result.param3 ) )
+      {
+        player.finishQuest( getId() );
+        player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
+        player.eventFinish( getId(), 1 );
+        player.forceZoneing();
+      }
+    };
+    player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 };
 
-EXPOSE_SCRIPT( ManFst304 );
+EXPOSE_SCRIPT( ManSea303 );

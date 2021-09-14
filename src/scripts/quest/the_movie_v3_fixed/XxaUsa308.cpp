@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.3
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -59,12 +59,12 @@ private:
         }
         if( param1 == 4293402 || param2 == 4293402 ) // ENEMY0 = unknown
         {
-          Scene00004( player ); // Scene00004: Normal(Message, PopBNpc), id=unknown
+          // empty entry
           break;
         }
         if( param1 == 2001954 || param2 == 2001954 ) // EOBJECT0 = unknown
         {
-          Scene00005( player ); // Scene00005: Normal(None), id=unknown
+          Scene00004( player ); // Scene00004: Normal(Message, PopBNpc), id=unknown
           break;
         }
         break;
@@ -228,6 +228,7 @@ private:
     player.playScene( getId(), 3, NONE, callback );
   }
 
+
   void Scene00004( Entity::Player& player )
   {
     player.sendDebug( "XxaUsa308:69398 calling Scene00004: Normal(Message, PopBNpc), id=unknown" );
@@ -236,12 +237,6 @@ private:
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 4, NONE, callback );
-  }
-
-  void Scene00005( Entity::Player& player )
-  {
-    player.sendDebug( "XxaUsa308:69398 calling Scene00005: Normal(None), id=unknown" );
-    checkProgressSeq2( player );
   }
 
   void Scene00006( Entity::Player& player )
@@ -268,6 +263,11 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
+        //quest battle
+        player.eventFinish( getId(), 1 );
+        //auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+        //pTeriMgr.createAndJoinQuestBattle( player, 13 );
+        player.sendUrgent( "quest battle 13 missing" );
         player.setQuestUI8AL( getId(), 1 );
         checkProgressSeq4( player );
         player.forceZoneing();

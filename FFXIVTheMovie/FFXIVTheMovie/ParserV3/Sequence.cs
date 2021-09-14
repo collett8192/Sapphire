@@ -155,7 +155,7 @@ namespace FFXIVTheMovie.ParserV3
 
             public override string ToString()
             {
-                return $"{TargetObject}, {Var}, {EntryScene}";
+                return $"seq{Owner.SeqNumber}: {TargetObject}, {Var}, {EntryScene}";
             }
 
             public bool IsPrefferedGroup(SceneGroup sceneGroup)
