@@ -8,26 +8,31 @@
 
 using namespace Sapphire;
 
-class GaiUsa404 : public Sapphire::ScriptAPI::EventScript
+class GaiUsa906 : public Sapphire::ScriptAPI::EventScript
 {
 public:
-  GaiUsa404() : Sapphire::ScriptAPI::EventScript( 66282 ){}; 
-  ~GaiUsa404() = default; 
+  GaiUsa906() : Sapphire::ScriptAPI::EventScript( 66337 ){}; 
+  ~GaiUsa906() = default; 
 
   //SEQ_0, 1 entries
   //SEQ_1, 1 entries
   //SEQ_2, 1 entries
+  //SEQ_3, 1 entries
+  //SEQ_4, 1 entries
   //SEQ_255, 1 entries
 
-  //ACTOR0 = 1000168
-  //ACTOR1 = 1003785
+  //ACTOR0 = 1006263
   //ACTOR2 = 1006688
-  //CUTGAIUSA40410 = 96
-  //LOCACTION1 = 1002
-  //LOCACTOR0 = 1003783
-  //LOCSE1 = 42
-  //LOCTALKSHAPE1 = 6
-  //TERRITORYTYPE0 = 212
+  //CUTSCENE01 = 370
+  //EOBJECT0 = 2001999
+  //EVENTACTIONTOUCHMIDDLE = 46
+  //INSTANCEDUNGEON0 = 6
+  //LOCFACE0 = 604
+  //LOCFACE1 = 617
+  //POPRANGE0 = 4332869
+  //TERRITORYTYPE0 = 148
+  //UNLOCKADDNEWCONTENTTOCF = 3702
+  //UNLOCKIMAGEDUNGEONHAUKKE = 80
 
 private:
   void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
@@ -36,23 +41,32 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer), id=unknown
-        // +Callback Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=VORSAILE
+        Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
+        // +Callback Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=URSANDEL
         break;
       }
       case 1:
       {
-        Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=TATARU
+        Scene00003( player );
         break;
       }
       case 2:
       {
-        Scene00003( player ); // Scene00003: Normal(CutScene), id=unknown
+        break;
+      }
+      case 3:
+      {
+        Scene00004( player ); // Scene00004: Normal(CutScene, AutoFadeIn), id=unknown
+        break;
+      }
+      case 4:
+      {
+        Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=URSANDEL
         break;
       }
       case 255:
       {
-        Scene00004( player ); // Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MINFILIA
+        Scene00006( player ); // Scene00006: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=MINFILIA
         break;
       }
       default:
@@ -104,12 +118,20 @@ private:
   }
   void checkProgressSeq2( Entity::Player& player )
   {
+    player.updateQuest( getId(), 3 );
+  }
+  void checkProgressSeq3( Entity::Player& player )
+  {
+    player.updateQuest( getId(), 4 );
+  }
+  void checkProgressSeq4( Entity::Player& player )
+  {
     player.updateQuest( getId(), 255 );
   }
 
   void Scene00000( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsa404:66282 calling Scene00000: Normal(QuestOffer), id=unknown" );
+    player.sendDebug( "GaiUsa906:66337 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -121,7 +143,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsa404:66282 calling Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=VORSAILE" );
+    player.sendDebug( "GaiUsa906:66337 calling Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=URSANDEL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -129,29 +151,42 @@ private:
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00003( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsa404:66282 calling Scene00002: Normal(Talk, TargetCanMove), id=TATARU" );
+    player.sendDebug( "GaiUsa906:66337 calling Scene00003: Normal(Message), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq1( player );
     };
-    player.playScene( getId(), 2, NONE, callback );
-  }
-
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "GaiUsa404:66282 calling Scene00003: Normal(CutScene), id=unknown" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      checkProgressSeq2( player );
-    };
-    player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    player.playScene( getId(), 3, NONE, callback );
   }
 
   void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsa404:66282 calling Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MINFILIA" );
+    player.sendDebug( "GaiUsa906:66337 calling Scene00004: Normal(CutScene, AutoFadeIn), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq3( player );
+      player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
+      player.eventFinish( getId(), 1 );
+      player.forceZoneing();
+    };
+    player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+  void Scene00005( Entity::Player& player )
+  {
+    player.sendDebug( "GaiUsa906:66337 calling Scene00005: Normal(Talk, TargetCanMove), id=URSANDEL" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq4( player );
+    };
+    player.playScene( getId(), 5, NONE, callback );
+  }
+
+  void Scene00006( Entity::Player& player )
+  {
+    player.sendDebug( "GaiUsa906:66337 calling Scene00006: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=MINFILIA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -162,8 +197,8 @@ private:
         }
       }
     };
-    player.playScene( getId(), 4, NONE, callback );
+    player.playScene( getId(), 6, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI | INVIS_ALL, callback );
   }
 };
 
-EXPOSE_SCRIPT( GaiUsa404 );
+EXPOSE_SCRIPT( GaiUsa906 );

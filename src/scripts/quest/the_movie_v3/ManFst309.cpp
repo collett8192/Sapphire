@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3
-// simple method used
+// FFXIVTheMovie.ParserV3.3
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -28,14 +28,14 @@ public:
   //LOCPOSACTOR0 = 4314583
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
         Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
-        // +Callback Scene00001: Normal(CutScene, QuestAccept), id=unknown
+        // +Callback Scene00001: Normal(CutScene, QuestAccept, AutoFadeIn), id=unknown
         break;
       }
       case 1:
@@ -73,12 +73,12 @@ public:
 
   void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
   {
-    onProgress( player, npcId, 0, 2, 0 );
+    //onProgress( player, npcId, 0, 2, 0 );
   }
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -110,10 +110,13 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "ManFst309:66052 calling [BranchTrue]Scene00001: Normal(CutScene, QuestAccept), id=unknown" );
+    player.sendDebug( "ManFst309:66052 calling Scene00001: Normal(CutScene, QuestAccept, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
+      player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
+      player.eventFinish( getId(), 1 );
+      player.forceZoneing();
     };
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -136,7 +139,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 3, NONE, callback );

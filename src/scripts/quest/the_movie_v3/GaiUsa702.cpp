@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.3
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -28,7 +28,7 @@ public:
   //LOCBGM1 = 93
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -49,16 +49,18 @@ private:
       }
       case 3:
       {
-        if( actor == 1006679 || actorId == 1006679 ) // ACTOR2 = GALLIEN
+        if( param1 == 1006679 || param2 == 1006679 ) // ACTOR2 = GALLIEN
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
-            Scene00003( player ); // Scene00003: Normal(Talk, Message, PopBNpc), id=GALLIEN
+            Scene00003( player ); // Scene00003: Normal(Talk, Message, PopBNpc, TargetCanMove), id=GALLIEN
           }
+          break;
         }
-        if( actor == 4278416 || actorId == 4278416 ) // ENEMY0 = unknown
+        if( param1 == 4278416 || param2 == 4278416 ) // ENEMY0 = unknown
         {
           // empty entry
+          break;
         }
         break;
       }
@@ -97,12 +99,12 @@ public:
 
   void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
   {
-    onProgress( player, npcId, 0, 2, 0 );
+    //onProgress( player, npcId, 0, 2, 0 );
   }
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -171,7 +173,7 @@ private:
 
   void Scene00003( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsa702:66311 calling Scene00003: Normal(Talk, Message, PopBNpc), id=GALLIEN" );
+    player.sendDebug( "GaiUsa702:66311 calling Scene00003: Normal(Talk, Message, PopBNpc, TargetCanMove), id=GALLIEN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
@@ -179,6 +181,7 @@ private:
     };
     player.playScene( getId(), 3, NONE, callback );
   }
+
 
   void Scene00004( Entity::Player& player )
   {
@@ -198,7 +201,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 5, NONE, callback );
