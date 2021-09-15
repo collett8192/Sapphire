@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3
-// simple method used
+// FFXIVTheMovie.ParserV3.3
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -24,7 +24,7 @@ public:
   //ITEM0 = 2000655
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
@@ -73,12 +73,12 @@ public:
 
   void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
   {
-    onProgress( player, npcId, 0, 2, 0 );
+    //onProgress( player, npcId, 0, 2, 0 );
   }
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -111,7 +111,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsb304:66381 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=SHAMANILOHMANI" );
+    player.sendDebug( "GaiUsb304:66381 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=SHAMANILOHMANI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -143,13 +143,15 @@ private:
   }
   void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsb304:66381 calling [BranchTrue]Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=DREST" );
+    player.sendDebug( "GaiUsb304:66381 calling Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=DREST" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 4, NONE, callback );

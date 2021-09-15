@@ -38,7 +38,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("ManFst309");
+            //list.Add("ManFst313");
 
             if (list.Count == 0)
             {
