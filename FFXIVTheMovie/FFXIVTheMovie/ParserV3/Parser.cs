@@ -268,7 +268,7 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("");
             outputCpp.Add("  void onBNpcKill( uint32_t npcId, Entity::Player& player ) override");
             outputCpp.Add("  {");
-            outputCpp.Add("    onProgress( player, npcId, 0, 2, 0 );");
+            outputCpp.Add("    //onProgress( player, npcId, 0, 2, 0 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
             outputCpp.Add("  void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override");
