@@ -2575,8 +2575,8 @@ void Sapphire::Entity::Player::sendPartyListToParty( PlayerPtr filter )
       leaderIndex = i;
     i++;
   }
-  partyList.someContentId1 = 0x0044000000000001;
-  partyList.someContentId2 = 0x0044000100000001;
+  partyList.partyId = 0x0044000000000001;
+  partyList.channelId = 0x0044000100000001;
   partyList.leaderIndex = leaderIndex;
   partyList.partySize = getPartySize();
 
