@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3.2
-// simple method used
+// FFXIVTheMovie.ParserV3.3
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -35,33 +35,33 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=HAURCHEFANT
         break;
       }
       case 1:
       {
-        Scene00002( player ); // Scene00002: Normal(Talk, NpcDespawn, TargetCanMove), id=NPC
+        if( type != 2 ) Scene00002( player ); // Scene00002: Normal(Talk, NpcDespawn, TargetCanMove), id=NPC
         break;
       }
       //seq 2 event item ITEM0 = UI8BH max stack 1
       case 2:
       {
-        Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=HAURCHEFANT
+        if( type != 2 ) Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=HAURCHEFANT
         break;
       }
       //seq 3 event item ITEM0 = UI8BH max stack 1
       //seq 3 event item ITEM1 = UI8BL max stack 1
       case 3:
       {
-        Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=FRANCEL
+        if( type != 2 ) Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=FRANCEL
         break;
       }
       //seq 255 event item ITEM0 = UI8BH max stack 1
       //seq 255 event item ITEM1 = UI8BL max stack 1
       case 255:
       {
-        Scene00005( player ); // Scene00005: NpcTrade(Talk, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00005( player ); // Scene00005: NpcTrade(Talk, TargetCanMove), id=unknown
         // +Callback Scene00006: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=BRUNADIER
         break;
       }

@@ -38,7 +38,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("ManFst313");
+            //list.Add("GaiUsc001");
 
             if (list.Count == 0)
             {
@@ -158,6 +158,12 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "GaiUsb507":
+                    {
+                        result.Add("ACTOR17", "NPCB");
+                        result.Add("_ACTOR17", "S");
+                        break;
+                    }
                 case "ManSea303":
                     {
                         result.Add("SCENE_2", null);

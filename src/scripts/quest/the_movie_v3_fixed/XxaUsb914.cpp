@@ -1,5 +1,6 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.3
 // simple method used
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -40,26 +41,20 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=CID
         break;
       }
       //seq 1 event item ITEM0 = UI8BH max stack 3
       case 1:
       {
-        if( param1 == 114 || param2 == 114 )
-        {
-          auto count = player.getQuestUI8BH( getId() ) + 1;
-          player.setQuestUI8BH( getId(), count );
-          if( count >= 3 )
-            checkProgressSeq1( player );
-        }
+
         break;
       }
       //seq 255 event item ITEM0 = UI8BH max stack 3
       case 255:
       {
-        Scene00002( player ); // Scene00002: NpcTrade(Talk, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00002( player ); // Scene00002: NpcTrade(Talk, TargetCanMove), id=unknown
         // +Callback Scene00003: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=CID
         break;
       }
@@ -104,7 +99,8 @@ public:
 private:
   void checkProgressSeq0( Entity::Player& player )
   {
-    player.updateQuest( getId(), 1 );
+    player.updateQuest( getId(), 255 );
+    player.setQuestUI8BH( getId(), 3 );
   }
   void checkProgressSeq1( Entity::Player& player )
   {
@@ -160,6 +156,7 @@ private:
     };
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
+
 };
 
 EXPOSE_SCRIPT( XxaUsb914 );

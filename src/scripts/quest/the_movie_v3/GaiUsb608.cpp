@@ -8,71 +8,45 @@
 
 using namespace Sapphire;
 
-class GaiUsb901 : public Sapphire::ScriptAPI::EventScript
+class GaiUsb608 : public Sapphire::ScriptAPI::EventScript
 {
 public:
-  GaiUsb901() : Sapphire::ScriptAPI::EventScript( 66460 ){}; 
-  ~GaiUsb901() = default; 
+  GaiUsb608() : Sapphire::ScriptAPI::EventScript( 66426 ){}; 
+  ~GaiUsb608() = default; 
 
   //SEQ_0, 1 entries
   //SEQ_1, 1 entries
-  //SEQ_2, 1 entries
-  //SEQ_3, 1 entries
   //SEQ_255, 1 entries
 
-  //ACTOR0 = 1006435
-  //ACTOR1 = 1006441
-  //ACTOR2 = 1006442
-  //ACTOR3 = 1006443
-  //ACTOR4 = 1006444
-  //ITEM0 = 2000856
-  //ITEM1 = 2000858
-  //LOCACTOR0 = 1003855
-  //LOCACTOR1 = 1004145
-  //LOCACTOR2 = 1006902
-  //LOCFACE0 = 604
-  //LOCFACE1 = 617
+  //ACTOR0 = 1006382
+  //ACTOR1 = 1006383
+  //ACTOR2 = 1006384
+  //ITEM0 = 2000697
+  //LOCACTION0 = 790
 
 private:
   void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
-      //seq 0 event item ITEM0 = UI8BH max stack 1
-      //seq 0 event item ITEM1 = UI8BL max stack 1
       case 0:
       {
         if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
-        // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=BRUNADIER
+        // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=CARRILAUT
         break;
       }
-      //seq 1 event item ITEM0 = UI8BH max stack 1
-      //seq 1 event item ITEM1 = UI8BL max stack 1
+      //seq 1 event item ITEM0 = UI8BH max stack ?
       case 1:
       {
-        if( type != 2 ) Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=ALBOISE
+        if( type != 2 ) Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove, Menu, CanCancel), id=FRANCEL
+        // +Callback Scene00003: Normal(Talk, FadeIn, TargetCanMove), id=FRANCEL
         break;
       }
-      //seq 2 event item ITEM0 = UI8BH max stack 1
-      //seq 2 event item ITEM1 = UI8BL max stack 1
-      case 2:
-      {
-        if( type != 2 ) Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=ASTIDIEN
-        break;
-      }
-      //seq 3 event item ITEM0 = UI8BH max stack 1
-      //seq 3 event item ITEM1 = UI8BL max stack 1
-      case 3:
-      {
-        if( type != 2 ) Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=GOUDERNOUX
-        break;
-      }
-      //seq 255 event item ITEM0 = UI8BH max stack 1
-      //seq 255 event item ITEM1 = UI8BL max stack 1
+      //seq 255 event item ITEM0 = UI8BH max stack ?
       case 255:
       {
-        if( type != 2 ) Scene00005( player ); // Scene00005: NpcTrade(Talk, TargetCanMove), id=unknown
-        // +Callback Scene00006: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=DRILLEMONT
+        if( type != 2 ) Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=HAURCHEFANT
+        // +Callback Scene00006: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=HAURCHEFANT
         break;
       }
       default:
@@ -120,22 +94,12 @@ private:
   }
   void checkProgressSeq1( Entity::Player& player )
   {
-    player.updateQuest( getId(), 2 );
-  }
-  void checkProgressSeq2( Entity::Player& player )
-  {
-    player.updateQuest( getId(), 3 );
-  }
-  void checkProgressSeq3( Entity::Player& player )
-  {
     player.updateQuest( getId(), 255 );
-    player.setQuestUI8BH( getId(), 1 );
-    player.setQuestUI8BL( getId(), 1 );
   }
 
   void Scene00000( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsb901:66460 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
+    player.sendDebug( "GaiUsb608:66426 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -147,7 +111,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsb901:66460 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=BRUNADIER" );
+    player.sendDebug( "GaiUsb608:66426 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=CARRILAUT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -157,49 +121,38 @@ private:
 
   void Scene00002( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsb901:66460 calling Scene00002: Normal(Talk, TargetCanMove), id=ALBOISE" );
+    player.sendDebug( "GaiUsb608:66426 calling Scene00002: Normal(Talk, TargetCanMove, Menu, CanCancel), id=FRANCEL" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 == 512 )
+      {
+        Scene00003( player );
+      }
+    };
+    player.playScene( getId(), 2, NONE, callback );
+  }
+  void Scene00003( Entity::Player& player )
+  {
+    player.sendDebug( "GaiUsb608:66426 calling Scene00003: Normal(Talk, FadeIn, TargetCanMove), id=FRANCEL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq1( player );
     };
-    player.playScene( getId(), 2, NONE, callback );
-  }
-
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "GaiUsb901:66460 calling Scene00003: Normal(Talk, TargetCanMove), id=ASTIDIEN" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      checkProgressSeq2( player );
-    };
-    player.playScene( getId(), 3, NONE, callback );
-  }
-
-  void Scene00004( Entity::Player& player )
-  {
-    player.sendDebug( "GaiUsb901:66460 calling Scene00004: Normal(Talk, TargetCanMove), id=GOUDERNOUX" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      checkProgressSeq3( player );
-    };
-    player.playScene( getId(), 4, NONE, callback );
+    player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
   void Scene00005( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsb901:66460 calling Scene00005: NpcTrade(Talk, TargetCanMove), id=unknown" );
+    player.sendDebug( "GaiUsb608:66426 calling Scene00005: Normal(Talk, TargetCanMove), id=HAURCHEFANT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
-      if( result.param1 > 0 && result.param2 == 1 )
-      {
-        Scene00006( player );
-      }
+      Scene00006( player );
     };
     player.playScene( getId(), 5, NONE, callback );
   }
   void Scene00006( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsb901:66460 calling Scene00006: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=DRILLEMONT" );
+    player.sendDebug( "GaiUsb608:66426 calling Scene00006: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=HAURCHEFANT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -214,4 +167,4 @@ private:
   }
 };
 
-EXPOSE_SCRIPT( GaiUsb901 );
+EXPOSE_SCRIPT( GaiUsb608 );
