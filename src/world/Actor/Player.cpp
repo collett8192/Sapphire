@@ -2566,7 +2566,6 @@ void Sapphire::Entity::Player::sendPartyListToParty( PlayerPtr filter )
     partyList.member[ i ].maxHp = member->getMaxHp();
     partyList.member[ i ].mp = member->getMp();
     partyList.member[ i ].maxMp = 10000;
-    partyList.member[ i ].u3 = 0x44;
     partyList.member[ i ].zoneId = member->getCurrentTerritory()->getTerritoryTypeId();
     partyList.member[ i ].gposeSelectable = 1;
     partyList.member[ i ].classId = static_cast< uint8_t >( member->getClass() );
