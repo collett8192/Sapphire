@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.3
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -61,13 +61,13 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=STAELWYRN
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=STAELWYRN
         // +Callback Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=STAELWYRN
         break;
       }
       case 1:
       {
-        Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=GRYNEWYDA
+        if( type != 2 ) Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=GRYNEWYDA
         break;
       }
       case 2:
@@ -107,7 +107,7 @@ private:
         }
         if( param1 == 1002650 || param2 == 1002650 ) // ACTOR8 = unknown
         {
-          Scene00010( player ); // Scene00010: Normal(None), id=unknown
+          Scene00009( player ); // Scene00009: Normal(None), id=unknown
           break;
         }
         break;
@@ -188,7 +188,7 @@ private:
       }
       case 5:
       {
-        Scene00026( player ); // Scene00026: Normal(CutScene, AutoFadeIn), id=unknown
+        if( type != 2 ) Scene00026( player ); // Scene00026: Normal(CutScene, AutoFadeIn), id=unknown
         break;
       }
       case 6:
@@ -210,12 +210,12 @@ private:
       }
       case 7:
       {
-        Scene00029( player ); // Scene00029: Normal(Talk, TargetCanMove), id=STAELWYRN
+        if( type != 2 ) Scene00029( player ); // Scene00029: Normal(Talk, TargetCanMove), id=STAELWYRN
         break;
       }
       case 255:
       {
-        Scene00030( player ); // Scene00030: Normal(Talk, Message, FadeIn, QuestReward, QuestComplete, TargetCanMove, SystemTalk), id=BADERON
+        if( type != 2 ) Scene00030( player ); // Scene00030: Normal(Talk, Message, FadeIn, QuestReward, QuestComplete, TargetCanMove, SystemTalk), id=BADERON
         break;
       }
       default:
@@ -390,9 +390,9 @@ private:
     player.sendDebug( "SubSea057:66005 calling Scene00008: Normal(None), id=unknown" );
   }
 
-  void Scene00010( Entity::Player& player )
+  void Scene00009( Entity::Player& player )
   {
-    player.sendDebug( "SubSea057:66005 calling Scene00010: Normal(None), id=unknown" );
+    player.sendDebug( "SubSea057:66005 calling Scene00009: Normal(None), id=unknown" );
   }
 
   void Scene00011( Entity::Player& player )
@@ -450,7 +450,10 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        Scene00026( player );
+        //quest battle
+        player.eventFinish( getId(), 1 );
+        auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+        pTeriMgr.createAndJoinQuestBattle( player, 29 );
       }
     };
     player.playScene( getId(), 19, NONE, callback );

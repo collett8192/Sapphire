@@ -1,5 +1,4 @@
 // FFXIVTheMovie.ParserV3
-//fix: skip quest battle
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -82,7 +81,10 @@ private:
         }
         break;
       }
-
+      case 3:
+      {
+        if( type != 2 ) Scene00010( player );
+      }
       case 255:
       {
         if( actor == 1004005 || actorId == 1004005 )
@@ -132,6 +134,11 @@ public:
     onProgress( player, param1, param1, 3, param1 );
   }
 
+  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  {
+    onProgress( player, param1, param2, 4, 0 );
+  }
+
 private:
   void checkProgressSeq0( Entity::Player& player )
   {
@@ -174,7 +181,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "ManWil007:66087 calling [BranchTrue]Scene00001: Normal(CutScene), id=unknown" );
+    player.sendDebug( "ManWil007:66087 calling Scene00001: Normal(CutScene), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       Scene00002( player );
@@ -183,7 +190,7 @@ private:
   }
   void Scene00002( Entity::Player& player )
   {
-    player.sendDebug( "ManWil007:66087 calling [BranchChain]Scene00002: Normal(QuestAccept), id=unknown" );
+    player.sendDebug( "ManWil007:66087 calling Scene00002: Normal(QuestAccept), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -219,7 +226,7 @@ private:
   }
   void Scene00005( Entity::Player& player )
   {
-    player.sendDebug( "ManWil007:66087 calling [BranchTrue]Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=OWYNE" );
+    player.sendDebug( "ManWil007:66087 calling Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=OWYNE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
@@ -246,7 +253,10 @@ private:
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        Scene00010( player );
+        //quest battle
+        player.eventFinish( getId(), 1 );
+        auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+        pTeriMgr.createAndJoinQuestBattle( player, 38 );
       }
     };
     player.playScene( getId(), 8, NONE, callback );
@@ -288,7 +298,7 @@ private:
   }
   void Scene00012( Entity::Player& player )
   {
-    player.sendDebug( "ManWil007:66087 calling [BranchTrue]Scene00012: Normal(QuestReward), id=unknown" );
+    player.sendDebug( "ManWil007:66087 calling Scene00012: Normal(QuestReward), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -300,7 +310,7 @@ private:
   }
   void Scene00013( Entity::Player& player )
   {
-    player.sendDebug( "ManWil007:66087 calling [BranchChain]Scene00013: Normal(CutScene, QuestComplete), id=unknown" );
+    player.sendDebug( "ManWil007:66087 calling Scene00013: Normal(CutScene, QuestComplete), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( player.giveQuestRewards( getId(), result.param3 ) )
