@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.3
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -20,35 +20,38 @@ public:
   //ACTOR0 = 1000491
   //ACTOR1 = 1002932
   //ACTOR2 = 1000503
+  //QSTACCEPTCHECK = 65918
   //SEQ0ACTOR0 = 0
   //SEQ1ACTOR1 = 1
   //SEQ2ACTOR1 = 3
   //SEQ2ACTOR2 = 2
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=LOTHAIRE
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=LOTHAIRE
         break;
       }
       case 1:
       {
-        Scene00001( player ); // Scene00001: Normal(Talk, TargetCanMove), id=LEONNIE
+        if( type != 2 ) Scene00001( player ); // Scene00001: Normal(Talk, TargetCanMove), id=LEONNIE
         break;
       }
       case 255:
       {
-        if( actor == 1000503 || actorId == 1000503 ) // ACTOR2 = ARMELLE
+        if( param1 == 1000503 || param2 == 1000503 ) // ACTOR2 = ARMELLE
         {
           Scene00002( player ); // Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ARMELLE
+          break;
         }
-        if( actor == 1002932 || actorId == 1002932 ) // ACTOR1 = LEONNIE
+        if( param1 == 1002932 || param2 == 1002932 ) // ACTOR1 = LEONNIE
         {
           Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=LEONNIE
+          break;
         }
         break;
       }
@@ -82,7 +85,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -102,7 +105,7 @@ private:
 
   void Scene00000( Entity::Player& player )
   {
-    player.sendDebug( "SubFst068:65920 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=LOTHAIRE" );
+    player.sendDebug( "SubFst068:65920 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=LOTHAIRE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -131,7 +134,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 2, NONE, callback );

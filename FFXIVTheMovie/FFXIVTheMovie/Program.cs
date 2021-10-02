@@ -38,7 +38,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("SubSea057");
+            //list.Add("ManFst006");
 
             if (list.Count == 0)
             {
@@ -158,6 +158,20 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hint used to parse certain quests, do not modify them.
+                case "SubFst060":
+                    {
+                        result.Add("SCENE_1", null);
+                        result.Add("SCENE_100", null);
+                        result.Add("SCENE_99", null);
+                        break;
+                    }
+                case "SubFst058":
+                    {
+                        result.Add("SCENE_6", null);
+                        result.Add("SCENE_92", null);
+                        result.Add("SCENE_91", null);
+                        break;
+                    }
                 case "SubFst035":
                     {
                         result.Add("SCENE_19", "CONJURERC");

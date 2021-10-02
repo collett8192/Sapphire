@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3
-// simple method used
+// FFXIVTheMovie.ParserV3.3
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -8,65 +8,45 @@
 
 using namespace Sapphire;
 
-class SubFst060 : public Sapphire::ScriptAPI::EventScript
+class SubFst049 : public Sapphire::ScriptAPI::EventScript
 {
 public:
-  SubFst060() : Sapphire::ScriptAPI::EventScript( 65917 ){}; 
-  ~SubFst060() = default; 
+  SubFst049() : Sapphire::ScriptAPI::EventScript( 65912 ){}; 
+  ~SubFst049() = default; 
 
   //SEQ_0, 1 entries
-  //SEQ_1, 3 entries
+  //SEQ_1, 1 entries
+  //SEQ_2, 1 entries
   //SEQ_255, 1 entries
 
-  //ACTOR0 = 1000741
-  //ACTOR1 = 1000491
-  //ENEMY0 = 3838969
-  //ENEMY1 = 3838970
-  //EOBJECT0 = 2001006
-  //EVENTACTIONSEARCH = 1
-  //SEQ0ACTOR0 = 0
-  //SEQ1EOBJECT0 = 1
-  //SEQ1EOBJECT0EVENTACTIONNO = 99
-  //SEQ1EOBJECT0EVENTACTIONOK = 100
-  //SEQ2ACTOR1 = 2
+  //ACTOR0 = 1000470
+  //ACTOR1 = 1000748
+  //ENEMY0 = 771
+  //QSTACCEPTCHECK = 65910
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=EYLGAR
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=unknown
         break;
       }
       case 1:
       {
-        if( actor == 2001006 || actorId == 2001006 ) // EOBJECT0 = unknown
-        {
-          // empty entry
-        }
-        if( actor == 3838969 || actorId == 3838969 ) // ENEMY0 = unknown
-        {
-          if( player.getQuestUI8AL( getId() ) != 2 )
-          {
-            player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-            checkProgressSeq1( player );
-          }
-        }
-        if( actor == 3838970 || actorId == 3838970 ) // ENEMY1 = unknown
-        {
-          if( player.getQuestUI8AL( getId() ) != 2 )
-          {
-            player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-            checkProgressSeq1( player );
-          }
-        }
+        if( type != 2 ) Scene00001( player ); // Scene00001: Normal(Talk, TargetCanMove), id=ROSELINE
+        break;
+      }
+      case 2:
+      {
+        if( type == 2 && param1 == 218 ) Scene00002( player ); // Scene00002: Normal(None), id=unknown
         break;
       }
       case 255:
       {
-        Scene00002( player ); // Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=LOTHAIRE
+        if( type != 2 ) Scene00003( player ); // Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ROSELINE
         break;
       }
       default:
@@ -99,7 +79,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -114,18 +94,16 @@ private:
   }
   void checkProgressSeq1( Entity::Player& player )
   {
-    if( player.getQuestUI8AL( getId() ) == 2 )
-      if( player.getQuestUI8AL( getId() ) == 2 )
-      {
-        player.setQuestUI8AL( getId(), 0 );
-        player.setQuestUI8AL( getId(), 0 );
-        player.updateQuest( getId(), 255 );
-      }
+    player.updateQuest( getId(), 2 );
+  }
+  void checkProgressSeq2( Entity::Player& player )
+  {
+    player.updateQuest( getId(), 255 );
   }
 
   void Scene00000( Entity::Player& player )
   {
-    player.sendDebug( "SubFst060:65917 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=EYLGAR" );
+    player.sendDebug( "SubFst049:65912 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -136,19 +114,37 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
+  void Scene00001( Entity::Player& player )
+  {
+    player.sendDebug( "SubFst049:65912 calling Scene00001: Normal(Talk, TargetCanMove), id=ROSELINE" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      checkProgressSeq1( player );
+    };
+    player.playScene( getId(), 1, NONE, callback );
+  }
+
   void Scene00002( Entity::Player& player )
   {
-    player.sendDebug( "SubFst060:65917 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=LOTHAIRE" );
+    player.sendDebug( "SubFst049:65912 calling Scene00002: Normal(None), id=unknown" );
+    checkProgressSeq2( player );
+  }
+
+  void Scene00003( Entity::Player& player )
+  {
+    player.sendDebug( "SubFst049:65912 calling Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ROSELINE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
-    player.playScene( getId(), 2, NONE, callback );
+    player.playScene( getId(), 3, NONE, callback );
   }
 };
 
-EXPOSE_SCRIPT( SubFst060 );
+EXPOSE_SCRIPT( SubFst049 );

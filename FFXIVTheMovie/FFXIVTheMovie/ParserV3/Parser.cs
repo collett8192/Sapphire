@@ -1140,8 +1140,8 @@ namespace FFXIVTheMovie.ParserV3
                 while (constTable.ContainsKey(key))
                 {
                     int sceneNum = constTable[key];
-                    var keyOk = key + "eventactionok";
-                    var keyNo = key + "eventactionno";
+                    var keyOk = key + "EVENTACTIONOK";
+                    var keyNo = key + "EVENTACTIONNO";
 
                     if (constTable.ContainsKey(keyOk) && constTable.ContainsKey(keyNo))
                     {

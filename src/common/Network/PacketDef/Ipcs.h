@@ -401,7 +401,8 @@ namespace Sapphire::Network::Packets
     ShopEventHandler = 0x0384, // updated 5.58 hotfix
     ReturnEventHandler = 0x00FA, // updated 5.58 hotfix
     TradeReturnEventHandler = 0x0339, // updated 5.58 hotfix
-    TradeReturnEventHandler2 = 0x00B7, // updated 5.58 hotfix
+    TradeReturnEventHandler2 = 0x023C, // updated 5.58 hotfix
+    TradeReturnEventHandler3 = 0x00B7, // updated 5.58 hotfix
     EventYield2Handler = 0x021D, // updated 5.58 hotfix
     EventYield16Handler = 0x0207, // updated 5.58 hotfix
 

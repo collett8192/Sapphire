@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3
-// simple method used
+// FFXIVTheMovie.ParserV3.3
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -38,21 +38,21 @@ public:
   //SEQ3ACTOR3NPCTRADEOK = 96
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       //seq 0 event item ITEM0 = UI8BH max stack 1
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=ROSELINE
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=ROSELINE
         break;
       }
       //seq 1 event item ITEM0 = UI8BH max stack 1
       //seq 1 event item ITEM1 = UI8BL max stack 1
       case 1:
       {
-        Scene00001( player ); // Scene00001: NpcTrade(Talk, TargetCanMove), id=ELMAR
+        if( type != 2 ) Scene00001( player ); // Scene00001: NpcTrade(Talk, TargetCanMove), id=ELMAR
         // +Callback Scene00100: Normal(Talk, TargetCanMove), id=ELMAR
         break;
       }
@@ -61,7 +61,8 @@ private:
       //seq 2 event item ITEM2 = UI8CH max stack 1
       case 2:
       {
-        Scene00099( player ); // Scene00099: Normal(None), id=unknown
+        if( type != 2 ) Scene00002( player ); // Scene00002: NpcTrade(Talk, TargetCanMove), id=BERNARD
+        // +Callback Scene00098: Normal(Talk, TargetCanMove), id=BERNARD
         break;
       }
       //seq 255 event item ITEM0 = UI8BH max stack 1
@@ -69,8 +70,8 @@ private:
       //seq 255 event item ITEM2 = UI8CH max stack 1
       case 255:
       {
-        Scene00002( player ); // Scene00002: NpcTrade(Talk, TargetCanMove), id=BERNARD
-        // +Callback Scene00098: Normal(Talk, TargetCanMove), id=BERNARD
+        if( type != 2 ) Scene00003( player ); // Scene00003: NpcTrade(Talk, TargetCanMove), id=EYLGAR
+        // +Callback Scene00096: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=EYLGAR
         break;
       }
       default:
@@ -103,7 +104,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -121,13 +122,11 @@ private:
   void checkProgressSeq1( Entity::Player& player )
   {
     player.updateQuest( getId(), 2 );
+    player.setQuestUI8CH( getId(), 1 );
   }
   void checkProgressSeq2( Entity::Player& player )
   {
     player.updateQuest( getId(), 255 );
-    player.setQuestUI8BH( getId(), 1 );
-    player.setQuestUI8BL( getId(), 1 );
-    player.setQuestUI8CH( getId(), 1 );
   }
 
   void Scene00000( Entity::Player& player )
@@ -157,18 +156,12 @@ private:
   }
   void Scene00100( Entity::Player& player )
   {
-    player.sendDebug( "SubFst059:65916 calling [BranchTrue]Scene00100: Normal(Talk, TargetCanMove), id=ELMAR" );
+    player.sendDebug( "SubFst059:65916 calling Scene00100: Normal(Talk, TargetCanMove), id=ELMAR" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq1( player );
     };
     player.playScene( getId(), 100, NONE, callback );
-  }
-
-  void Scene00099( Entity::Player& player )
-  {
-    player.sendDebug( "SubFst059:65916 calling Scene00099: Normal(None), id=unknown" );
-    checkProgressSeq2( player );
   }
 
   void Scene00002( Entity::Player& player )
@@ -185,11 +178,40 @@ private:
   }
   void Scene00098( Entity::Player& player )
   {
-    player.sendDebug( "SubFst059:65916 calling [BranchTrue]Scene00098: Normal(Talk, TargetCanMove), id=BERNARD" );
+    player.sendDebug( "SubFst059:65916 calling Scene00098: Normal(Talk, TargetCanMove), id=BERNARD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      checkProgressSeq2( player );
     };
     player.playScene( getId(), 98, NONE, callback );
+  }
+
+  void Scene00003( Entity::Player& player )
+  {
+    player.sendDebug( "SubFst059:65916 calling Scene00003: NpcTrade(Talk, TargetCanMove), id=EYLGAR" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        Scene00096( player );
+      }
+    };
+    player.playScene( getId(), 3, NONE, callback );
+  }
+  void Scene00096( Entity::Player& player )
+  {
+    player.sendDebug( "SubFst059:65916 calling Scene00096: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=EYLGAR" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( result.param1 > 0 && result.param2 == 1 )
+      {
+        if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
+          player.finishQuest( getId() );
+        }
+      }
+    };
+    player.playScene( getId(), 96, NONE, callback );
   }
 };
 

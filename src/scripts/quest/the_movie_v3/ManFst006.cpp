@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3
-// simple method used
+// FFXIVTheMovie.ParserV3.3
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -28,19 +28,19 @@ public:
   //SEQ1ACTOR1NPCTRADEOK = 100
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=LUQUELOT
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=LUQUELOT
         break;
       }
       //seq 255 event item ITEM0 = UI8BH max stack 1
       case 255:
       {
-        Scene00001( player ); // Scene00001: NpcTrade(Talk, TargetCanMove), id=MIOUNNE
+        if( type != 2 ) Scene00001( player ); // Scene00001: NpcTrade(Talk, TargetCanMove), id=MIOUNNE
         // +Callback Scene00100: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=MIOUNNE
         break;
       }
@@ -74,7 +74,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -116,13 +116,15 @@ private:
   }
   void Scene00100( Entity::Player& player )
   {
-    player.sendDebug( "ManFst006:65982 calling [BranchTrue]Scene00100: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=MIOUNNE" );
+    player.sendDebug( "ManFst006:65982 calling Scene00100: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=MIOUNNE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 100, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );

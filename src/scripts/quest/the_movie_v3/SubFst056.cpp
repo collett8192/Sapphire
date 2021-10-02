@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.3
 // simple method used
 #include <Actor/Player.h>
 #include <ScriptObject.h>
@@ -43,54 +43,58 @@ public:
   //SEQ2ACTOR1NPCTRADEOK = 92
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=OSHAJAAB
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=OSHAJAAB
         break;
       }
       case 1:
       {
-        if( actor == 2000748 || actorId == 2000748 ) // EOBJECT0 = unknown
+        if( param1 == 2000748 || param2 == 2000748 ) // EOBJECT0 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 4 )
           {
             player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 2000749 || actorId == 2000749 ) // EOBJECT1 = unknown
+        if( param1 == 2000749 || param2 == 2000749 ) // EOBJECT1 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 4 )
           {
             player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 2000750 || actorId == 2000750 ) // EOBJECT2 = unknown
+        if( param1 == 2000750 || param2 == 2000750 ) // EOBJECT2 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 4 )
           {
             player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 2000751 || actorId == 2000751 ) // EOBJECT3 = unknown
+        if( param1 == 2000751 || param2 == 2000751 ) // EOBJECT3 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 4 )
           {
             player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
         break;
       }
       case 255:
       {
-        Scene00005( player ); // Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=THEODORE
+        if( type != 2 ) Scene00005( player ); // Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=THEODORE
         break;
       }
       default:
@@ -123,7 +127,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -139,16 +143,10 @@ private:
   void checkProgressSeq1( Entity::Player& player )
   {
     if( player.getQuestUI8AL( getId() ) == 4 )
-      if( player.getQuestUI8AL( getId() ) == 4 )
-        if( player.getQuestUI8AL( getId() ) == 4 )
-          if( player.getQuestUI8AL( getId() ) == 4 )
-          {
-            player.setQuestUI8AL( getId(), 0 );
-            player.setQuestUI8AL( getId(), 0 );
-            player.setQuestUI8AL( getId(), 0 );
-            player.setQuestUI8AL( getId(), 0 );
-            player.updateQuest( getId(), 255 );
-          }
+    {
+      player.setQuestUI8AL( getId(), 0 );
+      player.updateQuest( getId(), 255 );
+    }
   }
 
   void Scene00000( Entity::Player& player )
@@ -164,6 +162,10 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
+
+
+
+
   void Scene00005( Entity::Player& player )
   {
     player.sendDebug( "SubFst056:65913 calling Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=THEODORE" );
@@ -172,7 +174,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 5, NONE, callback );
