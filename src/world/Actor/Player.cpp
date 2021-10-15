@@ -491,7 +491,7 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance )
   auto currentZone = getCurrentTerritory();
 
   // zoning within the same zone won't cause the prev data to be overwritten
-  if( instance->getTerritoryTypeId() != m_territoryTypeId )
+  if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
     m_prevPos = m_pos;
     m_prevRot = m_rot;
