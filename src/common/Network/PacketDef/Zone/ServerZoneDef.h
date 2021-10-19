@@ -2230,10 +2230,12 @@ namespace Sapphire::Network::Packets::Server
       uint8_t classId;
       uint8_t u5;
       uint8_t level;
-      uint8_t otherData[368];
+      uint8_t isLevelSync;
+      uint8_t unknown[7];
+      Common::StatusEffect effect[30];
     } member[8];
-    uint64_t someContentId1;
-    uint64_t someContentId2;
+    uint64_t partyId;
+    uint64_t channelId;
     uint8_t leaderIndex;
     uint8_t partySize;
     uint16_t padding1;

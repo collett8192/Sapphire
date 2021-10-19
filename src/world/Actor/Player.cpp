@@ -492,7 +492,7 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance )
   auto currentZone = getCurrentTerritory();
 
   // zoning within the same zone won't cause the prev data to be overwritten
-  if( instance->getTerritoryTypeId() != m_territoryTypeId )
+  if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
     m_prevPos = m_pos;
     m_prevRot = m_rot;
@@ -513,7 +513,7 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance, Common::FFXIV
   auto currentZone = getCurrentTerritory();
 
   // zoning within the same zone won't cause the prev data to be overwritten
-  if( instance->getTerritoryTypeId() != m_territoryTypeId )
+  if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
     m_prevPos = m_pos;
     m_prevRot = m_rot;
@@ -2567,7 +2567,6 @@ void Sapphire::Entity::Player::sendPartyListToParty( PlayerPtr filter )
     partyList.member[ i ].maxHp = member->getMaxHp();
     partyList.member[ i ].mp = member->getMp();
     partyList.member[ i ].maxMp = 10000;
-    partyList.member[ i ].u3 = 0x44;
     partyList.member[ i ].zoneId = member->getCurrentTerritory()->getTerritoryTypeId();
     partyList.member[ i ].gposeSelectable = 1;
     partyList.member[ i ].classId = static_cast< uint8_t >( member->getClass() );
@@ -2576,8 +2575,8 @@ void Sapphire::Entity::Player::sendPartyListToParty( PlayerPtr filter )
       leaderIndex = i;
     i++;
   }
-  partyList.someContentId1 = 0x0044000000000001;
-  partyList.someContentId2 = 0x0044000100000001;
+  partyList.partyId = 0x0044000000000001;
+  partyList.channelId = 0x0044000100000001;
   partyList.leaderIndex = leaderIndex;
   partyList.partySize = getPartySize();
 
