@@ -472,71 +472,134 @@ namespace FFXIVTheMovie.ParserV3
                             outputCpp.Add($"  void {current.SceneFunctionName}( Entity::Player& player )");
                             outputCpp.Add("  {");
                             outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling {current}\" );");
-                            if (current.Element != LuaScene.SceneElement.None)
+                            if (useBranch && entry.CanBranch && current == entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1])
                             {
-                                outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
-                                outputCpp.Add("    {");
-                                bool hasIf = false;
-                                bool skipBody = false;
-                                if (current.Type == LuaScene.SceneType.NpcTrade ||
-                                    ((current.Element & LuaScene.SceneElement.QuestReward) > 0) ||
-                                    ((current.Element & LuaScene.SceneElement.QuestOffer) > 0))
+                                string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
+                                string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
+                                string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
+                                outputCpp.Add($"    player.playScene( getId(), {current.SceneNumber}, {fullSceneFlag}, nullptr );");
+                            }
+                            else
+                            {
+                                if (current.Element != LuaScene.SceneElement.None)
                                 {
-                                    outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
-                                    outputCpp.Add("      {");
-                                    hasIf = true;
-                                }
-                                if (!hasIf && (current.Element & LuaScene.SceneElement.YesNo) > 0)
-                                {
-                                    if ((current.Element & LuaScene.SceneElement.CanCancel) > 0)
-                                    {
-                                        outputCpp.Add("      if( result.param1 == 512 || ( result.param1 > 0 && result.param2 == 1 ) )");
-                                        outputCpp.Add("      {");
-                                        hasIf = true;
-                                    }
-                                    else if (scene2 != null && (scene2.Element & LuaScene.SceneElement.CutScene) > 0)
-                                    {
-                                        outputCpp.Add("      if( result.param1 != 50 )");
-                                        outputCpp.Add("      {");
-                                        hasIf = true;
-                                    }
-                                    else
+                                    outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
+                                    outputCpp.Add("    {");
+                                    bool hasIf = false;
+                                    bool skipBody = false;
+                                    if (current.Type == LuaScene.SceneType.NpcTrade ||
+                                        ((current.Element & LuaScene.SceneElement.QuestReward) > 0) ||
+                                        ((current.Element & LuaScene.SceneElement.QuestOffer) > 0))
                                     {
                                         outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
                                         outputCpp.Add("      {");
                                         hasIf = true;
                                     }
-                                    if ((current.Element & LuaScene.SceneElement.QuestBattle) > 0)
+                                    if (!hasIf && (current.Element & LuaScene.SceneElement.YesNo) > 0)
                                     {
-                                        outputCpp.Add("        //quest battle");
-                                        outputCpp.Add("        player.eventFinish( getId(), 1 );");
-                                        outputCpp.Add("        auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();");
-                                        if (constTable.ContainsKey("QUESTBATTLE0"))
+                                        if ((current.Element & LuaScene.SceneElement.CanCancel) > 0)
                                         {
-                                            outputCpp.Add($"        pTeriMgr.createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
+                                            outputCpp.Add("      if( result.param1 == 512 || ( result.param1 > 0 && result.param2 == 1 ) )");
+                                            outputCpp.Add("      {");
+                                            hasIf = true;
+                                        }
+                                        else if (scene2 != null && (scene2.Element & LuaScene.SceneElement.CutScene) > 0)
+                                        {
+                                            outputCpp.Add("      if( result.param1 != 50 )");
+                                            outputCpp.Add("      {");
+                                            hasIf = true;
                                         }
                                         else
                                         {
-                                            outputCpp.Add($"        //pTeriMgr.createAndJoinQuestBattle( player, ??? );");
+                                            outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
+                                            outputCpp.Add("      {");
+                                            hasIf = true;
                                         }
-                                        skipBody = true;
+                                        if ((current.Element & LuaScene.SceneElement.QuestBattle) > 0)
+                                        {
+                                            outputCpp.Add("        //quest battle");
+                                            outputCpp.Add("        player.eventFinish( getId(), 1 );");
+                                            outputCpp.Add("        auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();");
+                                            if (constTable.ContainsKey("QUESTBATTLE0"))
+                                            {
+                                                outputCpp.Add($"        pTeriMgr.createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
+                                            }
+                                            else
+                                            {
+                                                outputCpp.Add($"        //pTeriMgr.createAndJoinQuestBattle( player, ??? );");
+                                            }
+                                            skipBody = true;
+                                        }
                                     }
-                                }
-                                if (!hasIf && !afterComplete && ((current.Element & LuaScene.SceneElement.Menu) > 0 || (current.Element & LuaScene.SceneElement.CanCancel) > 0 || current.Type == LuaScene.SceneType.Snipe))
-                                {
-                                    if (next == null || next.Type != LuaScene.SceneType.CardGame)
+                                    if (!hasIf && !afterComplete && ((current.Element & LuaScene.SceneElement.Menu) > 0 || (current.Element & LuaScene.SceneElement.CanCancel) > 0 || current.Type == LuaScene.SceneType.Snipe))
                                     {
-                                        outputCpp.Add("      if( result.param1 == 512 )");
+                                        if (next == null || next.Type != LuaScene.SceneType.CardGame)
+                                        {
+                                            outputCpp.Add("      if( result.param1 == 512 )");
+                                        }
+                                        else
+                                        {
+                                            outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
+                                        }
+                                        outputCpp.Add("      {");
+                                        hasIf = true;
                                     }
-                                    else
-                                    {
-                                        outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
-                                    }
-                                    outputCpp.Add("      {");
-                                    hasIf = true;
-                                }
 
-                                if (!skipBody)
+                                    if (!skipBody)
+                                    {
+                                        bool shouldContinue = shouldContinue = next != null;
+                                        if (useBranch && entry.CanBranch)
+                                        {
+                                            shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
+                                        }
+                                        if (shouldContinue)
+                                        {
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( player );");
+                                        }
+                                        else
+                                        {
+                                            if (afterComplete)
+                                            {
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
+                                                if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                                {
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
+                                                }
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
+                                            }
+                                            else
+                                            {
+                                                if (s > 0 && entry.Var != null)
+                                                {
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppExprOperation()};");
+                                                }
+                                                if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
+                                                if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                                {
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing();");
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (hasIf)
+                                    {
+                                        outputCpp.Add("      }");
+                                    }
+                                    outputCpp.Add("    };");
+                                    string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
+                                    string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
+                                    string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
+                                    outputCpp.Add($"    player.playScene( getId(), {current.SceneNumber}, {fullSceneFlag}, callback );");
+                                }
+                                else
                                 {
                                     bool shouldContinue = shouldContinue = next != null;
                                     if (useBranch && entry.CanBranch)
@@ -545,70 +608,17 @@ namespace FFXIVTheMovie.ParserV3
                                     }
                                     if (shouldContinue)
                                     {
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( player );");
+                                        outputCpp.Add($"    {next.SceneFunctionName}( player );");
                                     }
                                     else
                                     {
-                                        if (afterComplete)
+                                        if (s > 0 && entry.Var != null)
                                         {
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
-                                            if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
-                                            {
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
-                                            }
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
+                                            outputCpp.Add($"    {entry.Var.ToCppExprOperation()};");
                                         }
-                                        else
-                                        {
-                                            if (s > 0 && entry.Var != null)
-                                            {
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppExprOperation()};");
-                                            }
-                                            if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
-                                            if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
-                                            {
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing();");
-                                            }
-                                        }
+                                        if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
+                                            outputCpp.Add($"    checkProgressSeq{seq.SeqNumber}( player );");
                                     }
-                                }
-
-                                if (hasIf)
-                                {
-                                    outputCpp.Add("      }");
-                                }
-                                outputCpp.Add("    };");
-                                string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
-                                string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
-                                string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
-                                outputCpp.Add($"    player.playScene( getId(), {current.SceneNumber}, {fullSceneFlag}, callback );");
-                            }
-                            else
-                            {
-                                bool shouldContinue = shouldContinue = next != null;
-                                if (useBranch && entry.CanBranch)
-                                {
-                                    shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
-                                }
-                                if (shouldContinue)
-                                {
-                                    outputCpp.Add($"    {next.SceneFunctionName}( player );");
-                                }
-                                else
-                                {
-                                    if (s > 0 && entry.Var != null)
-                                    {
-                                        outputCpp.Add($"    {entry.Var.ToCppExprOperation()};");
-                                    }
-                                    if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
-                                        outputCpp.Add($"    checkProgressSeq{seq.SeqNumber}( player );");
                                 }
                             }
                             outputCpp.Add("  }");
