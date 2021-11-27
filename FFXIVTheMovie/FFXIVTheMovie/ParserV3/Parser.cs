@@ -17,6 +17,7 @@ namespace FFXIVTheMovie.ParserV3
         string outputFolder;
         List<string> inputCpp;
         List<string> inputLua;
+        bool useBranch = false;
 
         Dictionary<string, string> idHint = new Dictionary<string, string>();
         public void AddIdHint(string name, string id)
@@ -44,6 +45,7 @@ namespace FFXIVTheMovie.ParserV3
             }
             InitEventItems();
             BNpcHack(); // see comment inside
+            EntryPostProcess();
 
             //return;
 
@@ -67,7 +69,7 @@ namespace FFXIVTheMovie.ParserV3
                 {
                     if (hint.Value != null)
                     {
-                        if (hint.Key[0] != '_')
+                        if (hint.Key[0] != '_' || !string.IsNullOrEmpty(hint.Value))
                         {
                             outputCpp.Add($"//{hint.Key} = {hint.Value}");
                         }
@@ -192,25 +194,61 @@ namespace FFXIVTheMovie.ParserV3
                                 outputCpp.Add($"            {entry.Var.ToCppExprOperation()};");
                                 outputCpp.Add($"            checkProgressSeq{seq.SeqNumber}( player );");
                             }
-                            if (scene2 != null)
+                            if (useBranch && entry.CanBranch)
                             {
-                                outputCpp.Add($"            // +Callback {scene2}");
+                                if (scene2 != null)
+                                {
+                                    if (scene3 == null)
+                                    {
+                                        outputCpp.Add("          }");
+                                        outputCpp.Add("          else");
+                                        outputCpp.Add("          {");
+                                        outputCpp.Add($"            {scene.SceneFunctionName}( player ); // {scene2}");
+                                    }
+                                    else
+                                    {
+                                        outputCpp.Add($"            // +Callback {scene2}");
+                                    }
+                                }
+                                if (scene3 != null)
+                                {
+                                    if (scene4 == null)
+                                    {
+                                        outputCpp.Add("          }");
+                                        outputCpp.Add("          else");
+                                        outputCpp.Add("          {");
+                                        outputCpp.Add($"            {scene.SceneFunctionName}( player ); // {scene3}");
+                                    }
+                                    else
+                                    {
+                                        outputCpp.Add($"            // +Callback {scene3}");
+                                    }
+                                }
+                                if (scene4 != null)
+                                {
+                                    outputCpp.Add("          }");
+                                    outputCpp.Add("          else");
+                                    outputCpp.Add("          {");
+                                    outputCpp.Add($"            {scene.SceneFunctionName}( player ); // {scene4}");
+                                }
                             }
-                            if (scene3 != null)
+                            else
                             {
-                                outputCpp.Add($"            // +Callback {scene3}");
+                                if (scene2 != null)
+                                {
+                                    outputCpp.Add($"            // +Callback {scene2}");
+                                }
+                                if (scene3 != null)
+                                {
+                                    outputCpp.Add($"            // +Callback {scene3}");
+                                }
                                 if (scene4 != null)
                                 {
                                     outputCpp.Add($"            // +Callback {scene4}");
                                 }
-                                outputCpp.Add("          }");
-                                outputCpp.Add("          break;");
                             }
-                            else
-                            {
-                                outputCpp.Add("          }");
-                                outputCpp.Add("          break;");
-                            }
+                            outputCpp.Add("          }");
+                            outputCpp.Add("          break;");
                         }
                         else
                         {
@@ -448,29 +486,6 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add("      {");
                                     hasIf = true;
                                 }
-                                /*if (!hasIf && current.Type == LuaScene.SceneType.MsqDungeon)
-                                {
-                                    outputCpp.Add("      if( result.param1 == 768 ) // cancel");
-                                    outputCpp.Add("      {");
-                                    if (s < seqList.Count - 1)
-                                    {
-                                        var nextSeq = seqList[s + 1];
-                                        if (nextSeq.EntryList.Count > 0 && nextSeq.EntryList[0].EntryScene.SceneList.Count > 0)
-                                        {
-                                            if (nextSeq.EntryList[0].TargetObject == null || nextSeq.EntryList[0].TargetObject is ActiveTerritory)
-                                            {
-                                                outputCpp.Add("        //dungeon auto skip");
-                                                outputCpp.Add($"        {nextSeq.EntryList[0].EntryScene.SceneList[0].SceneFunctionName}( player );");
-                                                outputCpp.Add("      }");
-                                                outputCpp.Add("      else");
-                                                outputCpp.Add("      {");
-                                                outputCpp.Add("        player.sendUrgent( \"Select anyone and hit cancel to progress.\" );");
-                                                skipBody = true;
-                                            }
-                                        }
-                                    }
-                                    hasIf = true;
-                                }*/
                                 if (!hasIf && (current.Element & LuaScene.SceneElement.YesNo) > 0)
                                 {
                                     if ((current.Element & LuaScene.SceneElement.CanCancel) > 0)
@@ -523,7 +538,12 @@ namespace FFXIVTheMovie.ParserV3
 
                                 if (!skipBody)
                                 {
-                                    if (next != null)
+                                    bool shouldContinue = shouldContinue = next != null;
+                                    if (useBranch && entry.CanBranch)
+                                    {
+                                        shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
+                                    }
+                                    if (shouldContinue)
                                     {
                                         outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( player );");
                                     }
@@ -572,7 +592,12 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             else
                             {
-                                if (next != null)
+                                bool shouldContinue = shouldContinue = next != null;
+                                if (useBranch && entry.CanBranch)
+                                {
+                                    shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
+                                }
+                                if (shouldContinue)
                                 {
                                     outputCpp.Add($"    {next.SceneFunctionName}( player );");
                                 }
@@ -640,6 +665,36 @@ namespace FFXIVTheMovie.ParserV3
                     }
                     else
                         break;
+                }
+            }
+        }
+
+        private void EntryPostProcess()
+        {
+            foreach (var seq in seqList)
+            {
+                foreach (var entry in seq.EntryList)
+                {
+                    if (entry.TargetObject != null && 
+                        entry.TargetObject.Type == ActiveEventObject.ObjectType.Actor &&
+                        entry.Var != null &&
+                        entry.Var.Value == 1 &&
+                        entry.EntryScene.Identity != "unknown" &&
+                        entry.EntryScene.HasSubScenes &&
+                        entry.EntryScene.ContainsSceneElementInAllScenes(LuaScene.SceneElement.Talk))
+                    {
+                        var id = entry.EntryScene.Identity;
+                        bool flag = true;
+                        foreach (var scene in entry.EntryScene.SceneList)
+                        {
+                            if (scene.Identity != id)
+                            {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        entry.CanBranch = flag;
+                    }
                 }
             }
         }
@@ -742,6 +797,7 @@ namespace FFXIVTheMovie.ParserV3
                     idTable.Add(hint.Key, new Tuple<string, int>(hint.Value, -1));
                 }
             }
+            useBranch = idTable.ContainsKey("_BRANCH");
             if (fIsAnnounce == null)
             {
                 fIsAnnounce = LuaIsAnnounce.CreateFakeAnnounce(seqList);

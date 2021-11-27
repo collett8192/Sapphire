@@ -57,6 +57,7 @@ namespace FFXIVTheMovie.ParserV3
             public QuestVar Var;
             public SceneGroup EntryScene = new SceneGroup();
             public int AssignedGroupCount = 0;
+            public bool CanBranch = false;
 
             public bool CanExistWithoutScene
             {
@@ -215,6 +216,15 @@ namespace FFXIVTheMovie.ParserV3
                         return true;
                 }
                 return false;
+            }
+            public bool ContainsSceneElementInAllScenes(LuaScene.SceneElement element)
+            {
+                foreach (var scene in SceneList)
+                {
+                    if ((scene.Element & element) != element)
+                        return false;
+                }
+                return true;
             }
             public string Identity
             {
