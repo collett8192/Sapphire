@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3.2
-// simple method used
+// FFXIVTheMovie.ParserV3.3
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -27,12 +27,12 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=FLAME
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=FLAME
         break;
       }
       case 255:
       {
-        Scene00001( player ); // Scene00001: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=BADERON
+        if( type != 2 ) Scene00001( player ); // Scene00001: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=BADERON
         break;
       }
       default:

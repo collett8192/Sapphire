@@ -205,7 +205,7 @@ namespace FFXIVTheMovie.ParserV3
                                         outputCpp.Add("          }");
                                         outputCpp.Add("          else");
                                         outputCpp.Add("          {");
-                                        outputCpp.Add($"            {scene.SceneFunctionName}( player ); // {scene2}");
+                                        outputCpp.Add($"            {scene2.SceneFunctionName}( player ); // {scene2}");
                                     }
                                     else
                                     {
@@ -219,7 +219,7 @@ namespace FFXIVTheMovie.ParserV3
                                         outputCpp.Add("          }");
                                         outputCpp.Add("          else");
                                         outputCpp.Add("          {");
-                                        outputCpp.Add($"            {scene.SceneFunctionName}( player ); // {scene3}");
+                                        outputCpp.Add($"            {scene3.SceneFunctionName}( player ); // {scene3}");
                                     }
                                     else
                                     {
@@ -231,7 +231,7 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add("          }");
                                     outputCpp.Add("          else");
                                     outputCpp.Add("          {");
-                                    outputCpp.Add($"            {scene.SceneFunctionName}( player ); // {scene4}");
+                                    outputCpp.Add($"            {scene4.SceneFunctionName}( player ); // {scene4}");
                                 }
                             }
                             else
@@ -560,7 +560,7 @@ namespace FFXIVTheMovie.ParserV3
                                     string keyForWarp = $"{current.Identity}";
                                     if (!warpTable.ContainsKey(keyForWarp))
                                     {
-                                        keyForWarp = $"SCENE_{current.SceneNumber}";
+                                        keyForWarp = $"SCENE{current.SceneNumber}";
                                         if (!warpTable.ContainsKey(keyForWarp))
                                         {
                                             keyForWarp = null;
@@ -623,7 +623,7 @@ namespace FFXIVTheMovie.ParserV3
                                     else if (keyForWarp != null)
                                     {
                                         var dst = warpTable[keyForWarp];
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing( {dst.Item1}, {dst.Item2}, {dst.Item3}, {dst.Item4}, {dst.Item5}, {dst.Item6} );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing( {dst.Item1}, {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f, {dst.Item5:#0.0#}f, {dst.Item6} );");
                                     }
                                     
                                     if (hasIf)

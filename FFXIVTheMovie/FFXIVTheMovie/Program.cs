@@ -38,7 +38,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("ManFst006");
+            //list.Add("SubWil141");
 
             if (list.Count == 0)
             {
@@ -157,7 +157,36 @@ namespace FFXIVTheMovie
             var result = new Dictionary<string, string>();
             switch (questId)
             {
-                //id hint used to parse certain quests, do not modify them.
+                //id hints and flags used to parse certain quests, do not modify them.
+                case "ManFst200":
+                    {
+                        result.Add("WARP_SCENE8", "128|-11.86|92|17|-1.95|true");
+                        result.Add("WARP_SCENE9", "132|22.55|-19|114.2|0|false");
+                        result.Add("WARP_SCENE12", "128|-13.95|91.5|-5.88|2.89|false");
+                        result.Add("WARP_SCENE15", "128|-11.86|92|17|-1.95|true");
+                        result.Add("WARP_SCENE24", "128|-24.3|92|2.47|-0.37|false");
+                        result.Add("WARP_SCENE30", "130|-44.14|84|-0.47|1.3|true");
+                        result.Add("WARP_SCENE31", "128|-24.3|92|2.47|-0.37|false");
+                        result.Add("WARP_SCENE36", "130|-19.45|83.2|3.85|1.8|false");
+                        result.Add("WARP_SCENE41", "130|-44.14|84|-0.47|1.3|true");
+                        break;
+                    }
+                case "ManFst009":
+                    {
+                        result.Add("_BRANCH", "");
+                        result.Add("PRIVATE_DOORMANLOTUS", "205");
+                        break;
+                    }
+                case "ManFst008":
+                    {
+                        result.Add("PRIVATE_SCENE2", "204");
+                        break;
+                    }
+                case "ManFst007":
+                    {
+                        result.Add("PRIVATE_DOORMANSINYU", "204");
+                        break;
+                    }
                 case "SubFst060":
                     {
                         result.Add("SCENE_1", null);
