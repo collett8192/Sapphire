@@ -18,6 +18,8 @@ namespace FFXIVTheMovie.ParserV3
         List<string> inputCpp;
         List<string> inputLua;
         bool useBranch = false;
+        Dictionary<string, int> privateInstanceEntranceTable = new Dictionary<string, int>();
+        Dictionary<string, Tuple<int, float, float, float, float, string>> warpTable = new Dictionary<string, Tuple<int, float, float, float, float, string>>();
 
         Dictionary<string, string> idHint = new Dictionary<string, string>();
         public void AddIdHint(string name, string id)
@@ -194,7 +196,7 @@ namespace FFXIVTheMovie.ParserV3
                                 outputCpp.Add($"            {entry.Var.ToCppExprOperation()};");
                                 outputCpp.Add($"            checkProgressSeq{seq.SeqNumber}( player );");
                             }
-                            if (useBranch && entry.CanBranch)
+                            if (entry.CanBranch)
                             {
                                 if (scene2 != null)
                                 {
@@ -472,7 +474,7 @@ namespace FFXIVTheMovie.ParserV3
                             outputCpp.Add($"  void {current.SceneFunctionName}( Entity::Player& player )");
                             outputCpp.Add("  {");
                             outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling {current}\" );");
-                            if (useBranch && entry.CanBranch && current == entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1])
+                            if (entry.CanBranch && current == entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1])
                             {
                                 string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
                                 string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
@@ -545,10 +547,31 @@ namespace FFXIVTheMovie.ParserV3
                                         hasIf = true;
                                     }
 
+                                    string keyForPrivate = $"{current.Identity}";
+                                    if (!privateInstanceEntranceTable.ContainsKey(keyForPrivate))
+                                    {
+                                        keyForPrivate = $"SCENE{current.SceneNumber}";
+                                        if (!privateInstanceEntranceTable.ContainsKey(keyForPrivate))
+                                        {
+                                            keyForPrivate = null;
+                                        }
+                                    }
+
+                                    string keyForWarp = $"{current.Identity}";
+                                    if (!warpTable.ContainsKey(keyForWarp))
+                                    {
+                                        keyForWarp = $"SCENE_{current.SceneNumber}";
+                                        if (!warpTable.ContainsKey(keyForWarp))
+                                        {
+                                            keyForWarp = null;
+                                        }
+                                    }
+
                                     if (!skipBody)
                                     {
+                                        bool shouldUseFakeZoneing = keyForPrivate == null && keyForWarp == null;
                                         bool shouldContinue = shouldContinue = next != null;
-                                        if (useBranch && entry.CanBranch)
+                                        if (entry.CanBranch)
                                         {
                                             shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
                                         }
@@ -563,7 +586,7 @@ namespace FFXIVTheMovie.ParserV3
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
-                                                if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                                if (shouldUseFakeZoneing && (current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
@@ -579,7 +602,7 @@ namespace FFXIVTheMovie.ParserV3
                                                 }
                                                 if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
-                                                if ((current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                                if (shouldUseFakeZoneing && (current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
@@ -589,6 +612,20 @@ namespace FFXIVTheMovie.ParserV3
                                         }
                                     }
 
+                                    if (keyForPrivate != null || keyForWarp != null)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                    }
+                                    if (keyForPrivate != null)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.enterPredefinedPrivateInstance( {privateInstanceEntranceTable[keyForPrivate]} );");
+                                    }
+                                    else if (keyForWarp != null)
+                                    {
+                                        var dst = warpTable[keyForWarp];
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing( {dst.Item1}, {dst.Item2}, {dst.Item3}, {dst.Item4}, {dst.Item5}, {dst.Item6} );");
+                                    }
+                                    
                                     if (hasIf)
                                     {
                                         outputCpp.Add("      }");
@@ -602,7 +639,7 @@ namespace FFXIVTheMovie.ParserV3
                                 else
                                 {
                                     bool shouldContinue = shouldContinue = next != null;
-                                    if (useBranch && entry.CanBranch)
+                                    if (entry.CanBranch)
                                     {
                                         shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
                                     }
@@ -681,29 +718,33 @@ namespace FFXIVTheMovie.ParserV3
 
         private void EntryPostProcess()
         {
-            foreach (var seq in seqList)
+            if (useBranch)
             {
-                foreach (var entry in seq.EntryList)
+                foreach (var seq in seqList)
                 {
-                    if (entry.TargetObject != null && 
-                        entry.TargetObject.Type == ActiveEventObject.ObjectType.Actor &&
-                        entry.Var != null &&
-                        entry.Var.Value == 1 &&
-                        entry.EntryScene.Identity != "unknown" &&
-                        entry.EntryScene.HasSubScenes &&
-                        entry.EntryScene.ContainsSceneElementInAllScenes(LuaScene.SceneElement.Talk))
+                    foreach (var entry in seq.EntryList)
                     {
-                        var id = entry.EntryScene.Identity;
-                        bool flag = true;
-                        foreach (var scene in entry.EntryScene.SceneList)
+                        if (entry.TargetObject != null &&
+                            entry.TargetObject.Type == ActiveEventObject.ObjectType.Actor &&
+                            entry.Var != null &&
+                            entry.Var.Value == 1 &&
+                            entry.EntryScene.Identity != "unknown" &&
+                            entry.EntryScene.HasSubScenes &&
+                            (entry.EntryScene.SceneList[0].Element & LuaScene.SceneElement.Talk) > 0 &&
+                            (entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1].Element & LuaScene.SceneElement.Talk) > 0)
                         {
-                            if (scene.Identity != id)
+                            var id = entry.EntryScene.Identity;
+                            bool flag = true;
+                            foreach (var scene in entry.EntryScene.SceneList)
                             {
-                                flag = false;
-                                break;
+                                if ((scene.Element & LuaScene.SceneElement.Talk) > 0 && scene.Identity != id)
+                                {
+                                    flag = false;
+                                    break;
+                                }
                             }
+                            entry.CanBranch = flag;
                         }
-                        entry.CanBranch = flag;
                     }
                 }
             }
@@ -800,6 +841,31 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             break;
                         }
+                    }
+                }
+                else if (hint.Key.StartsWith("PRIVATE_"))
+                {
+                    var id = hint.Key.Split('_')[1];
+                    privateInstanceEntranceTable.Add(id, int.Parse(hint.Value));
+                }
+                else if (hint.Key.StartsWith("WARP_"))
+                {
+                    var id = hint.Key.Split('_')[1];
+                    var dst = hint.Value.Split('|');
+                    try
+                    {
+                        warpTable.Add(id, new Tuple<int, float, float, float, float, string>(
+                            int.Parse(dst[0]),
+                            float.Parse(dst[1]),
+                            float.Parse(dst[2]),
+                            float.Parse(dst[3]),
+                            float.Parse(dst[4]),
+                            bool.Parse(dst[5]).ToString().ToLower()
+                        ));
+                    }
+                    catch (Exception)
+                    {
+                        throw new Exception($"WARP destination for {id} not valid.");
                     }
                 }
                 else if (hint.Value != null)
