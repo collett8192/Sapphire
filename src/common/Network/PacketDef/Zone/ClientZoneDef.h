@@ -473,7 +473,8 @@ struct FFXIVIpcEventYield16Handler :
 struct FFXIVIpcCFCommenceHandler :
   FFXIVIpcBasePacket< CFCommenceHandler >
 {
-  uint64_t param;
+  uint8_t param;
+  uint8_t padding[7];
 };
 
 }
