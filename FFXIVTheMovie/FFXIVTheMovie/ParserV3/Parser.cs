@@ -43,6 +43,7 @@ namespace FFXIVTheMovie.ParserV3
             if (buildResult < 0)
             {
                 Console.WriteLine("allowEmptyEntry = true");
+                allowEmptyEntry = true;
                 InitSceneGroupList();
                 InitSeqList();
                 buildResult = BuildSeqList();
@@ -918,7 +919,7 @@ namespace FFXIVTheMovie.ParserV3
             var tmpIdTable = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(idTable);
             if (allowEmptyEntry && entry.CanExistWithoutScene && !entry.IsPrefferedGroup(sceneGroupList[g]))
             {
-                if (AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable, e + 1, g))
+                if (AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable, e + 1, g, allowEmptyEntry))
                     return true;
             }
             int total = 0;
@@ -954,7 +955,7 @@ namespace FFXIVTheMovie.ParserV3
                         if (PrintDebugInfo) Console.WriteLine($"Failed.");
                 }
                 var tmpIdTable3 = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(tmpIdTable);
-                if (AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable3, e + 1, g + 1))
+                if (AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable3, e + 1, g + 1, allowEmptyEntry))
                     return true;
                 if (flag == 2)
                     break;

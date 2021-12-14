@@ -38,7 +38,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("GaiUsc102");
+            //list.Add("GaiUsc409");
 
             if (list.Count == 0)
             {
@@ -158,6 +158,32 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hints and flags used to parse certain quests, do not modify them.
+                case "ManFst404":
+                    {
+                        result.Add("WARP_LIONNELLAIS", "132|22.43|-19|115.729|0|false");
+                        result.Add("PRIVATE_SCENE1", "331");
+                        result.Add("PRIVATE_SCENE4", "331");
+                        break;
+                    }
+                case "GaiUsc308":
+                    {
+                        result.Add("WARP_LIONNELLAIS", "132|22.43|-19|115.729|0|false");
+                        break;
+                    }
+                case "GaiUsc208":
+                    {
+                        result.Add("ACTOR2", "MIMIDOA");
+                        result.Add("_ACTOR2", "S");
+                        result.Add("EOBJECT1", "dummye1");
+                        result.Add("EOBJECT0", "dummye0");
+                        result.Add("SCENE_9", "dummye1");
+                        break;
+                    }
+                case "GaiUsc203":
+                    {
+                        result.Add("WARP_SENDO", "138|-290|-41|410.72|0.77|false");
+                        break;
+                    }
                 case "ManFst200":
                     {
                         result.Add("WARP_SCENE8", "128|-11.86|92|17|-1.95|true");

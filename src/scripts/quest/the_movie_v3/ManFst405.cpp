@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.4
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -29,33 +29,37 @@ public:
   //TERRITORYTYPE0 = 130
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        if( actor == 1006730 || actorId == 1006730 ) // ACTOR0 = ALPHINAUD
+        if( param1 == 1006730 || param2 == 1006730 ) // ACTOR0 = ALPHINAUD
         {
           Scene00000( player ); // Scene00000: Normal(QuestOffer), id=unknown
           // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ALPHINAUD
+          break;
         }
-        if( actor == 1004433 || actorId == 1004433 ) // ACTOR1 = ELYENORA
+        if( param1 == 1004433 || param2 == 1004433 ) // ACTOR1 = ELYENORA
         {
-          Scene00002( player ); // Scene00002: Normal(Talk, YesNo), id=ELYENORA
+          Scene00002( player ); // Scene00002: Normal(Talk, YesNo, TargetCanMove), id=ELYENORA
+          break;
         }
         break;
       }
       case 255:
       {
-        if( actor == 1007630 || actorId == 1007630 ) // ACTOR2 = ALPHINAUD
+        if( param1 == 1007630 || param2 == 1007630 ) // ACTOR2 = ALPHINAUD
         {
           Scene00003( player ); // Scene00003: Normal(Talk, QuestReward, TargetCanMove), id=ALPHINAUD
-          // +Callback Scene00004: Normal(CutScene, QuestComplete), id=unknown
+          // +Callback Scene00004: Normal(CutScene, QuestComplete, AutoFadeIn), id=unknown
+          break;
         }
-        if( actor == 1007629 || actorId == 1007629 ) // ACTOR3 = CID
+        if( param1 == 1007629 || param2 == 1007629 ) // ACTOR3 = CID
         {
           Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=CID
+          break;
         }
         break;
       }
@@ -89,7 +93,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -117,7 +121,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "ManFst405:66056 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ALPHINAUD" );
+    player.sendDebug( "ManFst405:66056 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ALPHINAUD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -127,7 +131,7 @@ private:
 
   void Scene00002( Entity::Player& player )
   {
-    player.sendDebug( "ManFst405:66056 calling Scene00002: Normal(Talk, YesNo), id=ELYENORA" );
+    player.sendDebug( "ManFst405:66056 calling Scene00002: Normal(Talk, YesNo, TargetCanMove), id=ELYENORA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
@@ -151,11 +155,16 @@ private:
   }
   void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "ManFst405:66056 calling [BranchTrue]Scene00004: Normal(CutScene, QuestComplete), id=unknown" );
+    player.sendDebug( "ManFst405:66056 calling Scene00004: Normal(CutScene, QuestComplete, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( player.giveQuestRewards( getId(), result.param3 ) )
+      {
         player.finishQuest( getId() );
+        player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
+        player.eventFinish( getId(), 1 );
+        player.forceZoneing();
+      }
     };
     player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }

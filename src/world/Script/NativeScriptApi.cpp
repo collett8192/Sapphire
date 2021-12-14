@@ -5,6 +5,9 @@
 #include <cassert>
 
 #include "Actor/Player.h"
+#include <Service.h>
+#include "Script/ScriptMgr.h"
+#include "Script/NativeScriptMgr.h"
 #include "Territory/InstanceContent.h"
 
 #ifdef _MSC_VER
@@ -54,6 +57,13 @@ namespace Sapphire::ScriptAPI
       player.eventFinish( instance->getDirectorId(), 1 );
       player.updateQuest( questId, targetSeq );
       player.exitInstance();
+      switch( mode )
+      {
+        case 1:
+        {
+          Sapphire::Common::Service< Sapphire::Scripting::ScriptMgr >::ref().getNativeScriptHandler().getScript< InstanceContentScript >( instance->getDirectorId() )->the_movie_on_content_skipped( player );
+        }
+      }
     }
     else
     {
@@ -245,6 +255,11 @@ namespace Sapphire::ScriptAPI
   void InstanceContentScript::onEnterTerritory( InstanceContent& instance, Entity::Player& player, uint32_t eventId,
                                                 uint16_t param1, uint16_t param2 )
   {
+  }
+
+  bool InstanceContentScript::the_movie_on_content_skipped( Sapphire::Entity::Player& player )
+  {
+    return false;
   }
 
   ///////////////////////////////////////////////////////////////////

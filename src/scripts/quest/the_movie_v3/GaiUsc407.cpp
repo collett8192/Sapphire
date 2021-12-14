@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.4
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -28,45 +28,48 @@ public:
   //EVENTACTIONSEARCH = 1
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=WEDGE
         break;
       }
       case 1:
       {
-        Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=ABELIE
+        if( type != 2 ) Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=ABELIE
         break;
       }
       case 2:
       {
-        if( actor == 2002265 || actorId == 2002265 ) // EOBJECT0 = unknown
+        if( param1 == 2002265 || param2 == 2002265 ) // EOBJECT0 = unknown
         {
-          Scene00003( player ); // Scene00003: Normal(None), id=unknown
-          // +Callback Scene00004: Normal(Message, PopBNpc), id=unknown
+          Scene00004( player ); // Scene00004: Normal(Message, PopBNpc), id=unknown
+          break;
         }
-        if( actor == 4301775 || actorId == 4301775 ) // ENEMY0 = unknown
+        if( param1 == 4301775 || param2 == 4301775 ) // ENEMY0 = unknown
         {
           // empty entry
+          break;
         }
-        if( actor == 4301776 || actorId == 4301776 ) // ENEMY1 = unknown
+        if( param1 == 4301776 || param2 == 4301776 ) // ENEMY1 = unknown
         {
           // empty entry
+          break;
         }
-        if( actor == 4301778 || actorId == 4301778 ) // ENEMY2 = unknown
+        if( param1 == 4301778 || param2 == 4301778 ) // ENEMY2 = unknown
         {
           // empty entry
+          break;
         }
         break;
       }
       case 255:
       {
-        Scene00005( player ); // Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WEDGE
+        if( type != 2 ) Scene00005( player ); // Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WEDGE
         break;
       }
       default:
@@ -99,7 +102,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -135,7 +138,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsc407:66518 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=WEDGE" );
+    player.sendDebug( "GaiUsc407:66518 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=WEDGE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -153,20 +156,18 @@ private:
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "GaiUsc407:66518 calling Scene00003: Normal(None), id=unknown" );
-    Scene00004( player );
-  }
   void Scene00004( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsc407:66518 calling [BranchTrue]Scene00004: Normal(Message, PopBNpc), id=unknown" );
+    player.sendDebug( "GaiUsc407:66518 calling Scene00004: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 4, NONE, callback );
   }
+
+
+
 
   void Scene00005( Entity::Player& player )
   {
@@ -176,7 +177,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 5, NONE, callback );

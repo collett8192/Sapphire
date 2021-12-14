@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.4
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -23,44 +23,47 @@ public:
   //ACTOR3 = 1006500
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=CEANA
         break;
       }
       case 1:
       {
-        if( actor == 1006498 || actorId == 1006498 ) // ACTOR1 = ALZAGAMILZA
+        if( param1 == 1006498 || param2 == 1006498 ) // ACTOR1 = ALZAGAMILZA
         {
           if( player.getQuestUI8AL( getId() ) != 3 )
           {
             Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=ALZAGAMILZA
           }
+          break;
         }
-        if( actor == 1006499 || actorId == 1006499 ) // ACTOR2 = FIRKMANN
+        if( param1 == 1006499 || param2 == 1006499 ) // ACTOR2 = FIRKMANN
         {
           if( player.getQuestUI8AL( getId() ) != 3 )
           {
             Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=FIRKMANN
           }
+          break;
         }
-        if( actor == 1006500 || actorId == 1006500 ) // ACTOR3 = QAHNEBB
+        if( param1 == 1006500 || param2 == 1006500 ) // ACTOR3 = QAHNEBB
         {
           if( player.getQuestUI8AL( getId() ) != 3 )
           {
             Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=QAHNEBB
           }
+          break;
         }
         break;
       }
       case 255:
       {
-        Scene00005( player ); // Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=CEANA
+        if( type != 2 ) Scene00005( player ); // Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=CEANA
         break;
       }
       default:
@@ -93,7 +96,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -109,14 +112,10 @@ private:
   void checkProgressSeq1( Entity::Player& player )
   {
     if( player.getQuestUI8AL( getId() ) == 3 )
-      if( player.getQuestUI8AL( getId() ) == 3 )
-        if( player.getQuestUI8AL( getId() ) == 3 )
-        {
-          player.setQuestUI8AL( getId(), 0 );
-          player.setQuestUI8AL( getId(), 0 );
-          player.setQuestUI8AL( getId(), 0 );
-          player.updateQuest( getId(), 255 );
-        }
+    {
+      player.setQuestUI8AL( getId(), 0 );
+      player.updateQuest( getId(), 255 );
+    }
   }
 
   void Scene00000( Entity::Player& player )
@@ -133,7 +132,7 @@ private:
   }
   void Scene00001( Entity::Player& player )
   {
-    player.sendDebug( "GaiUsc201:66496 calling [BranchTrue]Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=CEANA" );
+    player.sendDebug( "GaiUsc201:66496 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=CEANA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -182,7 +181,9 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 5, NONE, callback );
