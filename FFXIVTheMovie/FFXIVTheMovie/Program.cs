@@ -38,7 +38,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("SubWil141");
+            //list.Add("GaiUsc102");
 
             if (list.Count == 0)
             {

@@ -18,8 +18,9 @@ namespace FFXIVTheMovie.ParserV3
         List<string> inputCpp;
         List<string> inputLua;
         bool useBranch = false;
-        Dictionary<string, int> privateInstanceEntranceTable = new Dictionary<string, int>();
-        Dictionary<string, Tuple<int, float, float, float, float, string>> warpTable = new Dictionary<string, Tuple<int, float, float, float, float, string>>();
+        Dictionary<string, int> privateInstanceEntranceTable;
+        Dictionary<string, Tuple<int, float, float, float, float, string>> warpTable;
+        bool allowEmptyEntry = false;
 
         Dictionary<string, string> idHint = new Dictionary<string, string>();
         public void AddIdHint(string name, string id)
@@ -41,9 +42,16 @@ namespace FFXIVTheMovie.ParserV3
             buildResult = BuildSeqList();
             if (buildResult < 0)
             {
-                isSimpleParse = true;
-                if (!BuildSeqListSimple())
-                    throw new Exception("Failed");
+                Console.WriteLine("allowEmptyEntry = true");
+                InitSceneGroupList();
+                InitSeqList();
+                buildResult = BuildSeqList();
+                if (buildResult < 0)
+                {
+                    isSimpleParse = true;
+                    if (!BuildSeqListSimple())
+                        throw new Exception("Failed");
+                }
             }
             InitEventItems();
             BNpcHack(); // see comment inside
@@ -51,7 +59,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.3");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.4");
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -819,6 +827,8 @@ namespace FFXIVTheMovie.ParserV3
         private int BuildSeqList()
         {
             var idTable = new Dictionary<string, Tuple<string, int>>();
+            privateInstanceEntranceTable = new Dictionary<string, int>();
+            warpTable = new Dictionary<string, Tuple<int, float, float, float, float, string>>();
             foreach (var hint in idHint)
             {
                 if (hint.Key.StartsWith("SCENE_"))
@@ -883,10 +893,10 @@ namespace FFXIVTheMovie.ParserV3
             {
                 allEntries.AddRange(seq.EntryList);
             }
-            if (!AssignScenesNextStep(allEntries, sceneGroupList, idTable, 0, 0))
+            if (!AssignScenesNextStep(allEntries, sceneGroupList, idTable, 0, 0, allowEmptyEntry))
             {
                 Console.WriteLine("[BuildSeqList]Build with id table failed.");
-                if (!AssignScenesNextStep(allEntries, sceneGroupList, null, 0, 0))
+                if (!AssignScenesNextStep(allEntries, sceneGroupList, null, 0, 0, allowEmptyEntry))
                 {
                     Console.WriteLine("[BuildSeqList]Build without id table failed.");
                     return -1;
@@ -898,7 +908,7 @@ namespace FFXIVTheMovie.ParserV3
 
         public static bool PrintDebugInfo = false;
 
-        private static bool AssignScenesNextStep(List<EventEntry> entryList, List<SceneGroup> sceneGroupList, Dictionary<string, Tuple<string, int>> idTable, int e, int g)
+        private static bool AssignScenesNextStep(List<EventEntry> entryList, List<SceneGroup> sceneGroupList, Dictionary<string, Tuple<string, int>> idTable, int e, int g, bool allowEmptyEntry = false)
         {
             if (e >= entryList.Count)
                 return g >= sceneGroupList.Count;
@@ -906,7 +916,7 @@ namespace FFXIVTheMovie.ParserV3
                 return false;
             var entry = entryList[e];
             var tmpIdTable = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(idTable);
-            if (entry.CanExistWithoutScene && !entry.IsPrefferedGroup(sceneGroupList[g]))
+            if (allowEmptyEntry && entry.CanExistWithoutScene && !entry.IsPrefferedGroup(sceneGroupList[g]))
             {
                 if (AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable, e + 1, g))
                     return true;
@@ -1102,12 +1112,9 @@ namespace FFXIVTheMovie.ParserV3
 
         private void InitSeqList()
         {
-            if (fIsAnnounce == null)
-            {
-                Console.WriteLine("[InitSeqList]IsAnnounce not found!");
-            }
             foreach (var seq in seqList)
             {
+                seq.EntryList.Clear();
                 if (fIsAnnounce != null && fIsAnnounce.SeqTargetConditionTable.TryGetValue(seq.SeqNumber, out var mapList))
                 {
                     foreach (var map in mapList)
@@ -1131,6 +1138,7 @@ namespace FFXIVTheMovie.ParserV3
         List<SceneGroup> sceneGroupList = new List<SceneGroup>();
         private void InitSceneGroupList()
         {
+            sceneGroupList.Clear();
             var tmpList = sceneList.ToList();
             while (tmpList.Count > 0)
             {
