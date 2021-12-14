@@ -1204,6 +1204,7 @@ namespace FFXIVTheMovie.ParserV3
             string cppSeqEnumHead = "enum Sequence : uint8_t";
             string cppConstHead = "static constexpr auto";
             string cppQuestNumberHead = $"    {questId}() : Sapphire::ScriptAPI::EventScript( ";
+            string cppQuestNumberHeadThreePointOh = $"    {questId}() : Sapphire::ScriptAPI::QuestScript( ";
 
             int i = 0;
             while (i < inputCpp.Count)
@@ -1260,6 +1261,11 @@ namespace FFXIVTheMovie.ParserV3
                 if (s.IndexOf(cppQuestNumberHead) >= 0)
                 {
                     questNumber = int.Parse(s.GetStringBetween(cppQuestNumberHead, " )"));
+                    break;
+                }
+                if (s.IndexOf(cppQuestNumberHeadThreePointOh) >= 0)
+                {
+                    questNumber = int.Parse(s.GetStringBetween(cppQuestNumberHeadThreePointOh, " )"));
                     break;
                 }
                 i++;
