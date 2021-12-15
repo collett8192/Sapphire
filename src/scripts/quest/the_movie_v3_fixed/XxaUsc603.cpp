@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.5
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -39,7 +39,7 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=SARKMALARK
         break;
       }
@@ -71,7 +71,7 @@ private:
       //seq 2 event item ITEM1 = UI8BL max stack 3
       case 2:
       {
-        Scene00002( player ); // Scene00002: NpcTrade(Talk, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00002( player ); // Scene00002: NpcTrade(Talk, TargetCanMove), id=unknown
         // +Callback Scene00003: Normal(Talk, TargetCanMove), id=SARKMALARK
         break;
       }
@@ -81,7 +81,7 @@ private:
       //seq 3 event item ITEM3 = UI8CL max stack 3
       case 3:
       {
-        Scene00004( player ); // Scene00004: NpcTrade(Talk, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00004( player ); // Scene00004: NpcTrade(Talk, TargetCanMove), id=unknown
         // +Callback Scene00005: Normal(Talk, FadeIn, TargetCanMove), id=EGINOLF
         break;
       }
@@ -89,7 +89,7 @@ private:
       //seq 255 event item ITEM3 = UI8BL max stack 3
       case 255:
       {
-        Scene00006( player ); // Scene00006: NpcTrade(Talk, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00006( player ); // Scene00006: NpcTrade(Talk, TargetCanMove), id=unknown
         // +Callback Scene00007: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=SARKMALARK
         break;
       }
@@ -191,6 +191,8 @@ private:
     };
     player.playScene( getId(), 1, NONE, callback );
   }
+
+
 
   void Scene00002( Entity::Player& player )
   {

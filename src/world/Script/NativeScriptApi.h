@@ -252,6 +252,8 @@ namespace Sapphire::ScriptAPI
 
     virtual void onEnterTerritory( Sapphire::QuestBattle& instance, Sapphire::Entity::Player& player, uint32_t eventId,
                                    uint16_t param1, uint16_t param2 );
+
+    virtual bool the_movie_on_content_skipped( Sapphire::Entity::Player& player );
   };
 
   class PublicContentScript : public ScriptObject

@@ -63,6 +63,10 @@ namespace Sapphire::ScriptAPI
         {
           Sapphire::Common::Service< Sapphire::Scripting::ScriptMgr >::ref().getNativeScriptHandler().getScript< InstanceContentScript >( instance->getDirectorId() )->the_movie_on_content_skipped( player );
         }
+        case 2:
+        {
+          Sapphire::Common::Service< Sapphire::Scripting::ScriptMgr >::ref().getNativeScriptHandler().getScript< QuestBattleScript >( instance->getDirectorId() )->the_movie_on_content_skipped( player );
+        }
       }
     }
     else
@@ -293,6 +297,11 @@ namespace Sapphire::ScriptAPI
   void QuestBattleScript::onEnterTerritory( QuestBattle& instance, Entity::Player& player, uint32_t eventId,
                                             uint16_t param1, uint16_t param2 )
   {
+  }
+
+  bool QuestBattleScript::the_movie_on_content_skipped( Sapphire::Entity::Player& player )
+  {
+    return false;
   }
 
   PublicContentScript::PublicContentScript( uint32_t contentId ) :
