@@ -187,7 +187,7 @@ namespace FFXIVTheMovie.ParserV3
         {
             foreach (var s in group.SceneList)
             {
-                if ((s.Element & LuaScene.SceneElement.TargetCanMove) > 0 && s.Identity != "unknown")
+                if ((s.Element & LuaScene.SceneElement.TargetCanMove) > 0 && s.Identity != "unknown" && !s.Identity.StartsWith("dummy"))
                 {
                     return false;
                 }

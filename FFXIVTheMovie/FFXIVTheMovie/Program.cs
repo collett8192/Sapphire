@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FFXIVTheMovie
 {
@@ -38,7 +35,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("GaiUsc409");
+            //list.Add("ManFst408");
 
             if (list.Count == 0)
             {
@@ -142,7 +139,7 @@ namespace FFXIVTheMovie
                     p.GenerateQuestScript();
                     parsed++;
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                     failed++;
@@ -158,6 +155,47 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hints and flags used to parse certain quests, do not modify them.
+                case "ManFst407":
+                    {
+                        result.Add("WARP_SLAFBORN", "156|0.64|-158.5|13.4|3.14|false");
+                        result.Add("SCENE_2", null);
+                        result.Add("SCENE_8", "CID");
+                        result.Add("_ACTOR5", "B");
+                        result.Add("_ACTOR5B", "1|2");
+                        result.Add("_ACTOR7", "E");
+                        result.Add("_ACTOR7E", "2|3,59");
+                        result.Add("_ACTOR9", "E");
+                        result.Add("_ACTOR9E", "2|3,59");
+                        result.Add("_ACTOR10", "E");
+                        result.Add("_ACTOR10E", "2|3,59");
+                        result.Add("_ACTOR11", "E");
+                        result.Add("_ACTOR11E", "3|3,59");
+                        result.Add("PRIVATE_SCENE8", "335");
+                        result.Add("PRIVATE_SCENE14", "335");
+                        result.Add("PRIVATE_SCENE26", "335");
+                        result.Add("PRIVATE_SCENE31", "335");
+                        result.Add("PRIVATE_SCENE36", "335");
+                        break;
+                    }
+                case "GaiUsc605":
+                    {
+                        result.Add("WARP_SLAFBORN", "156|0.64|-158.5|13.4|3.14|false");
+                        result.Add("SCENE_27", "dummyWEDGE");
+                        result.Add("MOUNT_SCENE9", "14");
+                        result.Add("MOUNT_SCENE17", "14");
+                        result.Add("MOUNT_SCENE23", "14");
+                        result.Add("MOUNT_SCENE30", "14");
+                        result.Add("_ACTOR7", "E");
+                        result.Add("_ACTOR7E", "9|3,41");
+                        break;
+                    }
+                case "GaiUsc604":
+                    {
+                        result.Add("_ACTOR1", "E");
+                        result.Add("_ACTOR1E", "1|3,59");
+                        result.Add("WARP_SCENE21", "156|0.64|-158.5|13.4|3.14|false");
+                        break;
+                    }
                 case "ManFst404":
                     {
                         result.Add("WARP_LIONNELLAIS", "132|22.43|-19|115.729|0|false");

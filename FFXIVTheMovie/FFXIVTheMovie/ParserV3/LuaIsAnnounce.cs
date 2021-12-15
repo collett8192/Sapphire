@@ -9,6 +9,7 @@ namespace FFXIVTheMovie.ParserV3
     public class LuaIsAnnounce
     {
         public Dictionary<int, List<ActiveObjectToEntryConditionMap>> SeqTargetConditionTable = new Dictionary<int, List<ActiveObjectToEntryConditionMap>>();
+        public Dictionary<int, List<ObjectNameToQuestFlagMap>> SeqTargetFlagTable = new Dictionary<int, List<ObjectNameToQuestFlagMap>>();
         public bool IsFake = false;
 
         public static LuaIsAnnounce ParseLuaCode(List<string> codeBlock)
@@ -22,7 +23,9 @@ namespace FFXIVTheMovie.ParserV3
                 int i = 1;
                 int currentSeq = -1;
                 string varFramework = argList[0], varPlayer = argList[1], varTarget = argList[3], varTarget2 = argList[4];
+                string recentName = null;
                 List<ActiveObjectToEntryConditionMap> currentList = null;
+                List<ObjectNameToQuestFlagMap> currentFlagList = null;
                 while (i < codeBlock.Count)
                 {
                     var s = codeBlock[i];
@@ -32,16 +35,22 @@ namespace FFXIVTheMovie.ParserV3
                         {
                             result.SeqTargetConditionTable.Add(currentSeq, currentList);
                         }
+                        if (currentSeq >= 0 && currentFlagList.Count > 0)
+                        {
+                            result.SeqTargetFlagTable.Add(currentSeq, currentFlagList);
+                        }
                         bool oneLineFlag = s.Contains(" and ");
                         if (oneLineFlag)
                             Console.WriteLine($"[LuaIsAnnounce]parsing seq and target in one line not implemented");
                         var seqStr = s.GetStringBetween($" == {varFramework}.SEQ_", oneLineFlag ? " and" : " then");
                         currentSeq = seqStr == "FINISH" ? 255 : int.Parse(seqStr);
                         currentList = new List<ActiveObjectToEntryConditionMap>();
+                        currentFlagList = new List<ObjectNameToQuestFlagMap>();
                     }
                     else if (s.IndexOf($"if {varTarget} == {varFramework}.") >= 0 || s.IndexOf($" == {varFramework}.ENEMY") >= 0)
                     {
                         var name = s.GetStringBetween($"{varFramework}.", " then");
+                        recentName = name;
                         i++;
                         if (name.Contains("PLAYER"))
                             continue;
@@ -58,6 +67,7 @@ namespace FFXIVTheMovie.ParserV3
                         else if (s2.StartsWith("return ") && s2.IndexOf("GetQuestBitFlag") > 0)
                         {
                             currentList.Add(new ActiveObjectToEntryConditionMap() { ActiveObject = ActiveEventObject.CreateActiveObjectByName(name) });
+                            continue;
                         }
                         else if (s2.StartsWith("return ") && s2.IndexOf("GetNumOfItems") > 0)
                         {
@@ -75,7 +85,7 @@ namespace FFXIVTheMovie.ParserV3
                             if (valueStr == null || !int.TryParse(valueStr, out value))
                                 valueStr = s2.GetStringBetween(" > ", null);
                             if (valueStr == null || !int.TryParse(valueStr, out value))
-                                throw new Exception($"[LuaIsAnnounce]CHECK SCRIPT!!!");
+                                throw new Exception($"[LuaIsAnnounce-Var1]CHECK SCRIPT!!!");
                             currentList.Add(new ActiveObjectToEntryConditionMap() { QuestVar = questVar, ConditionValue = value, ActiveObject = ActiveEventObject.CreateActiveObjectByName(name) });
                         }
                         else if (s2.StartsWith("L"))
@@ -84,32 +94,47 @@ namespace FFXIVTheMovie.ParserV3
                             i++;
                             var s3 = codeBlock[i];
                             if (codeBlock[i + 1] != "return false")
-                                throw new Exception($"[LuaIsAnnounce]CHECK SCRIPT!!!");
+                                throw new Exception($"[LuaIsAnnounce-Var2]CHECK SCRIPT!!!");
                             var valueStr = s3.GetStringBetween("if ", " <=");
                             if (valueStr == null)
                                 valueStr = s3.GetStringBetween(">= ", " then");
                             if (valueStr == null)
-                                throw new Exception($"[LuaIsAnnounce]CHECK SCRIPT!!!");
+                                throw new Exception($"[LuaIsAnnounce-Var3]CHECK SCRIPT!!!");
                             var value = int.Parse(valueStr);
                             currentList.Add(new ActiveObjectToEntryConditionMap() { QuestVar = questVar, ConditionValue = value, ActiveObject = ActiveEventObject.CreateActiveObjectByName(name) });
                         }
                         else
                         {
                             if (!codeBlock[i + 1].StartsWith("return false"))
-                                throw new Exception($"[LuaIsAnnounce]CHECK SCRIPT!!!");
+                                throw new Exception($"[LuaIsAnnounce-Var4]CHECK SCRIPT!!!");
                             var valueStr = s2.GetStringBetween("if ", " <=");
                             if (valueStr == null)
                                 valueStr = s2.GetStringBetween(">= ", " then");
                             if (valueStr == null)
-                                throw new Exception($"[LuaIsAnnounce]CHECK SCRIPT!!!");
+                                throw new Exception($"[LuaIsAnnounce-Var5]CHECK SCRIPT!!!");
                             var value = int.Parse(valueStr);
                             var questVar = s2.GetStringBetween($"{varPlayer}:GetQuest", "(");
                             currentList.Add(new ActiveObjectToEntryConditionMap() { QuestVar = questVar, ConditionValue = value, ActiveObject = ActiveEventObject.CreateActiveObjectByName(name) });
                         }
                     }
+                    else if (!string.IsNullOrEmpty(recentName) && s.StartsWith($"return {varPlayer}:GetQuestBitFlag"))
+                    {
+                        var flag = s.GetStringBetween($"return {varPlayer}:GetQuestBitFlag", "(");
+                        var index = s.GetStringBetween($", ", ") ==");
+                        var value = s.GetStringBetween($" == ", null).Trim();
+                        if (bool.TryParse(value, out var bValue))
+                        {
+                            currentFlagList.Add(new ObjectNameToQuestFlagMap() { ObjectName = recentName, Flag = flag, Index = int.Parse(index), TargetValue = !bValue });
+                        }
+                        else
+                        {
+                            throw new Exception($"[LuaIsAnnounce-QuestFlag]CHECK SCRIPT!!!");
+                        }
+                    }
                     else if (s.IndexOf($"if {varTarget2} == {varFramework}.") >= 0)
                     {
                         var name = s.GetStringBetween($"{varFramework}.", " then");
+                        recentName = name;
                         i++;
                         if (name.Contains("PLAYER"))
                             continue;
@@ -143,6 +168,10 @@ namespace FFXIVTheMovie.ParserV3
                 {
                     result.SeqTargetConditionTable.Add(currentSeq, currentList);
                 }
+                if (currentSeq >= 0 && currentFlagList.Count > 0)
+                {
+                    result.SeqTargetFlagTable.Add(currentSeq, currentFlagList);
+                }
             }
             return result;
         }
@@ -162,6 +191,18 @@ namespace FFXIVTheMovie.ParserV3
             public override string ToString()
             {
                 return $"{ActiveObject}{(QuestVar != null ? $":{QuestVar}, {ConditionValue}" : "")}";
+            }
+        }
+
+        public class ObjectNameToQuestFlagMap
+        {
+            public string ObjectName;
+            public string Flag;
+            public int Index;
+            public bool TargetValue;
+            public override string ToString()
+            {
+                return $"{ObjectName} Flag{Flag}({Index})={TargetValue}";
             }
         }
 

@@ -55,15 +55,18 @@ namespace FFXIVTheMovie.ParserV3
             public Sequence Owner;
             public ActiveEventObject TargetObject;
             public QuestVar Var;
+            public QuestFlag Flag;
             public SceneGroup EntryScene = new SceneGroup();
             public int AssignedGroupCount = 0;
-            public bool CanBranch = false;
+            public int RequiredGroupCount = 1;
+            public bool ConditionBranch = false;
+            public int? EmoteBranch = null;
 
             public bool CanExistWithoutScene
             {
                 get
                 {
-                    if (this.TargetObject != null)
+                    if (this.RequiredGroupCount <= 1 && this.TargetObject != null)
                         return this.TargetObject.CanExistWithoutScene;
                     return false;
                 }
@@ -313,6 +316,28 @@ namespace FFXIVTheMovie.ParserV3
             public override string ToString()
             {
                 return $"{Name} = {Value}";
+            }
+        }
+
+        public class QuestFlag
+        {
+            public string Flag;
+            public int Index;
+            public bool TargetValue;
+
+            public string ToCppExprSet()
+            {
+                return $"player.setQuestBitFlag{Flag}( getId(), {Index}, {TargetValue.ToString().ToLower()} )";
+            }
+
+            public string ToCppExprClear()
+            {
+                return $"player.setQuestBitFlag{Flag}( getId(), {Index}, {(!TargetValue).ToString().ToLower()} )";
+            }
+
+            public override string ToString()
+            {
+                return $"Flag{Flag}({Index})={TargetValue}";
             }
         }
     }

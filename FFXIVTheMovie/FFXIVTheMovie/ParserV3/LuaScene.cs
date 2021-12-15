@@ -140,16 +140,20 @@ namespace FFXIVTheMovie.ParserV3
                             var textArg = f.ArgList.FirstOrDefault(a => a.Contains($"{varFramework}.TEXT_"));
                             if (textArg != null)
                             {
-                                if (f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.SPEAK_NONE")
+                                if (f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.SPEAK_NONE" && f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.LIP_TYPE_NONE")
                                 {
                                     result.Element |= SceneElement.TargetCanMove;
                                     var text = textArg.ExpandLocalVar(localVarTable).GetStringBetween($"{varFramework}.", null);
                                     var tmp = text == null ? null : text.Split('_');
                                     if (tmp != null)
                                     {
-                                        if (tmp.Length == 6)
+                                        if (tmp.Length >= 6)
                                         {
                                             var identity = tmp[3];
+                                            for (int i = tmp.Length; i > 6; i--)
+                                            {
+                                                identity += "_" + tmp[3 + (i - 6)];
+                                            }
                                             if (result.Identity != "unknown" && result.Identity != identity)
                                                 throw new Exception($"[LuaScene]Multiple scene identity detected at Scene{sceneNum}");
                                             result.Identity = identity;
