@@ -7,11 +7,17 @@ namespace FFXIVTheMovie
 {
     public static class Program
     {
-        static readonly string SAPPHIRE_SRC_FOLDER = @"C:\work\Sapphire\src";
-        static readonly string SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER = @"C:\work\Sapphire\build\bin\tools\generated";
+        static readonly string SAPPHIRE_SRC_FOLDER = @"..\..\..\..\src";
         static readonly string PARSER_OUTPUT_FOLDER = Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest", "the_movie_v3");
+
+        static string QuestParseOutputFolder = @"C:\work\Sapphire\build\bin\tools\generated";
         static void Main(string[] args)
         {
+            if (args.Length == 1)
+            {
+                QuestParseOutputFolder = args[0];
+            }
+
             string questScriptFolder = Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest");
             if (!Directory.Exists(questScriptFolder))
             {
@@ -20,18 +26,26 @@ namespace FFXIVTheMovie
                 return;
             }
 
-            if (!File.Exists(Path.Combine(SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER, "ManWil200.cpp")))
+            if (!File.Exists(Path.Combine(QuestParseOutputFolder, "ManWil200.cpp")))
             {
-                Console.WriteLine("SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER is not setup correctly.");
+                Console.WriteLine("QuestParseOutputFolder is not setup correctly, either edit the source or pass the path in command line.");
                 Console.ReadKey();
                 return;
             }
 
             if (!Directory.Exists(PARSER_OUTPUT_FOLDER))
             {
-                Console.WriteLine("PARSER_OUTPUT_FOLDER does not exist.");
-                Console.ReadKey();
-                return;
+                Console.WriteLine($"Output folder:\n  {Path.GetFullPath(PARSER_OUTPUT_FOLDER)}\ndoes not exist, enter y to create it, or enter anything else to exit.");
+                if (Console.ReadKey().Key == ConsoleKey.Y)
+                {
+                    Directory.CreateDirectory(PARSER_OUTPUT_FOLDER);
+                    if (!Directory.Exists(PARSER_OUTPUT_FOLDER))
+                    {
+                        throw new Exception("Failed to create folder.");
+                    }
+                }
+                else
+                    return;
             }
 
             List<string> list = new List<string>();
@@ -57,7 +71,7 @@ namespace FFXIVTheMovie
             {
                 foreach (var id in list)
                 {
-                    (var a, var b) = ReadSingleQuest(id, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
+                    (var a, var b) = ReadSingleQuest(id, QuestParseOutputFolder);
                     var p = new ParserV3.Parser(id, PARSER_OUTPUT_FOLDER, a, b);
                     foreach (var hint in GetIdHintForQuest(id))
                     {
@@ -81,7 +95,7 @@ namespace FFXIVTheMovie
 
             AddAllScripts(new DirectoryInfo(questScriptFolder), implementedQuestIds);
             int parsed = 0, failed = 0;
-            DirectoryInfo folder = new DirectoryInfo(SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
+            DirectoryInfo folder = new DirectoryInfo(QuestParseOutputFolder);
             foreach (FileInfo scriptFile in folder.GetFiles("*.cpp"))
             {
                 string questId = Path.GetFileNameWithoutExtension(scriptFile.Name);
@@ -128,7 +142,7 @@ namespace FFXIVTheMovie
                     )
                     continue;
                 Console.WriteLine($"processing {questId}...");
-                (var cpp, var lua) = ReadSingleQuest(questId, SAPPHIRE_QUEST_PARSE_OUTPUT_FOLDER);
+                (var cpp, var lua) = ReadSingleQuest(questId, QuestParseOutputFolder);
                 try
                 {
                     var p = new ParserV3.Parser(questId, PARSER_OUTPUT_FOLDER, cpp, lua);
