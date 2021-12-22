@@ -63,7 +63,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.5");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.6");
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -536,19 +536,29 @@ namespace FFXIVTheMovie.ParserV3
                                     if (f.IsKeyFunction)
                                     {
                                         outputCpp.Add($"  //{f.ToDetailString()}");
-                                        if (current.ParamTable.ContainsKey("TradeItem"))
-                                        {
-                                            outputCpp.Add("    //TradeItem:");
-                                            var itemTable = current.ParamTable["TradeItem"] as Dictionary<string, int>;
-                                            foreach (var itemEntry in itemTable)
-                                            {
-                                                outputCpp.Add($"      //{itemEntry.Key} = {itemEntry.Value}");
-                                            }
-                                        }
+                                    }
+                                }
+                                outputCpp.Add($"  //=======================");
+                                if (current.ParamTable.ContainsKey("TradeItem"))
+                                {
+                                    outputCpp.Add("  //TradeItem:");
+                                    var itemTable = current.ParamTable["TradeItem"] as Dictionary<string, int>;
+                                    foreach (var itemEntry in itemTable)
+                                    {
+                                        outputCpp.Add($"    //{itemEntry.Key} = {itemEntry.Value}");
+                                    }
+                                }
+                                if (current.ParamTable.ContainsKey("ENpcBind"))
+                                {
+                                    outputCpp.Add("  //ENpcBind:");
+                                    var bindSet = current.ParamTable["ENpcBind"] as HashSet<string>;
+                                    foreach (var npc in bindSet)
+                                    {
+                                        outputCpp.Add($"    //{npc}");
                                     }
                                 }
                             }
-                            outputCpp.Add($"  void {current.SceneFunctionName}( Entity::Player& player )");
+                            outputCpp.Add($"  void {current.SceneFunctionName}( Entity::Player& player ) //{entry.ToSimpleString()}");
                             outputCpp.Add("  {");
                             outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling {current}\" );");
                             bool shouldProduceCode = true;

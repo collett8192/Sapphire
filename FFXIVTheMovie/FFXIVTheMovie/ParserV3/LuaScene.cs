@@ -136,6 +136,20 @@ namespace FFXIVTheMovie.ParserV3
                     if (FuncNameToSceneElementTable.ContainsKey(f.FuncName))
                     {
                         var element = FuncNameToSceneElementTable[f.FuncName];
+                        if ((element & SceneElement.ENpcBind) > 0 && f.ArgList.Count == 1)
+                        {
+                            var npc = f.ArgList[0].GetStringBetween("LEVEL_", "_ID");
+                            if (!string.IsNullOrEmpty(npc))
+                            {
+                                if (!result.ParamTable.ContainsKey("ENpcBind"))
+                                {
+                                    result.ParamTable.Add("ENpcBind", new HashSet<string>());
+                                }
+                                var bindSet = result.ParamTable["ENpcBind"] as HashSet<string>;
+                                if (!bindSet.Contains(npc))
+                                    bindSet.Add(npc);
+                            }
+                        }
                         if ((element & SceneElement.Talk) > 0 && f.VarName == varTarget)
                         {
                             var textArg = f.ArgList.FirstOrDefault(a => a.Contains($"{varFramework}.TEXT_"));
@@ -155,9 +169,18 @@ namespace FFXIVTheMovie.ParserV3
                                             {
                                                 identity += "_" + tmp[3 + (i - 6)];
                                             }
-                                            if (result.Identity != "unknown" && result.Identity != identity)
-                                                throw new Exception($"[LuaScene]Multiple scene identity detected at Scene{sceneNum}");
-                                            result.Identity = identity;
+                                            bool isTrueIdentity = true;
+                                            if (result.ParamTable.ContainsKey("ENpcBind"))
+                                            {
+                                                var bindSet = result.ParamTable["ENpcBind"] as HashSet<string>;
+                                                isTrueIdentity = !bindSet.Contains(identity);
+                                            }
+                                            if (isTrueIdentity)
+                                            {
+                                                if (result.Identity != "unknown" && result.Identity != identity)
+                                                    throw new Exception($"[LuaScene]Multiple scene identity detected at Scene{sceneNum}");
+                                                result.Identity = identity;
+                                            }
                                         }
                                     }
                                 }

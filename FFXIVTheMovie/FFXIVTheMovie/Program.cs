@@ -194,7 +194,6 @@ namespace FFXIVTheMovie
                 case "GaiUsc605":
                     {
                         result.Add("WARP_SLAFBORN", "156|0.64|-158.5|13.4|3.14|false");
-                        result.Add("SCENE_27", "dummyWEDGE");
                         result.Add("MOUNT_SCENE9", "14");
                         result.Add("MOUNT_SCENE17", "14");
                         result.Add("MOUNT_SCENE23", "14");
