@@ -74,7 +74,7 @@ namespace FFXIVTheMovie.ParserV3
                                 Console.WriteLine($"[LuaScene]Unknown local var {varNames[i]}.");
                             }
                         }
-                        continue;
+                        line = line.GetStringBetween(" = ", null);
                     }
 
                     if (line.StartsWith("if "))
@@ -129,8 +129,9 @@ namespace FFXIVTheMovie.ParserV3
                                     itemTable.Add(f.ArgList[i].GetStringBetween($"{varFramework}.", null), int.Parse(f.ArgList[i + 1]));
                                 }
                             }
-                            result.TypeParam1 = itemTable;
+                            result.ParamTable.Add("TradeItem", itemTable);
                         }
+                        f.IsKeyFunction = true;
                     }
                     if (FuncNameToSceneElementTable.ContainsKey(f.FuncName))
                     {
@@ -162,19 +163,26 @@ namespace FFXIVTheMovie.ParserV3
                                 }
                             }
                         }
+                        else if ((element & SceneElement.TargetCanMove) == 0)
+                        {
+                            f.IsKeyFunction = true;
+                        }
                         result.Element |= element;
                     }
                     if (f.FuncName == "Skip" && f.ArgList.Count == 1 && f.ArgList[0] == $"{varFramework}.SKIP_FINALIZE_AUTO_FADEIN")
                     {
                         result.Element |= SceneElement.AutoFadeIn;
+                        f.IsKeyFunction = true;
                     }
                     if ((f.FuncName == "ScenarioMessage" || f.FuncName == "LogMessage") && (f.ArgList[0].Contains("_POP_MESSAGE") || f.ArgList[0].Contains("_POPMESSAGE")))
                     {
                         result.Element |= SceneElement.PopBNpc;
+                        f.IsKeyFunction = true;
                     }
                     if (f.FuncName == "WaitForTransparency" && f.VarName == varTarget)
                     {
                         result.Element |= SceneElement.NpcDespawn;
+                        f.IsKeyFunction = true;
                     }
                     if ((f.FuncName == "PlayActionTimeline" || f.FuncName == "TurnTo" || f.FuncName == "LookAt" || f.FuncName == "WalkOut") && f.VarName == varTarget)
                     {
@@ -243,14 +251,14 @@ namespace FFXIVTheMovie.ParserV3
             FuncNameToSceneElementTable.Add("SystemTalk", SceneElement.SystemTalk);
             FuncNameToSceneElementTable.Add("CancelEventScene", SceneElement.CanCancel);
             FuncNameToSceneElementTable.Add("SetWeddingFestivalParam", SceneElement.SetWeddingFestivalParam);
+            FuncNameToSceneElementTable.Add("BindCharacter", SceneElement.ENpcBind);
         }
         public int SceneNumber;
         public string SceneFunctionName => $"Scene{SceneNumber:00000}";
         public List<LuaFunctionCall> FunctionList = new List<LuaFunctionCall>();
         public SceneType Type;
-        public object TypeParam1;
-        public object TypeParam2;
         public SceneElement Element;
+        public Dictionary<string, object> ParamTable = new Dictionary<string, object>();
         public string Identity = "unknown";
         public bool IsIdentityCompatible(string id)
         {
@@ -290,6 +298,7 @@ namespace FFXIVTheMovie.ParserV3
             SystemTalk = 1 << 18,
             CanCancel = 1 << 19,
             SetWeddingFestivalParam = 1 << 20,
+            ENpcBind = 1 << 21,
         }
 
         public override string ToString()
@@ -307,10 +316,25 @@ namespace FFXIVTheMovie.ParserV3
             public string VarName;
             public string FuncName;
             public List<string> ArgList = new List<string>();
+            public bool IsKeyFunction;
 
             public override string ToString()
             {
-                return $"{VarName}.{FuncName}()";
+                return $"{VarName}.{FuncName}({(ArgList.Count > 0 ? "..." : "")})";
+            }
+
+            public string ToDetailString()
+            {
+                var builder = new StringBuilder();
+                builder.Append($"{VarName}.{FuncName}(");
+                for (int i = 0; i < ArgList.Count; i++)
+                {
+                    if (i > 0)
+                        builder.Append(", ");
+                    builder.Append(ArgList[i]);
+                }
+                builder.Append(")");
+                return builder.ToString();
             }
         }
     }

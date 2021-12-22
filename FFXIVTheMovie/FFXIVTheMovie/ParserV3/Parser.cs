@@ -13,6 +13,8 @@ namespace FFXIVTheMovie.ParserV3
     using static FFXIVTheMovie.ParserV3.Sequence;
     public class Parser
     {
+        public static readonly bool CppOutputExtraInfo = false;
+
         string questId;
         string outputFolder;
         List<string> inputCpp;
@@ -526,6 +528,26 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         if (current != null)
                         {
+                            if (CppOutputExtraInfo)
+                            {
+                                outputCpp.Add($"  //Key functions found in scene {current.SceneNumber}");
+                                foreach (var f in current.FunctionList)
+                                {
+                                    if (f.IsKeyFunction)
+                                    {
+                                        outputCpp.Add($"  //{f.ToDetailString()}");
+                                        if (current.ParamTable.ContainsKey("TradeItem"))
+                                        {
+                                            outputCpp.Add("    //TradeItem:");
+                                            var itemTable = current.ParamTable["TradeItem"] as Dictionary<string, int>;
+                                            foreach (var itemEntry in itemTable)
+                                            {
+                                                outputCpp.Add($"      //{itemEntry.Key} = {itemEntry.Value}");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             outputCpp.Add($"  void {current.SceneFunctionName}( Entity::Player& player )");
                             outputCpp.Add("  {");
                             outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling {current}\" );");
@@ -1204,9 +1226,9 @@ namespace FFXIVTheMovie.ParserV3
         {
             foreach (var scene in sceneList)
             {
-                if (scene.Type == LuaScene.SceneType.NpcTrade && scene.TypeParam1 != null)
+                if (scene.Type == LuaScene.SceneType.NpcTrade && scene.ParamTable.ContainsKey("TradeItem"))
                 {
-                    var itemTable = scene.TypeParam1 as Dictionary<string, int>;
+                    var itemTable = scene.ParamTable["TradeItem"] as Dictionary<string, int>;
                     foreach (var entry in itemTable)
                     {
                         if (!eventItemMaxStackTable.ContainsKey(entry.Key))
