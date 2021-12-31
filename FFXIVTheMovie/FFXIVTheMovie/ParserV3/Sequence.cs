@@ -159,12 +159,12 @@ namespace FFXIVTheMovie.ParserV3
 
             public override string ToString()
             {
-                return $"SEQ_{Owner.SeqNumber}: {TargetObject}, {(Var != null ? Var.ToString() : "<null>")}{((ConditionBranch || EmoteBranch.HasValue) ? ", Branch" : "")}, {EntryScene}";
+                return $"SEQ_{Owner.SeqNumber}: {TargetObject}, {(Var != null ? Var.ToString() : "<No Var>")}, {(Flag != null ? Flag.ToString() : "<No Flag>")}{((ConditionBranch || EmoteBranch.HasValue) ? ", Branch" : "")}, {EntryScene}";
             }
 
             public string ToSimpleString()
             {
-                return $"SEQ_{Owner.SeqNumber}: {TargetObject}, {(Var != null ? Var.ToString() : "<null>")}{((ConditionBranch || EmoteBranch.HasValue) ? ", Branch" : "")}";
+                return $"SEQ_{Owner.SeqNumber}: {TargetObject}, {(Var != null ? Var.ToString() : "<No Var>")}, {(Flag != null ? Flag.ToString() : "<No Flag>")}{((ConditionBranch || EmoteBranch.HasValue) ? ", Branch" : "")}";
             }
 
             public bool IsPrefferedGroup(SceneGroup sceneGroup)
