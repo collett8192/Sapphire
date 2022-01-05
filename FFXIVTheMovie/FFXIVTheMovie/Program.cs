@@ -49,7 +49,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("ManFst408");
+            //list.Add("ManFst503");
 
             if (list.Count == 0)
             {
@@ -169,6 +169,26 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hints and flags used to parse certain quests, do not modify them.
+                case "XxaFst502":
+                    {
+                        result.Add("SCENE_3", "RAUBAHN");
+                        break;
+                    }
+                case "XxaUsc908":
+                    {
+                        result.Add("_ACTOR7", "E");
+                        result.Add("_ACTOR7E", "2|3,30");
+                        result.Add("_ACTOR8", "E");
+                        result.Add("_ACTOR8E", "2|3,30");
+                        result.Add("_ACTOR9", "E");
+                        result.Add("_ACTOR9E", "2|3,30");
+                        break;
+                    }
+                case "GaiUsc901":
+                    {
+                        result.Add("SCENE_3", "ADALBERT");
+                        break;
+                    }
                 case "ManFst407":
                     {
                         result.Add("WARP_SLAFBORN", "156|0.64|-158.5|13.4|3.14|false");

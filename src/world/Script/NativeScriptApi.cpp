@@ -46,11 +46,6 @@ namespace Sapphire::ScriptAPI
     int mode = 1;
     if( player.getCurrentQuestBattle() )
       mode = 2;
-    if( index > 8 )
-    {
-      player.sendUrgent( "Something is wrong, check the script." );
-      return;
-    }
     auto nextScene = sceneList[ index + 1 ];
     if( nextScene == 0 )
     {
@@ -62,10 +57,12 @@ namespace Sapphire::ScriptAPI
         case 1:
         {
           Sapphire::Common::Service< Sapphire::Scripting::ScriptMgr >::ref().getNativeScriptHandler().getScript< InstanceContentScript >( instance->getDirectorId() )->the_movie_on_content_skipped( player );
+          break;
         }
         case 2:
         {
           Sapphire::Common::Service< Sapphire::Scripting::ScriptMgr >::ref().getNativeScriptHandler().getScript< QuestBattleScript >( instance->getDirectorId() )->the_movie_on_content_skipped( player );
+          break;
         }
       }
     }

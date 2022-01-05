@@ -2,6 +2,14 @@
 #include <Territory/InstanceContent.h>
 
 using namespace Sapphire;
+//===========THE_MOVIE start============
+#include <Actor/Player.h>
+
+const uint32_t FFXIV_THE_MOVIE_INSTANCE_QUEST_ID = 66060;
+const uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_REQUIRED = 2;
+const uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_TARGET = 3;
+const uint32_t SCENE_LIST[] = { 281, 282, 283, 284, 118, 119, 120, 121, 123, 0 };
+//===========THE_MOVIE end============
 
 class ThePraetorium :
   public Sapphire::ScriptAPI::InstanceContentScript
@@ -39,7 +47,8 @@ public:
     instance.registerEObj( "sgvf_w_lvd_b0118_4", 2001135, 4326381, 4, { -196.318497f, -104.078903f, -0.786835f }, 1.000000f, 0.000000f ); 
     // States -> vf_bextwall_on (id: 3) vf_bextwall_of (id: 4) 
     instance.registerEObj( "unknown_10", 2001766, 4175265, 4, { -570.270081f, -268.000000f, 217.461197f }, 1.000000f, 0.000000f ); 
-    instance.registerEObj( "仮シド指令", 2000806, 0, 4, { 217.957397f, 46.000000f, -11.597380f }, 1.000000f, 0.000000f ); 
+    //THE_MOVIE: name of the next obj is changed to prevent compile error in certain locale
+    instance.registerEObj( "dummy_cid_order", 2000806, 0, 4, { 217.957397f, 46.000000f, -11.597380f }, 1.000000f, 0.000000f ); 
     instance.registerEObj( "Magitekterminal", 2000851, 0, 4, { 133.745193f, 22.964720f, -0.015320f }, 0.991760f, 0.000048f ); 
     instance.registerEObj( "Magitekterminal_1", 2000852, 0, 4, { 134.477707f, 7.614197f, -0.045776f }, 0.991760f, 0.000048f ); 
     instance.registerEObj( "Magitekterminal_2", 2000856, 0, 4, { 145.769394f, 21.988159f, 7.095398f }, 0.991760f, 0.000048f ); 
@@ -134,14 +143,50 @@ public:
 
   void onUpdate( InstanceContent& instance, uint64_t tickCount ) override
   {
+    //===========THE_MOVIE start============
+    while( instance.getCustomVar( 0 ) < instance.getCustomVar( 1 ) )
+    {
+      auto p = instance.getPlayer( instance.getCustomVar( 2 + instance.getCustomVar( 0 ) ) );
+
+      if( p && p->getQuestSeq( FFXIV_THE_MOVIE_INSTANCE_QUEST_ID ) == FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_REQUIRED )
+      {
+        p->sendUrgent( "skipping dungeon..." );
+        p->eventStart( p->getId(), instance.getDirectorId(), Event::EventHandler::EnterTerritory, 1, p->getZoneId() );
+        p->playScene( instance.getDirectorId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, 0, 1, SCENE_LIST[ 0 ],
+          std::bind( &ScriptObject::the_movie_callback, this, std::placeholders::_1, std::placeholders::_2, FFXIV_THE_MOVIE_INSTANCE_QUEST_ID, FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_TARGET, SCENE_LIST, 0 ) );
+      }
+
+      instance.setCustomVar( 0, instance.getCustomVar( 0 ) + 1 );
+    }
+    //===========THE_MOVIE end============
 
   }
 
   void onEnterTerritory( InstanceContent& instance, Entity::Player& player, uint32_t eventId, uint16_t param1,
                          uint16_t param2 ) override
   {
+    //===========THE_MOVIE start============
+    instance.setCustomVar( 2 + instance.getCustomVar( 1 ), player.getId() );
+    instance.setCustomVar( 1, instance.getCustomVar( 1 ) + 1 );
+    //===========THE_MOVIE end============
 
   }
+  //===========THE_MOVIE start============
+  void onDebug( Entity::Player& player, uint32_t param ) override
+  {
+    auto instance = player.getCurrentInstance();
+    if( !instance || instance->getDirectorId() != getId() )
+      return;
+
+    player.eventStart( player.getId(), instance->getDirectorId(), Event::EventHandler::EnterTerritory, 1, player.getZoneId() );
+    player.playScene( instance->getDirectorId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, 0, 1, param, nullptr );
+  }
+  bool the_movie_on_content_skipped( Sapphire::Entity::Player& player ) override
+  {
+    player.enterPredefinedPrivateInstance( 212 );
+    return true;
+  }
+  //===========THE_MOVIE end============
 
 };
 
