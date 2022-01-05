@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.3
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -150,6 +150,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -178,12 +179,14 @@ private:
     if( player.getQuestUI8AL( getId() ) == 2 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
+      player.setQuestBitFlag8( getId(), 2, false );
       player.updateQuest( getId(), 255 );
       player.setQuestUI8BH( getId(), 2 );
     }
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -195,7 +198,7 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ARMELLE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -205,57 +208,59 @@ private:
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_1: EOBJECT0, UI8AL = 2, Flag8(1)=True
   {
     player.sendDebug( "SubFst073:65923 calling Scene00003: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+    player.setQuestBitFlag8( getId(), 1, true );
     checkProgressSeq1( player );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_1: EOBJECT1, UI8AL = 2, Flag8(2)=True
   {
     player.sendDebug( "SubFst073:65923 calling Scene00005: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+    player.setQuestBitFlag8( getId(), 2, true );
     checkProgressSeq1( player );
   }
 
-  void Scene00007( Entity::Player& player )
+  void Scene00007( Entity::Player& player ) //SEQ_1: EOBJECT2, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00007: Normal(None), id=unknown" );
     checkProgressSeq1( player );
   }
 
-  void Scene00009( Entity::Player& player )
+  void Scene00009( Entity::Player& player ) //SEQ_1: EOBJECT3, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00009: Normal(None), id=unknown" );
     checkProgressSeq1( player );
   }
 
-  void Scene00011( Entity::Player& player )
+  void Scene00011( Entity::Player& player ) //SEQ_1: EOBJECT4, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00011: Normal(None), id=unknown" );
     checkProgressSeq1( player );
   }
 
-  void Scene00014( Entity::Player& player )
+  void Scene00014( Entity::Player& player ) //SEQ_1: EOBJECT5, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00014: Normal(None), id=unknown" );
     checkProgressSeq1( player );
   }
 
-  void Scene00017( Entity::Player& player )
+  void Scene00017( Entity::Player& player ) //SEQ_1: EOBJECT6, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00017: Normal(None), id=unknown" );
     checkProgressSeq1( player );
   }
 
-  void Scene00020( Entity::Player& player )
+  void Scene00020( Entity::Player& player ) //SEQ_1: EVENTRANGE0, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00020: Normal(None), id=unknown" );
     checkProgressSeq1( player );
   }
 
-  void Scene00022( Entity::Player& player )
+  void Scene00022( Entity::Player& player ) //SEQ_1: ENEMY0, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00022: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -265,7 +270,7 @@ private:
     player.playScene( getId(), 22, NONE, callback );
   }
 
-  void Scene00023( Entity::Player& player )
+  void Scene00023( Entity::Player& player ) //SEQ_255: ACTOR1, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00023: NpcTrade(Talk, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -277,7 +282,7 @@ private:
     };
     player.playScene( getId(), 23, NONE, callback );
   }
-  void Scene00024( Entity::Player& player )
+  void Scene00024( Entity::Player& player ) //SEQ_255: ACTOR1, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00024: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=KEITHA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -293,22 +298,22 @@ private:
     player.playScene( getId(), 24, NONE, callback );
   }
 
-  void Scene00028( Entity::Player& player )
+  void Scene00028( Entity::Player& player ) //SEQ_255: EOBJECT2, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00028: Normal(None), id=unknown" );
   }
 
-  void Scene00031( Entity::Player& player )
+  void Scene00031( Entity::Player& player ) //SEQ_255: EOBJECT3, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00031: Normal(None), id=unknown" );
   }
 
-  void Scene00034( Entity::Player& player )
+  void Scene00034( Entity::Player& player ) //SEQ_255: EOBJECT4, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00034: Normal(None), id=unknown" );
   }
 
-  void Scene00037( Entity::Player& player )
+  void Scene00037( Entity::Player& player ) //SEQ_255: EOBJECT5, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst073:65923 calling Scene00037: Normal(None), id=unknown" );
   }

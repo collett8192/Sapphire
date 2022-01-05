@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -42,7 +42,7 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=NERO
         break;
       }
@@ -65,28 +65,28 @@ private:
       }
       case 2:
       {
-        Scene00004( player ); // Scene00004: Normal(Talk, FadeIn, TargetCanMove), id=RAMMBROES
+        if( type != 2 ) Scene00004( player ); // Scene00004: Normal(Talk, FadeIn, TargetCanMove), id=RAMMBROES
         break;
       }
       //seq 3 event item ITEM0 = UI8BL max stack 1
       //seq 3 event item ITEM1 = UI8CH max stack 1
       case 3:
       {
-        Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=NERO
+        if( type != 2 ) Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=NERO
         break;
       }
       //seq 4 event item ITEM0 = UI8BH max stack 1
       //seq 4 event item ITEM1 = UI8BL max stack 1
       case 4:
       {
-        Scene00006( player ); // Scene00006: Normal(Talk, TargetCanMove), id=RAMMBROES
+        if( type != 2 ) Scene00006( player ); // Scene00006: Normal(Talk, TargetCanMove), id=RAMMBROES
         break;
       }
       //seq 5 event item ITEM2 = UI8BL max stack 1
       //seq 5 event item ITEM3 = UI8CH max stack 1
       case 5:
       {
-        Scene00007( player ); // Scene00007: NpcTrade(Talk, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00007( player ); // Scene00007: NpcTrade(Talk, TargetCanMove), id=unknown
         // +Callback Scene00008: Normal(Talk, TargetCanMove), id=RAMMBROES
         break;
       }
@@ -94,7 +94,7 @@ private:
       //seq 255 event item ITEM3 = UI8BL max stack 1
       case 255:
       {
-        Scene00009( player ); // Scene00009: NpcTrade(Talk, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00009( player ); // Scene00009: NpcTrade(Talk, TargetCanMove), id=unknown
         // +Callback Scene00010: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RAMMBROES
         break;
       }
@@ -118,6 +118,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -146,6 +147,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 2 );
     }
   }
@@ -176,7 +178,7 @@ private:
     player.setQuestUI8BL( getId(), 1 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -188,7 +190,7 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=NERO" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -198,12 +200,13 @@ private:
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_1: ACTOR1, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00002: Normal(Talk, FadeIn, TargetCanMove, AutoFadeIn), id=RAMMBROES" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq1( player );
       player.sendDebug( "Finished with AutoFadeIn scene, calling forceZoneing..." );
       player.eventFinish( getId(), 1 );
@@ -212,7 +215,7 @@ private:
     player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_1: ACTOR0, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00003: Normal(CutScene, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -224,7 +227,7 @@ private:
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) //SEQ_2: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00004: Normal(Talk, FadeIn, TargetCanMove), id=RAMMBROES" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -234,7 +237,7 @@ private:
     player.playScene( getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_3: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00005: Normal(Talk, TargetCanMove), id=NERO" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -244,7 +247,7 @@ private:
     player.playScene( getId(), 5, NONE, callback );
   }
 
-  void Scene00006( Entity::Player& player )
+  void Scene00006( Entity::Player& player ) //SEQ_4: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00006: Normal(Talk, TargetCanMove), id=RAMMBROES" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -254,7 +257,7 @@ private:
     player.playScene( getId(), 6, NONE, callback );
   }
 
-  void Scene00007( Entity::Player& player )
+  void Scene00007( Entity::Player& player ) //SEQ_5: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00007: NpcTrade(Talk, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -266,7 +269,7 @@ private:
     };
     player.playScene( getId(), 7, NONE, callback );
   }
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) //SEQ_5: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00008: Normal(Talk, TargetCanMove), id=RAMMBROES" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -276,7 +279,7 @@ private:
     player.playScene( getId(), 8, NONE, callback );
   }
 
-  void Scene00009( Entity::Player& player )
+  void Scene00009( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00009: NpcTrade(Talk, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -288,7 +291,7 @@ private:
     };
     player.playScene( getId(), 9, NONE, callback );
   }
-  void Scene00010( Entity::Player& player )
+  void Scene00010( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd201:66735 calling Scene00010: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RAMMBROES" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

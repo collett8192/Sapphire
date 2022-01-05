@@ -1,5 +1,4 @@
-// FFXIVTheMovie.ParserV3.3
-// simple method used
+// FFXIVTheMovie.ParserV3.6
 // fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
@@ -37,14 +36,14 @@ private:
       //seq 1 event item ITEM0 = UI8BH max stack 5
       case 1:
       {
-        if( type != 2 ) Scene00001( player ); // Scene00001: NpcTrade(Talk, TargetCanMove), id=BENEGER
-        // +Callback Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=BENEGER
+        // empty entry
         break;
       }
       //seq 255 event item ITEM0 = UI8BH max stack 5
       case 255:
       {
-        // empty entry
+        if( type != 2 ) Scene00001( player ); // Scene00001: NpcTrade(Talk, TargetCanMove), id=BENEGER
+        // +Callback Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=BENEGER
         break;
       }
       default:
@@ -67,6 +66,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -88,15 +88,16 @@ public:
 private:
   void checkProgressSeq0( Entity::Player& player )
   {
-    player.updateQuest( getId(), 1 );
+    player.updateQuest( getId(), 255 );
     player.setQuestUI8BH( getId(), 5 );
   }
   void checkProgressSeq1( Entity::Player& player )
   {
     player.updateQuest( getId(), 255 );
+    player.setQuestUI8BH( getId(), 5 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubWil121:66167 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=CAITLYN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -109,7 +110,8 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00001( Entity::Player& player )
+
+  void Scene00001( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubWil121:66167 calling Scene00001: NpcTrade(Talk, TargetCanMove), id=BENEGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -121,7 +123,7 @@ private:
     };
     player.playScene( getId(), 1, NONE, callback );
   }
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubWil121:66167 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=BENEGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -136,7 +138,6 @@ private:
     };
     player.playScene( getId(), 2, NONE, callback );
   }
-
 };
 
 EXPOSE_SCRIPT( SubWil121 );

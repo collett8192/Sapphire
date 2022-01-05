@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -29,25 +29,25 @@ public:
   //UNLOCKIMAGELEVE = 31
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=QINALYEHGA
-        // +Callback Scene00001: Normal(Talk), id=QINALYEHGA
-        // +Callback Scene00002: Normal(Talk, QuestAccept), id=QINALYEHGA
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=QINALYEHGA
+        // +Callback Scene00001: Normal(Talk, TargetCanMove), id=QINALYEHGA
+        // +Callback Scene00002: Normal(Talk, QuestAccept, TargetCanMove, SystemTalk), id=QINALYEHGA
         break;
       }
       case 1:
       {
-        Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=QINALYEHGA
+        if( type != 2 ) Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=QINALYEHGA
         break;
       }
       case 255:
       {
-        Scene00004( player ); // Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=QINALYEHGA
+        if( type != 2 ) Scene00004( player ); // Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=QINALYEHGA
         // +Callback Scene00005: Normal(Talk, TargetCanMove), id=QINALYEHGA
         break;
       }
@@ -71,6 +71,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -81,7 +82,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -99,7 +100,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst071:65757 calling Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=QINALYEHGA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -111,18 +112,18 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
-    player.sendDebug( "SubFst071:65757 calling [BranchTrue]Scene00001: Normal(Talk), id=QINALYEHGA" );
+    player.sendDebug( "SubFst071:65757 calling Scene00001: Normal(Talk, TargetCanMove), id=QINALYEHGA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       Scene00002( player );
     };
     player.playScene( getId(), 1, NONE, callback );
   }
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
-    player.sendDebug( "SubFst071:65757 calling [BranchChain]Scene00002: Normal(Talk, QuestAccept), id=QINALYEHGA" );
+    player.sendDebug( "SubFst071:65757 calling Scene00002: Normal(Talk, QuestAccept, TargetCanMove, SystemTalk), id=QINALYEHGA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       checkProgressSeq0( player );
@@ -130,7 +131,7 @@ private:
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst071:65757 calling Scene00003: Normal(Talk, TargetCanMove), id=QINALYEHGA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -140,7 +141,7 @@ private:
     player.playScene( getId(), 3, NONE, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst071:65757 calling Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=QINALYEHGA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -152,13 +153,15 @@ private:
     };
     player.playScene( getId(), 4, NONE, callback );
   }
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
-    player.sendDebug( "SubFst071:65757 calling [BranchTrue]Scene00005: Normal(Talk, TargetCanMove), id=QINALYEHGA" );
+    player.sendDebug( "SubFst071:65757 calling Scene00005: Normal(Talk, TargetCanMove), id=QINALYEHGA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( player.giveQuestRewards( getId(), result.param3 ) )
+      {
         player.finishQuest( getId() );
+      }
     };
     player.playScene( getId(), 5, NONE, callback );
   }

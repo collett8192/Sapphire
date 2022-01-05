@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3.2
-// simple method used
+// FFXIVTheMovie.ParserV3.6
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -31,12 +31,12 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=AHTBYRM
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=AHTBYRM
         break;
       }
       case 255:
       {
-        Scene00001( player ); // Scene00001: Normal(Talk, TargetCanMove), id=HALDBRODA
+        if( type != 2 ) Scene00001( player ); // Scene00001: Normal(Talk, TargetCanMove), id=unknown
         // +Callback Scene00100: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=HALDBRODA
         break;
       }
@@ -60,6 +60,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -84,7 +85,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea115:65948 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=AHTBYRM" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -97,16 +98,16 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
-    player.sendDebug( "SubSea115:65948 calling Scene00001: Normal(Talk, TargetCanMove), id=HALDBRODA" );
+    player.sendDebug( "SubSea115:65948 calling Scene00001: Normal(Talk, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       Scene00100( player );
     };
     player.playScene( getId(), 1, NONE, callback );
   }
-  void Scene00100( Entity::Player& player )
+  void Scene00100( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea115:65948 calling Scene00100: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=HALDBRODA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

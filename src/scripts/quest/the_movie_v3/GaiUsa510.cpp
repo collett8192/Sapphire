@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.3
+// FFXIVTheMovie.ParserV3.6
 // fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
@@ -27,12 +27,12 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=GISILBEHRT
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=GISILBEHRT
         break;
       }
       case 255:
       {
-        Scene00001( player ); // Scene00001: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MINFILIA
+        if( type != 2 ) Scene00001( player ); // Scene00001: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MINFILIA
         break;
       }
       default:
@@ -55,12 +55,13 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
   void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
   {
-    //onProgress( player, npcId, 0, 2, 0 );
+    onProgress( player, npcId, 0, 2, 0 );
   }
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
@@ -79,7 +80,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsa510:66298 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=GISILBEHRT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -92,7 +93,7 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsa510:66298 calling Scene00001: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MINFILIA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

@@ -39,12 +39,12 @@ namespace FFXIVTheMovie.ParserV3
                         continue;
                     }
 
+                    string[] varNames = null;
+                    string[] varValues = null;
                     if (line[0] == 'L' && line.IndexOf("=") >= 0)
                     {
                         var varName = line.GetStringBetween(null, "=");
                         var varValue = line.GetStringBetween("=", null);
-                        string[] varNames = null;
-                        string[] varValues = null;
                         if (varName.Contains(','))
                         {
                             varNames = varName.Split(',');
@@ -59,6 +59,12 @@ namespace FFXIVTheMovie.ParserV3
                         {
                             throw new Exception($"[LuaScene]Unexpected local var def, check script.");
                         }
+                        line = line.GetStringBetween(" = ", null);
+                    }
+                    Action updateVars = () =>
+                    {
+                        if (varNames == null || varValues == null)
+                            return;
                         for (int i = 0; i < varNames.Length; i++)
                         {
                             varNames[i] = varNames[i].Trim();
@@ -74,8 +80,7 @@ namespace FFXIVTheMovie.ParserV3
                                 Console.WriteLine($"[LuaScene]Unknown local var {varNames[i]}.");
                             }
                         }
-                        line = line.GetStringBetween(" = ", null);
-                    }
+                    };
 
                     if (line.StartsWith("if "))
                     {
@@ -94,12 +99,15 @@ namespace FFXIVTheMovie.ParserV3
                             throw new Exception($"[LuaScene]Empty return line.");
                         foreach (var r in returnVarList)
                         {
+                            if (localVarTable != null && localVarTable.ContainsKey(r))
+                                continue;
                             var f = ParseLuaFunction(r.ExpandLocalVar(localVarTable));
                             if (f != null)
                             {
                                 result.FunctionList.Add(f);
                             }
                         }
+                        updateVars();
                         continue;
                     }
 
@@ -107,10 +115,9 @@ namespace FFXIVTheMovie.ParserV3
                     if (luaFunction != null)
                     {
                         result.FunctionList.Add(luaFunction);
-                        continue;
                     }
+                    updateVars();
                 }
-
                 foreach (var f in result.FunctionList)
                 {
                     if (FuncNameToSceneTypeTable.ContainsKey(f.FuncName))

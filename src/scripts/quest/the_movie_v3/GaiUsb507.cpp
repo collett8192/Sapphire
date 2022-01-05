@@ -1,7 +1,7 @@
-// FFXIVTheMovie.ParserV3.3
+// FFXIVTheMovie.ParserV3.6
 // id hint used:
 //ACTOR17 = NPCB
-//_ACTOR17 SET!!
+//_ACTOR17 = S
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -69,7 +69,7 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=ELUNED
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=ELUNED
         // +Callback Scene00001: Normal(QuestAccept), id=unknown
         break;
       }
@@ -468,12 +468,13 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
   void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
   {
-    //onProgress( player, npcId, 0, 2, 0 );
+    onProgress( player, npcId, 0, 2, 0 );
   }
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
@@ -496,6 +497,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag16( getId(), 1, false );
       player.updateQuest( getId(), 2 );
     }
   }
@@ -504,6 +506,10 @@ private:
     if( player.getQuestUI8AL( getId() ) == 4 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag16( getId(), 1, false );
+      player.setQuestBitFlag16( getId(), 2, false );
+      player.setQuestBitFlag16( getId(), 3, false );
+      player.setQuestBitFlag16( getId(), 4, false );
       player.updateQuest( getId(), 3 );
       player.setQuestUI8BH( getId(), 4 );
     }
@@ -513,6 +519,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.setQuestUI8BH( getId(), 0 );
       player.updateQuest( getId(), 4 );
     }
@@ -528,6 +535,10 @@ private:
             player.setQuestUI8BH( getId(), 0 );
             player.setQuestUI8BL( getId(), 0 );
             player.setQuestUI8CH( getId(), 0 );
+            player.setQuestBitFlag16( getId(), 1, false );
+            player.setQuestBitFlag16( getId(), 2, false );
+            player.setQuestBitFlag16( getId(), 11, false );
+            player.setQuestBitFlag16( getId(), 12, false );
             player.setQuestUI8CL( getId(), 0 );
             player.setQuestUI8DH( getId(), 0 );
             player.updateQuest( getId(), 5 );
@@ -540,13 +551,14 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.setQuestUI8BH( getId(), 0 );
       player.setQuestUI8BL( getId(), 0 );
       player.updateQuest( getId(), 255 );
     }
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00000: Normal(Talk, QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=ELUNED" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -558,7 +570,7 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00001: Normal(QuestAccept), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -568,121 +580,126 @@ private:
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_1: ACTOR1, UI8AL = 1, Flag16(1)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00002: Normal(Talk, NpcDespawn, TargetCanMove), id=NPCA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag16( getId(), 1, true );
       checkProgressSeq1( player );
     };
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_1: ACTOR2, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00003: Normal(None), id=unknown" );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) //SEQ_1: ACTOR3, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00004: Normal(None), id=unknown" );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_1: ACTOR4, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00005: Normal(None), id=unknown" );
   }
 
-  void Scene00006( Entity::Player& player )
+  void Scene00006( Entity::Player& player ) //SEQ_1: ACTOR5, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00006: Normal(None), id=unknown" );
   }
 
-  void Scene00007( Entity::Player& player )
+  void Scene00007( Entity::Player& player ) //SEQ_1: ACTOR6, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00007: Normal(None), id=unknown" );
   }
 
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) //SEQ_1: ACTOR7, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00008: Normal(None), id=unknown" );
   }
 
-  void Scene00009( Entity::Player& player )
+  void Scene00009( Entity::Player& player ) //SEQ_1: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00009: Normal(None), id=unknown" );
   }
 
-  void Scene00010( Entity::Player& player )
+  void Scene00010( Entity::Player& player ) //SEQ_1: ACTOR9, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00010: Normal(None), id=unknown" );
   }
 
-  void Scene00011( Entity::Player& player )
+  void Scene00011( Entity::Player& player ) //SEQ_2: ACTOR10, UI8AL = 4, Flag16(1)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00011: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+    player.setQuestBitFlag16( getId(), 1, true );
     checkProgressSeq2( player );
   }
 
-  void Scene00012( Entity::Player& player )
+  void Scene00012( Entity::Player& player ) //SEQ_2: ACTOR11, UI8AL = 4, Flag16(2)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00012: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+    player.setQuestBitFlag16( getId(), 2, true );
     checkProgressSeq2( player );
   }
 
-  void Scene00013( Entity::Player& player )
+  void Scene00013( Entity::Player& player ) //SEQ_2: ACTOR12, UI8AL = 4, Flag16(3)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00013: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+    player.setQuestBitFlag16( getId(), 3, true );
     checkProgressSeq2( player );
   }
 
-  void Scene00014( Entity::Player& player )
+  void Scene00014( Entity::Player& player ) //SEQ_2: ACTOR13, UI8AL = 4, Flag16(4)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00014: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+    player.setQuestBitFlag16( getId(), 4, true );
     checkProgressSeq2( player );
   }
 
-  void Scene00015( Entity::Player& player )
+  void Scene00015( Entity::Player& player ) //SEQ_2: ACTOR2, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00015: Normal(None), id=unknown" );
   }
 
-  void Scene00016( Entity::Player& player )
+  void Scene00016( Entity::Player& player ) //SEQ_2: ACTOR7, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00016: Normal(None), id=unknown" );
   }
 
-  void Scene00017( Entity::Player& player )
+  void Scene00017( Entity::Player& player ) //SEQ_2: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00017: Normal(None), id=unknown" );
   }
 
-  void Scene00018( Entity::Player& player )
+  void Scene00018( Entity::Player& player ) //SEQ_2: ACTOR9, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00018: Normal(None), id=unknown" );
   }
 
-  void Scene00019( Entity::Player& player )
+  void Scene00019( Entity::Player& player ) //SEQ_2: ACTOR14, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00019: Normal(None), id=unknown" );
   }
 
-  void Scene00022( Entity::Player& player )
+  void Scene00022( Entity::Player& player ) //SEQ_2: ACTOR15, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00022: Normal(None), id=unknown" );
   }
 
-  void Scene00025( Entity::Player& player )
+  void Scene00025( Entity::Player& player ) //SEQ_2: ACTOR16, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00025: Normal(None), id=unknown" );
   }
 
-  void Scene00026( Entity::Player& player )
+  void Scene00026( Entity::Player& player ) //SEQ_2: ACTOR17, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00026: Normal(Talk, TargetCanMove), id=NPCB" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -691,7 +708,7 @@ private:
     player.playScene( getId(), 26, NONE, callback );
   }
 
-  void Scene00027( Entity::Player& player )
+  void Scene00027( Entity::Player& player ) //SEQ_3: ACTOR17, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00027: NpcTrade(Talk, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -703,102 +720,105 @@ private:
     };
     player.playScene( getId(), 27, NONE, callback );
   }
-  void Scene00028( Entity::Player& player )
+  void Scene00028( Entity::Player& player ) //SEQ_3: ACTOR17, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00028: Normal(Talk, TargetCanMove), id=NPCB" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq3( player );
     };
     player.playScene( getId(), 28, NONE, callback );
   }
 
-  void Scene00029( Entity::Player& player )
+  void Scene00029( Entity::Player& player ) //SEQ_3: ACTOR2, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00029: Normal(None), id=unknown" );
   }
 
-  void Scene00030( Entity::Player& player )
+  void Scene00030( Entity::Player& player ) //SEQ_3: ACTOR7, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00030: Normal(None), id=unknown" );
   }
 
-  void Scene00031( Entity::Player& player )
+  void Scene00031( Entity::Player& player ) //SEQ_3: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00031: Normal(None), id=unknown" );
   }
 
-  void Scene00032( Entity::Player& player )
+  void Scene00032( Entity::Player& player ) //SEQ_3: ACTOR9, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00032: Normal(None), id=unknown" );
   }
 
-  void Scene00033( Entity::Player& player )
+  void Scene00033( Entity::Player& player ) //SEQ_3: ACTOR14, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00033: Normal(None), id=unknown" );
   }
 
-  void Scene00034( Entity::Player& player )
+  void Scene00034( Entity::Player& player ) //SEQ_3: ACTOR15, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00034: Normal(None), id=unknown" );
   }
 
-  void Scene00035( Entity::Player& player )
+  void Scene00035( Entity::Player& player ) //SEQ_3: ACTOR16, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00035: Normal(None), id=unknown" );
   }
 
-  void Scene00036( Entity::Player& player )
+  void Scene00036( Entity::Player& player ) //SEQ_4: ACTOR18, UI8AL = 1, Flag16(1)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00036: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), 1 );
+    player.setQuestBitFlag16( getId(), 1, true );
     checkProgressSeq4( player );
   }
 
-  void Scene00037( Entity::Player& player )
+  void Scene00037( Entity::Player& player ) //SEQ_4: ACTOR19, UI8BH = 1, Flag16(2)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00037: Normal(None), id=unknown" );
     player.setQuestUI8BH( getId(), 1 );
+    player.setQuestBitFlag16( getId(), 2, true );
     checkProgressSeq4( player );
   }
 
-  void Scene00038( Entity::Player& player )
+  void Scene00038( Entity::Player& player ) //SEQ_4: ACTOR20, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00038: Normal(None), id=unknown" );
   }
 
-  void Scene00039( Entity::Player& player )
+  void Scene00039( Entity::Player& player ) //SEQ_4: ACTOR21, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00039: Normal(None), id=unknown" );
   }
 
-  void Scene00040( Entity::Player& player )
+  void Scene00040( Entity::Player& player ) //SEQ_4: ACTOR22, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00040: Normal(None), id=unknown" );
   }
 
-  void Scene00041( Entity::Player& player )
+  void Scene00041( Entity::Player& player ) //SEQ_4: ACTOR23, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00041: Normal(None), id=unknown" );
   }
 
-  void Scene00042( Entity::Player& player )
+  void Scene00042( Entity::Player& player ) //SEQ_4: ACTOR14, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00042: Normal(None), id=unknown" );
   }
 
-  void Scene00043( Entity::Player& player )
+  void Scene00043( Entity::Player& player ) //SEQ_4: ACTOR15, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00043: Normal(None), id=unknown" );
   }
 
-  void Scene00046( Entity::Player& player )
+  void Scene00046( Entity::Player& player ) //SEQ_4: ACTOR16, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00046: Normal(None), id=unknown" );
   }
 
-  void Scene00047( Entity::Player& player )
+  void Scene00047( Entity::Player& player ) //SEQ_4: ACTOR17, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00047: Normal(Talk, TargetCanMove), id=NPCB" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -807,21 +827,23 @@ private:
     player.playScene( getId(), 47, NONE, callback );
   }
 
-  void Scene00048( Entity::Player& player )
+  void Scene00048( Entity::Player& player ) //SEQ_4: ACTOR24, UI8BL = 1, Flag16(11)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00048: Normal(None), id=unknown" );
     player.setQuestUI8BL( getId(), 1 );
+    player.setQuestBitFlag16( getId(), 11, true );
     checkProgressSeq4( player );
   }
 
-  void Scene00051( Entity::Player& player )
+  void Scene00051( Entity::Player& player ) //SEQ_4: ACTOR25, UI8CH = 1, Flag16(12)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00051: Normal(None), id=unknown" );
     player.setQuestUI8CH( getId(), 1 );
+    player.setQuestBitFlag16( getId(), 12, true );
     checkProgressSeq4( player );
   }
 
-  void Scene00052( Entity::Player& player )
+  void Scene00052( Entity::Player& player ) //SEQ_5: ACTOR17, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00052: NpcTrade(Talk, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -833,53 +855,54 @@ private:
     };
     player.playScene( getId(), 52, NONE, callback );
   }
-  void Scene00053( Entity::Player& player )
+  void Scene00053( Entity::Player& player ) //SEQ_5: ACTOR17, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00053: Normal(Talk, TargetCanMove), id=NPCB" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq5( player );
     };
     player.playScene( getId(), 53, NONE, callback );
   }
 
-  void Scene00054( Entity::Player& player )
+  void Scene00054( Entity::Player& player ) //SEQ_5: ACTOR20, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00054: Normal(None), id=unknown" );
   }
 
-  void Scene00055( Entity::Player& player )
+  void Scene00055( Entity::Player& player ) //SEQ_5: ACTOR21, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00055: Normal(None), id=unknown" );
   }
 
-  void Scene00056( Entity::Player& player )
+  void Scene00056( Entity::Player& player ) //SEQ_5: ACTOR22, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00056: Normal(None), id=unknown" );
   }
 
-  void Scene00057( Entity::Player& player )
+  void Scene00057( Entity::Player& player ) //SEQ_5: ACTOR23, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00057: Normal(None), id=unknown" );
   }
 
-  void Scene00058( Entity::Player& player )
+  void Scene00058( Entity::Player& player ) //SEQ_5: ACTOR14, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00058: Normal(None), id=unknown" );
   }
 
-  void Scene00059( Entity::Player& player )
+  void Scene00059( Entity::Player& player ) //SEQ_5: ACTOR15, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00059: Normal(None), id=unknown" );
   }
 
-  void Scene00060( Entity::Player& player )
+  void Scene00060( Entity::Player& player ) //SEQ_5: ACTOR16, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00060: Normal(None), id=unknown" );
   }
 
-  void Scene00061( Entity::Player& player )
+  void Scene00061( Entity::Player& player ) //SEQ_255: ACTOR0, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00061: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ELUNED" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -895,62 +918,62 @@ private:
     player.playScene( getId(), 61, NONE, callback );
   }
 
-  void Scene00062( Entity::Player& player )
+  void Scene00062( Entity::Player& player ) //SEQ_255: ACTOR26, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00062: Normal(None), id=unknown" );
   }
 
-  void Scene00063( Entity::Player& player )
+  void Scene00063( Entity::Player& player ) //SEQ_255: ACTOR20, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00063: Normal(None), id=unknown" );
   }
 
-  void Scene00064( Entity::Player& player )
+  void Scene00064( Entity::Player& player ) //SEQ_255: ACTOR21, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00064: Normal(None), id=unknown" );
   }
 
-  void Scene00065( Entity::Player& player )
+  void Scene00065( Entity::Player& player ) //SEQ_255: ACTOR22, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00065: Normal(None), id=unknown" );
   }
 
-  void Scene00066( Entity::Player& player )
+  void Scene00066( Entity::Player& player ) //SEQ_255: ACTOR23, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00066: Normal(None), id=unknown" );
   }
 
-  void Scene00067( Entity::Player& player )
+  void Scene00067( Entity::Player& player ) //SEQ_255: ACTOR27, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00067: Normal(None), id=unknown" );
   }
 
-  void Scene00068( Entity::Player& player )
+  void Scene00068( Entity::Player& player ) //SEQ_255: ACTOR28, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00068: Normal(None), id=unknown" );
   }
 
-  void Scene00069( Entity::Player& player )
+  void Scene00069( Entity::Player& player ) //SEQ_255: ACTOR29, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00069: Normal(None), id=unknown" );
   }
 
-  void Scene00070( Entity::Player& player )
+  void Scene00070( Entity::Player& player ) //SEQ_255: ACTOR14, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00070: Normal(None), id=unknown" );
   }
 
-  void Scene00071( Entity::Player& player )
+  void Scene00071( Entity::Player& player ) //SEQ_255: ACTOR15, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00071: Normal(None), id=unknown" );
   }
 
-  void Scene00072( Entity::Player& player )
+  void Scene00072( Entity::Player& player ) //SEQ_255: ACTOR16, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00072: Normal(None), id=unknown" );
   }
 
-  void Scene00073( Entity::Player& player )
+  void Scene00073( Entity::Player& player ) //SEQ_255: ACTOR17, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsb507:66412 calling Scene00073: Normal(Talk, TargetCanMove), id=NPCB" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

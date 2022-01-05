@@ -1,5 +1,4 @@
-// FFXIVTheMovie.ParserV3
-// simple method used
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -48,133 +47,151 @@ public:
   //SEQ2ACTOR0 = 4
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       //seq 0 event item ITEM0 = UI8BH max stack ?
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=AZUMYN
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=AZUMYN
+        // +Callback Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=AZUMYN
         break;
       }
       //seq 1 event item ITEM0 = UI8DL max stack ?
       case 1:
       {
-        if( actor == 2000772 || actorId == 2000772 ) // EOBJECT0 = unknown
+        if( param1 == 2000772 || param2 == 2000772 ) // EOBJECT0 = unknown
         {
-          // empty entry
+          Scene00001( player ); // Scene00001: Normal(Inventory), id=unknown
+          // +Callback Scene00100: Normal(Message), id=unknown
+          break;
         }
-        if( actor == 3782177 || actorId == 3782177 ) // ENEMY0 = unknown
+        if( param1 == 3782177 || param2 == 3782177 ) // ENEMY0 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 4 )
           {
             player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 3782179 || actorId == 3782179 ) // ENEMY1 = unknown
+        if( param1 == 3782179 || param2 == 3782179 ) // ENEMY1 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 4 )
           {
             player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 3782180 || actorId == 3782180 ) // ENEMY2 = unknown
+        if( param1 == 3782180 || param2 == 3782180 ) // ENEMY2 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 4 )
           {
             player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 3782187 || actorId == 3782187 ) // ENEMY3 = unknown
+        if( param1 == 3782187 || param2 == 3782187 ) // ENEMY3 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 4 )
           {
             player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 2000773 || actorId == 2000773 ) // EOBJECT1 = unknown
+        if( param1 == 2000773 || param2 == 2000773 ) // EOBJECT1 = unknown
         {
-          // empty entry
+          Scene00099( player ); // Scene00099: Normal(None), id=unknown
+          break;
         }
-        if( actor == 3782196 || actorId == 3782196 ) // ENEMY4 = unknown
-        {
-          if( player.getQuestUI8BL( getId() ) != 4 )
-          {
-            player.setQuestUI8BL( getId(), player.getQuestUI8BL( getId() ) + 1 );
-            checkProgressSeq1( player );
-          }
-        }
-        if( actor == 3782197 || actorId == 3782197 ) // ENEMY5 = unknown
+        if( param1 == 3782196 || param2 == 3782196 ) // ENEMY4 = unknown
         {
           if( player.getQuestUI8BL( getId() ) != 4 )
           {
             player.setQuestUI8BL( getId(), player.getQuestUI8BL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 3782198 || actorId == 3782198 ) // ENEMY6 = unknown
+        if( param1 == 3782197 || param2 == 3782197 ) // ENEMY5 = unknown
         {
           if( player.getQuestUI8BL( getId() ) != 4 )
           {
             player.setQuestUI8BL( getId(), player.getQuestUI8BL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 3782209 || actorId == 3782209 ) // ENEMY7 = unknown
+        if( param1 == 3782198 || param2 == 3782198 ) // ENEMY6 = unknown
         {
           if( player.getQuestUI8BL( getId() ) != 4 )
           {
             player.setQuestUI8BL( getId(), player.getQuestUI8BL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 2000774 || actorId == 2000774 ) // EOBJECT2 = unknown
+        if( param1 == 3782209 || param2 == 3782209 ) // ENEMY7 = unknown
         {
-          // empty entry
+          if( player.getQuestUI8BL( getId() ) != 4 )
+          {
+            player.setQuestUI8BL( getId(), player.getQuestUI8BL( getId() ) + 1 );
+            checkProgressSeq1( player );
+          }
+          break;
         }
-        if( actor == 3782220 || actorId == 3782220 ) // ENEMY8 = unknown
+        if( param1 == 2000774 || param2 == 2000774 ) // EOBJECT2 = unknown
+        {
+          Scene00002( player ); // Scene00002: Normal(Inventory), id=unknown
+          // +Callback Scene00098: Normal(Message), id=unknown
+          break;
+        }
+        if( param1 == 3782220 || param2 == 3782220 ) // ENEMY8 = unknown
         {
           if( player.getQuestUI8CL( getId() ) != 4 )
           {
             player.setQuestUI8CL( getId(), player.getQuestUI8CL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 3782386 || actorId == 3782386 ) // ENEMY9 = unknown
+        if( param1 == 3782386 || param2 == 3782386 ) // ENEMY9 = unknown
         {
           if( player.getQuestUI8CL( getId() ) != 4 )
           {
             player.setQuestUI8CL( getId(), player.getQuestUI8CL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 3782387 || actorId == 3782387 ) // ENEMY10 = unknown
+        if( param1 == 3782387 || param2 == 3782387 ) // ENEMY10 = unknown
         {
           if( player.getQuestUI8CL( getId() ) != 4 )
           {
             player.setQuestUI8CL( getId(), player.getQuestUI8CL( getId() ) + 1 );
             checkProgressSeq1( player );
           }
+          break;
         }
-        if( actor == 3782389 || actorId == 3782389 ) // ENEMY11 = unknown
+        if( param1 == 3782389 || param2 == 3782389 ) // ENEMY11 = unknown
         {
           if( player.getQuestUI8CL( getId() ) != 4 )
           {
-            player.setQuestUI8CL( getId(), player.getQuestUI8CL( getId() ) + 1 );
-            checkProgressSeq1( player );
+            Scene00097( player ); // Scene00097: Normal(None), id=unknown
           }
+          break;
         }
         break;
       }
       //seq 255 event item ITEM0 = UI8BH max stack ?
       case 255:
       {
-        Scene00004( player ); // Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=AZUMYN
+        if( type != 2 ) Scene00003( player ); // Scene00003: Normal(Inventory), id=unknown
+        // +Callback Scene00096: Normal(Message), id=unknown
         break;
       }
       default:
@@ -197,6 +214,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -207,7 +225,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -223,49 +241,33 @@ private:
   void checkProgressSeq1( Entity::Player& player )
   {
     if( player.getQuestUI8AL( getId() ) == 4 )
-      if( player.getQuestUI8AL( getId() ) == 4 )
-        if( player.getQuestUI8AL( getId() ) == 4 )
-          if( player.getQuestUI8AL( getId() ) == 4 )
-            if( player.getQuestUI8BL( getId() ) == 4 )
-              if( player.getQuestUI8BL( getId() ) == 4 )
-                if( player.getQuestUI8BL( getId() ) == 4 )
-                  if( player.getQuestUI8BL( getId() ) == 4 )
-                    if( player.getQuestUI8CL( getId() ) == 4 )
-                      if( player.getQuestUI8CL( getId() ) == 4 )
-                        if( player.getQuestUI8CL( getId() ) == 4 )
-                          if( player.getQuestUI8CL( getId() ) == 4 )
-                          {
-                            player.setQuestUI8AL( getId(), 0 );
-                            player.setQuestUI8AL( getId(), 0 );
-                            player.setQuestUI8AL( getId(), 0 );
-                            player.setQuestUI8AL( getId(), 0 );
-                            player.setQuestUI8BL( getId(), 0 );
-                            player.setQuestUI8BL( getId(), 0 );
-                            player.setQuestUI8BL( getId(), 0 );
-                            player.setQuestUI8BL( getId(), 0 );
-                            player.setQuestUI8CL( getId(), 0 );
-                            player.setQuestUI8CL( getId(), 0 );
-                            player.setQuestUI8CL( getId(), 0 );
-                            player.setQuestUI8CL( getId(), 0 );
-                            player.setQuestUI8DL( getId(), 0 );
-                            player.updateQuest( getId(), 255 );
-                          }
+      if( player.getQuestUI8BL( getId() ) == 4 )
+        if( player.getQuestUI8CL( getId() ) == 4 )
+        {
+          player.setQuestUI8AL( getId(), 0 );
+          player.setQuestUI8BL( getId(), 0 );
+          player.setQuestUI8CL( getId(), 0 );
+          player.setQuestBitFlag8( getId(), 1, false );
+          player.setQuestBitFlag8( getId(), 2, false );
+          player.setQuestBitFlag8( getId(), 3, false );
+          player.setQuestUI8DL( getId(), 0 );
+          player.updateQuest( getId(), 255 );
+        }
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea119:65952 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=AZUMYN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        checkProgressSeq0( player );
+        Scene00004( player );
       }
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea119:65952 calling Scene00004: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=AZUMYN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -273,10 +275,95 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 4, NONE, callback );
+  }
+
+  void Scene00001( Entity::Player& player ) //SEQ_1: EOBJECT0, <No Var>, Flag8(1)=True
+  {
+    player.sendDebug( "SubSea119:65952 calling Scene00001: Normal(Inventory), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00100( player );
+    };
+    player.playScene( getId(), 1, NONE, callback );
+  }
+  void Scene00100( Entity::Player& player ) //SEQ_1: EOBJECT0, <No Var>, Flag8(1)=True
+  {
+    player.sendDebug( "SubSea119:65952 calling Scene00100: Normal(Message), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      player.setQuestBitFlag8( getId(), 1, true );
+      checkProgressSeq1( player );
+    };
+    player.playScene( getId(), 100, NONE, callback );
+  }
+
+
+
+
+
+  void Scene00099( Entity::Player& player ) //SEQ_1: EOBJECT1, <No Var>, Flag8(2)=True
+  {
+    player.sendDebug( "SubSea119:65952 calling Scene00099: Normal(None), id=unknown" );
+    player.setQuestBitFlag8( getId(), 2, true );
+    checkProgressSeq1( player );
+  }
+
+
+
+
+
+  void Scene00002( Entity::Player& player ) //SEQ_1: EOBJECT2, <No Var>, Flag8(3)=True
+  {
+    player.sendDebug( "SubSea119:65952 calling Scene00002: Normal(Inventory), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00098( player );
+    };
+    player.playScene( getId(), 2, NONE, callback );
+  }
+  void Scene00098( Entity::Player& player ) //SEQ_1: EOBJECT2, <No Var>, Flag8(3)=True
+  {
+    player.sendDebug( "SubSea119:65952 calling Scene00098: Normal(Message), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      player.setQuestBitFlag8( getId(), 3, true );
+      checkProgressSeq1( player );
+    };
+    player.playScene( getId(), 98, NONE, callback );
+  }
+
+
+
+
+  void Scene00097( Entity::Player& player ) //SEQ_1: ENEMY11, UI8CL = 4, <No Flag>
+  {
+    player.sendDebug( "SubSea119:65952 calling Scene00097: Normal(None), id=unknown" );
+    player.setQuestUI8CL( getId(), player.getQuestUI8CL( getId() ) + 1 );
+    checkProgressSeq1( player );
+  }
+
+  void Scene00003( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
+  {
+    player.sendDebug( "SubSea119:65952 calling Scene00003: Normal(Inventory), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      Scene00096( player );
+    };
+    player.playScene( getId(), 3, NONE, callback );
+  }
+  void Scene00096( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
+  {
+    player.sendDebug( "SubSea119:65952 calling Scene00096: Normal(Message), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+    };
+    player.playScene( getId(), 96, NONE, callback );
   }
 };
 

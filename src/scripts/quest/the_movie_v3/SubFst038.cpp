@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.3
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -106,6 +106,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -138,6 +139,10 @@ private:
           player.setQuestUI8AL( getId(), 0 );
           player.setQuestUI8BH( getId(), 0 );
           player.setQuestUI8BL( getId(), 0 );
+          player.setQuestBitFlag8( getId(), 1, false );
+          player.setQuestBitFlag8( getId(), 2, false );
+          player.setQuestBitFlag8( getId(), 3, false );
+          player.setQuestBitFlag8( getId(), 4, false );
           player.setQuestUI8CH( getId(), 0 );
           player.setQuestUI8CL( getId(), 0 );
           player.setQuestUI8DH( getId(), 0 );
@@ -148,7 +153,7 @@ private:
         }
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst038:65711 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=MONRANGUIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -161,35 +166,39 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00099( Entity::Player& player )
+  void Scene00099( Entity::Player& player ) //SEQ_1: EOBJECT0, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "SubFst038:65711 calling Scene00099: Normal(None), id=unknown" );
     player.setQuestUI8AL( getId(), 1 );
+    player.setQuestBitFlag8( getId(), 1, true );
     checkProgressSeq1( player );
   }
 
-  void Scene00097( Entity::Player& player )
+  void Scene00097( Entity::Player& player ) //SEQ_1: EOBJECT1, UI8BH = 2, Flag8(2)=True
   {
     player.sendDebug( "SubFst038:65711 calling Scene00097: Normal(None), id=unknown" );
     player.setQuestUI8BH( getId(), player.getQuestUI8BH( getId() ) + 1 );
+    player.setQuestBitFlag8( getId(), 2, true );
     checkProgressSeq1( player );
   }
 
-  void Scene00095( Entity::Player& player )
+  void Scene00095( Entity::Player& player ) //SEQ_1: EOBJECT2, UI8BH = 2, Flag8(3)=True
   {
     player.sendDebug( "SubFst038:65711 calling Scene00095: Normal(None), id=unknown" );
     player.setQuestUI8BH( getId(), player.getQuestUI8BH( getId() ) + 1 );
+    player.setQuestBitFlag8( getId(), 3, true );
     checkProgressSeq1( player );
   }
 
-  void Scene00093( Entity::Player& player )
+  void Scene00093( Entity::Player& player ) //SEQ_1: EOBJECT3, UI8BL = 1, Flag8(4)=True
   {
     player.sendDebug( "SubFst038:65711 calling Scene00093: Normal(None), id=unknown" );
     player.setQuestUI8BL( getId(), 1 );
+    player.setQuestBitFlag8( getId(), 4, true );
     checkProgressSeq1( player );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst038:65711 calling Scene00005: NpcTrade(Talk, TargetCanMove), id=PAULINE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -201,7 +210,7 @@ private:
     };
     player.playScene( getId(), 5, NONE, callback );
   }
-  void Scene00092( Entity::Player& player )
+  void Scene00092( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst038:65711 calling Scene00092: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=PAULINE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

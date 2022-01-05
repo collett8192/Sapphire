@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.6
 // id hint used:
 //SCENE_11 = dummy
 #include <Actor/Player.h>
@@ -34,7 +34,7 @@ private:
       //seq 0 event item ITEM0 = UI8BH max stack ?
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=WARIN
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=WARIN
         break;
       }
       //seq 1 event item ITEM0 = UI8BH max stack ?
@@ -69,7 +69,7 @@ private:
       //seq 255 event item ITEM0 = UI8BH max stack ?
       case 255:
       {
-        Scene00013( player ); // Scene00013: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WARIN
+        if( type != 2 ) Scene00013( player ); // Scene00013: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WARIN
         break;
       }
       default:
@@ -92,6 +92,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -120,11 +121,12 @@ private:
     if( player.getQuestUI8AL( getId() ) == 3 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 255 );
     }
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubWil064:65843 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=WARIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -137,7 +139,7 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_1: EOBJECT0, UI8AL = 3, Flag8(1)=True
   {
     player.sendDebug( "SubWil064:65843 calling Scene00001: Normal(Inventory), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -146,18 +148,19 @@ private:
     };
     player.playScene( getId(), 1, NONE, callback );
   }
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_1: EOBJECT0, UI8AL = 3, Flag8(1)=True
   {
     player.sendDebug( "SubWil064:65843 calling Scene00002: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 3 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq1( player );
     };
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_1: ENEMY0, <No Var>, <No Flag>
   {
     player.sendDebug( "SubWil064:65843 calling Scene00005: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -167,7 +170,7 @@ private:
     player.playScene( getId(), 5, NONE, callback );
   }
 
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) //SEQ_1: ENEMY1, <No Var>, <No Flag>
   {
     player.sendDebug( "SubWil064:65843 calling Scene00008: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -177,7 +180,7 @@ private:
     player.playScene( getId(), 8, NONE, callback );
   }
 
-  void Scene00011( Entity::Player& player )
+  void Scene00011( Entity::Player& player ) //SEQ_1: ENEMY2, <No Var>, <No Flag>
   {
     player.sendDebug( "SubWil064:65843 calling Scene00011: Normal(Message, PopBNpc), id=dummy" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -187,7 +190,7 @@ private:
     player.playScene( getId(), 11, NONE, callback );
   }
 
-  void Scene00013( Entity::Player& player )
+  void Scene00013( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubWil064:65843 calling Scene00013: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=WARIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

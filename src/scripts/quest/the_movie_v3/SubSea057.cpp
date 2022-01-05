@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.3
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -238,6 +238,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -270,6 +271,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 3 );
     }
   }
@@ -278,6 +280,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 4 );
     }
   }
@@ -286,6 +289,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 5 );
     }
   }
@@ -298,6 +302,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 7 );
     }
   }
@@ -306,7 +311,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00000: Normal(Talk, QuestOffer, TargetCanMove), id=STAELWYRN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -318,7 +323,7 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=STAELWYRN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -328,7 +333,7 @@ private:
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00002: Normal(Talk, TargetCanMove), id=GRYNEWYDA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -338,18 +343,19 @@ private:
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_2: ACTOR2, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "SubSea057:66005 calling Scene00003: Normal(Talk, NpcDespawn, TargetCanMove), id=AYLMER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 3, NONE, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) //SEQ_2: ACTOR3, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00004: Normal(Talk, TargetCanMove), id=SEVRIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -358,7 +364,7 @@ private:
     player.playScene( getId(), 4, NONE, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_2: ACTOR4, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00005: Normal(Talk, TargetCanMove), id=EYRIMHUS" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -367,7 +373,7 @@ private:
     player.playScene( getId(), 5, NONE, callback );
   }
 
-  void Scene00006( Entity::Player& player )
+  void Scene00006( Entity::Player& player ) //SEQ_2: ACTOR5, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00006: Normal(Talk, TargetCanMove), id=SOZAIRARZAI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -376,7 +382,7 @@ private:
     player.playScene( getId(), 6, NONE, callback );
   }
 
-  void Scene00007( Entity::Player& player )
+  void Scene00007( Entity::Player& player ) //SEQ_2: ACTOR6, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00007: Normal(Talk, TargetCanMove), id=IREZUMI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -385,28 +391,29 @@ private:
     player.playScene( getId(), 7, NONE, callback );
   }
 
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) //SEQ_2: ACTOR7, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00008: Normal(None), id=unknown" );
   }
 
-  void Scene00009( Entity::Player& player )
+  void Scene00009( Entity::Player& player ) //SEQ_2: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00009: Normal(None), id=unknown" );
   }
 
-  void Scene00011( Entity::Player& player )
+  void Scene00011( Entity::Player& player ) //SEQ_3: ACTOR4, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "SubSea057:66005 calling Scene00011: Normal(Talk, NpcDespawn, TargetCanMove), id=EYRIMHUS" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq3( player );
     };
     player.playScene( getId(), 11, NONE, callback );
   }
 
-  void Scene00013( Entity::Player& player )
+  void Scene00013( Entity::Player& player ) //SEQ_3: ACTOR3, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00013: Normal(Talk, TargetCanMove), id=SEVRIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -415,7 +422,7 @@ private:
     player.playScene( getId(), 13, NONE, callback );
   }
 
-  void Scene00014( Entity::Player& player )
+  void Scene00014( Entity::Player& player ) //SEQ_3: ACTOR6, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00014: Normal(Talk, TargetCanMove), id=IREZUMI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -424,17 +431,17 @@ private:
     player.playScene( getId(), 14, NONE, callback );
   }
 
-  void Scene00015( Entity::Player& player )
+  void Scene00015( Entity::Player& player ) //SEQ_3: ACTOR7, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00015: Normal(None), id=unknown" );
   }
 
-  void Scene00016( Entity::Player& player )
+  void Scene00016( Entity::Player& player ) //SEQ_3: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00016: Normal(None), id=unknown" );
   }
 
-  void Scene00017( Entity::Player& player )
+  void Scene00017( Entity::Player& player ) //SEQ_3: ACTOR5, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00017: Normal(Talk, TargetCanMove), id=SOZAIRARZAI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -443,7 +450,7 @@ private:
     player.playScene( getId(), 17, NONE, callback );
   }
 
-  void Scene00019( Entity::Player& player )
+  void Scene00019( Entity::Player& player ) //SEQ_4: ACTOR5, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "SubSea057:66005 calling Scene00019: Normal(Talk, QuestBattle, YesNo, TargetCanMove), id=SOZAIRARZAI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -459,7 +466,7 @@ private:
     player.playScene( getId(), 19, NONE, callback );
   }
 
-  void Scene00020( Entity::Player& player )
+  void Scene00020( Entity::Player& player ) //SEQ_4: ACTOR6, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00020: Normal(Talk, TargetCanMove), id=IREZUMI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -468,17 +475,17 @@ private:
     player.playScene( getId(), 20, NONE, callback );
   }
 
-  void Scene00021( Entity::Player& player )
+  void Scene00021( Entity::Player& player ) //SEQ_4: ACTOR7, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00021: Normal(None), id=unknown" );
   }
 
-  void Scene00022( Entity::Player& player )
+  void Scene00022( Entity::Player& player ) //SEQ_4: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00022: Normal(None), id=unknown" );
   }
 
-  void Scene00023( Entity::Player& player )
+  void Scene00023( Entity::Player& player ) //SEQ_4: ACTOR3, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00023: Normal(Talk, TargetCanMove), id=SEVRIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -487,13 +494,13 @@ private:
     player.playScene( getId(), 23, NONE, callback );
   }
 
-  void Scene00025( Entity::Player& player )
+  void Scene00025( Entity::Player& player ) //SEQ_4: EOBJECT0, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00025: Normal(None), id=unknown" );
     checkProgressSeq4( player );
   }
 
-  void Scene00026( Entity::Player& player )
+  void Scene00026( Entity::Player& player ) //SEQ_5: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00026: Normal(CutScene, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -506,18 +513,19 @@ private:
     player.playScene( getId(), 26, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00027( Entity::Player& player )
+  void Scene00027( Entity::Player& player ) //SEQ_6: ACTOR0, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "SubSea057:66005 calling Scene00027: Normal(Talk, FadeIn, TargetCanMove), id=STAELWYRN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq6( player );
     };
     player.playScene( getId(), 27, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00028( Entity::Player& player )
+  void Scene00028( Entity::Player& player ) //SEQ_6: ACTOR9, <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00028: Normal(Talk, TargetCanMove), id=SEVRIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -526,7 +534,7 @@ private:
     player.playScene( getId(), 28, NONE, callback );
   }
 
-  void Scene00029( Entity::Player& player )
+  void Scene00029( Entity::Player& player ) //SEQ_7: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00029: Normal(Talk, TargetCanMove), id=STAELWYRN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -536,7 +544,7 @@ private:
     player.playScene( getId(), 29, NONE, callback );
   }
 
-  void Scene00030( Entity::Player& player )
+  void Scene00030( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea057:66005 calling Scene00030: Normal(Talk, Message, FadeIn, QuestReward, QuestComplete, TargetCanMove, SystemTalk), id=BADERON" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

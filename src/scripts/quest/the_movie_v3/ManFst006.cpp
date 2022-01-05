@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.3
+// FFXIVTheMovie.ParserV3.6
 // fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
@@ -64,6 +64,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -89,7 +90,7 @@ private:
     player.setQuestUI8BH( getId(), 1 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "ManFst006:65982 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=LUQUELOT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -102,7 +103,7 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "ManFst006:65982 calling Scene00001: NpcTrade(Talk, TargetCanMove), id=MIOUNNE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -114,7 +115,7 @@ private:
     };
     player.playScene( getId(), 1, NONE, callback );
   }
-  void Scene00100( Entity::Player& player )
+  void Scene00100( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "ManFst006:65982 calling Scene00100: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=MIOUNNE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

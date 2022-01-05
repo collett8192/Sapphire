@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3.2
-// simple method used
+// FFXIVTheMovie.ParserV3.6
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -29,13 +29,14 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=GRAHATIA
         break;
       }
       case 255:
       {
-        Scene00002( player ); // Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RAMMBROES
+        if( type != 2 ) Scene00002( player ); // Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RAMMBROES
+        // +Callback Scene00003: Normal(CutScene), id=unknown
         break;
       }
       default:
@@ -58,6 +59,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -82,7 +84,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd205:66739 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -94,7 +96,7 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd205:66739 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=GRAHATIA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -104,20 +106,29 @@ private:
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd205:66739 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RAMMBROES" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       if( result.param1 > 0 && result.param2 == 1 )
       {
-        if( player.giveQuestRewards( getId(), result.param3 ) )
-        {
-          player.finishQuest( getId() );
-        }
+        Scene00003( player );
       }
     };
     player.playScene( getId(), 2, NONE, callback );
+  }
+  void Scene00003( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
+  {
+    player.sendDebug( "GaiUsd205:66739 calling Scene00003: Normal(CutScene), id=unknown" );
+    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( player.giveQuestRewards( getId(), result.param3 ) )
+      {
+        player.finishQuest( getId() );
+      }
+    };
+    player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 };
 

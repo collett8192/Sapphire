@@ -66,7 +66,7 @@ namespace FFXIVTheMovie
                     list.Add(id);
                 }
             }
-
+            ManualMode = true;
             try
             {
                 foreach (var id in list)
@@ -87,7 +87,7 @@ namespace FFXIVTheMovie
             }
             Console.ReadKey();
         }
-
+        public static bool ManualMode { get; private set; } = false;
         static void ParseV3()
         {
             HashSet<string> implementedQuestIds = new HashSet<string>();

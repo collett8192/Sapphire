@@ -66,9 +66,9 @@ namespace FFXIVTheMovie.ParserV3
             {
                 get
                 {
-                    if (this.RequiredGroupCount <= 1 && this.TargetObject != null)
-                        return this.TargetObject.CanExistWithoutScene;
-                    return false;
+                    if (this.TargetObject != null)
+                        return this.TargetObject.CanExistWithoutScene && this.RequiredGroupCount <= 1;
+                    return this.RequiredGroupCount <= 1;
                 }
             }
 
@@ -101,6 +101,12 @@ namespace FFXIVTheMovie.ParserV3
                 if (TargetObject is ActiveActor && EntryScene.HasNonEmptyScene() && !EntryScene.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove) && group.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove))
                 {
                     return false;
+                }
+
+                if (group.ContainsSceneElement(LuaScene.SceneElement.QuestOffer) || group.ContainsSceneElement(LuaScene.SceneElement.QuestAccept))
+                {
+                    if (this.Owner.SeqNumber != 0)
+                        return false;
                 }
 
                 if (group.ContainsSceneElement(LuaScene.SceneElement.QuestReward) || group.ContainsSceneElement(LuaScene.SceneElement.QuestComplete))

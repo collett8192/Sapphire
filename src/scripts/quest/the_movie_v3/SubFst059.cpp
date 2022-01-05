@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.3
+// FFXIVTheMovie.ParserV3.6
 // fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
@@ -94,6 +94,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -129,7 +130,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst059:65916 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=ROSELINE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -142,7 +143,7 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst059:65916 calling Scene00001: NpcTrade(Talk, TargetCanMove), id=ELMAR" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -154,7 +155,7 @@ private:
     };
     player.playScene( getId(), 1, NONE, callback );
   }
-  void Scene00100( Entity::Player& player )
+  void Scene00100( Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst059:65916 calling Scene00100: Normal(Talk, TargetCanMove), id=ELMAR" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -164,7 +165,7 @@ private:
     player.playScene( getId(), 100, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_2: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst059:65916 calling Scene00002: NpcTrade(Talk, TargetCanMove), id=BERNARD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -176,7 +177,7 @@ private:
     };
     player.playScene( getId(), 2, NONE, callback );
   }
-  void Scene00098( Entity::Player& player )
+  void Scene00098( Entity::Player& player ) //SEQ_2: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst059:65916 calling Scene00098: Normal(Talk, TargetCanMove), id=BERNARD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -186,7 +187,7 @@ private:
     player.playScene( getId(), 98, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst059:65916 calling Scene00003: NpcTrade(Talk, TargetCanMove), id=EYLGAR" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -198,7 +199,7 @@ private:
     };
     player.playScene( getId(), 3, NONE, callback );
   }
-  void Scene00096( Entity::Player& player )
+  void Scene00096( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst059:65916 calling Scene00096: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=EYLGAR" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

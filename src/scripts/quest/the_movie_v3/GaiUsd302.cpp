@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -37,7 +37,7 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(YesNo, QuestOffer, TargetCanMove, SystemTalk), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(YesNo, QuestOffer, TargetCanMove, SystemTalk), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ALISAIE
         break;
       }
@@ -77,6 +77,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -101,7 +102,12 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  //Key functions found in scene 0
+  //A0_0.SystemTalk(A0_0.TEXT_GAIUSD302_01314_SYSTEM_000_100, true)
+  //A0_0.YesNo(A0_0.TEXT_GAIUSD302_01314_Q1_000_000)
+  //A0_0.QuestOffer(A2_2, A1_1)
+  //=======================
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd302:66850 calling Scene00000: Normal(YesNo, QuestOffer, TargetCanMove, SystemTalk), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -113,7 +119,10 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  //Key functions found in scene 1
+  //A0_3.QuestAccepted()
+  //=======================
+  void Scene00001( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd302:66850 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=ALISAIE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -123,7 +132,11 @@ private:
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  //Key functions found in scene 2
+  //A0_6.QuestReward(A0_6, A2_8, A1_7)
+  //A0_6.QuestCompleted()
+  //=======================
+  void Scene00002( Entity::Player& player ) //SEQ_255: ACTOR1, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd302:66850 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=URIANGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -135,7 +148,24 @@ private:
     };
     player.playScene( getId(), 2, NONE, callback );
   }
-  void Scene00003( Entity::Player& player )
+  //Key functions found in scene 3
+  //A0_11.FadeIn(A0_11.FADE_DEFAULT)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_026, true, nil, nil, nil, A0_11.LIP_TYPE_NONE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_028, true, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_037, false, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_038, true, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_039, false, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_040, true, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_041, true, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_043, true, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_044, false, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR1, A2_13, A0_11.ARRANGE_TYPE_RIGHT, 1).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALISAIE_000_045, true, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.FadeIn(A0_11.FADE_SHORT, A0_11.FADE_LAYER_BACK)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR0, A0_11.LOC_POS_ACTOR0).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALPHINAUD_000_050, false, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR0, A0_11.LOC_POS_ACTOR0).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALPHINAUD_000_051, true, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //A0_11.CreateCharacter(A0_11, A0_11.LOC_ACTOR0, A0_11.LOC_POS_ACTOR0).Talk(A1_12, A0_11, A0_11.TEXT_GAIUSD302_01314_ALPHINAUD_000_052, true, nil, nil, nil, A0_11.SPEAK_NORMAL_MIDDLE)
+  //=======================
+  void Scene00003( Entity::Player& player ) //SEQ_255: ACTOR1, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd302:66850 calling Scene00003: Normal(Talk, FadeIn, TargetCanMove), id=URIANGER" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -148,7 +178,9 @@ private:
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  //Key functions found in scene 4
+  //=======================
+  void Scene00004( Entity::Player& player ) //SEQ_255: ACTOR0, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd302:66850 calling Scene00004: Normal(Talk, TargetCanMove), id=ALISAIE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -157,7 +189,17 @@ private:
     };
     player.playScene( getId(), 4, NONE, callback );
   }
-  void Scene00100( Entity::Player& player )
+  //Key functions found in scene 100
+  //A0_20.PlayCutScene(A0_20.CUTSCENE_QREDO_01)
+  //A0_20.PlayCutScene(A0_20.CUTSCENE_QREDO_02)
+  //A0_20.PlayCutScene(A0_20.CUTSCENE_QREDO_03)
+  //A0_20.PlayCutScene(A0_20.CUTSCENE_QREDO_04)
+  //A0_20.PlayCutScene(A0_20.CUTSCENE_FOREST_1)
+  //A0_20.PlayCutScene(A0_20.CUTSCENE_FOREST_2)
+  //A0_20.FadeIn(A0_20.FADE_SHORT, A0_20.FADE_LAYER_MIDDLE)
+  //A0_20.QuestOffer(A2_22, A1_21)
+  //=======================
+  void Scene00100( Entity::Player& player ) //SEQ_255: ACTOR0, <No Var>, <No Flag>
   {
     player.sendDebug( "GaiUsd302:66850 calling Scene00100: Normal(CutScene, FadeIn, QuestOffer), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

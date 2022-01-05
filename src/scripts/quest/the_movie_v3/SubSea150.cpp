@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3.2
-// simple method used
+// FFXIVTheMovie.ParserV3.6
+// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -27,12 +27,12 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=BADERON
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=BADERON
         break;
       }
       case 255:
       {
-        Scene00001( player ); // Scene00001: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MIOUNNE
+        if( type != 2 ) Scene00001( player ); // Scene00001: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MIOUNNE
         break;
       }
       default:
@@ -55,6 +55,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -79,7 +80,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea150:66212 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=BADERON" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -92,7 +93,7 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubSea150:66212 calling Scene00001: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=MIOUNNE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

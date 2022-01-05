@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.3
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -75,6 +75,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -103,7 +104,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst068:65920 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=LOTHAIRE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -116,7 +117,7 @@ private:
     player.playScene( getId(), 0, NONE, callback );
   }
 
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst068:65920 calling Scene00001: Normal(Talk, TargetCanMove), id=LEONNIE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -126,7 +127,7 @@ private:
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_255: ACTOR2, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst068:65920 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ARMELLE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -142,7 +143,7 @@ private:
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_255: ACTOR1, <No Var>, <No Flag>
   {
     player.sendDebug( "SubFst068:65920 calling Scene00003: Normal(Talk, TargetCanMove), id=LEONNIE" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

@@ -41,19 +41,29 @@ namespace FFXIVTheMovie.ParserV3
             InitSceneGroupList();
             InitSeqList();
             bool isSimpleParse = false;
+            allowEmptyEntry = seqList.Count > sceneGroupList.Count;
             int buildResult = 0;
             buildResult = BuildSeqList();
             if (buildResult < 0)
             {
-                Console.WriteLine("allowEmptyEntry = true");
-                allowEmptyEntry = true;
-                InitSceneGroupList();
-                InitSeqList();
-                buildResult = BuildSeqList();
+                if (!allowEmptyEntry)
+                {
+                    Console.WriteLine("allowEmptyEntry = true");
+                    allowEmptyEntry = true;
+                    InitSceneGroupList();
+                    InitSeqList();
+                    buildResult = BuildSeqList();
+                }
                 if (buildResult < 0)
                 {
-                    isSimpleParse = true;
-                    if (!BuildSeqListSimple())
+                    if (Program.ManualMode)
+                    {
+                        Console.WriteLine("Output simple mode result...");
+                        isSimpleParse = true;
+                        if (!BuildSeqListSimple())
+                            throw new Exception("Failed");
+                    }
+                    else
                         throw new Exception("Failed");
                 }
             }
@@ -1151,8 +1161,8 @@ namespace FFXIVTheMovie.ParserV3
             {
                 entry.EntryScene.SceneList.RemoveAt(entry.EntryScene.SceneList.Count - 1);
                 total--;
-                entry.AssignedGroupCount--;
             }
+            entry.AssignedGroupCount = 0;
             if (flag == 1)
             {
                 g = og;
