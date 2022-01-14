@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -34,7 +34,7 @@ private:
         if( param1 == 1007739 || param2 == 1007739 ) // ACTOR0 = FLHAMINN
         {
           Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
-          // +Callback Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=FLHAMINN
+          // +Callback Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove, ENpcBind), id=FLHAMINN
           break;
         }
         if( param1 == 1007752 || param2 == 1007752 ) // ACTOR1 = ALPHINAUD
@@ -46,7 +46,7 @@ private:
       }
       case 255:
       {
-        Scene00003( player ); // Scene00003: Normal(CutScene, AutoFadeIn), id=unknown
+        if( type != 2 ) Scene00003( player ); // Scene00003: Normal(CutScene, AutoFadeIn), id=unknown
         // +Callback Scene00004: Normal(FadeIn, QuestReward, QuestComplete), id=unknown
         break;
       }
@@ -70,6 +70,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -94,7 +95,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: ACTOR0, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "XxaUse104:69411 calling Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -106,17 +107,18 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: ACTOR0, UI8AL = 1, Flag8(1)=True
   {
-    player.sendDebug( "XxaUse104:69411 calling Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=FLHAMINN" );
+    player.sendDebug( "XxaUse104:69411 calling Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove, ENpcBind), id=FLHAMINN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq0( player );
     };
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_0: ACTOR1, <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse104:69411 calling Scene00002: Normal(Talk, TargetCanMove), id=ALPHINAUD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -125,7 +127,7 @@ private:
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse104:69411 calling Scene00003: Normal(CutScene, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -134,7 +136,7 @@ private:
     };
     player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse104:69411 calling Scene00004: Normal(FadeIn, QuestReward, QuestComplete), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

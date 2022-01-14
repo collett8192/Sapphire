@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3.2
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -49,13 +49,13 @@ private:
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
+        if( type != 2 ) Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=MINFILIA
         break;
       }
       case 1:
       {
-        Scene00002( player ); // Scene00002: Normal(Talk, FadeIn, TargetCanMove), id=ALPHINAUD
+        if( type != 2 ) Scene00002( player ); // Scene00002: Normal(Talk, FadeIn, TargetCanMove), id=ALPHINAUD
         break;
       }
       case 2:
@@ -64,7 +64,7 @@ private:
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
-            Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=GEGERUJU
+            Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove, ENpcBind), id=GEGERUJU
           }
           break;
         }
@@ -97,7 +97,7 @@ private:
       }
       case 4:
       {
-        Scene00007( player ); // Scene00007: Normal(Talk, TargetCanMove), id=SHAMANILOHMANI
+        if( type != 2 ) Scene00007( player ); // Scene00007: Normal(Talk, TargetCanMove), id=SHAMANILOHMANI
         break;
       }
       case 5:
@@ -112,7 +112,7 @@ private:
         }
         if( param1 == 4500980 || param2 == 4500980 ) // ENEMY0 = unknown
         {
-          // empty entry
+          Scene00009( player ); // Scene00009: Normal(None), id=unknown
           break;
         }
         if( param1 == 1007738 || param2 == 1007738 ) // ACTOR7 = unknown
@@ -134,7 +134,7 @@ private:
       }
       case 6:
       {
-        Scene00013( player ); // Scene00013: Normal(Talk, FadeIn, TargetCanMove), id=FLHAMINN
+        if( type != 2 ) Scene00013( player ); // Scene00013: Normal(Talk, FadeIn, TargetCanMove), id=FLHAMINN
         break;
       }
       case 255:
@@ -171,6 +171,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -203,6 +204,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 3 );
     }
   }
@@ -211,6 +213,8 @@ private:
     if( player.getQuestUI8AL( getId() ) == 2 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
+      player.setQuestBitFlag8( getId(), 2, false );
       player.updateQuest( getId(), 4 );
     }
   }
@@ -223,6 +227,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 6 );
     }
   }
@@ -231,7 +236,7 @@ private:
     player.updateQuest( getId(), 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00000: Normal(QuestOffer, TargetCanMove, SystemTalk, CanCancel), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -243,7 +248,7 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=MINFILIA" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -253,7 +258,7 @@ private:
     player.playScene( getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00002: Normal(Talk, FadeIn, TargetCanMove), id=ALPHINAUD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -263,18 +268,19 @@ private:
     player.playScene( getId(), 2, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_2: ACTOR2, UI8AL = 1, Flag8(1)=True
   {
-    player.sendDebug( "XxaUse103:69410 calling Scene00003: Normal(Talk, TargetCanMove), id=GEGERUJU" );
+    player.sendDebug( "XxaUse103:69410 calling Scene00003: Normal(Talk, TargetCanMove, ENpcBind), id=GEGERUJU" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 3, NONE, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) //SEQ_2: ACTOR3, <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00004: Normal(Talk, TargetCanMove), id=ALPHINAUD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -283,29 +289,31 @@ private:
     player.playScene( getId(), 4, NONE, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_3: ACTOR4, UI8AL = 2, Flag8(1)=True
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00005: Normal(Talk, TargetCanMove), id=JUNGHBHAR" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq3( player );
     };
     player.playScene( getId(), 5, NONE, callback );
   }
 
-  void Scene00006( Entity::Player& player )
+  void Scene00006( Entity::Player& player ) //SEQ_3: ACTOR5, UI8AL = 2, Flag8(2)=True
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00006: Normal(Talk, TargetCanMove), id=BYRGLAENT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
+      player.setQuestBitFlag8( getId(), 2, true );
       checkProgressSeq3( player );
     };
     player.playScene( getId(), 6, NONE, callback );
   }
 
-  void Scene00007( Entity::Player& player )
+  void Scene00007( Entity::Player& player ) //SEQ_4: , <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00007: Normal(Talk, TargetCanMove), id=SHAMANILOHMANI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -315,18 +323,25 @@ private:
     player.playScene( getId(), 7, NONE, callback );
   }
 
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) //SEQ_5: EVENTRANGE0, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00008: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq5( player );
     };
     player.playScene( getId(), 8, NONE, callback );
   }
 
-  void Scene00010( Entity::Player& player )
+  void Scene00009( Entity::Player& player ) //SEQ_5: ENEMY0, <No Var>, <No Flag>
+  {
+    player.sendDebug( "XxaUse103:69410 calling Scene00009: Normal(None), id=unknown" );
+    checkProgressSeq5( player );
+  }
+
+  void Scene00010( Entity::Player& player ) //SEQ_5: ACTOR7, <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00010: Normal(Message), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -335,13 +350,13 @@ private:
     player.playScene( getId(), 10, NONE, callback );
   }
 
-  void Scene00011( Entity::Player& player )
+  void Scene00011( Entity::Player& player ) //SEQ_5: EOBJECT0, <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00011: Normal(None), id=unknown" );
     checkProgressSeq5( player );
   }
 
-  void Scene00012( Entity::Player& player )
+  void Scene00012( Entity::Player& player ) //SEQ_5: ACTOR6, <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00012: Normal(Talk, TargetCanMove), id=SHAMANILOHMANI" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -350,7 +365,7 @@ private:
     player.playScene( getId(), 12, NONE, callback );
   }
 
-  void Scene00013( Entity::Player& player )
+  void Scene00013( Entity::Player& player ) //SEQ_6: , <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00013: Normal(Talk, FadeIn, TargetCanMove), id=FLHAMINN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -360,7 +375,7 @@ private:
     player.playScene( getId(), 13, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00014( Entity::Player& player )
+  void Scene00014( Entity::Player& player ) //SEQ_255: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00014: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ALPHINAUD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -376,7 +391,7 @@ private:
     player.playScene( getId(), 14, NONE, callback );
   }
 
-  void Scene00015( Entity::Player& player )
+  void Scene00015( Entity::Player& player ) //SEQ_255: ACTOR9, <No Var>, <No Flag>
   {
     player.sendDebug( "XxaUse103:69410 calling Scene00015: Normal(Talk, TargetCanMove), id=FLHAMINN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

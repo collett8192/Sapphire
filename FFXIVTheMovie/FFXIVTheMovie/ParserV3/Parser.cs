@@ -43,7 +43,7 @@ namespace FFXIVTheMovie.ParserV3
             bool isSimpleParse = false;
             allowEmptyEntry = seqList.Count > sceneGroupList.Count;
             int buildResult = 0;
-            buildResult = BuildSeqList();
+            buildResult = idHint.ContainsKey("ALLOW_EMPTY_ENTRY") ? -1 : BuildSeqList();
             if (buildResult < 0)
             {
                 if (!allowEmptyEntry)
@@ -201,140 +201,125 @@ namespace FFXIVTheMovie.ParserV3
                         else
                         {
                             var objId = constTable.ContainsKey(entry.TargetObject.Name) ? constTable[entry.TargetObject.Name].ToString() : "/*UNKNOWN*/1";
-                            outputCpp.Add($"        if( param1 == {objId} || param2 == {objId} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}{(entry.ConditionBranch ? $", CB={entry.RequiredGroupCount}" : "" )}{(entry.EmoteBranch != null ? $", EB={entry.RequiredGroupCount}(emote={entry.EmoteBranch.Value})" : "")}");
+                            outputCpp.Add($"        if( param1 == {objId} || param2 == {objId} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}{(entry.ConditionBranch ? $", CB={entry.RequiredGroupCount}" : "")}{(entry.EmoteBranch != null ? $", EB={entry.RequiredGroupCount}(emote={entry.EmoteBranch.Value})" : "")}");
                         }
 
                         outputCpp.Add("        {");
-                        if (seq.SeqNumber > 0 && entry.Var != null)
+                        string extraSpace = entry.Var != null ? "  " : "";
+                        if (entry.Var != null)
                         {
                             outputCpp.Add($"          if( {entry.Var.ToCppExprConditionNotDone()} )");
-                            outputCpp.Add("          {");
-                            if (entry.ConditionBranch)
+                            outputCpp.Add($"          {{");
+                        }
+                        if (entry.ConditionBranch && entry.Var != null)
+                        {
+                            if (scene != null)
                             {
-                                if (scene != null)
-                                {
-                                    outputCpp.Add($"            {scene.SceneFunctionName}( player ); // {scene}");
-                                }
-                                else
-                                {
-                                    outputCpp.Add($"            {entry.Var.ToCppExprOperation()};");
-                                    if (entry.Flag != null)
-                                        outputCpp.Add($"            {entry.Flag.ToCppExprSet()};");
-                                    outputCpp.Add($"            checkProgressSeq{seq.SeqNumber}( player );");
-                                }
-                                if (scene2 != null)
-                                {
-                                    if (scene3 == null)
-                                    {
-                                        outputCpp.Add("          }");
-                                        outputCpp.Add("          else");
-                                        outputCpp.Add("          {");
-                                        outputCpp.Add($"            {scene2.SceneFunctionName}( player ); // {scene2}");
-                                    }
-                                    else
-                                    {
-                                        outputCpp.Add($"            // +Callback {scene2}");
-                                    }
-                                }
-                                if (scene3 != null)
-                                {
-                                    if (scene4 == null)
-                                    {
-                                        outputCpp.Add("          }");
-                                        outputCpp.Add("          else");
-                                        outputCpp.Add("          {");
-                                        outputCpp.Add($"            {scene3.SceneFunctionName}( player ); // {scene3}");
-                                    }
-                                    else
-                                    {
-                                        outputCpp.Add($"            // +Callback {scene3}");
-                                    }
-                                }
-                                if (scene4 != null)
-                                {
-                                    outputCpp.Add("          }");
-                                    outputCpp.Add("          else");
-                                    outputCpp.Add("          {");
-                                    outputCpp.Add($"            {scene4.SceneFunctionName}( player ); // {scene4}");
-                                }
-                            }
-                            else if (entry.EmoteBranch != null)
-                            {
-                                if (scene == null || scene2 == null)
-                                    throw new Exception("WTF???");
-                                outputCpp.Add($"            if( type == 0 ) {scene.SceneFunctionName}( player ); // onTalk {scene}");
-                                outputCpp.Add($"            if( type == 1 ) // onEmote");
-                                outputCpp.Add("            {");
-                                outputCpp.Add($"                {(entry.EmoteBranch.Value == 0 ? "/*" : "")}if( param3 == {entry.EmoteBranch.Value} ){(entry.EmoteBranch.Value == 0 ? "*/" : "")} {scene2.SceneFunctionName}( player ); // Correct {scene2}");
-                                if (scene3 != null)
-                                {
-                                    if (entry.EmoteBranch.Value == 0) outputCpp.Add($"                /*");
-                                    outputCpp.Add($"                else {scene3.SceneFunctionName}( player ); // Incorrect {scene3}");
-                                    if (entry.EmoteBranch.Value == 0) outputCpp.Add($"                */");
-                                }
-                                else
-                                {
-                                    outputCpp.Add($"                //No incorrect branch.");
-                                }
-                                outputCpp.Add("            }");
-                                if (scene4 != null)
-                                {
-                                    outputCpp.Add($"            // WTF IS THIS????? {scene4}");
-                                }
+                                outputCpp.Add($"{extraSpace}          {scene.SceneFunctionName}( player ); // {scene}");
                             }
                             else
                             {
-                                if (scene != null)
+                                outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
+                                if (entry.Flag != null)
+                                    outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
+                                outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( player );");
+                            }
+                            if (scene2 != null)
+                            {
+                                if (scene3 == null)
                                 {
-                                    outputCpp.Add($"            {scene.SceneFunctionName}( player ); // {scene}");
+                                    outputCpp.Add($"{extraSpace}        }}");
+                                    outputCpp.Add($"{extraSpace}        else");
+                                    outputCpp.Add($"{extraSpace}        {{");
+                                    outputCpp.Add($"{extraSpace}          {scene2.SceneFunctionName}( player ); // {scene2}");
                                 }
                                 else
                                 {
-                                    outputCpp.Add($"            {entry.Var.ToCppExprOperation()};");
-                                    if (entry.Flag != null)
-                                        outputCpp.Add($"            {entry.Flag.ToCppExprSet()};");
-                                    outputCpp.Add($"            checkProgressSeq{seq.SeqNumber}( player );");
-                                }
-                                if (scene2 != null)
-                                {
-                                    outputCpp.Add($"            // +Callback {scene2}");
-                                }
-                                if (scene3 != null)
-                                {
-                                    outputCpp.Add($"            // +Callback {scene3}");
-                                }
-                                if (scene4 != null)
-                                {
-                                    outputCpp.Add($"            // +Callback {scene4}");
+                                    outputCpp.Add($"{extraSpace}          // +Callback {scene2}");
                                 }
                             }
-                            outputCpp.Add("          }");
-                            outputCpp.Add("          break;");
+                            if (scene3 != null)
+                            {
+                                if (scene4 == null)
+                                {
+                                    outputCpp.Add($"{extraSpace}        }}");
+                                    outputCpp.Add($"{extraSpace}        else");
+                                    outputCpp.Add($"{extraSpace}        {{");
+                                    outputCpp.Add($"{extraSpace}          {scene3.SceneFunctionName}( player ); // {scene3}");
+                                }
+                                else
+                                {
+                                    outputCpp.Add($"{extraSpace}          // +Callback {scene3}");
+                                }
+                            }
+                            if (scene4 != null)
+                            {
+                                outputCpp.Add($"{extraSpace}        }}");
+                                outputCpp.Add($"{extraSpace}        else");
+                                outputCpp.Add($"{extraSpace}        {{");
+                                outputCpp.Add($"{extraSpace}          {scene4.SceneFunctionName}( player ); // {scene4}");
+                            }
+                        }
+                        else if (entry.EmoteBranch != null)
+                        {
+                            if (scene == null || scene2 == null)
+                                throw new Exception("WTF???");
+                            outputCpp.Add($"{extraSpace}          if( type == 0 ) {scene.SceneFunctionName}( player ); // onTalk {scene}");
+                            outputCpp.Add($"{extraSpace}          if( type == 1 ) // onEmote");
+                            outputCpp.Add($"{extraSpace}          {{");
+                            outputCpp.Add($"{extraSpace}            {(entry.EmoteBranch.Value == 0 ? "/*" : "")}if( param3 == {entry.EmoteBranch.Value} ){(entry.EmoteBranch.Value == 0 ? "*/" : "")} {scene2.SceneFunctionName}( player ); // Correct {scene2}");
+                            if (scene3 != null)
+                            {
+                                if (entry.EmoteBranch.Value == 0) outputCpp.Add($"{extraSpace}              /*");
+                                outputCpp.Add($"{extraSpace}            else {scene3.SceneFunctionName}( player ); // Incorrect {scene3}");
+                                if (entry.EmoteBranch.Value == 0) outputCpp.Add($"{extraSpace}              */");
+                            }
+                            else
+                            {
+                                outputCpp.Add($"{extraSpace}              //No incorrect branch.");
+                            }
+                            outputCpp.Add($"{extraSpace}          }}");
+                            if (scene4 != null)
+                            {
+                                outputCpp.Add($"{extraSpace}          // WTF IS THIS????? {scene4}");
+                            }
                         }
                         else
                         {
                             if (scene != null)
                             {
-                                outputCpp.Add($"          {scene.SceneFunctionName}( player ); // {scene}");
+                                outputCpp.Add($"{extraSpace}          {scene.SceneFunctionName}( player ); // {scene}");
                             }
                             else
                             {
-                                outputCpp.Add("          // empty entry");
+                                if (entry.Var != null)
+                                {
+                                    outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
+                                    if (entry.Flag != null)
+                                        outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
+                                    outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( player );");
+                                }
+                                else
+                                    outputCpp.Add($"{extraSpace}        // empty entry");
                             }
                             if (scene2 != null)
                             {
-                                outputCpp.Add($"          // +Callback {scene2}");
+                                outputCpp.Add($"{extraSpace}          // +Callback {scene2}");
                             }
                             if (scene3 != null)
                             {
-                                outputCpp.Add($"          // +Callback {scene3}");
+                                outputCpp.Add($"{extraSpace}          // +Callback {scene3}");
                             }
                             if (scene4 != null)
                             {
-                                outputCpp.Add($"          // +Callback {scene4}");
+                                outputCpp.Add($"{extraSpace}          // +Callback {scene4}");
                             }
-                            outputCpp.Add("          break;");
                         }
+                        if (entry.Var != null)
+                        {
+                            outputCpp.Add($"          }}");
+                        }
+                        outputCpp.Add($"          break;");
                         outputCpp.Add("        }");
                     }
 
@@ -1455,7 +1440,12 @@ namespace FFXIVTheMovie.ParserV3
                     if (constTable.ContainsKey(key))
                     {
                         if (constTable[key] != value)
-                            throw new Exception("[ProcessCppCode]Const redefined with different value.");
+                        {
+                            if (!key.StartsWith("LOCACTOR"))
+                            {
+                                throw new Exception("[ProcessCppCode]Const redefined with different value.");
+                            }
+                        }
                     }
                     else
                     {

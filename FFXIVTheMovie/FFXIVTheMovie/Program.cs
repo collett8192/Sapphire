@@ -49,7 +49,7 @@ namespace FFXIVTheMovie
             }
 
             List<string> list = new List<string>();
-            //list.Add("ManFst503");
+            //list.Add("GaiUse616");
 
             if (list.Count == 0)
             {
@@ -101,6 +101,9 @@ namespace FFXIVTheMovie
                 string questId = Path.GetFileNameWithoutExtension(scriptFile.Name);
                 if (implementedQuestIds.Contains(questId))
                     continue;
+
+                //if (!questId.StartsWith("GaiUse")) continue;
+
                 if (!questId.StartsWith("ManFst") &&
                     !questId.StartsWith("ManSea") &&
                     !questId.StartsWith("ManWil") &&
@@ -169,6 +172,98 @@ namespace FFXIVTheMovie
             switch (questId)
             {
                 //id hints and flags used to parse certain quests, do not modify them.
+                case "GaiUse603":
+                    {
+                        result.Add("PRIVATE_FORTEMPSGUARD00054", "395");
+                        break;
+                    }
+                case "GaiUse507":
+                    {
+                        result.Add("SCENE_4", "dummyt0");
+                        result.Add("SCENE_5", null);
+                        result.Add("SCENE_6", "dummyt0");
+                        result.Add("SCENE_7", "dummyt0");
+                        break;
+                    }
+                case "GaiUse504":
+                    {
+                        result.Add("SCENE_19", "dummyr0");
+                        result.Add("SCENE_20", "dummyr0");
+                        break;
+                    }
+                case "GaiUse502":
+                    {
+                        result.Add("SCENE_5", "SENTRY00364");
+                        break;
+                    }
+                case "GaiUse316":
+                    {
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "2|2");
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "2|2");
+                        result.Add("_ACTOR5", "B");
+                        result.Add("_ACTOR5B", "2|2");
+                        result.Add("_ACTOR6", "B");
+                        result.Add("_ACTOR6B", "2|2");
+                        result.Add("_ACTOR10", "B");
+                        result.Add("_ACTOR10B", "5|2");
+                        result.Add("_ACTOR11", "B");
+                        result.Add("_ACTOR11B", "5|2");
+                        result.Add("_ACTOR12", "B");
+                        result.Add("_ACTOR12B", "5|2");
+                        result.Add("_ACTOR17", "B");
+                        result.Add("_ACTOR17B", "8|2");
+                        result.Add("_ACTOR18", "B");
+                        result.Add("_ACTOR18B", "8|2");
+                        result.Add("_ACTOR19", "B");
+                        result.Add("_ACTOR19B", "8|2");
+                        result.Add("_ACTOR20", "B");
+                        result.Add("_ACTOR20B", "8|2");
+                        break;
+                    }
+                case "GaiUse302":
+                    {
+                        result.Add("_ACTOR6", "E");
+                        result.Add("_ACTOR6E", "255|3,35");
+                        break;
+                    }
+                case "GaiUse214":
+                    {
+                        result.Add("SCENE_2", "ACTOR1_FALKBRYDA_DUPE");
+                        result.Add("SCENE_3", "ACTOR1_FALKBRYDA_DUPE");
+                        break;
+                    }
+                case "GaiUse217":
+                case "GaiUse216":
+                case "GaiUse212":
+                    {
+                        result.Add("PRIVATE_ZANTHAEL", "198");
+                        break;
+                    }
+                case "GaiUse211":
+                    {
+                        result.Add("ALLOW_EMPTY_ENTRY", "");
+                        break;
+                    }
+                case "GaiUse208":
+                    {
+                        result.Add("SCENE_18", "GYOSHA01348");
+                        break;
+                    }
+                case "GaiUse118":
+                    {
+                        result.Add("SCENE_3", "URIANGER");
+                        break;
+                    }
+                case "GaiUse312":
+                case "GaiUse307":
+                case "GaiUse117":
+                case "GaiUse115":
+                    {
+                        result.Add("PRIVATE_DOORMANLOTUS", "205");
+                        break;
+                    }
                 case "XxaFst502":
                     {
                         result.Add("SCENE_3", "RAUBAHN");
@@ -1037,6 +1132,7 @@ namespace FFXIVTheMovie
                     }
                 case "GaiUse606":
                     {
+                        result.Add("ALLOW_EMPTY_ENTRY", "");
                         result.Add("ACTOR12", "ACTOR12");
                         result.Add("SCENE_50", "ACTOR12");
                         result.Add("ACTOR13", "null");
