@@ -49,6 +49,7 @@
     <Compile Include="ParserV3\LuaNpcTradeInfo.cs" />
     <Compile Include="ParserV3\LuaScene.cs" />
     <Compile Include="ParserV3\Parser.cs" />
+    <Compile Include="ParserV3\QuestParamDatabase.cs" />
     <Compile Include="ParserV3\Sequence.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

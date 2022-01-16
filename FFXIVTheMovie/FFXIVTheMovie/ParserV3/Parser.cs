@@ -23,13 +23,13 @@ namespace FFXIVTheMovie.ParserV3
         Dictionary<string, int> privateInstanceEntranceTable;
         Dictionary<string, Tuple<int, float, float, float, float, string>> warpTable;
         Dictionary<string, int> mountTable;
+        Dictionary<string, long> unmappedObjTable = new Dictionary<string, long>();
         bool allowEmptyEntry = false;
 
-        Dictionary<string, string> idHint = new Dictionary<string, string>();
-        public void AddIdHint(string name, string id)
+        Dictionary<string, string> paramTable = new Dictionary<string, string>();
+        public void AddParam(string name, string value)
         {
-            //can be object names like ACTOR1 or scenes written like SCENE_2
-            idHint.Add(name, id);
+            paramTable.Add(name, value);
         }
 
         public void GenerateQuestScript()
@@ -43,7 +43,7 @@ namespace FFXIVTheMovie.ParserV3
             bool isSimpleParse = false;
             allowEmptyEntry = seqList.Count > sceneGroupList.Count;
             int buildResult = 0;
-            buildResult = idHint.ContainsKey("ALLOW_EMPTY_ENTRY") ? -1 : BuildSeqList();
+            buildResult = paramTable.ContainsKey("ALLOW_EMPTY_ENTRY") ? -1 : BuildSeqList();
             if (buildResult < 0)
             {
                 if (!allowEmptyEntry)
@@ -86,24 +86,24 @@ namespace FFXIVTheMovie.ParserV3
             {
                 outputCpp.Add("// fake IsAnnounce table");
             }
-            else if (idHint.Count > 0)
+            else if (paramTable.Count > 0)
             {
-                outputCpp.Add("// id hint used:");
-                foreach (var hint in idHint)
+                outputCpp.Add("// param used:");
+                foreach (var entry in paramTable)
                 {
-                    if (hint.Value != null)
+                    if (entry.Value != null)
                     {
-                        if (hint.Key[0] != '_' || !string.IsNullOrEmpty(hint.Value))
+                        if (entry.Key[0] != '_' || !string.IsNullOrEmpty(entry.Value))
                         {
-                            outputCpp.Add($"//{hint.Key} = {hint.Value}");
+                            outputCpp.Add($"//{entry.Key} = {entry.Value}");
                         }
                         else
                         {
-                            outputCpp.Add($"//{hint.Key} SET!!");
+                            outputCpp.Add($"//{entry.Key} SET!!");
                         }
                     }
                     else
-                        outputCpp.Add($"//{hint.Key} REMOVED!!");
+                        outputCpp.Add($"//{entry.Key} REMOVED!!");
                 }
             }
             outputCpp.Add("#include <Actor/Player.h>");
@@ -201,14 +201,24 @@ namespace FFXIVTheMovie.ParserV3
                         else
                         {
                             var objId = constTable.ContainsKey(entry.TargetObject.Name) ? constTable[entry.TargetObject.Name].ToString() : "/*UNKNOWN*/1";
-                            outputCpp.Add($"        if( param1 == {objId} || param2 == {objId} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}{(entry.ConditionBranch ? $", CB={entry.RequiredGroupCount}" : "")}{(entry.EmoteBranch != null ? $", EB={entry.RequiredGroupCount}(emote={entry.EmoteBranch.Value})" : "")}");
+                            string unmappedId = unmappedObjTable.ContainsKey(entry.TargetObject.Name) ? unmappedObjTable[entry.TargetObject.Name].ToString() : objId;
+                            outputCpp.Add($"        if( param1 == {unmappedId} || param2 == {objId} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}{(entry.ConditionBranch ? $", CB={entry.RequiredGroupCount}" : "")}{(entry.EmoteBranch != null ? $", EB={entry.RequiredGroupCount}(emote={entry.EmoteBranch.Value})" : "")}");
                         }
 
                         outputCpp.Add("        {");
                         string extraSpace = entry.Var != null ? "  " : "";
                         if (entry.Var != null)
                         {
-                            outputCpp.Add($"          if( {entry.Var.ToCppExprConditionNotDone()} )");
+                            
+                            /*if (entry.ConditionBranch && entry.Var.Value > 1 && entry.Flag != null)
+                            {
+                                output bit flag condition check, need fix in core
+                            }
+                            else
+                            */
+                            {
+                                outputCpp.Add($"          if( {entry.Var.ToCppExprConditionNotDone()} )");
+                            }
                             outputCpp.Add($"          {{");
                         }
                         if (entry.ConditionBranch && entry.Var != null)
@@ -580,7 +590,6 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
                                     outputCpp.Add("    {");
                                     bool hasIf = false;
-                                    bool skipBody = false;
                                     if (current.Type == LuaScene.SceneType.NpcTrade ||
                                         ((current.Element & LuaScene.SceneElement.QuestReward) > 0) ||
                                         ((current.Element & LuaScene.SceneElement.QuestOffer) > 0))
@@ -608,21 +617,6 @@ namespace FFXIVTheMovie.ParserV3
                                             outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
                                             outputCpp.Add("      {");
                                             hasIf = true;
-                                        }
-                                        if ((current.Element & LuaScene.SceneElement.QuestBattle) > 0)
-                                        {
-                                            outputCpp.Add("        //quest battle");
-                                            outputCpp.Add("        player.eventFinish( getId(), 1 );");
-                                            outputCpp.Add("        auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();");
-                                            if (constTable.ContainsKey("QUESTBATTLE0"))
-                                            {
-                                                outputCpp.Add($"        pTeriMgr.createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
-                                            }
-                                            else
-                                            {
-                                                outputCpp.Add($"        //pTeriMgr.createAndJoinQuestBattle( player, ??? );");
-                                            }
-                                            skipBody = true;
                                         }
                                     }
                                     if (!hasIf && !afterComplete && ((current.Element & LuaScene.SceneElement.Menu) > 0 || (current.Element & LuaScene.SceneElement.CanCancel) > 0 || current.Type == LuaScene.SceneType.Snipe))
@@ -669,37 +663,51 @@ namespace FFXIVTheMovie.ParserV3
                                         }
                                     }
 
-                                    if (!skipBody)
+                                    bool shouldUseFakeZoneing = keyForPrivate == null && keyForWarp == null;
+                                    bool shouldContinue = shouldContinue = next != null;
+                                    if (entry.ConditionBranch)
                                     {
-                                        bool shouldUseFakeZoneing = keyForPrivate == null && keyForWarp == null;
-                                        bool shouldContinue = shouldContinue = next != null;
-                                        if (entry.ConditionBranch)
+                                        shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
+                                    }
+                                    if (entry.EmoteBranch != null)
+                                    {
+                                        shouldContinue = false;
+                                    }
+
+                                    if (shouldContinue)
+                                    {
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( player );");
+                                    }
+                                    else
+                                    {
+                                        if (afterComplete)
                                         {
-                                            shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
-                                        }
-                                        if (entry.EmoteBranch != null)
-                                        {
-                                            shouldContinue = false;
-                                        }
-                                        if (shouldContinue)
-                                        {
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( player );");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
+                                            if (shouldUseFakeZoneing && (current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                            {
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
+                                            }
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
                                         }
                                         else
                                         {
-
-                                            if (afterComplete)
+                                            if (entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestBattle))
                                             {
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
-                                                if (shouldUseFakeZoneing && (current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      //quest battle");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();");
+                                                if (constTable.ContainsKey("QUESTBATTLE0"))
                                                 {
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      pTeriMgr.createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
                                                 }
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
+                                                else
+                                                {
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      //pTeriMgr.createAndJoinQuestBattle( player, ??? );");
+                                                }
                                             }
                                             else
                                             {
@@ -720,6 +728,7 @@ namespace FFXIVTheMovie.ParserV3
                                             }
                                         }
                                     }
+                                    
 
                                     if (keyForPrivate != null || keyForWarp != null)
                                     {
@@ -848,11 +857,11 @@ namespace FFXIVTheMovie.ParserV3
             {
                 foreach (var entry in seq.EntryList)
                 {
-                    if (entry.TargetObject != null && idHint.TryGetValue($"_{entry.TargetObject.Name}", out var f))
+                    if (entry.TargetObject != null && paramTable.TryGetValue($"_{entry.TargetObject.Name}", out var f))
                     {
                         if (f.Contains('E'))
                         {
-                            var value = idHint[$"_{entry.TargetObject.Name}E"];
+                            var value = paramTable[$"_{entry.TargetObject.Name}E"];
                             var array = value.Split('|');
                             var seqList = array[0].Split(',');
                             for (var i = 0; i < seqList.Length; i++)
@@ -887,7 +896,7 @@ namespace FFXIVTheMovie.ParserV3
                         }
                         if (f.Contains('B'))
                         {
-                            var value = idHint[$"_{entry.TargetObject.Name}B"];
+                            var value = paramTable[$"_{entry.TargetObject.Name}B"];
                             var array = value.Split('|');
                             var seqList = array[0].Split(',');
                             for (var i = 0; i < seqList.Length; i++)
@@ -1003,17 +1012,17 @@ namespace FFXIVTheMovie.ParserV3
             privateInstanceEntranceTable = new Dictionary<string, int>();
             mountTable = new Dictionary<string, int>();
             warpTable = new Dictionary<string, Tuple<int, float, float, float, float, string>>();
-            foreach (var hint in idHint)
+            foreach (var entry in paramTable)
             {
-                if (hint.Key.StartsWith("SCENE_"))
+                if (entry.Key.StartsWith("SCENE_"))
                 {
-                    var sceneNum = int.Parse(hint.Key.Split('_')[1]);
+                    var sceneNum = int.Parse(entry.Key.Split('_')[1]);
                     foreach (var g in sceneGroupList)
                     {
                         var scene = g.SceneList.FirstOrDefault(s => s.SceneNumber == sceneNum);
                         if (scene != null)
                         {
-                            if (hint.Value == null)
+                            if (entry.Value == null)
                             {
                                 g.SceneList.Remove(scene);
                                 if (g.SceneList.Count == 0)
@@ -1021,21 +1030,37 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             else
                             {
-                                scene.Identity = hint.Value;
+                                scene.Identity = entry.Value;
                             }
                             break;
                         }
                     }
                 }
-                else if (hint.Key.StartsWith("PRIVATE_"))
+                else if (entry.Key.StartsWith("_SCENE_"))
                 {
-                    var id = hint.Key.Split('_')[1];
-                    privateInstanceEntranceTable.Add(id, int.Parse(hint.Value));
+                    var sceneNum = int.Parse(entry.Key.Split('_')[2]);
+                    foreach (var g in sceneGroupList)
+                    {
+                        var scene = g.SceneList.FirstOrDefault(s => s.SceneNumber == sceneNum);
+                        if (scene != null)
+                        {
+                            if (entry.Value.Contains("Z"))
+                            {
+                                scene.Element |= LuaScene.SceneElement.AutoFadeIn;
+                            }
+                            break;
+                        }
+                    }
                 }
-                else if (hint.Key.StartsWith("WARP_"))
+                else if (entry.Key.StartsWith("PRIVATE_"))
                 {
-                    var id = hint.Key.Split('_')[1];
-                    var dst = hint.Value.Split('|');
+                    var id = entry.Key.Split('_')[1];
+                    privateInstanceEntranceTable.Add(id, int.Parse(entry.Value));
+                }
+                else if (entry.Key.StartsWith("WARP_"))
+                {
+                    var id = entry.Key.Split('_')[1];
+                    var dst = entry.Value.Split('|');
                     try
                     {
                         warpTable.Add(id, new Tuple<int, float, float, float, float, string>(
@@ -1052,14 +1077,19 @@ namespace FFXIVTheMovie.ParserV3
                         throw new Exception($"WARP destination for {id} not valid.");
                     }
                 }
-                else if (hint.Key.StartsWith("MOUNT_"))
+                else if (entry.Key.StartsWith("MOUNT_"))
                 {
-                    var id = hint.Key.Split('_')[1];
-                    mountTable.Add(id, int.Parse(hint.Value));
+                    var id = entry.Key.Split('_')[1];
+                    mountTable.Add(id, int.Parse(entry.Value));
                 }
-                else if (hint.Value != null)
+                else if (entry.Key.StartsWith("ID_"))
                 {
-                    idTable.Add(hint.Key, new Tuple<string, int>(hint.Value, -1));
+                    var obj = entry.Key.Split('_')[1];
+                    unmappedObjTable.Add(obj, long.Parse(entry.Value));
+                }
+                else if (entry.Value != null)
+                {
+                    idTable.Add(entry.Key, new Tuple<string, int>(entry.Value, -1));
                 }
             }
             useBranchGlobal = idTable.ContainsKey("_BRANCH");
