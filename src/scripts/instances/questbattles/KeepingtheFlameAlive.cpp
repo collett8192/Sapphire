@@ -2,6 +2,14 @@
 #include <Territory/QuestBattle.h>
 
 using namespace Sapphire;
+//===========THE_MOVIE start============
+#include <Actor/Player.h>
+
+const uint32_t FFXIV_THE_MOVIE_INSTANCE_QUEST_ID = 67137;
+const uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_REQUIRED = 1;
+const uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_TARGET = 2;
+const uint32_t SCENE_LIST[] = { 7, 18, 0, 0, 0, 0, 0, 0, 0, 0 };
+//===========THE_MOVIE end============
 
 class KeepingtheFlameAlive : public Sapphire::ScriptAPI::QuestBattleScript
 {
@@ -169,14 +177,49 @@ public:
 
   void onUpdate( QuestBattle& instance, uint64_t tickCount ) override
   {
+    //===========THE_MOVIE start============
+    while( instance.getCustomVar( 0 ) < instance.getCustomVar( 1 ) )
+    {
+      auto p = instance.getPlayer( instance.getCustomVar( 2 + instance.getCustomVar( 0 ) ) );
+
+      if( p && p->getEvent( instance.getDirectorId() ) )
+        break;
+
+      if( p && p->getQuestSeq( FFXIV_THE_MOVIE_INSTANCE_QUEST_ID ) == FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_REQUIRED )
+      {
+        p->sendUrgent( "skipping quest battle..." );
+        p->setPosAndNotifyClient( -58, -10.17, -110, -1 );
+        p->eventStart( p->getId(), instance.getDirectorId(), Event::EventHandler::EnterTerritory, 1, p->getZoneId() );
+        p->playScene( instance.getDirectorId(), SCENE_LIST[ 0 ], FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, 0, 0, 0,
+          std::bind( &ScriptObject::the_movie_callback, this, std::placeholders::_1, std::placeholders::_2, FFXIV_THE_MOVIE_INSTANCE_QUEST_ID, FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_TARGET, SCENE_LIST, 0 ) );
+      }
+
+      instance.setCustomVar( 0, instance.getCustomVar( 0 ) + 1 );
+    }
+    //===========THE_MOVIE end============
 
   }
 
   void onEnterTerritory( QuestBattle& instance, Entity::Player& player, uint32_t eventId, uint16_t param1,
                          uint16_t param2 ) override
   {
+    //===========THE_MOVIE start============
+    instance.setCustomVar( 2 + instance.getCustomVar( 1 ), player.getId() );
+    instance.setCustomVar( 1, instance.getCustomVar( 1 ) + 1 );
+    //===========THE_MOVIE end============
 
   }
+  //===========THE_MOVIE start============
+  void onDebug( Entity::Player& player, uint32_t param ) override
+  {
+    auto instance = player.getCurrentQuestBattle();
+    if( !instance || instance->getDirectorId() != getId() )
+      return;
+
+    player.eventStart( player.getId(), instance->getDirectorId(), Event::EventHandler::EnterTerritory, 1, player.getZoneId() );
+    player.playScene( instance->getDirectorId(), param, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, 0, 0, 0, nullptr );
+  }
+  //===========THE_MOVIE end============
 
 };
 

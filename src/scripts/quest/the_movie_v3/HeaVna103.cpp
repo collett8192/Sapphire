@@ -1,4 +1,4 @@
-// FFXIVTheMovie.ParserV3
+// FFXIVTheMovie.ParserV3.6
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -47,118 +47,143 @@ public:
   //LOCPOSCAM1 = 5899377
 
 private:
-  void onProgress( Entity::Player& player, uint64_t actorId, uint32_t actor, uint32_t type, uint32_t param )
+  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
   {
     switch( player.getQuestSeq( getId() ) )
     {
       case 0:
       {
-        if( actor == 1012323 || actorId == 1012323 ) // ACTOR0 = BUTLER01582
+        if( param1 == 1012323 || param2 == 1012323 ) // ACTOR0 = BUTLER01582
         {
-          Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
-          // +Callback Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=BUTLER01582
+          if( player.getQuestUI8AL( getId() ) != 1 )
+          {
+            Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
+            // +Callback Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove, ENpcBind), id=BUTLER01582
+          }
+          break;
         }
-        if( actor == 1012324 || actorId == 1012324 ) // ACTOR1 = ALPHINAUD
+        if( param1 == 1012324 || param2 == 1012324 ) // ACTOR1 = ALPHINAUD
         {
           Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=ALPHINAUD
+          break;
         }
-        if( actor == 1012325 || actorId == 1012325 ) // ACTOR2 = TATARU
+        if( param1 == 1012325 || param2 == 1012325 ) // ACTOR2 = TATARU
         {
           Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=TATARU
+          break;
         }
-        if( actor == 1013033 || actorId == 1013033 ) // ACTOR3 = EDMONT
+        if( param1 == 1013033 || param2 == 1013033 ) // ACTOR3 = EDMONT
         {
           Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=EDMONT
+          break;
         }
-        if( actor == 1013034 || actorId == 1013034 ) // ACTOR4 = ARTOIREL
+        if( param1 == 1013034 || param2 == 1013034 ) // ACTOR4 = ARTOIREL
         {
           Scene00005( player ); // Scene00005: Normal(Talk, TargetCanMove), id=ARTOIREL
+          break;
         }
-        if( actor == 1013035 || actorId == 1013035 ) // ACTOR5 = EMMANELLAIN
+        if( param1 == 1013035 || param2 == 1013035 ) // ACTOR5 = EMMANELLAIN
         {
           Scene00006( player ); // Scene00006: Normal(Talk, TargetCanMove), id=EMMANELLAIN
+          break;
         }
         break;
       }
       case 1:
       {
-        if( actor == 1011192 || actorId == 1011192 ) // ACTOR6 = GIBRILLONT
+        if( param1 == 1011192 || param2 == 1011192 ) // ACTOR6 = GIBRILLONT
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
-            Scene00007( player ); // Scene00007: Normal(Talk, FadeIn, TargetCanMove), id=GIBRILLONT
+            Scene00007( player ); // Scene00007: Normal(Talk, FadeIn, TargetCanMove, ENpcBind), id=GIBRILLONT
           }
+          break;
         }
-        if( actor == 1013039 || actorId == 1013039 ) // ACTOR7 = ALPHINAUD
+        if( param1 == 1013039 || param2 == 1013039 ) // ACTOR7 = ALPHINAUD
         {
           Scene00008( player ); // Scene00008: Normal(Talk, TargetCanMove), id=ALPHINAUD
+          break;
         }
-        if( actor == 1013040 || actorId == 1013040 ) // ACTOR8 = TATARU
+        if( param1 == 1013040 || param2 == 1013040 ) // ACTOR8 = TATARU
         {
           Scene00009( player ); // Scene00009: Normal(Talk, TargetCanMove), id=TATARU
+          break;
         }
-        if( actor == 1013041 || actorId == 1013041 ) // ACTOR9 = BUTLER01582
+        if( param1 == 1013041 || param2 == 1013041 ) // ACTOR9 = BUTLER01582
         {
           Scene00010( player ); // Scene00010: Normal(Talk, TargetCanMove), id=BUTLER01582
+          break;
         }
-        if( actor == 1013033 || actorId == 1013033 ) // ACTOR3 = EDMONT
+        if( param1 == 1013033 || param2 == 1013033 ) // ACTOR3 = EDMONT
         {
           Scene00011( player ); // Scene00011: Normal(Talk, TargetCanMove), id=EDMONT
+          break;
         }
-        if( actor == 1013034 || actorId == 1013034 ) // ACTOR4 = ARTOIREL
+        if( param1 == 1013034 || param2 == 1013034 ) // ACTOR4 = ARTOIREL
         {
           Scene00012( player ); // Scene00012: Normal(Talk, TargetCanMove), id=ARTOIREL
+          break;
         }
-        if( actor == 1013035 || actorId == 1013035 ) // ACTOR5 = EMMANELLAIN
+        if( param1 == 1013035 || param2 == 1013035 ) // ACTOR5 = EMMANELLAIN
         {
           Scene00013( player ); // Scene00013: Normal(Talk, TargetCanMove), id=EMMANELLAIN
+          break;
         }
         break;
       }
       case 2:
       {
-        if( actor == 1013033 || actorId == 1013033 ) // ACTOR3 = unknown
+        if( param1 == 1013033 || param2 == 1013033 ) // ACTOR3 = unknown
         {
           if( player.getQuestUI8AL( getId() ) != 1 )
           {
             Scene00014( player ); // Scene00014: Normal(CutScene), id=unknown
           }
+          break;
         }
-        if( actor == 1013034 || actorId == 1013034 ) // ACTOR4 = ARTOIREL
+        if( param1 == 1013034 || param2 == 1013034 ) // ACTOR4 = ARTOIREL
         {
           Scene00015( player ); // Scene00015: Normal(Talk, TargetCanMove), id=ARTOIREL
+          break;
         }
-        if( actor == 1013035 || actorId == 1013035 ) // ACTOR5 = EMMANELLAIN
+        if( param1 == 1013035 || param2 == 1013035 ) // ACTOR5 = EMMANELLAIN
         {
           Scene00016( player ); // Scene00016: Normal(Talk, TargetCanMove), id=EMMANELLAIN
+          break;
         }
-        if( actor == 1013383 || actorId == 1013383 ) // ACTOR10 = HONOROIT
+        if( param1 == 1013383 || param2 == 1013383 ) // ACTOR10 = HONOROIT
         {
           Scene00017( player ); // Scene00017: Normal(Talk, TargetCanMove), id=HONOROIT
+          break;
         }
-        if( actor == 1013040 || actorId == 1013040 ) // ACTOR8 = TATARU
+        if( param1 == 1013040 || param2 == 1013040 ) // ACTOR8 = TATARU
         {
           Scene00018( player ); // Scene00018: Normal(Talk, TargetCanMove), id=TATARU
+          break;
         }
         break;
       }
       case 255:
       {
-        if( actor == 1013036 || actorId == 1013036 ) // ACTOR11 = ALPHINAUD
+        if( param1 == 1013036 || param2 == 1013036 ) // ACTOR11 = ALPHINAUD
         {
           Scene00019( player ); // Scene00019: Normal(Talk, NpcDespawn, QuestReward, QuestComplete, TargetCanMove), id=ALPHINAUD
+          break;
         }
-        if( actor == 1012328 || actorId == 1012328 ) // ACTOR12 = ARTOIREL
+        if( param1 == 1012328 || param2 == 1012328 ) // ACTOR12 = ARTOIREL
         {
           Scene00020( player ); // Scene00020: Normal(Talk, TargetCanMove), id=ARTOIREL
+          break;
         }
-        if( actor == 1012329 || actorId == 1012329 ) // ACTOR13 = EMMANELLAIN
+        if( param1 == 1012329 || param2 == 1012329 ) // ACTOR13 = EMMANELLAIN
         {
           Scene00021( player ); // Scene00021: Normal(Talk, TargetCanMove), id=EMMANELLAIN
+          break;
         }
-        if( actor == 1012327 || actorId == 1012327 ) // ACTOR14 = HONOROIT
+        if( param1 == 1012327 || param2 == 1012327 ) // ACTOR14 = HONOROIT
         {
           Scene00022( player ); // Scene00022: Normal(Talk, TargetCanMove), id=HONOROIT
+          break;
         }
         break;
       }
@@ -182,6 +207,7 @@ public:
   {
     auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
     auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+    player.sendDebug( "emote: {}", emoteId );
     onProgress( player, actorId, actor, 1, emoteId );
   }
 
@@ -192,7 +218,7 @@ public:
 
   void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, param1 );
+    onProgress( player, param1, param1, 3, 0 );
   }
 
   void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
@@ -210,6 +236,7 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 2 );
     }
   }
@@ -218,11 +245,12 @@ private:
     if( player.getQuestUI8AL( getId() ) == 1 )
     {
       player.setQuestUI8AL( getId(), 0 );
+      player.setQuestBitFlag8( getId(), 1, false );
       player.updateQuest( getId(), 255 );
     }
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( Entity::Player& player ) //SEQ_0: ACTOR0, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -234,17 +262,18 @@ private:
     };
     player.playScene( getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( Entity::Player& player ) //SEQ_0: ACTOR0, UI8AL = 1, Flag8(1)=True
   {
-    player.sendDebug( "HeaVna103:67118 calling [BranchTrue]Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove), id=BUTLER01582" );
+    player.sendDebug( "HeaVna103:67118 calling Scene00001: Normal(Talk, FadeIn, QuestAccept, TargetCanMove, ENpcBind), id=BUTLER01582" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq0( player );
     };
     player.playScene( getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( Entity::Player& player ) //SEQ_0: ACTOR1, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00002: Normal(Talk, TargetCanMove), id=ALPHINAUD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -253,7 +282,7 @@ private:
     player.playScene( getId(), 2, NONE, callback );
   }
 
-  void Scene00003( Entity::Player& player )
+  void Scene00003( Entity::Player& player ) //SEQ_0: ACTOR2, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00003: Normal(Talk, TargetCanMove), id=TATARU" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -262,7 +291,7 @@ private:
     player.playScene( getId(), 3, NONE, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( Entity::Player& player ) //SEQ_0: ACTOR3, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00004: Normal(Talk, TargetCanMove), id=EDMONT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -271,7 +300,7 @@ private:
     player.playScene( getId(), 4, NONE, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( Entity::Player& player ) //SEQ_0: ACTOR4, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00005: Normal(Talk, TargetCanMove), id=ARTOIREL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -280,7 +309,7 @@ private:
     player.playScene( getId(), 5, NONE, callback );
   }
 
-  void Scene00006( Entity::Player& player )
+  void Scene00006( Entity::Player& player ) //SEQ_0: ACTOR5, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00006: Normal(Talk, TargetCanMove), id=EMMANELLAIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -289,18 +318,19 @@ private:
     player.playScene( getId(), 6, NONE, callback );
   }
 
-  void Scene00007( Entity::Player& player )
+  void Scene00007( Entity::Player& player ) //SEQ_1: ACTOR6, UI8AL = 1, Flag8(1)=True
   {
-    player.sendDebug( "HeaVna103:67118 calling Scene00007: Normal(Talk, FadeIn, TargetCanMove), id=GIBRILLONT" );
+    player.sendDebug( "HeaVna103:67118 calling Scene00007: Normal(Talk, FadeIn, TargetCanMove, ENpcBind), id=GIBRILLONT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq1( player );
     };
     player.playScene( getId(), 7, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00008( Entity::Player& player )
+  void Scene00008( Entity::Player& player ) //SEQ_1: ACTOR7, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00008: Normal(Talk, TargetCanMove), id=ALPHINAUD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -309,7 +339,7 @@ private:
     player.playScene( getId(), 8, NONE, callback );
   }
 
-  void Scene00009( Entity::Player& player )
+  void Scene00009( Entity::Player& player ) //SEQ_1: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00009: Normal(Talk, TargetCanMove), id=TATARU" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -318,7 +348,7 @@ private:
     player.playScene( getId(), 9, NONE, callback );
   }
 
-  void Scene00010( Entity::Player& player )
+  void Scene00010( Entity::Player& player ) //SEQ_1: ACTOR9, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00010: Normal(Talk, TargetCanMove), id=BUTLER01582" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -327,7 +357,7 @@ private:
     player.playScene( getId(), 10, NONE, callback );
   }
 
-  void Scene00011( Entity::Player& player )
+  void Scene00011( Entity::Player& player ) //SEQ_1: ACTOR3, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00011: Normal(Talk, TargetCanMove), id=EDMONT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -336,7 +366,7 @@ private:
     player.playScene( getId(), 11, NONE, callback );
   }
 
-  void Scene00012( Entity::Player& player )
+  void Scene00012( Entity::Player& player ) //SEQ_1: ACTOR4, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00012: Normal(Talk, TargetCanMove), id=ARTOIREL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -345,7 +375,7 @@ private:
     player.playScene( getId(), 12, NONE, callback );
   }
 
-  void Scene00013( Entity::Player& player )
+  void Scene00013( Entity::Player& player ) //SEQ_1: ACTOR5, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00013: Normal(Talk, TargetCanMove), id=EMMANELLAIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -354,18 +384,19 @@ private:
     player.playScene( getId(), 13, NONE, callback );
   }
 
-  void Scene00014( Entity::Player& player )
+  void Scene00014( Entity::Player& player ) //SEQ_2: ACTOR3, UI8AL = 1, Flag8(1)=True
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00014: Normal(CutScene), id=unknown" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
     {
       player.setQuestUI8AL( getId(), 1 );
+      player.setQuestBitFlag8( getId(), 1, true );
       checkProgressSeq2( player );
     };
     player.playScene( getId(), 14, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00015( Entity::Player& player )
+  void Scene00015( Entity::Player& player ) //SEQ_2: ACTOR4, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00015: Normal(Talk, TargetCanMove), id=ARTOIREL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -374,7 +405,7 @@ private:
     player.playScene( getId(), 15, NONE, callback );
   }
 
-  void Scene00016( Entity::Player& player )
+  void Scene00016( Entity::Player& player ) //SEQ_2: ACTOR5, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00016: Normal(Talk, TargetCanMove), id=EMMANELLAIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -383,7 +414,7 @@ private:
     player.playScene( getId(), 16, NONE, callback );
   }
 
-  void Scene00017( Entity::Player& player )
+  void Scene00017( Entity::Player& player ) //SEQ_2: ACTOR10, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00017: Normal(Talk, TargetCanMove), id=HONOROIT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -392,7 +423,7 @@ private:
     player.playScene( getId(), 17, NONE, callback );
   }
 
-  void Scene00018( Entity::Player& player )
+  void Scene00018( Entity::Player& player ) //SEQ_2: ACTOR8, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00018: Normal(Talk, TargetCanMove), id=TATARU" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -401,7 +432,7 @@ private:
     player.playScene( getId(), 18, NONE, callback );
   }
 
-  void Scene00019( Entity::Player& player )
+  void Scene00019( Entity::Player& player ) //SEQ_255: ACTOR11, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00019: Normal(Talk, NpcDespawn, QuestReward, QuestComplete, TargetCanMove), id=ALPHINAUD" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -409,13 +440,15 @@ private:
       if( result.param1 > 0 && result.param2 == 1 )
       {
         if( player.giveQuestRewards( getId(), result.param3 ) )
+        {
           player.finishQuest( getId() );
+        }
       }
     };
     player.playScene( getId(), 19, NONE, callback );
   }
 
-  void Scene00020( Entity::Player& player )
+  void Scene00020( Entity::Player& player ) //SEQ_255: ACTOR12, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00020: Normal(Talk, TargetCanMove), id=ARTOIREL" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -424,7 +457,7 @@ private:
     player.playScene( getId(), 20, NONE, callback );
   }
 
-  void Scene00021( Entity::Player& player )
+  void Scene00021( Entity::Player& player ) //SEQ_255: ACTOR13, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00021: Normal(Talk, TargetCanMove), id=EMMANELLAIN" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
@@ -433,7 +466,7 @@ private:
     player.playScene( getId(), 21, NONE, callback );
   }
 
-  void Scene00022( Entity::Player& player )
+  void Scene00022( Entity::Player& player ) //SEQ_255: ACTOR14, <No Var>, <No Flag>
   {
     player.sendDebug( "HeaVna103:67118 calling Scene00022: Normal(Talk, TargetCanMove), id=HONOROIT" );
     auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )

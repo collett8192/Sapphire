@@ -367,9 +367,7 @@ private:
     {
       player.setQuestUI8AL( getId(), 0 );
       player.setQuestBitFlag8( getId(), 1, false );
-      //player.updateQuest( getId(), 3 );
-      player.updateQuest( getId(), 4 );
-      player.setQuestUI8BH( getId(), 1 );
+      player.updateQuest( getId(), 3 );
     }
   }
   void checkProgressSeq3( Entity::Player& player )
