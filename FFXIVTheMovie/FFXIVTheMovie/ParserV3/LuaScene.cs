@@ -220,6 +220,10 @@ namespace FFXIVTheMovie.ParserV3
                     }
                 }
             }
+            if (result.Element == SceneElement.None && result.Type != SceneType.Normal)
+            {
+                result.Element |= SceneElement.Basic;
+            }
             return result;
         }
         private static LuaFunctionCall ParseLuaFunction(string line)
@@ -329,6 +333,8 @@ namespace FFXIVTheMovie.ParserV3
             CanCancel = 1 << 19,
             SetWeddingFestivalParam = 1 << 20,
             ENpcBind = 1 << 21,
+
+            Basic = 1 << 31
         }
 
         public override string ToString()

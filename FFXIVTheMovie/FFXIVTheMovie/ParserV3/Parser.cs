@@ -43,7 +43,7 @@ namespace FFXIVTheMovie.ParserV3
             bool isSimpleParse = false;
             allowEmptyEntry = seqList.Count > sceneGroupList.Count;
             int buildResult = 0;
-            buildResult = paramTable.ContainsKey("ALLOW_EMPTY_ENTRY") ? -1 : BuildSeqList();
+            buildResult = paramTable.ContainsKey("_ALLOW_EMPTY_ENTRY") ? -1 : BuildSeqList();
             if (buildResult < 0)
             {
                 if (!allowEmptyEntry)
@@ -73,7 +73,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.6");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.7");
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -86,14 +86,14 @@ namespace FFXIVTheMovie.ParserV3
             {
                 outputCpp.Add("// fake IsAnnounce table");
             }
-            else if (paramTable.Count > 0)
+            if (!isSimpleParse && paramTable.Count > 0)
             {
                 outputCpp.Add("// param used:");
                 foreach (var entry in paramTable)
                 {
                     if (entry.Value != null)
                     {
-                        if (entry.Key[0] != '_' || !string.IsNullOrEmpty(entry.Value))
+                        if ((entry.Key[0] != '_' && !entry.Key.StartsWith("IGNORE_")) || !string.IsNullOrEmpty(entry.Value))
                         {
                             outputCpp.Add($"//{entry.Key} = {entry.Value}");
                         }
@@ -139,8 +139,14 @@ namespace FFXIVTheMovie.ParserV3
             {
                 foreach (var entry in seq.EntryList)
                 {
+                    int minCount = 1;
                     int i = 0;
-                    while (entry.EntryScene.SceneList.Count > 1 && i < entry.EntryScene.SceneList.Count)
+                    if (entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.Inventory))
+                    {
+                        minCount = 2;
+                        i = 1;
+                    }
+                    while (entry.EntryScene.SceneList.Count > minCount && i < entry.EntryScene.SceneList.Count)
                     {
                         if (entry.EntryScene.SceneList[i].Element == LuaScene.SceneElement.None)
                             entry.EntryScene.SceneList.RemoveAt(i);
@@ -167,7 +173,10 @@ namespace FFXIVTheMovie.ParserV3
                     var scene2 = entry.EntryScene.SceneList.Count > 1 ? entry.EntryScene.SceneList[1] : null;
                     var scene3 = entry.EntryScene.SceneList.Count > 2 ? entry.EntryScene.SceneList[2] : null;
                     var scene4 = entry.EntryScene.SceneList.Count > 3 ? entry.EntryScene.SceneList[3] : null;
-
+                    if (entry.bNpcHackCreditDest != null)
+                    {
+                        outputCpp.Add($"        // BNpcHack credit moved to {entry.bNpcHackCreditDest}");
+                    }
                     if (entry.TargetObject == null)
                     {
                         if (scene != null)
@@ -382,7 +391,7 @@ namespace FFXIVTheMovie.ParserV3
                 var seq = seqList[s];
                 var s2 = s + 1;
                 var nextSeq = seqList[s2];
-                while (s2 < seqList.Count - 1 && nextSeq.EntryList.Count == 1 && nextSeq.EntryList[0].EntryScene.SceneList.Count == 0)
+                while (!nextSeq.Ignore && s2 < seqList.Count - 1 && nextSeq.EntryList.Count == 1 && nextSeq.EntryList[0].EntryScene.SceneList.Count == 0)
                 {
                     s2++;
                     nextSeq = seqList[s2];
@@ -817,30 +826,38 @@ namespace FFXIVTheMovie.ParserV3
         {
             //since we are not spawning bnpcs, move its credit to another entry and hope it's the one that suppose to do the spawning.
             //if u want to implement the quest manually based on the generated code, do not run this method.
+            HashSet<string> processedVars = new HashSet<string>();
             foreach (var seq in seqList)
             {
-                while (seq.ContainsSceneElement(LuaScene.SceneElement.PopBNpc))
+                while (paramTable.ContainsKey("_AGGRESSIVE_BNPC_HACK") || seq.ContainsSceneElement(LuaScene.SceneElement.PopBNpc))
                 {
                     var enemyEntry = seq.EntryList.FirstOrDefault(e => e.TargetObject is ActiveEnemy && e.Var != null);
                     if (enemyEntry != null)
                     {
-                        for (int i = 0; i < seq.EntryList.Count; i++)
+                        if (!processedVars.Contains(enemyEntry.Var.Name))
                         {
-                            var e = seq.EntryList[i];
-                            if (e == enemyEntry)
-                                break;
-                            if (!(e.TargetObject is ActiveEnemy) && e.Var == null)
+                            for (int i = 0; i < seq.EntryList.Count; i++)
                             {
-                                seq.EntryList[i].Var = enemyEntry.Var;
-                                seq.EntryList[i].Var.ForceSetValue = true;
-                                if (enemyEntry.Flag != null)
+                                var e = seq.EntryList[i];
+                                if (e == enemyEntry)
+                                    continue;
+                                if (e.TargetObject != null && !(e.TargetObject is ActiveEnemy) && e.Var == null)
                                 {
-                                    if (seq.EntryList[i].Flag == null)
-                                        seq.EntryList[i].Flag = enemyEntry.Flag;
-                                    else
-                                        Console.WriteLine($"[BNpcHack]Cannot move {enemyEntry.Flag} to {seq.EntryList[i].TargetObject.Name}, a flag is already present.");
+                                    if (paramTable.ContainsKey($"IGNORE_BNPCHACK_{e.TargetObject.Name}"))
+                                        continue;
+                                    seq.EntryList[i].Var = enemyEntry.Var;
+                                    seq.EntryList[i].Var.ForceSetValue = true;
+                                    enemyEntry.bNpcHackCreditDest = seq.EntryList[i].TargetObject.Name;
+                                    if (enemyEntry.Flag != null)
+                                    {
+                                        if (seq.EntryList[i].Flag == null)
+                                            seq.EntryList[i].Flag = enemyEntry.Flag;
+                                        else
+                                            Console.WriteLine($"[BNpcHack]Cannot move {enemyEntry.Flag} to {seq.EntryList[i].TargetObject.Name}, a flag is already present.");
+                                    }
+                                    processedVars.Add(enemyEntry.Var.Name);
+                                    break;
                                 }
-                                break;
                             }
                         }
                         enemyEntry.Var = null;
@@ -1087,6 +1104,12 @@ namespace FFXIVTheMovie.ParserV3
                     var obj = entry.Key.Split('_')[1];
                     unmappedObjTable.Add(obj, long.Parse(entry.Value));
                 }
+                else if (entry.Key.StartsWith("IGNORE_"))
+                {
+                    //processed later
+                }
+                else if (entry.Key == "_AGGRESSIVE_BNPC_HACK") { }
+                else if (entry.Key == "_ALLOW_EMPTY_ENTRY") { }
                 else if (entry.Value != null)
                 {
                     idTable.Add(entry.Key, new Tuple<string, int>(entry.Value, -1));
@@ -1100,6 +1123,10 @@ namespace FFXIVTheMovie.ParserV3
             List <EventEntry> allEntries = new List<EventEntry>();
             foreach (var seq in seqList)
             {
+                if (paramTable.ContainsKey($"IGNORE_SEQ{seq.SeqNumber}"))
+                {
+                    seq.Ignore = true;
+                }
                 allEntries.AddRange(seq.EntryList);
             }
             if (!AssignScenesNextStep(allEntries, sceneGroupList, idTable, 0, 0, allowEmptyEntry))
@@ -1125,7 +1152,23 @@ namespace FFXIVTheMovie.ParserV3
                 return false;
             var entry = entryList[e];
             var tmpIdTable = idTable == null ? null : new Dictionary<string, Tuple<string, int>>(idTable);
-            if (allowEmptyEntry && entry.CanExistWithoutScene && !entry.IsPrefferedGroup(sceneGroupList[g]))
+            if (idTable != null && entry.TargetObject != null && idTable.ContainsKey($"_{entry.TargetObject.Name}"))
+            {
+                var entryFlag = idTable[$"_{entry.TargetObject.Name}"];
+                if (entryFlag.Item1.Contains("I"))
+                {
+                    var flagOption = idTable[$"_{entry.TargetObject.Name}I"].Item1;
+                    if (entry.Owner.SeqNumber == int.Parse(flagOption))
+                    {
+                        return AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable, e + 1, g, allowEmptyEntry);
+                    }
+                }
+            }
+            if (entry.Owner.Ignore)
+            {
+                return AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable, e + 1, g, allowEmptyEntry);
+            }
+            else if (allowEmptyEntry && entry.CanExistWithoutScene && !entry.IsPrefferedGroup(sceneGroupList[g]))
             {
                 if (AssignScenesNextStep(entryList, sceneGroupList, tmpIdTable, e + 1, g, allowEmptyEntry))
                     return true;

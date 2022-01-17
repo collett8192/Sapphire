@@ -14,6 +14,45 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "GaiUsc101":
+                    {
+                        result.Add("_BASE_ID_TERRITORY_TYPE", "I");
+                        result.Add("_BASE_ID_TERRITORY_TYPEI", "3");
+                        break;
+                    }
+                case "GaiUsb801":
+                    {
+                        result.Add("_AGGRESSIVE_BNPC_HACK", "");
+                        break;
+                    }
+                case "GaiUsb604":
+                    {
+                        result.Add("IGNORE_BNPCHACK_EVENTRANGE0", "");
+                        break;
+                    }
+                case "GaiUsb103":
+                    {
+                        result.Add("SCENE_4", null);
+                        result.Add("IGNORE_SEQ1", "");
+                        result.Add("_AGGRESSIVE_BNPC_HACK", "");
+                        break;
+                    }
+                case "GaiUsa906":
+                    {
+                        result.Add("IGNORE_SEQ2", "");
+                        break;
+                    }
+                case "GaiUsa709":
+                    {
+                        result.Add("ID_ACTOR2", "4299289701");
+                        result.Add("ID_ACTOR3", "4299289705");
+                        break;
+                    }
+                case "GaiUsa402":
+                    {
+                        result.Add("ID_ACTOR1", "2097153");
+                        break;
+                    }
                 case "HeaVna327":
                     {
                         result.Add("SCENE_9", "dummyr1");
@@ -164,7 +203,7 @@ namespace FFXIVTheMovie.ParserV3
                     }
                 case "GaiUse211":
                     {
-                        result.Add("ALLOW_EMPTY_ENTRY", "");
+                        result.Add("_ALLOW_EMPTY_ENTRY", "");
                         break;
                     }
                 case "GaiUse208":
@@ -1058,7 +1097,7 @@ namespace FFXIVTheMovie.ParserV3
                     }
                 case "GaiUse606":
                     {
-                        result.Add("ALLOW_EMPTY_ENTRY", "");
+                        result.Add("_ALLOW_EMPTY_ENTRY", "");
                         result.Add("ACTOR12", "ACTOR12");
                         result.Add("SCENE_50", "ACTOR12");
                         result.Add("ACTOR13", "null");

@@ -11,6 +11,7 @@ namespace FFXIVTheMovie.ParserV3
     {
         public int SeqNumber;
         public List<EventEntry> EntryList = new List<EventEntry>();
+        public bool Ignore = false;
 
         public Sequence(int seq)
         {
@@ -34,6 +35,8 @@ namespace FFXIVTheMovie.ParserV3
                 foreach (var scene in entry.EntryScene.SceneList)
                 {
                     if (scene.Type == LuaScene.SceneType.NpcTrade)
+                        return true;
+                    if ((scene.Element & LuaScene.SceneElement.Inventory) > 0)
                         return true;
                 }
             }
@@ -61,6 +64,7 @@ namespace FFXIVTheMovie.ParserV3
             public int RequiredGroupCount = 1;
             public bool ConditionBranch = false;
             public int? EmoteBranch = null;
+            public string bNpcHackCreditDest = null;
 
             public bool CanExistWithoutScene
             {
