@@ -266,22 +266,6 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
     peek->numOfResults > 1 ? peek->results[ 1 ] : 0,
     peek->numOfResults > 2 ? peek->results[ 2 ] : 0 );
 
-  struct ThreePointOhValuePeek
-  {
-    uint32_t handlerId;
-    uint16_t sceneId;
-    uint8_t errorCode;
-    uint8_t numOfResults;
-    uint32_t results[3];
-  };
-
-  auto peek = reinterpret_cast< const ThreePointOhValuePeek* >( &packet.data() );
-  player.sendDebug( "[ThreePointOh]handler: {0} scene: {1}, err: {2}, num: {3}, r0: {4}, r1: {5}, r2: {6}",
-    peek->handlerId, peek->sceneId, peek->errorCode, peek->numOfResults,
-    peek->numOfResults > 0 ? peek->results[ 0 ] : 0,
-    peek->numOfResults > 1 ? peek->results[ 1 ] : 0,
-    peek->numOfResults > 2 ? peek->results[ 2 ] : 0 );
-
   auto pEvent = player.getEvent( eventId );
   if( pEvent )
   {
