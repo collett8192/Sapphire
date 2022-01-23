@@ -159,7 +159,7 @@ namespace Sapphire::Entity
     void update( uint64_t tickCount ) override;
 
     /*! Event to be called upon Bnpc kill */
-    void onMobKill( uint16_t nameId );
+    void onMobKill( uint16_t nameId, uint32_t layoutId );
 
 
     // Quest
@@ -169,6 +169,7 @@ namespace Sapphire::Entity
 
     /*! update quest ( register it as active quest if new ) */
     void updateQuest( uint16_t questId, uint8_t sequence );
+    void updateQuest( const World::Quest& quest );
 
     /*! return true if quest is currently active */
     bool hasQuest( uint32_t questId );
@@ -187,6 +188,7 @@ namespace Sapphire::Entity
 
     /*! finish a given quest */
     void finishQuest( uint16_t questId );
+    void finishQuest( uint16_t questId, uint32_t optionalChoice );
 
     /*! finish a given quest */
     void unfinishQuest( uint16_t questId );
@@ -506,6 +508,7 @@ namespace Sapphire::Entity
     uint32_t getTerritoryTypeId() const;
 
     void forceZoneing( uint32_t zoneId = 0, float x = FLT_MAX, float y = FLT_MAX, float z = FLT_MAX, float r = FLT_MAX, bool showZoneName = false );
+    void performZoning( uint16_t territoryTypeId, uint32_t territoryId, const Common::FFXIVARR_POSITION3& pos, float rotation );
 
     /*! return player to preset homepoint */
     void returnToHomepoint();
@@ -578,6 +581,7 @@ namespace Sapphire::Entity
 
     /*! mount the specified mount and send the packets */
     void mount( uint32_t id );
+    void setMount( uint32_t id );
 
     /*! dismount the current mount and send the packets */
     void dismount();

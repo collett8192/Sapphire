@@ -67,3 +67,24 @@ void Sapphire::World::Manager::PlayerMgr::movePlayerToLandDestination( Sapphire:
 
   terriMgr.movePlayer( destinationZone, player.getAsPlayer() );
 }
+
+void PlayerMgr::sendServerNotice( Sapphire::Entity::Player& player, const std::string& message ) //Purple Text
+{
+  player.sendNotice( message );
+}
+
+void PlayerMgr::sendUrgent( Sapphire::Entity::Player& player, const std::string& message ) //Red Text
+{
+  player.sendUrgent( message );
+}
+
+void PlayerMgr::sendDebug( Sapphire::Entity::Player& player, const std::string& message ) //Grey Text
+{
+  player.sendDebug( message );
+}
+
+void PlayerMgr::sendLogMessage( Sapphire::Entity::Player& player, uint32_t messageId, uint32_t param2, uint32_t param3,
+  uint32_t param4, uint32_t param5, uint32_t param6 )
+{
+  player.sendLogMessage( messageId, param2, param3, param4, param5, param6 );
+}
