@@ -6,6 +6,8 @@
 #include "EventMgr.h"
 #include "Event/EventHandler.h"
 
+#include "Actor/Player.h"
+
 using namespace Sapphire::Common;
 
 std::string Sapphire::World::Manager::EventMgr::getEventName( uint32_t eventId )
@@ -119,4 +121,42 @@ uint32_t Sapphire::World::Manager::EventMgr::mapEventActorToRealActor( uint32_t 
     return levelInfo->object;
 
   return 0;
+}
+
+Sapphire::World::Quest Sapphire::World::Manager::EventMgr::getPlayerQuestDataFromEventId( Entity::Player& player, uint32_t eventId )
+{
+  for( uint16_t i = 0; i < 30; i++ )
+  {
+    auto activeQuests = player.getQuestActive( i );
+    if( !activeQuests )
+      continue;
+
+    uint32_t id = activeQuests->c.questId | static_cast< uint16_t >( Event::EventHandler::EventHandlerType::Quest ) << 16;
+    if( id == eventId )
+    {
+      return World::Quest( *activeQuests );
+    }
+  }
+  return World::Quest();
+}
+
+void Sapphire::World::Manager::EventMgr::playQuestScene( Entity::Player& player, uint32_t eventId, uint32_t scene, uint32_t flags, Event::EventHandler::QuestSceneReturnCallback eventCallback )
+{
+  player.playScene( eventId, scene, flags, [ eventId, eventCallback, this ]( Entity::Player& player, const Event::SceneResult& result )
+    {
+      if( !eventCallback )
+        return;
+      auto quest = getPlayerQuestDataFromEventId( player, eventId );
+      if( quest.getId() == 0 )
+        return;
+      auto copy = quest;
+      eventCallback( quest, player, result );
+      if( quest != copy )
+        player.updateQuest( quest );
+    });
+}
+
+void Sapphire::World::Manager::EventMgr::eventFinish( Sapphire::Entity::Player& player, uint32_t eventId, uint32_t freePlayer )
+{
+  player.eventFinish( eventId, freePlayer );
 }

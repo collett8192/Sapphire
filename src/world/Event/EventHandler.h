@@ -2,6 +2,7 @@
 #define _EVENT_H
 
 #include "ForwardsZone.h"
+#include "Quest/Quest.h"
 
 namespace Sapphire::Event
 {
@@ -10,10 +11,19 @@ namespace Sapphire::Event
   {
     uint64_t actorId;
     uint32_t eventId;
-    uint16_t param1;
+    union
+    {
+      uint16_t param1;
+      struct
+      {
+        uint8_t errorCode;
+        uint8_t numOfResults;
+      };
+    };
     uint16_t param2;
     uint16_t param3;
     uint16_t param4;
+    uint32_t getResult( uint32_t index ) const;
   };
 
   class EventHandler
@@ -93,6 +103,7 @@ namespace Sapphire::Event
     };
 
     using SceneReturnCallback = std::function< void( Entity::Player&, const SceneResult& ) >;
+    using QuestSceneReturnCallback = std::function< void( World::Quest&, Entity::Player&, const SceneResult& ) >;
     using SceneChainCallback = std::function< void( Entity::Player& ) >;
     using EventFinishCallback = std::function< void( Entity::Player&, uint64_t ) >;
 

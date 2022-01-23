@@ -192,6 +192,21 @@ bool Sapphire::Scripting::ScriptMgr::onTalk( Entity::Player& player, uint64_t ac
   }
   else
   {
+    auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( eventId );
+    if( threePointOhScript )
+    {
+      auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+      auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+      auto quest = eventMgr.getPlayerQuestDataFromEventId( player, eventId );
+      if( quest.getId() > 0 )
+      {
+        auto copy = quest;
+        threePointOhScript->onTalk( quest, player, actor );
+        if( quest != copy )
+          player.updateQuest( quest );
+        return true;
+      }
+    }
     script = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::EventScript >( eventId & 0xFFFF0000 );
     if( !script )
       return false;
@@ -206,7 +221,23 @@ bool Sapphire::Scripting::ScriptMgr::onEnterTerritory( Entity::Player& player, u
 {
   auto script = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::EventScript >( eventId );
   if( !script )
+  {
+    auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( eventId );
+    if( threePointOhScript )
+    {
+      auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+      auto quest = eventMgr.getPlayerQuestDataFromEventId( player, eventId );
+      if( quest.getId() > 0 )
+      {
+        auto copy = quest;
+        threePointOhScript->onEnterTerritory( quest, player, param1, param2 );
+        if( quest != copy )
+          player.updateQuest( quest );
+        return true;
+      }
+    }
     return false;
+  }
   script->onEnterTerritory( player, eventId, param1, param2 );
   return true;
 }
@@ -216,7 +247,23 @@ bool Sapphire::Scripting::ScriptMgr::onWithinRange( Entity::Player& player, uint
 {
   auto script = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::EventScript >( eventId );
   if( !script )
+  {
+    auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( eventId );
+    if( threePointOhScript )
+    {
+      auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+      auto quest = eventMgr.getPlayerQuestDataFromEventId( player, eventId );
+      if( quest.getId() > 0 )
+      {
+        auto copy = quest;
+        threePointOhScript->onWithinRange( quest, player, eventId, param1, x, y, z );
+        if( quest != copy )
+          player.updateQuest( quest );
+        return true;
+      }
+    }
     return false;
+  }
   script->onWithinRange( player, eventId, param1, x, y, z );
   return true;
 }
@@ -226,7 +273,23 @@ bool Sapphire::Scripting::ScriptMgr::onOutsideRange( Entity::Player& player, uin
 {
   auto script = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::EventScript >( eventId );
   if( !script )
+  {
+    auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( eventId );
+    if( threePointOhScript )
+    {
+      auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+      auto quest = eventMgr.getPlayerQuestDataFromEventId( player, eventId );
+      if( quest.getId() > 0 )
+      {
+        auto copy = quest;
+        threePointOhScript->onOutsideRange( quest, player, eventId, param1, x, y, z );
+        if( quest != copy )
+          player.updateQuest( quest );
+        return true;
+      }
+    }
     return false;
+  }
   script->onOutsideRange( player, eventId, param1, x, y, z );
   return true;
 }
@@ -236,7 +299,24 @@ bool Sapphire::Scripting::ScriptMgr::onEmote( Entity::Player& player, uint64_t a
 {
   auto script = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::EventScript >( eventId );
   if( !script )
+  {
+    auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( eventId );
+    if( threePointOhScript )
+    {
+      auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+      auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+      auto quest = eventMgr.getPlayerQuestDataFromEventId( player, eventId );
+      if( quest.getId() > 0 )
+      {
+        auto copy = quest;
+        threePointOhScript->onEmote( quest, actor, emoteId, player );
+        if( quest != copy )
+          player.updateQuest( quest );
+        return true;
+      }
+    }
     return false;
+  }
   script->onEmote( actorId, eventId, emoteId, player );
   return true;
 }
@@ -279,11 +359,28 @@ bool Sapphire::Scripting::ScriptMgr::onEventItem( Entity::Player& player, uint32
     script->onEventItem( player, eventItemId, eventId, castTime, targetId );
     return true;
   }
-
+  else
+  {
+    auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( eventId );
+    if( threePointOhScript )
+    {
+      auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+      auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( targetId ) );
+      auto quest = eventMgr.getPlayerQuestDataFromEventId( player, eventId );
+      if( quest.getId() > 0 )
+      {
+        auto copy = quest;
+        threePointOhScript->onEventItem( quest, player, actor );
+        if( quest != copy )
+          player.updateQuest( quest );
+        return true;
+      }
+    }
+  }
   return false;
 }
 
-bool Sapphire::Scripting::ScriptMgr::onBNpcKill( Entity::Player& player, uint16_t nameId )
+bool Sapphire::Scripting::ScriptMgr::onBNpcKill( Entity::Player& player, uint16_t nameId, uint32_t layoutId )
 {
   auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
 
@@ -304,6 +401,26 @@ bool Sapphire::Scripting::ScriptMgr::onBNpcKill( Entity::Player& player, uint16_
       player.sendDebug( "Calling: {0}.onBnpcKill nameId#{1}", objName, nameId );
 
       script->onBNpcKill( nameId, player );
+    }
+    else
+    {
+      auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( questId );
+      if( threePointOhScript )
+      {
+        std::string objName = eventMgr.getEventName( questId );
+
+        player.sendDebug( "Calling: {0}.onBnpcKill nameId={1}, layoutId={2}", objName, nameId, layoutId );
+        auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+        auto quest = eventMgr.getPlayerQuestDataFromEventId( player, questId );
+        if( quest.getId() > 0 )
+        {
+          auto copy = quest;
+          threePointOhScript->onBNpcKill( quest, nameId, layoutId, player );
+          if( quest != copy )
+            player.updateQuest( quest );
+          return true;
+        }
+      } 
     }
   }
 
@@ -332,6 +449,24 @@ bool Sapphire::Scripting::ScriptMgr::onEObjHit( Sapphire::Entity::Player& player
       player.sendDebug( "Calling: {0}.onEObjHit actorId#{1}", objName, actorId );
 
       script->onEObjHit( player, actorId, actionId );
+    }
+    else
+    {
+      auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( questId );
+      if( threePointOhScript )
+      {
+        auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+        auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+        auto quest = eventMgr.getPlayerQuestDataFromEventId( player, questId );
+        if( quest.getId() > 0 )
+        {
+          auto copy = quest;
+          threePointOhScript->onEObjHit( quest, player, actor, actionId );
+          if( quest != copy )
+            player.updateQuest( quest );
+          return true;
+        }
+      }
     }
   }
 

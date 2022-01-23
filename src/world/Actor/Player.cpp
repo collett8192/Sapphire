@@ -446,6 +446,11 @@ void Sapphire::Entity::Player::forceZoneing( uint32_t zoneId, float x, float y, 
   prepareZoning( showZoneName ? zoneId : 0, true, 1, 0 );
 }
 
+void Sapphire::Entity::Player::performZoning( uint16_t territoryTypeId, uint32_t territoryId, const Common::FFXIVARR_POSITION3& pos, float rotation )
+{
+  forceZoneing( territoryTypeId, pos.x, pos.y, pos.z, rotation, false );
+}
+
 void Sapphire::Entity::Player::returnToHomepoint()
 {
   setZoningType( Common::ZoneingType::Return );
@@ -1268,10 +1273,10 @@ void Sapphire::Entity::Player::update( uint64_t tickCount )
   Chara::update( tickCount );
 }
 
-void Sapphire::Entity::Player::onMobKill( uint16_t nameId )
+void Sapphire::Entity::Player::onMobKill( uint16_t nameId, uint32_t layoutId )
 {
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
-  scriptMgr.onBNpcKill( *getAsPlayer(), nameId );
+  scriptMgr.onBNpcKill( *getAsPlayer(), nameId, layoutId );
 
   if( isActionLearned( static_cast< uint8_t >( Common::UnlockEntry::HuntingLog ) ) )
   {
@@ -1664,6 +1669,11 @@ void Sapphire::Entity::Player::mount( uint32_t id )
     mountPacket->data().id = id;
     sendToInRangeSet( mountPacket, true );
   }
+}
+
+void Sapphire::Entity::Player::setMount( uint32_t id )
+{
+  mount( id );
 }
 
 void Sapphire::Entity::Player::dismount()

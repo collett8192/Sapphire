@@ -160,6 +160,48 @@ namespace Sapphire::ScriptAPI
 
   ///////////////////////////////////////////////////////////////////
 
+  QuestScript::QuestScript( uint32_t eventId ) : ScriptObject( eventId, typeid( QuestScript ).hash_code() )
+  {
+  }
+
+  void QuestScript::onTalk( World::Quest& quest, Entity::Player& player, uint64_t actorId )
+  {
+  }
+
+  void QuestScript::onEventItem( World::Quest& quest, Entity::Player& player, uint64_t actorId )
+  {
+  }
+
+  void QuestScript::onBNpcKill( World::Quest& quest, uint16_t nameId, uint32_t layoutId, Entity::Player& player )
+  {
+  }
+
+  void QuestScript::onEmote( World::Quest& quest, uint64_t actorId, uint32_t emoteId, Entity::Player& player )
+  {
+  }
+
+  void QuestScript::onEnterTerritory( World::Quest& quest, Entity::Player& player, uint16_t param1, uint16_t param2 )
+  {
+  }
+
+  void QuestScript::onWithinRange( World::Quest& quest, Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z )
+  {
+  }
+
+  void QuestScript::onOutsideRange( World::Quest& quest, Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z )
+  {
+  }
+
+  void QuestScript::onEventHandlerTradeReturn( Entity::Player& player, uint32_t eventId, uint16_t subEvent, uint16_t param, uint32_t catalogId )
+  {
+  }
+
+  void QuestScript::onEObjHit( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t actionId )
+  {
+  }
+
+  ///////////////////////////////////////////////////////////////////
+
   EventObjectScript::EventObjectScript( uint32_t eobjId ) :
     ScriptObject( eobjId, typeid( EventObjectScript ).hash_code() )
   {

@@ -590,7 +590,7 @@ void Sapphire::Entity::BNpc::onDeath()
     // TODO: handle drops 
     auto pPlayer = pHateEntry->m_pChara->getAsPlayer();
     if( pPlayer )
-      pPlayer->onMobKill( static_cast< uint16_t >( m_bNpcNameId ) );
+      pPlayer->onMobKill( static_cast< uint16_t >( m_bNpcNameId ), 0 );
   }
   hateListClear();
 }

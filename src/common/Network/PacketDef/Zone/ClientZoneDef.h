@@ -112,14 +112,14 @@ struct FFXIVIpcDiscoveryHandler :
 struct FFXIVIpcEventHandlerReturn :
   FFXIVIpcBasePacket< ReturnEventHandler >
 {
-  /* 0000 */ uint32_t eventId;
-  /* 0004 */ uint16_t scene;
-  /* 0006 */ uint16_t param1;
-  /* 0008 */ uint16_t param2;
+  /* 0000 */ uint32_t eventId; // handlerId
+  /* 0004 */ uint16_t scene; // sceneId
+  /* 0006 */ uint16_t param1; // errorCode + numOfResults << 8
+  /* 0008 */ uint16_t param2; // result( 0 )
   /* 000A */ uint8_t pad_000A[2];
-  /* 000C */ uint16_t param3;
+  /* 000C */ uint16_t param3; // result( 1 )
   /* 000E */ uint8_t pad_000E[2];
-  /* 0010 */ uint16_t param4;
+  /* 0010 */ uint16_t param4; // result( 2 )
 };
 
 struct FFXIVIpcEnterTerritoryHandler :
