@@ -198,14 +198,17 @@ bool Sapphire::Scripting::ScriptMgr::onTalk( Entity::Player& player, uint64_t ac
       auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
       auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
       auto quest = eventMgr.getPlayerQuestDataFromEventId( player, eventId );
-      if( quest.getId() > 0 )
+      auto newQuest = false;
+      if( quest.getId() == 0 )
       {
-        auto copy = quest;
-        threePointOhScript->onTalk( quest, player, actor );
-        if( quest != copy )
-          player.updateQuest( quest );
-        return true;
+        quest.setId( static_cast< uint16_t >( eventId & 0x0000FFFF ) );
+        newQuest = true;
       }
+      auto copy = quest;
+      threePointOhScript->onTalk( quest, player, actor );
+      if( quest != copy && quest.getSeq() > 0 && ( newQuest || player.hasQuest( quest.getId() ) ) )
+        player.updateQuest( quest );
+      return true;
     }
     script = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::EventScript >( eventId & 0xFFFF0000 );
     if( !script )

@@ -137,23 +137,32 @@ Sapphire::World::Quest Sapphire::World::Manager::EventMgr::getPlayerQuestDataFro
       return World::Quest( *activeQuests );
     }
   }
-  return World::Quest();
+  return {};
 }
 
 void Sapphire::World::Manager::EventMgr::playQuestScene( Entity::Player& player, uint32_t eventId, uint32_t scene, uint32_t flags, Event::EventHandler::QuestSceneReturnCallback eventCallback )
 {
-  player.playScene( eventId, scene, flags, [ eventId, eventCallback, this ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      if( !eventCallback )
-        return;
-      auto quest = getPlayerQuestDataFromEventId( player, eventId );
-      if( quest.getId() == 0 )
-        return;
-      auto copy = quest;
-      eventCallback( quest, player, result );
-      if( quest != copy )
-        player.updateQuest( quest );
-    });
+  if( eventCallback )
+  {
+    player.playScene( eventId, scene, flags, [ eventId, eventCallback, this ]( Entity::Player& player, const Event::SceneResult& result )
+      {
+        auto quest = getPlayerQuestDataFromEventId( player, eventId );
+        auto newQuest = false;
+        if( quest.getId() == 0 )
+        {
+          quest.setId( static_cast< uint16_t >( eventId & 0x0000FFFF ) );
+          newQuest = true;
+        }
+        auto copy = quest;
+        eventCallback( quest, player, result );
+        if( quest != copy && quest.getSeq() > 0 && ( newQuest || player.hasQuest( quest.getId() ) ) )
+          player.updateQuest( quest );
+      });
+  }
+  else
+  {
+    player.playScene( eventId, scene, flags, nullptr );
+  }
 }
 
 void Sapphire::World::Manager::EventMgr::eventFinish( Sapphire::Entity::Player& player, uint32_t eventId, uint32_t freePlayer )
