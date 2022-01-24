@@ -33,7 +33,7 @@ void Sapphire::Entity::Player::finishQuest( uint16_t questId )
 
 void Sapphire::Entity::Player::finishQuest( uint16_t questId, uint32_t optionalChoice )
 {
-  giveQuestRewards( questId, optionalChoice );
+  giveQuestRewards( questId + 0x00010000 , optionalChoice );
   finishQuest( questId );
 }
 
@@ -1151,6 +1151,13 @@ bool Sapphire::Entity::Player::giveQuestRewards( uint32_t questId, uint32_t opti
     }
   }
 
+  auto isHq = false;
+  if( optionalChoice > 1000000 )
+  {
+    optionalChoice -= 1000000;
+    isHq = true;
+  }
+
   if( optionalItemCount > 0 )
   {
     for( uint32_t i = 0; i < optionalItemCount; i++ )
@@ -1158,7 +1165,7 @@ bool Sapphire::Entity::Player::giveQuestRewards( uint32_t questId, uint32_t opti
       auto itemId = questInfo->itemReward1.at( i );
       if( itemId > 0 && itemId == optionalChoice )
       {
-        addItem( itemId, questInfo->itemCountReward1.at( i ), false, false, true, true );
+        addItem( itemId, questInfo->itemCountReward1.at( i ), isHq, false, true, true );
         break;
       }
     }

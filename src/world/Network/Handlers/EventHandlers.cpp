@@ -241,9 +241,9 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
   const auto eventId = packet.data().eventId;
   const auto scene = packet.data().scene;
   const auto param1 = packet.data().param1;
-  const auto param2 = packet.data().param2;
+  /*const auto param2 = packet.data().param2;
   const auto param3 = packet.data().param3;
-  const auto param4 = packet.data().param4;
+  const auto param4 = packet.data().param4;*/
 
   std::string eventName = eventMgr.getEventName( eventId );
 
@@ -256,7 +256,7 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
     uint16_t sceneId;
     uint8_t errorCode;
     uint8_t numOfResults;
-    uint32_t results[3];
+    uint32_t results[4];
   };
 
   auto peek = reinterpret_cast< const ThreePointOhValuePeek* >( &packet.data() );
@@ -264,7 +264,8 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
     peek->handlerId, peek->sceneId, peek->errorCode, peek->numOfResults,
     peek->numOfResults > 0 ? peek->results[ 0 ] : 0,
     peek->numOfResults > 1 ? peek->results[ 1 ] : 0,
-    peek->numOfResults > 2 ? peek->results[ 2 ] : 0 );
+    peek->numOfResults > 2 ? peek->results[ 2 ] : 0,
+    peek->numOfResults > 3 ? peek->results[ 3 ] : 0 );
 
   auto pEvent = player.getEvent( eventId );
   if( pEvent )
@@ -279,9 +280,10 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
       result.actorId = pEvent->getActorId();
       result.eventId = eventId;
       result.param1 = param1;
-      result.param2 = param2;
-      result.param3 = param3;
-      result.param4 = param4;
+      result.param2 = peek->numOfResults > 0 ? peek->results[ 0 ] : 0;
+      result.param3 = peek->numOfResults > 1 ? peek->results[ 1 ] : 0;
+      result.param4 = peek->numOfResults > 2 ? peek->results[ 2 ] : 0;
+      result.param5 = peek->numOfResults > 3 ? peek->results[ 3 ] : 0;
       eventCallback( player, result );
     }
       // we might have a scene chain callback instead so check for that too

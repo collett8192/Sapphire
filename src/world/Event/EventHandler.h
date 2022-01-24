@@ -20,9 +20,10 @@ namespace Sapphire::Event
         uint8_t numOfResults;
       };
     };
-    uint16_t param2;
-    uint16_t param3;
-    uint16_t param4;
+    uint32_t param2;
+    uint32_t param3;
+    uint32_t param4;
+    uint32_t param5;
     uint32_t getResult( uint32_t index ) const;
   };
 
