@@ -73,7 +73,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.7");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.8");
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -114,10 +114,10 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("");
             outputCpp.Add("using namespace Sapphire;");
             outputCpp.Add("");
-            outputCpp.Add($"class {questId} : public Sapphire::ScriptAPI::EventScript");
+            outputCpp.Add($"class {questId} : public Sapphire::ScriptAPI::QuestScript");
             outputCpp.Add("{");
             outputCpp.Add("public:");
-            outputCpp.Add($"  {questId}() : Sapphire::ScriptAPI::EventScript( {questNumber} ){{}}; ");
+            outputCpp.Add($"  {questId}() : Sapphire::ScriptAPI::QuestScript( {questNumber} ){{}}; ");
             outputCpp.Add($"  ~{questId}() = default; ");
             outputCpp.Add("");
             foreach (var seq in seqList)
@@ -130,10 +130,18 @@ namespace FFXIVTheMovie.ParserV3
                 outputCpp.Add($"  //{c.Key} = {c.Value}");
             }
             outputCpp.Add("");
+            outputCpp.Add("  static constexpr auto EVENT_ON_TALK = 0;");
+            outputCpp.Add("  static constexpr auto EVENT_ON_EMOTE = 1;");
+            outputCpp.Add("  static constexpr auto EVENT_ON_BNPC_KILL = 2;");
+            outputCpp.Add("  static constexpr auto EVENT_ON_WITHIN_RANGE = 3;");
+            outputCpp.Add("  static constexpr auto EVENT_ON_ENTER_TERRITORY = 4;");
+            outputCpp.Add("  static constexpr auto EVENT_ON_EVENT_ITEM = 5;");
+            outputCpp.Add("  static constexpr auto EVENT_ON_EOBJ_HIT = 6;");
+            outputCpp.Add("");
             outputCpp.Add("private:");
-            outputCpp.Add("  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )");
+            outputCpp.Add("  void onProgress( World::Quest& quest, Entity::Player& player, uint32_t type, uint64_t param1, uint32_t param2, uint32_t param3 )");
             outputCpp.Add("  {");
-            outputCpp.Add("    switch( player.getQuestSeq( getId() ) )");
+            outputCpp.Add("    switch( quest.getSeq() )");
             outputCpp.Add("    {");
             foreach (var seq in seqList)
             {
@@ -179,25 +187,43 @@ namespace FFXIVTheMovie.ParserV3
                     }
                     if (entry.TargetObject == null)
                     {
-                        if (scene != null)
+                        if (entry.InventoryBranch)
                         {
-                            outputCpp.Add($"        if( type != 2 ) {scene.SceneFunctionName}( player ); // {scene}");
+                            if (scene == null || scene2 == null)
+                                throw new Exception("WTF???");
+                            outputCpp.Add($"        if( type == EVENT_ON_TALK ) {scene.SceneFunctionName}( quest, player ); // {scene}");
+                            outputCpp.Add($"        if( type == EVENT_ON_EVENT_ITEM ) {scene2.SceneFunctionName}( quest, player ); // {scene2}");
+                            if (scene3 != null)
+                            {
+                                outputCpp.Add($"        // +Callback {scene3}");
+                            }
+                            if (scene4 != null)
+                            {
+                                outputCpp.Add($"        // +Callback {scene4}");
+                            }
                         }
                         else
                         {
-                            outputCpp.Add("        // empty entry");
-                        }
-                        if (scene2 != null)
-                        {
-                            outputCpp.Add($"        // +Callback {scene2}");
-                        }
-                        if (scene3 != null)
-                        {
-                            outputCpp.Add($"        // +Callback {scene3}");
-                        }
-                        if (scene4 != null)
-                        {
-                            outputCpp.Add($"        // +Callback {scene4}");
+                            if (scene != null)
+                            {
+                                outputCpp.Add($"        if( type != EVENT_ON_BNPC_KILL ) {scene.SceneFunctionName}( quest, player ); // {scene}");
+                            }
+                            else
+                            {
+                                outputCpp.Add("        // empty entry");
+                            }
+                            if (scene2 != null)
+                            {
+                                outputCpp.Add($"        // +Callback {scene2}");
+                            }
+                            if (scene3 != null)
+                            {
+                                outputCpp.Add($"        // +Callback {scene3}");
+                            }
+                            if (scene4 != null)
+                            {
+                                outputCpp.Add($"        // +Callback {scene4}");
+                            }
                         }
                     }
                     else
@@ -205,13 +231,13 @@ namespace FFXIVTheMovie.ParserV3
 
                         if (entry.TargetObject is ActiveTerritory)
                         {
-                            outputCpp.Add($"        if( type == 4 ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}");
+                            outputCpp.Add($"        if( type == EVENT_ON_ENTER_TERRITORY ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}");
                         }
                         else
                         {
                             var objId = constTable.ContainsKey(entry.TargetObject.Name) ? constTable[entry.TargetObject.Name].ToString() : "/*UNKNOWN*/1";
-                            string unmappedId = unmappedObjTable.ContainsKey(entry.TargetObject.Name) ? unmappedObjTable[entry.TargetObject.Name].ToString() : objId;
-                            outputCpp.Add($"        if( param1 == {unmappedId} || param2 == {objId} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}{(entry.ConditionBranch ? $", CB={entry.RequiredGroupCount}" : "")}{(entry.EmoteBranch != null ? $", EB={entry.RequiredGroupCount}(emote={entry.EmoteBranch.Value})" : "")}");
+                            var unmappedId = unmappedObjTable.ContainsKey(entry.TargetObject.Name) ? unmappedObjTable[entry.TargetObject.Name].ToString() : null;
+                            outputCpp.Add($"        if( param1 == {objId}{(unmappedId != null ? $" || param1 == {unmappedId}" : "")} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}{(entry.ConditionBranch ? $", CB={entry.RequiredGroupCount}" : "")}{(entry.EmoteBranch != null ? $", EB={entry.RequiredGroupCount}(emote={entry.EmoteBranch.Value})" : "")}");
                         }
 
                         outputCpp.Add("        {");
@@ -219,12 +245,11 @@ namespace FFXIVTheMovie.ParserV3
                         if (entry.Var != null)
                         {
                             
-                            /*if (entry.ConditionBranch && entry.Var.Value > 1 && entry.Flag != null)
+                            if (/*entry.ConditionBranch && */entry.Var.Value > 1 && entry.Flag != null)
                             {
-                                output bit flag condition check, need fix in core
+                                outputCpp.Add($"          if( {entry.Flag.ToCppExprConditionNotDone()} )");
                             }
                             else
-                            */
                             {
                                 outputCpp.Add($"          if( {entry.Var.ToCppExprConditionNotDone()} )");
                             }
@@ -234,14 +259,14 @@ namespace FFXIVTheMovie.ParserV3
                         {
                             if (scene != null)
                             {
-                                outputCpp.Add($"{extraSpace}          {scene.SceneFunctionName}( player ); // {scene}");
+                                outputCpp.Add($"{extraSpace}          {scene.SceneFunctionName}( quest, player ); // {scene}");
                             }
                             else
                             {
                                 outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
                                 if (entry.Flag != null)
                                     outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
-                                outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( player );");
+                                outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( quest, player );");
                             }
                             if (scene2 != null)
                             {
@@ -250,7 +275,7 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add($"{extraSpace}        }}");
                                     outputCpp.Add($"{extraSpace}        else");
                                     outputCpp.Add($"{extraSpace}        {{");
-                                    outputCpp.Add($"{extraSpace}          {scene2.SceneFunctionName}( player ); // {scene2}");
+                                    outputCpp.Add($"{extraSpace}          {scene2.SceneFunctionName}( quest, player ); // {scene2}");
                                 }
                                 else
                                 {
@@ -264,7 +289,7 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add($"{extraSpace}        }}");
                                     outputCpp.Add($"{extraSpace}        else");
                                     outputCpp.Add($"{extraSpace}        {{");
-                                    outputCpp.Add($"{extraSpace}          {scene3.SceneFunctionName}( player ); // {scene3}");
+                                    outputCpp.Add($"{extraSpace}          {scene3.SceneFunctionName}( quest, player ); // {scene3}");
                                 }
                                 else
                                 {
@@ -276,21 +301,21 @@ namespace FFXIVTheMovie.ParserV3
                                 outputCpp.Add($"{extraSpace}        }}");
                                 outputCpp.Add($"{extraSpace}        else");
                                 outputCpp.Add($"{extraSpace}        {{");
-                                outputCpp.Add($"{extraSpace}          {scene4.SceneFunctionName}( player ); // {scene4}");
+                                outputCpp.Add($"{extraSpace}          {scene4.SceneFunctionName}( quest, player ); // {scene4}");
                             }
                         }
                         else if (entry.EmoteBranch != null)
                         {
                             if (scene == null || scene2 == null)
                                 throw new Exception("WTF???");
-                            outputCpp.Add($"{extraSpace}          if( type == 0 ) {scene.SceneFunctionName}( player ); // onTalk {scene}");
-                            outputCpp.Add($"{extraSpace}          if( type == 1 ) // onEmote");
+                            outputCpp.Add($"{extraSpace}          if( type == EVENT_ON_TALK ) {scene.SceneFunctionName}( quest, player ); // {scene}");
+                            outputCpp.Add($"{extraSpace}          if( type == EVENT_ON_EMOTE )");
                             outputCpp.Add($"{extraSpace}          {{");
-                            outputCpp.Add($"{extraSpace}            {(entry.EmoteBranch.Value == 0 ? "/*" : "")}if( param3 == {entry.EmoteBranch.Value} ){(entry.EmoteBranch.Value == 0 ? "*/" : "")} {scene2.SceneFunctionName}( player ); // Correct {scene2}");
+                            outputCpp.Add($"{extraSpace}            {(entry.EmoteBranch.Value == 0 ? "/*" : "")}if( param3 == {entry.EmoteBranch.Value} ){(entry.EmoteBranch.Value == 0 ? "*/" : "")} {scene2.SceneFunctionName}( quest, player ); // Correct {scene2}");
                             if (scene3 != null)
                             {
                                 if (entry.EmoteBranch.Value == 0) outputCpp.Add($"{extraSpace}              /*");
-                                outputCpp.Add($"{extraSpace}            else {scene3.SceneFunctionName}( player ); // Incorrect {scene3}");
+                                outputCpp.Add($"{extraSpace}            else {scene3.SceneFunctionName}( quest, player ); // Incorrect {scene3}");
                                 if (entry.EmoteBranch.Value == 0) outputCpp.Add($"{extraSpace}              */");
                             }
                             else
@@ -303,11 +328,26 @@ namespace FFXIVTheMovie.ParserV3
                                 outputCpp.Add($"{extraSpace}          // WTF IS THIS????? {scene4}");
                             }
                         }
+                        else if (entry.InventoryBranch)
+                        {
+                            if (scene == null || scene2 == null)
+                                throw new Exception("WTF???");
+                            outputCpp.Add($"{extraSpace}          if( type == EVENT_ON_TALK ) {scene.SceneFunctionName}( quest, player ); // {scene}");
+                            outputCpp.Add($"{extraSpace}          if( type == EVENT_ON_EVENT_ITEM ) {scene2.SceneFunctionName}( quest, player ); // {scene2}");
+                            if (scene3 != null)
+                            {
+                                outputCpp.Add($"{extraSpace}          // +Callback {scene3}");
+                            }
+                            if (scene4 != null)
+                            {
+                                outputCpp.Add($"{extraSpace}          // +Callback {scene4}");
+                            }
+                        }
                         else
                         {
                             if (scene != null)
                             {
-                                outputCpp.Add($"{extraSpace}          {scene.SceneFunctionName}( player ); // {scene}");
+                                outputCpp.Add($"{extraSpace}          {scene.SceneFunctionName}( quest, player ); // {scene}");
                             }
                             else
                             {
@@ -316,7 +356,7 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
                                     if (entry.Flag != null)
                                         outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
-                                    outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( player );");
+                                    outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( quest, player );");
                                 }
                                 else
                                     outputCpp.Add($"{extraSpace}        // empty entry");
@@ -348,41 +388,45 @@ namespace FFXIVTheMovie.ParserV3
             }
             outputCpp.Add("      default:");
             outputCpp.Add("      {");
-            outputCpp.Add("        player.sendUrgent( \"Sequence {} not defined.\", player.getQuestSeq( getId() ) );");
+            outputCpp.Add("        playerMgr().sendUrgent( player, \"Sequence {} not defined.\", quest.getSeq() );");
             outputCpp.Add("        break;");
             outputCpp.Add("      }");
             outputCpp.Add("    }");
             outputCpp.Add("  }");
             outputCpp.Add("");
             outputCpp.Add("public:");
-            outputCpp.Add("  void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override");
+            outputCpp.Add("  void onTalk( World::Quest& quest, Entity::Player& player, uint64_t actorId ) override");
             outputCpp.Add("  {");
-            outputCpp.Add("    auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();");
-            outputCpp.Add("    auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );");
-            outputCpp.Add("    onProgress( player, actorId, actor, 0, 0 );");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_TALK, actorId, 0, 0 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
-            outputCpp.Add("  void onEmote( uint64_t actorId, uint32_t eventId, uint32_t emoteId, Entity::Player& player ) override");
+            outputCpp.Add("  void onEmote( World::Quest& quest, uint64_t actorId, uint32_t emoteId, Sapphire::Entity::Player& player ) override");
             outputCpp.Add("  {");
-            outputCpp.Add("    auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();");
-            outputCpp.Add("    auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );");
-            outputCpp.Add("    player.sendDebug( \"emote: {}\", emoteId );");
-            outputCpp.Add("    onProgress( player, actorId, actor, 1, emoteId );");
+            outputCpp.Add("    playerMgr().sendDebug( player, \"emote: {}\", emoteId );");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_EMOTE, actorId, 0, emoteId );");
             outputCpp.Add("  }");
             outputCpp.Add("");
-            outputCpp.Add("  void onBNpcKill( uint32_t npcId, Entity::Player& player ) override");
+            outputCpp.Add("  void onBNpcKill( World::Quest& quest, uint16_t nameId, uint32_t entityId, Sapphire::Entity::Player& player ) override");
             outputCpp.Add("  {");
-            outputCpp.Add("    onProgress( player, npcId, 0, 2, 0 );");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_BNPC_KILL, static_cast< uint64_t >( nameId ), entityId, 0 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
-            outputCpp.Add("  void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override");
+            outputCpp.Add("  void onWithinRange( World::Quest& quest, Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override");
             outputCpp.Add("  {");
-            outputCpp.Add("    onProgress( player, param1, param1, 3, 0 );");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_WITHIN_RANGE, static_cast< uint64_t >( param1 ), 0, 0 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
-            outputCpp.Add("  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override");
+            outputCpp.Add("  void onEnterTerritory( World::Quest& quest, Sapphire::Entity::Player& player, uint16_t param1, uint16_t param2 ) override");
             outputCpp.Add("  {");
-            outputCpp.Add("    onProgress( player, param1, param2, 4, 0 );");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_ENTER_TERRITORY, static_cast< uint64_t >( param1 ), static_cast< uint32_t >( param2 ), 0 );");
+            outputCpp.Add("  }");
+            outputCpp.Add("  void onEventItem( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId ) override");
+            outputCpp.Add("  {");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_EVENT_ITEM, actorId, 0, 0 );");
+            outputCpp.Add("  }");
+            outputCpp.Add("  void onEObjHit( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t actionId ) override");
+            outputCpp.Add("  {");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_EOBJ_HIT, actorId, actionId, 0 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
             outputCpp.Add("private:");
@@ -405,7 +449,7 @@ namespace FFXIVTheMovie.ParserV3
                 var nextVarList = new List<QuestVar>();
                 nextSeq.EntryList.ForEach(e => { if (e.Var != null && nextVarList.SingleOrDefault(v => v.Name == e.Var.Name) == null) { nextVarList.Add(e.Var); } });
                 
-                outputCpp.Add($"  void checkProgressSeq{seq.SeqNumber}( Entity::Player& player )");
+                outputCpp.Add($"  void checkProgressSeq{seq.SeqNumber}( World::Quest& quest, Entity::Player& player )");
                 outputCpp.Add("  {");
                 bool hasIf = varList.Count > 0;
                 if (s > 0)
@@ -439,6 +483,7 @@ namespace FFXIVTheMovie.ParserV3
                     string space = builder.ToString();
                     if(hasIf)
                         outputCpp.Add($"{space}{{");
+
                     if (s > 0)
                     {
                         for (int i = 0; i < varList.Count; i++)
@@ -488,7 +533,7 @@ namespace FFXIVTheMovie.ParserV3
                         }
                     }
 
-                    outputCpp.Add($"{space}{(hasIf ? "  " : "")}player.updateQuest( getId(), {nextSeq.SeqNumber} );");
+                    outputCpp.Add($"{space}{(hasIf ? "  " : "")}quest.setSeq( {nextSeq.SeqNumber} );");
 
                     if (nextSeq.ShouldGiveEventItemAtSeqUpdate() && nextEventItemList != null)
                     {
@@ -572,9 +617,9 @@ namespace FFXIVTheMovie.ParserV3
                                     }
                                 }
                             }
-                            outputCpp.Add($"  void {current.SceneFunctionName}( Entity::Player& player ) //{entry.ToSimpleString()}");
+                            outputCpp.Add($"  void {current.SceneFunctionName}( World::Quest& quest, Entity::Player& player ) //{entry.ToSimpleString()}");
                             outputCpp.Add("  {");
-                            outputCpp.Add($"    player.sendDebug( \"{questId}:{questNumber} calling {current}\" );");
+                            outputCpp.Add($"    playerMgr().sendDebug( player, \"{questId}:{questNumber} calling {current}\" );");
                             bool shouldProduceCode = true;
                             if (entry.ConditionBranch)
                             {
@@ -584,26 +629,30 @@ namespace FFXIVTheMovie.ParserV3
                             {
                                 shouldProduceCode = current == entry.EntryScene.SceneList[1];
                             }
+                            else if (entry.InventoryBranch)
+                            {
+                                shouldProduceCode = current != entry.EntryScene.SceneList[0];
+                            }
 
                             if (!shouldProduceCode)
                             {
                                 string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
                                 string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
                                 string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
-                                outputCpp.Add($"    player.playScene( getId(), {current.SceneNumber}, {fullSceneFlag}, nullptr );");
+                                outputCpp.Add($"    eventMgr().playQuestScene( player, getId(), {current.SceneNumber}, {fullSceneFlag}, nullptr );");
                             }
                             else
                             {
                                 if (current.Element != LuaScene.SceneElement.None)
                                 {
-                                    outputCpp.Add("    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )");
+                                    outputCpp.Add("    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )");
                                     outputCpp.Add("    {");
                                     bool hasIf = false;
                                     if (current.Type == LuaScene.SceneType.NpcTrade ||
                                         ((current.Element & LuaScene.SceneElement.QuestReward) > 0) ||
                                         ((current.Element & LuaScene.SceneElement.QuestOffer) > 0))
                                     {
-                                        outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
+                                        outputCpp.Add("      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )");
                                         outputCpp.Add("      {");
                                         hasIf = true;
                                     }
@@ -611,19 +660,19 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         if ((current.Element & LuaScene.SceneElement.CanCancel) > 0)
                                         {
-                                            outputCpp.Add("      if( result.param1 == 512 || ( result.param1 > 0 && result.param2 == 1 ) )");
+                                            outputCpp.Add("      if( result.errorCode == 0 && result.numOfResults == 1 && result.getResult( 0 ) == 1 )");
                                             outputCpp.Add("      {");
                                             hasIf = true;
                                         }
                                         else if (scene2 != null && (scene2.Element & LuaScene.SceneElement.CutScene) > 0)
                                         {
-                                            outputCpp.Add("      if( result.param1 != 50 )");
+                                            outputCpp.Add("      if( result.errorCode != 50 )");
                                             outputCpp.Add("      {");
                                             hasIf = true;
                                         }
                                         else
                                         {
-                                            outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
+                                            outputCpp.Add("      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )");
                                             outputCpp.Add("      {");
                                             hasIf = true;
                                         }
@@ -632,11 +681,11 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         if (next == null || next.Type != LuaScene.SceneType.CardGame)
                                         {
-                                            outputCpp.Add("      if( result.param1 == 512 )");
+                                            outputCpp.Add("      if( result.numOfResults == 1 )");
                                         }
                                         else
                                         {
-                                            outputCpp.Add("      if( result.param1 > 0 && result.param2 == 1 )");
+                                            outputCpp.Add("      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )");
                                         }
                                         outputCpp.Add("      {");
                                         hasIf = true;
@@ -678,36 +727,37 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
                                     }
-                                    if (entry.EmoteBranch != null)
+                                    else if (entry.EmoteBranch != null)
                                     {
                                         shouldContinue = false;
+                                    }
+                                    else if (entry.InventoryBranch)
+                                    {
+                                        shouldContinue = shouldContinue && current != entry.EntryScene.SceneList[0];
                                     }
 
                                     if (shouldContinue)
                                     {
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( player );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {next.SceneFunctionName}( quest, player );");
                                     }
                                     else
                                     {
                                         if (afterComplete)
                                         {
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      if( player.giveQuestRewards( getId(), result.param3 ) )");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      {{");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}        player.finishQuest( getId() );");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      player.finishQuest( getId(), result.getResult( 1 ) );");
                                             if (shouldUseFakeZoneing && (current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
                                             {
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.eventFinish( getId(), 1 );");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}        player.forceZoneing();");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendDebug( player, \"Finished with AutoFadeIn scene, reloading zone...\" );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( player.getTerritoryTypeId(), 0, player.getPos(), player.getRot() );");
                                             }
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      }}");
                                         }
                                         else
                                         {
                                             if (entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.QuestBattle))
                                             {
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      //quest battle");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();");
                                                 if (constTable.ContainsKey("QUESTBATTLE0"))
                                                 {
@@ -724,15 +774,15 @@ namespace FFXIVTheMovie.ParserV3
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppExprOperation()};");
                                                 }
-                                                if (entry.Flag != null)
+                                                if (s > 0 && entry.Flag != null)
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Flag.ToCppExprSet()};");
                                                 if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( player );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( quest, player );");
                                                 if (shouldUseFakeZoneing && (current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
                                                 {
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.sendDebug( \"Finished with AutoFadeIn scene, calling forceZoneing...\" );");
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing();");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendDebug( player, \"Finished with AutoFadeIn scene, reloading zone...\" );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( player.getTerritoryTypeId(), 0, player.getPos(), player.getRot() );");
                                                 }
                                             }
                                         }
@@ -741,20 +791,30 @@ namespace FFXIVTheMovie.ParserV3
 
                                     if (keyForPrivate != null || keyForWarp != null)
                                     {
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.eventFinish( getId(), 1 );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
                                     }
                                     if (keyForPrivate != null)
                                     {
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.enterPredefinedPrivateInstance( {privateInstanceEntranceTable[keyForPrivate]} );");
+                                        var zone = privateInstanceEntranceTable[keyForPrivate];
+                                        if (zone > 0)
+                                        {
+                                            //outputCpp.Add($"{(hasIf ? "  " : "")}      player.enterPredefinedPrivateInstance( {privateInstanceEntranceTable[keyForPrivate]} );");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to enter private zone {privateInstanceEntranceTable[keyForPrivate]}.\" );");
+                                        }
+                                        else
+                                        {
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      player.exitInstance();");
+                                        }
                                     }
                                     if (keyForMount != null)
                                     {
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.mount( {mountTable[keyForMount]} );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.setMount( {mountTable[keyForMount]} );");
                                     }
                                     else if (keyForWarp != null)
                                     {
                                         var dst = warpTable[keyForWarp];
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing( {dst.Item1}, {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f, {dst.Item5:#0.0#}f, {dst.Item6} );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( {dst.Item1}, 0, {{ {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f }}, {dst.Item5:#0.0#}f );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to apply showZoneName = {dst.Item6}\" );");
                                     }
 
                                     if (hasIf)
@@ -765,7 +825,7 @@ namespace FFXIVTheMovie.ParserV3
                                     string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
                                     string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
                                     string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
-                                    outputCpp.Add($"    player.playScene( getId(), {current.SceneNumber}, {fullSceneFlag}, callback );");
+                                    outputCpp.Add($"    eventMgr().playQuestScene( player, getId(), {current.SceneNumber}, {fullSceneFlag}, callback );");
                                 }
                                 else
                                 {
@@ -774,13 +834,17 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         shouldContinue = shouldContinue && entry.EntryScene.SceneList[entry.EntryScene.SceneList.Count - 1] != next;
                                     }
-                                    if (entry.EmoteBranch != null)
+                                    else if (entry.EmoteBranch != null)
                                     {
                                         shouldContinue = false;
                                     }
+                                    else if (entry.InventoryBranch)
+                                    {
+                                        shouldContinue = shouldContinue && current != entry.EntryScene.SceneList[0];
+                                    }
                                     if (shouldContinue)
                                     {
-                                        outputCpp.Add($"    {next.SceneFunctionName}( player );");
+                                        outputCpp.Add($"    {next.SceneFunctionName}( quest, player );");
                                     }
                                     else
                                     {
@@ -788,10 +852,10 @@ namespace FFXIVTheMovie.ParserV3
                                         {
                                             outputCpp.Add($"    {entry.Var.ToCppExprOperation()};");
                                         }
-                                        if (entry.Flag != null)
+                                        if (s > 0 && entry.Flag != null)
                                             outputCpp.Add($"    {entry.Flag.ToCppExprSet()};");
                                         if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
-                                            outputCpp.Add($"    checkProgressSeq{seq.SeqNumber}( player );");
+                                            outputCpp.Add($"    checkProgressSeq{seq.SeqNumber}( quest, player );");
                                     }
                                 }
                             }
@@ -951,6 +1015,11 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             entry.ConditionBranch = flag;
                         }
+                    }
+
+                    if (entry.EntryScene.SceneList.Count >= 2 && (entry.EntryScene.SceneList[0].Element & LuaScene.SceneElement.Inventory) > 0)
+                    {
+                        entry.InventoryBranch = true;
                     }
                 }
             }

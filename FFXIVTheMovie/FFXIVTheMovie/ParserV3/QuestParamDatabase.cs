@@ -14,6 +14,17 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVna402":
+                    {
+                        result.Add("PRIVATE_SCENE1", "0");
+                        result.Add("_ACTOR7", "B");
+                        result.Add("_ACTOR7B", "2|2");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "2|2");
+                        result.Add("_ACTOR9", "B");
+                        result.Add("_ACTOR9B", "2|2");
+                        break;
+                    }
                 case "GaiUsc101":
                     {
                         result.Add("_BASE_ID_TERRITORY_TYPE", "I");

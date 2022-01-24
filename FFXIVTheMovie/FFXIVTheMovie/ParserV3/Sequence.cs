@@ -66,6 +66,8 @@ namespace FFXIVTheMovie.ParserV3
             public int? EmoteBranch = null;
             public string bNpcHackCreditDest = null;
 
+            public bool InventoryBranch = false;
+
             public bool CanExistWithoutScene
             {
                 get
@@ -299,25 +301,25 @@ namespace FFXIVTheMovie.ParserV3
 
             public string ToCppExprConditionNotDone()
             {
-                return Name != null ? $"player.getQuest{Name}( getId() ) != {Value}" : "true";
+                return Name != null ? $"quest.get{Name}() != {Value}" : "true";
             }
 
             public string ToCppExprConditionDone()
             {
-                return Name != null ? $"player.getQuest{Name}( getId() ) == {Value}" : "true";
+                return Name != null ? $"quest.get{Name}() == {Value}" : "true";
             }
 
             public string ToCppExprOperation()
             {
                 StringBuilder builder = new StringBuilder();
-                builder.Append($"player.setQuest{Name}( getId(), ");
+                builder.Append($"quest.set{Name}( ");
                 if (ForceSetValue || Value == 1)
                 {
                     builder.Append($"{Value}");
                 }
                 else
                 {
-                    builder.Append($"player.getQuest{Name}( getId() ) + 1");
+                    builder.Append($"quest.get{Name}() + 1");
                 }
                 builder.Append(" )");
                 return builder.ToString();
@@ -325,7 +327,7 @@ namespace FFXIVTheMovie.ParserV3
 
             public string ToCppExprClear()
             {
-                return Name != null ? $"player.setQuest{Name}( getId(), 0 )" : "";
+                return Name != null ? $"quest.set{Name}( 0 )" : "";
             }
 
             public override string ToString()
@@ -340,14 +342,19 @@ namespace FFXIVTheMovie.ParserV3
             public int Index;
             public bool TargetValue;
 
+            public string ToCppExprConditionNotDone()
+            {
+                return $"{(TargetValue ? "!" : "")}quest.getBitFlag{Flag}( {Index} )";
+            }
+
             public string ToCppExprSet()
             {
-                return $"player.setQuestBitFlag{Flag}( getId(), {Index}, {TargetValue.ToString().ToLower()} )";
+                return $"quest.setBitFlag{Flag}( {Index}, {TargetValue.ToString().ToLower()} )";
             }
 
             public string ToCppExprClear()
             {
-                return $"player.setQuestBitFlag{Flag}( getId(), {Index}, {(!TargetValue).ToString().ToLower()} )";
+                return $"quest.setBitFlag{Flag}( {Index}, {(!TargetValue).ToString().ToLower()} )";
             }
 
             public override string ToString()

@@ -130,12 +130,12 @@ namespace FFXIVTheMovie.ParserV3
 
             public string ToCppExprUpdate()
             {
-                return $"player.setQuest{QuestVar}( getId(), {(Amount == 0 ? 1 : Amount)} )";
+                return $"quest.set{QuestVar}( {(Amount == 0 ? 1 : Amount)} )";
             }
 
             public string ToCppExprClear()
             {
-                return $"player.setQuest{QuestVar}( getId(), 0 )";
+                return $"quest.set{QuestVar}( 0 )";
             }
 
             public override string ToString()

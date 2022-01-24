@@ -49,7 +49,7 @@ namespace FFXIVTheMovie.ParserV3
             }
 
             List<string> list = new List<string>();
-            //list.Add("GaiUsc904");
+            //list.Add("HeaVna401");
 
             if (list.Count == 0)
             {
