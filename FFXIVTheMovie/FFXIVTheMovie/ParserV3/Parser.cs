@@ -758,14 +758,13 @@ namespace FFXIVTheMovie.ParserV3
                                             {
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      //quest battle");
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      auto& pTeriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();");
                                                 if (constTable.ContainsKey("QUESTBATTLE0"))
                                                 {
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      pTeriMgr.createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      teriMgr().createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
                                                 }
                                                 else
                                                 {
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      //pTeriMgr.createAndJoinQuestBattle( player, ??? );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      //teriMgr().createAndJoinQuestBattle( player, ??? );");
                                                 }
                                             }
                                             else
