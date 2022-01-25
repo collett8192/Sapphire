@@ -660,7 +660,9 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         if ((current.Element & LuaScene.SceneElement.CanCancel) > 0)
                                         {
-                                            outputCpp.Add("      if( result.errorCode == 0 && result.numOfResults == 1 && result.getResult( 0 ) == 1 )");
+                                            //outputCpp.Add("      if( result.errorCode == 0 && result.numOfResults >= 1 && result.getResult( 0 ) == 1 )");
+                                            outputCpp.Add("      if( result.errorCode == 0 )");
+
                                             outputCpp.Add("      {");
                                             hasIf = true;
                                         }
@@ -681,7 +683,7 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         if (next == null || next.Type != LuaScene.SceneType.CardGame)
                                         {
-                                            outputCpp.Add("      if( result.numOfResults == 1 )");
+                                            outputCpp.Add("      if( result.numOfResults == 1 || ( result.errorCode == 0 && result.numOfResults == 2 ) )");
                                         }
                                         else
                                         {
@@ -797,8 +799,8 @@ namespace FFXIVTheMovie.ParserV3
                                         var zone = privateInstanceEntranceTable[keyForPrivate];
                                         if (zone > 0)
                                         {
-                                            //outputCpp.Add($"{(hasIf ? "  " : "")}      player.enterPredefinedPrivateInstance( {privateInstanceEntranceTable[keyForPrivate]} );");
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to enter private zone {privateInstanceEntranceTable[keyForPrivate]}.\" );");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      player.enterPredefinedPrivateInstance( {privateInstanceEntranceTable[keyForPrivate]} );");
+                                            //outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to enter private zone {privateInstanceEntranceTable[keyForPrivate]}.\" );");
                                         }
                                         else
                                         {
@@ -812,8 +814,9 @@ namespace FFXIVTheMovie.ParserV3
                                     else if (keyForWarp != null)
                                     {
                                         var dst = warpTable[keyForWarp];
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( {dst.Item1}, 0, {{ {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f }}, {dst.Item5:#0.0#}f );");
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to apply showZoneName = {dst.Item6}\" );");
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing( {dst.Item1}, {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f, {dst.Item5:#0.0#}f, {dst.Item6} );");
+                                        //outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( {dst.Item1}, 0, {{ {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f }}, {dst.Item5:#0.0#}f );");
+                                        //outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to apply showZoneName = {dst.Item6}\" );");
                                     }
 
                                     if (hasIf)
