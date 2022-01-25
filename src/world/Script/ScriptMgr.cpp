@@ -205,7 +205,7 @@ bool Sapphire::Scripting::ScriptMgr::onTalk( Entity::Player& player, uint64_t ac
         newQuest = true;
       }
       auto copy = quest;
-      threePointOhScript->onTalk( quest, player, actor );
+      threePointOhScript->onTalk( quest, player, actor == 0 ? actorId : actor );
       if( quest != copy && quest.getSeq() > 0 && ( newQuest || player.hasQuest( quest.getId() ) ) )
         player.updateQuest( quest );
       return true;
@@ -312,7 +312,7 @@ bool Sapphire::Scripting::ScriptMgr::onEmote( Entity::Player& player, uint64_t a
       if( quest.getId() > 0 )
       {
         auto copy = quest;
-        threePointOhScript->onEmote( quest, actor, emoteId, player );
+        threePointOhScript->onEmote( quest, actor == 0 ? actorId : actor, emoteId, player );
         if( quest != copy )
           player.updateQuest( quest );
         return true;
@@ -373,7 +373,7 @@ bool Sapphire::Scripting::ScriptMgr::onEventItem( Entity::Player& player, uint32
       if( quest.getId() > 0 )
       {
         auto copy = quest;
-        threePointOhScript->onEventItem( quest, player, actor );
+        threePointOhScript->onEventItem( quest, player, actor == 0 ? targetId : actor );
         if( quest != copy )
           player.updateQuest( quest );
         return true;
@@ -464,7 +464,7 @@ bool Sapphire::Scripting::ScriptMgr::onEObjHit( Sapphire::Entity::Player& player
         if( quest.getId() > 0 )
         {
           auto copy = quest;
-          threePointOhScript->onEObjHit( quest, player, actor, actionId );
+          threePointOhScript->onEObjHit( quest, player, actor == 0 ? actorId : actor, actionId );
           if( quest != copy )
             player.updateQuest( quest );
           return true;
