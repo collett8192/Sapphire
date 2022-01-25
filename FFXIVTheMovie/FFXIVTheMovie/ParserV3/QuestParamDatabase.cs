@@ -14,6 +14,34 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVna508":
+                    {
+                        result.Add("WARP_SCENE2", "419|166.7|-14.5|39.3|-2.1|true");
+                        result.Add("SCENE_2", "CID");
+                        break;
+                    }
+                case "HeaVna505":
+                    {
+                        result.Add("_ACTOR5", "E");
+                        result.Add("_ACTOR5E", "2|3,5");
+                        break;
+                    }
+                case "HeaVna503":
+                    {
+                        result.Add("ID_ACTOR2", "2097153");
+                        result.Add("SCENE_9", null);
+                        break;
+                    }
+                case "HeaVna502":
+                    {
+                        result.Add("WARP_WEDGE", "401|-807.3|-57.7|158.4|1|true");
+                        break;
+                    }
+                case "HeaVna403":
+                    {
+                        result.Add("WARP_SCENE6", "418|20.37|-12|46|0.63|false");
+                        break;
+                    }
                 case "HeaVna402":
                     {
                         result.Add("PRIVATE_SCENE1", "0");
@@ -967,12 +995,16 @@ namespace FFXIVTheMovie.ParserV3
                 case "HeaVna507":
                     {
                         result.Add("SCENE_2", "ALPHINAUD");
+                        result.Add("WARP_SCENE2", "401|-584.1|-52.4|-445.3|2.88|false");
                         break;
                     }
                 case "HeaVna405":
                     {
                         result.Add("SCENE_3", "AYMERIC");
                         result.Add("SCENE_5", "AYMERIC");
+                        result.Add("PRIVATE_SCENE5", "0");
+                        result.Add("PRIVATE_SCENE9", "428");
+                        result.Add("ID_ACTOR3", "4300878011");
                         break;
                     }
                 case "HeaVna335":
