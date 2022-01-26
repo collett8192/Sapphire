@@ -660,8 +660,7 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         if ((current.Element & LuaScene.SceneElement.CanCancel) > 0)
                                         {
-                                            //outputCpp.Add("      if( result.errorCode == 0 && result.numOfResults >= 1 && result.getResult( 0 ) == 1 )");
-                                            outputCpp.Add("      if( result.errorCode == 0 )");
+                                            outputCpp.Add("      if( result.errorCode == 0 || ( result.numOfResults > 0 && result.getResult( 0 ) == 1 ) )");
 
                                             outputCpp.Add("      {");
                                             hasIf = true;
