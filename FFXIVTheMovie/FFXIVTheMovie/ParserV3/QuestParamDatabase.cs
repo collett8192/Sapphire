@@ -14,6 +14,40 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVna612":
+                    {
+                        result.Add("PRIVATE_SCENE2", "0");
+                        break;
+                    }
+                case "HeaVna610":
+                    {
+                        result.Add("PRIVATE_SCENE16", "463");
+                        break;
+                    }
+                case "HeaVna607":
+                    {
+                        result.Add("SCENE_10", "actor4");
+                        result.Add("SCENE_11", "golem_a");
+                        result.Add("SCENE_12", "golem_a");
+                        result.Add("SCENE_13", "golem_b");
+                        result.Add("SCENE_14", "golem_b");
+                        result.Add("_ACTOR5", "C");
+                        result.Add("_ACTOR5C", "2|2");
+                        result.Add("_ACTOR6", "C");
+                        result.Add("_ACTOR6C", "2|2");
+                        break;
+                    }
+                case "HeaVna606":
+                    {
+                        result.Add("SCENE_3", "dummyt");
+                        result.Add("SCENE_4", "dummyt");
+                        break;
+                    }
+                case "HeaVna601":
+                    {
+                        result.Add("PRIVATE_TEMPLEKIGHTGATE", "428");
+                        break;
+                    }
                 case "HeaVna508":
                     {
                         result.Add("WARP_SCENE2", "419|166.7|-14.5|39.3|-2.1|true");
@@ -979,17 +1013,29 @@ namespace FFXIVTheMovie.ParserV3
                 case "HeaVna613":
                     {
                         result.Add("SCENE_35", "EDMONT");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "2|2");
+                        result.Add("_ACTOR9", "B");
+                        result.Add("_ACTOR9B", "2|2");
+                        result.Add("_ACTOR10", "B");
+                        result.Add("_ACTOR10B", "2|2");
                         break;
                     }
                 case "HeaVna604":
                     {
                         result.Add("SCENE_13", "TATARU");
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "1|2");
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "1|2");
                         break;
                     }
                 case "HeaVna603":
                     {
                         result.Add("SCENE_4", "KANESENNA");
                         result.Add("SCENE_13", "YMHITRA");
+                        result.Add("PRIVATE_DOORMANLOTUS", "205");
+                        result.Add("WARP_SCENE13", "132|30|-8|95|0.85|false");
                         break;
                     }
                 case "HeaVna507":
