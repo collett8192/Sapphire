@@ -137,6 +137,7 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("  static constexpr auto EVENT_ON_ENTER_TERRITORY = 4;");
             outputCpp.Add("  static constexpr auto EVENT_ON_EVENT_ITEM = 5;");
             outputCpp.Add("  static constexpr auto EVENT_ON_EOBJ_HIT = 6;");
+            outputCpp.Add("  static constexpr auto EVENT_ON_SAY = 7;");
             outputCpp.Add("");
             outputCpp.Add("private:");
             outputCpp.Add("  void onProgress( World::Quest& quest, Entity::Player& player, uint32_t type, uint64_t param1, uint32_t param2, uint32_t param3 )");
@@ -343,6 +344,21 @@ namespace FFXIVTheMovie.ParserV3
                                 outputCpp.Add($"{extraSpace}          // +Callback {scene4}");
                             }
                         }
+                        else if (entry.ChatSayBranch)
+                        {
+                            if (scene == null || scene2 == null)
+                                throw new Exception("WTF???");
+                            outputCpp.Add($"{extraSpace}          if( type == EVENT_ON_TALK ) {scene.SceneFunctionName}( quest, player ); // {scene}");
+                            outputCpp.Add($"{extraSpace}          if( type == EVENT_ON_SAY ) {scene2.SceneFunctionName}( quest, player ); // {scene2}");
+                            if (scene3 != null)
+                            {
+                                outputCpp.Add($"{extraSpace}          // +Callback {scene3}");
+                            }
+                            if (scene4 != null)
+                            {
+                                outputCpp.Add($"{extraSpace}          // +Callback {scene4}");
+                            }
+                        }
                         else
                         {
                             if (scene != null)
@@ -427,6 +443,10 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("  void onEObjHit( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t actionId ) override");
             outputCpp.Add("  {");
             outputCpp.Add("    onProgress( quest, player, EVENT_ON_EOBJ_HIT, actorId, actionId, 0 );");
+            outputCpp.Add("  }");
+            outputCpp.Add("  void onSay( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t sayId ) override");
+            outputCpp.Add("  {");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_SAY, actorId, sayId, 0 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
             outputCpp.Add("private:");
@@ -629,7 +649,7 @@ namespace FFXIVTheMovie.ParserV3
                             {
                                 shouldProduceCode = current == entry.EntryScene.SceneList[1];
                             }
-                            else if (entry.InventoryBranch)
+                            else if (entry.InventoryBranch || entry.ChatSayBranch)
                             {
                                 shouldProduceCode = current != entry.EntryScene.SceneList[0];
                             }
@@ -732,7 +752,7 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         shouldContinue = false;
                                     }
-                                    else if (entry.InventoryBranch)
+                                    else if (entry.InventoryBranch || entry.ChatSayBranch)
                                     {
                                         shouldContinue = shouldContinue && current != entry.EntryScene.SceneList[0];
                                     }
@@ -839,7 +859,7 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         shouldContinue = false;
                                     }
-                                    else if (entry.InventoryBranch)
+                                    else if (entry.InventoryBranch || entry.ChatSayBranch)
                                     {
                                         shouldContinue = shouldContinue && current != entry.EntryScene.SceneList[0];
                                     }
@@ -988,6 +1008,21 @@ namespace FFXIVTheMovie.ParserV3
                             if (seqList.FirstOrDefault(s => s == entry.Owner.SeqNumber.ToString()) != null)
                             {
                                 entry.ConditionBranch = true;
+                                entry.RequiredGroupCount = int.Parse(array[1]);
+                            }
+                        }
+                        if (f.Contains('C'))
+                        {
+                            var value = paramTable[$"_{entry.TargetObject.Name}C"];
+                            var array = value.Split('|');
+                            var seqList = array[0].Split(',');
+                            for (var i = 0; i < seqList.Length; i++)
+                            {
+                                seqList[i] = seqList[i].Trim();
+                            }
+                            if (seqList.FirstOrDefault(s => s == entry.Owner.SeqNumber.ToString()) != null)
+                            {
+                                entry.ChatSayBranch = true;
                                 entry.RequiredGroupCount = int.Parse(array[1]);
                             }
                         }

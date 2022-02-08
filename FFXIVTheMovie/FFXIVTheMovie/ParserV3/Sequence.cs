@@ -64,6 +64,7 @@ namespace FFXIVTheMovie.ParserV3
             public int RequiredGroupCount = 1;
             public bool ConditionBranch = false;
             public int? EmoteBranch = null;
+            public bool ChatSayBranch = false;
             public string bNpcHackCreditDest = null;
 
             public bool InventoryBranch = false;
