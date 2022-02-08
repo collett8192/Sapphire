@@ -1011,6 +1011,7 @@ namespace FFXIVTheMovie.ParserV3
                                 entry.RequiredGroupCount = int.Parse(array[1]);
                             }
                         }
+                        /*
                         if (f.Contains('C'))
                         {
                             var value = paramTable[$"_{entry.TargetObject.Name}C"];
@@ -1026,6 +1027,7 @@ namespace FFXIVTheMovie.ParserV3
                                 entry.RequiredGroupCount = int.Parse(array[1]);
                             }
                         }
+                        */
                     }
 
                     if (!entry.ConditionBranch && useBranchGlobal)
