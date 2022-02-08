@@ -49,7 +49,7 @@ namespace FFXIVTheMovie.ParserV3
             }
 
             List<string> list = new List<string>();
-            //list.Add("HeaVna508");
+            //list.Add("HeaVna613");
 
             if (list.Count == 0)
             {
@@ -102,7 +102,7 @@ namespace FFXIVTheMovie.ParserV3
                 if (implementedQuestIds.Contains(questId))
                     continue;
 
-                //if (!questId.StartsWith("HeaVna")) continue;
+                //if (!questId.StartsWith("HeaVna6")) continue;
 
                 if (!questId.StartsWith("ManFst") &&
                     !questId.StartsWith("ManSea") &&

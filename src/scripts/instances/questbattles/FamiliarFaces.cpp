@@ -11,7 +11,6 @@ const uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_TARGET = 255;
 const uint32_t SCENE_LIST[] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 //===========THE_MOVIE end============
 
-
 class FamiliarFaces : public Sapphire::ScriptAPI::QuestBattleScript
 {
 private:
@@ -94,6 +93,7 @@ public:
     //===========THE_MOVIE end============
 
   }
+  //===========THE_MOVIE start============
   void onDebug( Entity::Player& player, uint32_t param ) override
   {
     auto instance = player.getCurrentQuestBattle();
