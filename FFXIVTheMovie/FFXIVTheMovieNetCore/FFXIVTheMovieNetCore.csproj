@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\FFXIVTheMovie\ParserV3\ActiveEventObject.cs" Link="ActiveEventObject.cs" />
+    <Compile Include="..\FFXIVTheMovie\ParserV3\LuaGetEventItem.cs" Link="LuaGetEventItem.cs" />
+    <Compile Include="..\FFXIVTheMovie\ParserV3\LuaIsAnnounce.cs" Link="LuaIsAnnounce.cs" />
+    <Compile Include="..\FFXIVTheMovie\ParserV3\LuaNpcTradeInfo.cs" Link="LuaNpcTradeInfo.cs" />
+    <Compile Include="..\FFXIVTheMovie\ParserV3\LuaScene.cs" Link="LuaScene.cs" />
+    <Compile Include="..\FFXIVTheMovie\ParserV3\Parser.cs" Link="Parser.cs" />
+    <Compile Include="..\FFXIVTheMovie\ParserV3\QuestParamDatabase.cs" Link="QuestParamDatabase.cs" />
+    <Compile Include="..\FFXIVTheMovie\ParserV3\Sequence.cs" Link="Sequence.cs" />
+    <Compile Include="..\FFXIVTheMovie\Program.cs" Link="Program.cs" />
+  </ItemGroup>
+
+</Project>

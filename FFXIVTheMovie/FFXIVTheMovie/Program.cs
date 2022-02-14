@@ -7,7 +7,11 @@ namespace FFXIVTheMovie.ParserV3
 {
     public static class Program
     {
+#if NETCOREAPP
+        static readonly string SAPPHIRE_SRC_FOLDER = @"..\..\..\..\..\src";
+#else
         static readonly string SAPPHIRE_SRC_FOLDER = @"..\..\..\..\src";
+#endif
         static readonly string PARSER_OUTPUT_FOLDER = Path.Combine(SAPPHIRE_SRC_FOLDER, "scripts", "quest", "the_movie_v3");
 
         static string QuestParseOutputFolder = @"C:\work\Sapphire\build\bin\tools\generated";
