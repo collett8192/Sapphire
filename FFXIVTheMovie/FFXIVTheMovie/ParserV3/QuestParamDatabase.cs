@@ -14,6 +14,11 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "ManSea001":
+                    {
+                        result.Add("WARP_GREHFARR", "181|9|40|14|0|false");
+                        break;
+                    }
                 case "SubWil113":
                     {
                         result.Add("_AGGRESSIVE_BNPC_HACK", "");
