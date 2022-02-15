@@ -14,6 +14,55 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "ManWil200":
+                    {
+                        result.Add("WARP_SCENE4", "130|-32.35|83.2|-3|1.3|false");
+                        result.Add("WARP_SCENE8", "128|-11.86|92|17|-1.95|true");
+                        result.Add("WARP_SCENE9", "130|-32.35|83.2|-3|1.3|false");
+                        result.Add("WARP_SCENE12", "128|-13.95|91.5|-5.88|2.89|false");
+                        result.Add("WARP_SCENE15", "128|-11.86|92|17|-1.95|true");
+                        result.Add("WARP_SCENE24", "128|-24.3|92|2.47|-0.37|false");
+                        result.Add("WARP_SCENE30", "132|7.8|-21.97|123.88|1.58|true");
+                        result.Add("WARP_SCENE31", "128|-24.3|92|2.47|-0.37|false");
+                        result.Add("WARP_SCENE37", "132|35.5|-19|105|-3.14|false");
+                        result.Add("WARP_SCENE41", "132|7.8|-21.97|123.88|1.58|true");
+                        result.Add("ID_ACTOR8", "4296108319");
+                        break;
+                    }
+                case "ManWil009":
+                    {
+                        result.Add("_BRANCH", "");
+                        break;
+                    }
+                case "ManWil007":
+                    {
+                        result.Add("ALTERNATIVE_QUEST_COMPLETE", "");
+                        result.Add("SCENE_6", null);
+                        result.Add("SCENE_7", null);
+                        result.Add("PRIVATE_SULTANSWORMA", "210");
+                        break;
+                    }
+                case "ManSea200":
+                    {
+                        result.Add("WARP_SCENE4", "128|-24.3|92|2.47|-0.37|false");
+                        result.Add("WARP_SCENE8", "132|7.8|-21.97|123.88|1.58|true");
+                        result.Add("WARP_SCENE9", "128|-24.3|92|2.47|-0.37|false");
+                        result.Add("WARP_SCENE12", "132|35.5|-19|105|-3.14|false");
+                        result.Add("WARP_SCENE15", "132|7.8|-21.97|123.88|1.58|true");
+                        result.Add("WARP_SCENE24", "132|22.55|-19|114.2|0|false");
+                        result.Add("WARP_SCENE30", "130|-44.14|84|-0.47|1.3|true");
+                        result.Add("WARP_SCENE31", "132|22.55|-19|114.2|0|false");
+                        result.Add("WARP_SCENE36", "130|-19.45|83.2|3.85|1.8|false");
+                        result.Add("WARP_SCENE41", "130|-44.14|84|-0.47|1.3|true");
+                        result.Add("ID_ACTOR5", "4296108319");
+                        break;
+                    }
+                case "ManSea009":
+                    {
+                        result.Add("_BRANCH", "");
+                        result.Add("PRIVATE_SCENE8", "198");
+                        break;
+                    }
                 case "SubWil025":
                     {
                         result.Add("_ACTOR1", "B");
@@ -456,6 +505,7 @@ namespace FFXIVTheMovie.ParserV3
                 case "ManFst209":
                     {
                         result.Add("SCENE_7", null);
+                        result.Add("WARP_ADALA", "146|-53.45|-24.09|-567.49|-0.55|false");
                         break;
                     }
                 case "SubSea105":

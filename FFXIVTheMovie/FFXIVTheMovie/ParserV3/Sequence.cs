@@ -12,6 +12,7 @@ namespace FFXIVTheMovie.ParserV3
         public int SeqNumber;
         public List<EventEntry> EntryList = new List<EventEntry>();
         public bool Ignore = false;
+        public bool MarkForAlternativeQuestComplete = false;
 
         public Sequence(int seq)
         {
@@ -121,7 +122,10 @@ namespace FFXIVTheMovie.ParserV3
                     if (this.Owner.SeqNumber != 255)
                         return false;
                     if (this != this.Owner.EntryList[0] && this.Owner.EntryList[0].EntryScene.SceneList.Count < 3)
-                        return false;
+                    {
+                        if (!this.Owner.MarkForAlternativeQuestComplete)
+                            return false;
+                    }
                 }
 
                 if (TargetObject == null)

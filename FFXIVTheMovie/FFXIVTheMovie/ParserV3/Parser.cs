@@ -1233,6 +1233,10 @@ namespace FFXIVTheMovie.ParserV3
                 {
                     seq.Ignore = true;
                 }
+                if (seq.SeqNumber == 255 && paramTable.ContainsKey("ALTERNATIVE_QUEST_COMPLETE"))
+                {
+                    seq.MarkForAlternativeQuestComplete = true;
+                }
                 allEntries.AddRange(seq.EntryList);
             }
             if (!AssignScenesNextStep(allEntries, sceneGroupList, idTable, 0, 0, allowEmptyEntry))
