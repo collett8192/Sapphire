@@ -1,5 +1,4 @@
 // FFXIVTheMovie.ParserV3.8
-// edit: add bnpc id
 // fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
@@ -9,21 +8,21 @@
 
 using namespace Sapphire;
 
-class SubFst049 : public Sapphire::ScriptAPI::QuestScript
+class SubWil060 : public Sapphire::ScriptAPI::QuestScript
 {
 public:
-  SubFst049() : Sapphire::ScriptAPI::QuestScript( 65912 ){}; 
-  ~SubFst049() = default; 
+  SubWil060() : Sapphire::ScriptAPI::QuestScript( 65839 ){}; 
+  ~SubWil060() = default; 
 
   //SEQ_0, 1 entries
   //SEQ_1, 1 entries
-  //SEQ_2, 1 entries
   //SEQ_255, 1 entries
 
-  //ACTOR0 = 1000470
-  //ACTOR1 = 1000748
-  //ENEMY0 = 771
-  //QSTACCEPTCHECK = 65910
+  //ACTOR0 = 1001500
+  //ACTOR1 = 1001455
+  //ACTOR2 = 1001541
+  //ITEM0 = 2000199
+  //ITEM1 = 2000238
 
   static constexpr auto EVENT_ON_TALK = 0;
   static constexpr auto EVENT_ON_EMOTE = 1;
@@ -39,24 +38,26 @@ private:
   {
     switch( quest.getSeq() )
     {
+      //seq 0 event item ITEM0 = UI8BH max stack 1
       case 0:
       {
-        if( type != EVENT_ON_BNPC_KILL ) Scene00000( quest, player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=TALK_KEITHA
+        if( type != EVENT_ON_BNPC_KILL ) Scene00000( quest, player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=CICIDOA
         break;
       }
+      //seq 1 event item ITEM0 = UI8BH max stack 1
+      //seq 1 event item ITEM1 = UI8BL max stack 1
       case 1:
       {
-        if( type != EVENT_ON_BNPC_KILL ) Scene00001( quest, player ); // Scene00001: Normal(Talk, TargetCanMove), id=ROSELINE
+        if( type != EVENT_ON_BNPC_KILL ) Scene00001( quest, player ); // Scene00001: NpcTrade(Talk, TargetCanMove), id=GAGARI
+        // +Callback Scene00002: Normal(Talk, TargetCanMove), id=GAGARI
         break;
       }
-      case 2:
-      {
-        if( type == EVENT_ON_BNPC_KILL && param1 == 218 ) Scene00002( quest, player ); // Scene00002: Normal(None), id=unknown
-        break;
-      }
+      //seq 255 event item ITEM0 = UI8BH max stack 1
+      //seq 255 event item ITEM1 = UI8BL max stack 1
       case 255:
       {
-        if( type != EVENT_ON_BNPC_KILL ) Scene00003( quest, player ); // Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ROSELINE
+        if( type != EVENT_ON_BNPC_KILL ) Scene00004( quest, player ); // Scene00004: NpcTrade(Talk, TargetCanMove), id=ROGER
+        // +Callback Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ROGER
         break;
       }
       default:
@@ -110,19 +111,17 @@ private:
   void checkProgressSeq0( World::Quest& quest, Entity::Player& player )
   {
     quest.setSeq( 1 );
+    quest.setUI8BH( 1 );
+    quest.setUI8BL( 1 );
   }
   void checkProgressSeq1( World::Quest& quest, Entity::Player& player )
-  {
-    quest.setSeq( 2 );
-  }
-  void checkProgressSeq2( World::Quest& quest, Entity::Player& player )
   {
     quest.setSeq( 255 );
   }
 
   void Scene00000( World::Quest& quest, Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
-    playerMgr().sendDebug( player, "SubFst049:65912 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=TALK_KEITHA" );
+    playerMgr().sendDebug( player, "SubWil060:65839 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove), id=CICIDOA" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
       if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
@@ -135,23 +134,41 @@ private:
 
   void Scene00001( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
   {
-    playerMgr().sendDebug( player, "SubFst049:65912 calling Scene00001: Normal(Talk, TargetCanMove), id=ROSELINE" );
+    playerMgr().sendDebug( player, "SubWil060:65839 calling Scene00001: NpcTrade(Talk, TargetCanMove), id=GAGARI" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
+      {
+        Scene00002( quest, player );
+      }
+    };
+    eventMgr().playQuestScene( player, getId(), 1, NONE, callback );
+  }
+  void Scene00002( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "SubWil060:65839 calling Scene00002: Normal(Talk, TargetCanMove), id=GAGARI" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
       checkProgressSeq1( quest, player );
     };
-    eventMgr().playQuestScene( player, getId(), 1, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 2, NONE, callback );
   }
 
-  void Scene00002( World::Quest& quest, Entity::Player& player ) //SEQ_2: , <No Var>, <No Flag>
+  void Scene00004( World::Quest& quest, Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
-    playerMgr().sendDebug( player, "SubFst049:65912 calling Scene00002: Normal(None), id=unknown" );
-    checkProgressSeq2( quest, player );
+    playerMgr().sendDebug( player, "SubWil060:65839 calling Scene00004: NpcTrade(Talk, TargetCanMove), id=ROGER" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
+      {
+        Scene00005( quest, player );
+      }
+    };
+    eventMgr().playQuestScene( player, getId(), 4, NONE, callback );
   }
-
-  void Scene00003( World::Quest& quest, Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
+  void Scene00005( World::Quest& quest, Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
-    playerMgr().sendDebug( player, "SubFst049:65912 calling Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ROSELINE" );
+    playerMgr().sendDebug( player, "SubWil060:65839 calling Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ROGER" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
       if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
@@ -159,8 +176,8 @@ private:
         player.finishQuest( getId(), result.getResult( 1 ) );
       }
     };
-    eventMgr().playQuestScene( player, getId(), 3, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 5, NONE, callback );
   }
 };
 
-EXPOSE_SCRIPT( SubFst049 );
+EXPOSE_SCRIPT( SubWil060 );

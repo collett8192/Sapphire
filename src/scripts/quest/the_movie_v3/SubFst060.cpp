@@ -1,6 +1,4 @@
 // FFXIVTheMovie.ParserV3.8
-// edit: add bnpc id
-// fake IsAnnounce table
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -9,21 +7,28 @@
 
 using namespace Sapphire;
 
-class SubFst049 : public Sapphire::ScriptAPI::QuestScript
+class SubFst060 : public Sapphire::ScriptAPI::QuestScript
 {
 public:
-  SubFst049() : Sapphire::ScriptAPI::QuestScript( 65912 ){}; 
-  ~SubFst049() = default; 
+  SubFst060() : Sapphire::ScriptAPI::QuestScript( 65917 ){}; 
+  ~SubFst060() = default; 
 
   //SEQ_0, 1 entries
-  //SEQ_1, 1 entries
-  //SEQ_2, 1 entries
+  //SEQ_1, 3 entries
   //SEQ_255, 1 entries
 
-  //ACTOR0 = 1000470
-  //ACTOR1 = 1000748
-  //ENEMY0 = 771
-  //QSTACCEPTCHECK = 65910
+  //ACTOR0 = 1000741
+  //ACTOR1 = 1000491
+  //ENEMY0 = 3838969
+  //ENEMY1 = 3838970
+  //EOBJECT0 = 2001006
+  //EVENTACTIONSEARCH = 1
+  //QSTACCEPTCHECK = 65692
+  //SEQ0ACTOR0 = 0
+  //SEQ1EOBJECT0 = 1
+  //SEQ1EOBJECT0EVENTACTIONNO = 99
+  //SEQ1EOBJECT0EVENTACTIONOK = 100
+  //SEQ2ACTOR1 = 2
 
   static constexpr auto EVENT_ON_TALK = 0;
   static constexpr auto EVENT_ON_EMOTE = 1;
@@ -41,22 +46,35 @@ private:
     {
       case 0:
       {
-        if( type != EVENT_ON_BNPC_KILL ) Scene00000( quest, player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=TALK_KEITHA
+        if( type != EVENT_ON_BNPC_KILL ) Scene00000( quest, player ); // Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=EYLGAR
         break;
       }
       case 1:
       {
-        if( type != EVENT_ON_BNPC_KILL ) Scene00001( quest, player ); // Scene00001: Normal(Talk, TargetCanMove), id=ROSELINE
-        break;
-      }
-      case 2:
-      {
-        if( type == EVENT_ON_BNPC_KILL && param1 == 218 ) Scene00002( quest, player ); // Scene00002: Normal(None), id=unknown
+        if( param1 == 2001006 ) // EOBJECT0 = unknown
+        {
+          if( !quest.getBitFlag8( 1 ) )
+          {
+            Scene00100( quest, player ); // Scene00100: Normal(Message, PopBNpc), id=unknown
+          }
+          break;
+        }
+        // BNpcHack credit moved to EOBJECT0
+        if( param1 == 3838969 ) // ENEMY0 = unknown
+        {
+        // empty entry
+          break;
+        }
+        if( param1 == 3838970 ) // ENEMY1 = unknown
+        {
+        // empty entry
+          break;
+        }
         break;
       }
       case 255:
       {
-        if( type != EVENT_ON_BNPC_KILL ) Scene00003( quest, player ); // Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ROSELINE
+        if( type != EVENT_ON_BNPC_KILL ) Scene00002( quest, player ); // Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=LOTHAIRE
         break;
       }
       default:
@@ -113,16 +131,17 @@ private:
   }
   void checkProgressSeq1( World::Quest& quest, Entity::Player& player )
   {
-    quest.setSeq( 2 );
-  }
-  void checkProgressSeq2( World::Quest& quest, Entity::Player& player )
-  {
-    quest.setSeq( 255 );
+    if( quest.getUI8AL() == 2 )
+    {
+      quest.setUI8AL( 0 );
+      quest.setBitFlag8( 1, false );
+      quest.setSeq( 255 );
+    }
   }
 
   void Scene00000( World::Quest& quest, Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
-    playerMgr().sendDebug( player, "SubFst049:65912 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=TALK_KEITHA" );
+    playerMgr().sendDebug( player, "SubFst060:65917 calling Scene00000: Normal(Talk, QuestOffer, QuestAccept, TargetCanMove, SystemTalk, CanCancel), id=EYLGAR" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
       if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
@@ -133,25 +152,23 @@ private:
     eventMgr().playQuestScene( player, getId(), 0, NONE, callback );
   }
 
-  void Scene00001( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
+  void Scene00100( World::Quest& quest, Entity::Player& player ) //SEQ_1: EOBJECT0, UI8AL = 2, Flag8(1)=True
   {
-    playerMgr().sendDebug( player, "SubFst049:65912 calling Scene00001: Normal(Talk, TargetCanMove), id=ROSELINE" );
+    playerMgr().sendDebug( player, "SubFst060:65917 calling Scene00100: Normal(Message, PopBNpc), id=unknown" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
+      quest.setUI8AL( 2 );
+      quest.setBitFlag8( 1, true );
       checkProgressSeq1( quest, player );
     };
-    eventMgr().playQuestScene( player, getId(), 1, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 100, NONE, callback );
   }
 
-  void Scene00002( World::Quest& quest, Entity::Player& player ) //SEQ_2: , <No Var>, <No Flag>
-  {
-    playerMgr().sendDebug( player, "SubFst049:65912 calling Scene00002: Normal(None), id=unknown" );
-    checkProgressSeq2( quest, player );
-  }
 
-  void Scene00003( World::Quest& quest, Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
+
+  void Scene00002( World::Quest& quest, Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
   {
-    playerMgr().sendDebug( player, "SubFst049:65912 calling Scene00003: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=ROSELINE" );
+    playerMgr().sendDebug( player, "SubFst060:65917 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=LOTHAIRE" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
       if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
@@ -159,8 +176,8 @@ private:
         player.finishQuest( getId(), result.getResult( 1 ) );
       }
     };
-    eventMgr().playQuestScene( player, getId(), 3, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 2, NONE, callback );
   }
 };
 
-EXPOSE_SCRIPT( SubFst049 );
+EXPOSE_SCRIPT( SubFst060 );
