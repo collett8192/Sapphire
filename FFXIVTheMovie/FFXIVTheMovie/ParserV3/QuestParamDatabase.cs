@@ -14,6 +14,46 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "SubWil113":
+                    {
+                        result.Add("_AGGRESSIVE_BNPC_HACK", "");
+                        result.Add("IGNORE_BNPCHACK_EVENTRANGE0", "");
+                        break;
+                    }
+                case "SubWil110":
+                    {
+                        result.Add("ID_ACTOR1", "4298942495");
+                        result.Add("ID_ACTOR2", "4298942496");
+                        result.Add("ID_ACTOR3", "4298942497");
+                        break;
+                    }
+                case "SubSea056":
+                    {
+                        result.Add("IGNORE_SEQ1", "");
+                        break;
+                    }
+                case "SubSea055":
+                    {
+                        result.Add("ID_EOBJECT0", "4298896562");
+                        result.Add("ID_EOBJECT1", "4298896563");
+                        result.Add("ID_EOBJECT2", "4298896564");
+                        break;
+                    }
+                case "SubSea054":
+                    {
+                        result.Add("_ACTOR1", "E");
+                        result.Add("_ACTOR1E", "1|2,12");
+                        break;
+                    }
+                case "SubSea053":
+                    {
+                        result.Add("ID_ACTOR1", "4298896548");
+                        result.Add("ID_ACTOR2", "4298896549");
+                        result.Add("ID_ACTOR3", "4298896550");
+                        result.Add("ID_ACTOR4", "4298896551");
+                        result.Add("ID_ACTOR5", "4298896552");
+                        break;
+                    }
                 case "ManWil200":
                     {
                         result.Add("WARP_SCENE4", "130|-32.35|83.2|-3|1.3|false");
@@ -469,13 +509,6 @@ namespace FFXIVTheMovie.ParserV3
                 case "ManFst007":
                     {
                         result.Add("PRIVATE_DOORMANSINYU", "204");
-                        break;
-                    }
-                case "SubFst060":
-                    {
-                        result.Add("SCENE_1", null);
-                        result.Add("SCENE_100", null);
-                        result.Add("SCENE_99", null);
                         break;
                     }
                 case "SubFst058":

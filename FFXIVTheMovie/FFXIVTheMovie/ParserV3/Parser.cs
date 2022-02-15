@@ -22,7 +22,7 @@ namespace FFXIVTheMovie.ParserV3
         Dictionary<string, int> privateInstanceEntranceTable;
         Dictionary<string, Tuple<int, float, float, float, float, string>> warpTable;
         Dictionary<string, int> mountTable;
-        Dictionary<string, long> unmappedObjTable = new Dictionary<string, long>();
+        Dictionary<string, long> unmappedObjTable;
         bool allowEmptyEntry = false;
 
         Dictionary<string, string> paramTable = new Dictionary<string, string>();
@@ -1135,6 +1135,7 @@ namespace FFXIVTheMovie.ParserV3
             privateInstanceEntranceTable = new Dictionary<string, int>();
             mountTable = new Dictionary<string, int>();
             warpTable = new Dictionary<string, Tuple<int, float, float, float, float, string>>();
+            unmappedObjTable = new Dictionary<string, long>();
             foreach (var entry in paramTable)
             {
                 if (entry.Key.StartsWith("SCENE_"))
@@ -1570,6 +1571,7 @@ namespace FFXIVTheMovie.ParserV3
                     tmpList.Remove(s);
                 }
             }
+            sceneGroupList.Sort();
         }
 
         int questNumber;

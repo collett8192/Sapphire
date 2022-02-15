@@ -219,7 +219,7 @@ namespace FFXIVTheMovie.ParserV3
             }
         }
 
-        public class SceneGroup
+        public class SceneGroup : IComparable<SceneGroup>
         {
             public bool HasSubScenes => this.SceneList.Count > 1;
             public List<LuaScene> SceneList = new List<LuaScene>();
@@ -294,6 +294,11 @@ namespace FFXIVTheMovie.ParserV3
                 if (SceneList.Count == 0)
                     return "[EMPTY]";
                 return $"[{Identity}]{SceneList[0]}{(HasSubScenes ? $" +{SceneList.Count - 1}" : "")}";
+            }
+
+            int IComparable<SceneGroup>.CompareTo(SceneGroup other)
+            {
+                return this.SceneList[0].SceneNumber.CompareTo(other.SceneList[0].SceneNumber);
             }
         }
 
