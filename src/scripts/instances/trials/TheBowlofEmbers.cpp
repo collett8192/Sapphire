@@ -60,6 +60,11 @@ public:
 
   }
   //===========THE_MOVIE start============
+  bool the_movie_on_content_skipped( Sapphire::Entity::Player& player ) override
+  {
+    player.forceZoneing( 145, -371.3f, -57.0f, 142.2f, 0, false );
+    return true;
+  }
   void onDebug( Entity::Player& player, uint32_t param ) override
   {
     auto instance = player.getCurrentInstance();

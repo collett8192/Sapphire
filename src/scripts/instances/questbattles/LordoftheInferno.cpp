@@ -88,6 +88,11 @@ public:
 
   }
   //===========THE_MOVIE start============
+  bool the_movie_on_content_skipped( Sapphire::Entity::Player& player ) override
+  {
+    player.forceZoneing( 146, -53.45f, -24.09f, -567.49f, -0.55f, false );
+    return true;
+  }
   void onDebug( Entity::Player& player, uint32_t param ) override
   {
     auto instance = player.getCurrentQuestBattle();
