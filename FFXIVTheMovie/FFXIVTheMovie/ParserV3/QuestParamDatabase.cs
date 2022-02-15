@@ -14,6 +14,16 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "SubWil025":
+                    {
+                        result.Add("_ACTOR1", "B");
+                        result.Add("_ACTOR1B", "1|2");
+                        result.Add("_ACTOR2", "B");
+                        result.Add("_ACTOR2B", "1|2");
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "1|2");
+                        break;
+                    }
                 case "HeaVna612":
                     {
                         result.Add("PRIVATE_SCENE2", "0");
