@@ -613,7 +613,6 @@ public:
         instance.setDirectorUI8AL( player.getQuestUI8AH( 67114 ) );
         instance.setDirectorUI8BL( player.getQuestUI8AL( 67114 ) );
         instance.setDirectorUI8CL( player.getGuardianDeity() );
-        instance.setDirectorUI8DL( player.getGuardianDeity() );
         instance.setDirectorUI8EL( player.getQuestUI8FH( 67114 ) );
         instance.setDirectorUI8FL( player.getQuestUI8FL( 67114 ) );
         instance.setCustomVar( 101, player.getQuestUI8BL( 67114 ) );
@@ -629,6 +628,7 @@ public:
       if( player.hasQuest( 67114 ) && player.getQuestSeq( 67114 ) == 12 )
       {
         instance.setCustomVar( 2, player.getId() );
+        instance.setDirectorUI8DL( player.getGuardianDeity() );
         auto p1 = instance.getPlayer( instance.getCustomVar( 1 ) );
         if( p1 )
         {
