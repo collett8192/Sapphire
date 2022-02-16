@@ -169,3 +169,15 @@ void Sapphire::World::Manager::EventMgr::eventFinish( Sapphire::Entity::Player& 
 {
   player.eventFinish( eventId, freePlayer );
 }
+
+void Sapphire::World::Manager::EventMgr::sendEventNotice( Entity::Player& player, uint32_t questId, int8_t noticeId, uint8_t numOfArgs, uint32_t var1, uint32_t var2 )
+{
+  player.sendQuestMessage( questId, noticeId, numOfArgs, var1, var2 );
+}
+
+void Sapphire::World::Manager::EventMgr::eventActionStart( Entity::Player& player, uint32_t eventId, uint32_t action,
+  World::Action::ActionCallback finishCallback, World::Action::ActionCallback interruptCallback,
+  uint64_t additional )
+{
+  player.eventActionStart( eventId, action, finishCallback, interruptCallback, additional );
+}
