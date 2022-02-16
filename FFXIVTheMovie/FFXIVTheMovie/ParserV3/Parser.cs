@@ -72,7 +72,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.8");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.9");
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -156,7 +156,7 @@ namespace FFXIVTheMovie.ParserV3
                     }
                     while (entry.EntryScene.SceneList.Count > minCount && i < entry.EntryScene.SceneList.Count)
                     {
-                        if (entry.EntryScene.SceneList[i].Element == LuaScene.SceneElement.None)
+                        if (entry.EntryScene.SceneList[i].Type == LuaScene.SceneType.Empty)
                             entry.EntryScene.SceneList.RemoveAt(i);
                         else
                             i++;
@@ -264,6 +264,10 @@ namespace FFXIVTheMovie.ParserV3
                             else
                             {
                                 outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
+                                if (entry.Owner.SeqNumber > 0 && entry.Owner.SeqNumber < 255 && entry.Var.TodoIndex.HasValue)
+                                {
+                                    outputCpp.Add($"{extraSpace}          {entry.Var.ToCppEventNotice()};");
+                                }
                                 if (entry.Flag != null)
                                     outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
                                 outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( quest, player );");
@@ -369,6 +373,10 @@ namespace FFXIVTheMovie.ParserV3
                                 if (entry.Var != null)
                                 {
                                     outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
+                                    if (entry.Owner.SeqNumber > 0 && entry.Owner.SeqNumber < 255 && entry.Var.TodoIndex.HasValue)
+                                    {
+                                        outputCpp.Add($"{extraSpace}          {entry.Var.ToCppEventNotice()};");
+                                    }
                                     if (entry.Flag != null)
                                         outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
                                     outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( quest, player );");
@@ -792,6 +800,10 @@ namespace FFXIVTheMovie.ParserV3
                                                 if (s > 0 && entry.Var != null)
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppExprOperation()};");
+                                                    if (entry.Owner.SeqNumber < 255 && entry.Var.TodoIndex.HasValue)
+                                                    {
+                                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppEventNotice()};");
+                                                    }
                                                 }
                                                 if (s > 0 && entry.Flag != null)
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Flag.ToCppExprSet()};");
@@ -871,6 +883,10 @@ namespace FFXIVTheMovie.ParserV3
                                         if (s > 0 && entry.Var != null)
                                         {
                                             outputCpp.Add($"    {entry.Var.ToCppExprOperation()};");
+                                            if (entry.Owner.SeqNumber < 255 && entry.Var.TodoIndex.HasValue)
+                                            {
+                                                outputCpp.Add($"    {entry.Var.ToCppEventNotice()};");
+                                            }
                                         }
                                         if (s > 0 && entry.Flag != null)
                                             outputCpp.Add($"    {entry.Flag.ToCppExprSet()};");
@@ -954,10 +970,31 @@ namespace FFXIVTheMovie.ParserV3
 
         private void EntryPostProcess()
         {
+            int todoCurrentPos = 0;
+            Tuple<int, string, int> lastTodo = null;
             foreach (var seq in seqList)
             {
+                lastTodo = null;
                 foreach (var entry in seq.EntryList)
                 {
+                    if (fIsTodoChecked != null && entry.Var != null)
+                    {
+                        if (lastTodo != null && lastTodo.Item2 == entry.Var.Name)
+                        {
+                            entry.Var.TodoIndex = lastTodo.Item1;
+                        }
+                        else if (todoCurrentPos < fIsTodoChecked.TodoList.Count)
+                        {
+                            var todo = fIsTodoChecked.TodoList[todoCurrentPos];
+                            if (todo.Item2 == entry.Var.Name)
+                            {
+                                lastTodo = todo;
+                                entry.Var.TodoIndex = todo.Item1;
+                                todoCurrentPos++;
+                            }
+                        }
+                    }
+
                     if (entry.TargetObject != null && paramTable.TryGetValue($"_{entry.TargetObject.Name}", out var f))
                     {
                         if (f.Contains('E'))
@@ -1682,6 +1719,7 @@ namespace FFXIVTheMovie.ParserV3
         LuaGetEventItem fGetEventItem;
         LuaIsAnnounce fIsAnnounce;
         LuaNpcTradeInfo fNpcTradeInfo;
+        LuaIsTodoChecked fIsTodoChecked;
         private void ProcessLuaCode()
         {
             sceneList.Clear();
@@ -1730,6 +1768,23 @@ namespace FFXIVTheMovie.ParserV3
                         if (s == "end)()" || s.StartsWith("function"))
                         {
                             fGetEventItem = LuaGetEventItem.ParseLuaCode(codeBlock);
+                            goto label1;
+                        }
+                        codeBlock.Add(s);
+                        i++;
+                    }
+                }
+                else if (s.StartsWith(luaIsTodoCheckedHead))
+                {
+                    List<string> codeBlock = new List<string>();
+                    codeBlock.Add(s);
+                    i++;
+                    while (i < inputLua.Count)
+                    {
+                        s = inputLua[i];
+                        if (s == "end)()" || s.StartsWith("function"))
+                        {
+                            fIsTodoChecked = LuaIsTodoChecked.ParseLuaCode(codeBlock);
                             goto label1;
                         }
                         codeBlock.Add(s);

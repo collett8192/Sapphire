@@ -46,6 +46,7 @@
     <Compile Include="ParserV3\ActiveEventObject.cs" />
     <Compile Include="ParserV3\LuaGetEventItem.cs" />
     <Compile Include="ParserV3\LuaIsAnnounce.cs" />
+    <Compile Include="ParserV3\LuaIsTodoChecked.cs" />
     <Compile Include="ParserV3\LuaNpcTradeInfo.cs" />
     <Compile Include="ParserV3\LuaScene.cs" />
     <Compile Include="ParserV3\Parser.cs" />

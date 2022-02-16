@@ -12,7 +12,7 @@ namespace FFXIVTheMovie.ParserV3
         public static LuaScene ParseLuaCode(List<string> codeBlock, int sceneNum)
         {
             LuaScene result = new LuaScene(sceneNum);
-            if (codeBlock.Count > 0)
+            if (codeBlock.Count > 2)
             {
                 var argList = codeBlock[0].ExtractFuncArgsFromLuaFuncDef();
                 if (argList.Count < 3)
@@ -219,10 +219,14 @@ namespace FFXIVTheMovie.ParserV3
                         result.Element |= SceneElement.TargetCanMove;
                     }
                 }
+                if (result.Element == SceneElement.None && result.Type != SceneType.Normal)
+                {
+                    result.Element |= SceneElement.Basic;
+                }
             }
-            if (result.Element == SceneElement.None && result.Type != SceneType.Normal)
+            else
             {
-                result.Element |= SceneElement.Basic;
+                result.Type = SceneType.Empty;
             }
             return result;
         }
@@ -301,6 +305,7 @@ namespace FFXIVTheMovie.ParserV3
         public enum SceneType
         {
             Normal = 0,
+            Empty = 1,
             NpcTrade = 5,
             Snipe = 6,
             CardGame = 7,

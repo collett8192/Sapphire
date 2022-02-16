@@ -306,6 +306,7 @@ namespace FFXIVTheMovie.ParserV3
         {
             public string Name;
             public int Value;
+            public int? TodoIndex = null;
 
             public bool ForceSetValue;
 
@@ -340,9 +341,16 @@ namespace FFXIVTheMovie.ParserV3
                 return Name != null ? $"quest.set{Name}( 0 )" : "";
             }
 
+            public string ToCppEventNotice()
+            {
+                if (!TodoIndex.HasValue)
+                    throw new Exception("[QuestVar]Trying to generate event notice on a var that is not a todo item.");
+                return $"eventMgr().sendEventNotice( player, getId(), {TodoIndex}, {(Value > 1 ? "2" : "0")}, {(Value > 1 ? $"quest.get{Name}()" : "0")}, {(Value > 1 ? Value.ToString() : "0")} )";
+            }
+
             public override string ToString()
             {
-                return $"{Name} = {Value}";
+                return $"{Name} = {Value}{(TodoIndex.HasValue ? $"(Todo:{TodoIndex})" : "")}";
             }
         }
 
