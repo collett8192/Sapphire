@@ -270,9 +270,9 @@ namespace FFXIVTheMovie.ParserV3
                             else
                             {
                                 outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
-                                if (entry.Owner.SeqNumber > 0 && entry.Owner.SeqNumber < 255 && entry.Var.TodoIndex.HasValue)
+                                if (entry.Owner.SeqNumber > 0 && entry.Owner.SeqNumber < 255 && entry.TodoIndex.HasValue)
                                 {
-                                    outputCpp.Add($"{extraSpace}          {entry.Var.ToCppEventNotice()};");
+                                    outputCpp.Add($"{extraSpace}          {entry.ToCppEventNotice()};");
                                 }
                                 if (entry.Flag != null)
                                     outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
@@ -379,9 +379,9 @@ namespace FFXIVTheMovie.ParserV3
                                 if (entry.Var != null)
                                 {
                                     outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
-                                    if (entry.Owner.SeqNumber > 0 && entry.Owner.SeqNumber < 255 && entry.Var.TodoIndex.HasValue)
+                                    if (entry.Owner.SeqNumber > 0 && entry.Owner.SeqNumber < 255 && entry.TodoIndex.HasValue)
                                     {
-                                        outputCpp.Add($"{extraSpace}          {entry.Var.ToCppEventNotice()};");
+                                        outputCpp.Add($"{extraSpace}          {entry.ToCppEventNotice()};");
                                     }
                                     if (entry.Flag != null)
                                         outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
@@ -835,13 +835,13 @@ namespace FFXIVTheMovie.ParserV3
                                                 if (s > 0 && entry.Var != null)
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppExprOperation()};");
-                                                    if (entry.Owner.SeqNumber < 255 && entry.Var.TodoIndex.HasValue)
-                                                    {
-                                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Var.ToCppEventNotice()};");
-                                                    }
                                                 }
                                                 if (s > 0 && entry.Flag != null)
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Flag.ToCppExprSet()};");
+                                                if (s > 0 && s < 255 && entry.Var != null && entry.TodoIndex.HasValue)
+                                                {
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.ToCppEventNotice()};");
+                                                }
                                                 if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      checkProgressSeq{seq.SeqNumber}( quest, player );");
                                                 if (shouldUseFakeZoneing && (current.Element & LuaScene.SceneElement.AutoFadeIn) > 0)
@@ -922,13 +922,13 @@ namespace FFXIVTheMovie.ParserV3
                                         if (s > 0 && entry.Var != null)
                                         {
                                             outputCpp.Add($"    {entry.Var.ToCppExprOperation()};");
-                                            if (entry.Owner.SeqNumber < 255 && entry.Var.TodoIndex.HasValue)
-                                            {
-                                                outputCpp.Add($"    {entry.Var.ToCppEventNotice()};");
-                                            }
                                         }
                                         if (s > 0 && entry.Flag != null)
                                             outputCpp.Add($"    {entry.Flag.ToCppExprSet()};");
+                                        if (s > 0 && s < 255 && entry.Var != null && entry.TodoIndex.HasValue)
+                                        {
+                                            outputCpp.Add($"    {entry.ToCppEventNotice()};");
+                                        }
                                         if (seq.SeqNumber != 255 && entry.ShouldCheckSeqProgress())
                                             outputCpp.Add($"    checkProgressSeq{seq.SeqNumber}( quest, player );");
                                     }
@@ -1013,31 +1013,10 @@ namespace FFXIVTheMovie.ParserV3
 
         private void EntryPreProcess()
         {
-            int todoCurrentPos = 0;
-            Tuple<int, string, int> lastTodo = null;
             foreach (var seq in seqList)
             {
-                lastTodo = null;
                 foreach (var entry in seq.EntryList)
                 {
-                    if (fIsTodoChecked != null && entry.Var != null)
-                    {
-                        if (lastTodo != null && lastTodo.Item2 == entry.Var.Name)
-                        {
-                            entry.Var.TodoIndex = lastTodo.Item1;
-                        }
-                        else if (todoCurrentPos < fIsTodoChecked.TodoList.Count)
-                        {
-                            var todo = fIsTodoChecked.TodoList[todoCurrentPos];
-                            if (todo.Item2 == entry.Var.Name)
-                            {
-                                lastTodo = todo;
-                                entry.Var.TodoIndex = todo.Item1;
-                                todoCurrentPos++;
-                            }
-                        }
-                    }
-
                     if (entry.TargetObject != null && paramTable.TryGetValue($"_{entry.TargetObject.Name}", out var f))
                     {
                         if (f.Contains('E'))
@@ -1114,10 +1093,47 @@ namespace FFXIVTheMovie.ParserV3
 
         private void EntryPostProcess()
         {
+            int todoCurrentPos = 0;
+            Tuple<int, string, int> lastTodo = null;
             foreach (var seq in seqList)
             {
+                lastTodo = null;
                 foreach (var entry in seq.EntryList)
                 {
+                    if (seq.SeqNumber > 0 && fIsTodoChecked != null)
+                    {
+                        if (entry.Var != null)
+                        {
+                            if (lastTodo != null && lastTodo.Item2 == entry.Var.Name)
+                            {
+                                entry.TodoIndex = lastTodo.Item1;
+                            }
+                            else if (todoCurrentPos < fIsTodoChecked.TodoList.Count)
+                            {
+                                var todo = fIsTodoChecked.TodoList[todoCurrentPos];
+                                if (todo.Item2 == entry.Var.Name)
+                                {
+                                    lastTodo = todo;
+                                    entry.TodoIndex = todo.Item1;
+                                    todoCurrentPos++;
+                                }
+                            }
+                        }
+                        else if (entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.ReturnTrue))
+                        {
+                            if (seq.EntryList.FirstOrDefault(e => e.TargetObject is ActiveTerritory) != null)
+                            {
+                                var todo = fIsTodoChecked.TodoList[todoCurrentPos];
+                                if (todo.Item3 < 2)
+                                {
+                                    lastTodo = todo;
+                                    entry.TodoIndex = todo.Item1;
+                                    todoCurrentPos++;
+                                }
+                            }
+                        }
+                    }
+
                     if (!entry.ConditionBranch && useBranchGlobal)
                     {
                         if (entry.TargetObject != null &&

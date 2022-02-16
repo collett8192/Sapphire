@@ -32,10 +32,19 @@ namespace FFXIVTheMovie.ParserV3
                             i++;
                             continue;
                         }
-                        else if (s.IndexOf($"return {varPlayer}:GetQuest") >= 0)
+                        else if (s.IndexOf($"{varPlayer}:GetQuest") >= 0)
                         {
                             var name = s.GetStringBetween(":GetQuest", "(");
-                            var value = int.Parse(s.Substring(s.Length - 2, 2));
+                            int value;
+                            if (s.IndexOf($"return {varPlayer}") >= 0)
+                            {
+                                value = int.Parse(s.Substring(s.Length - 2, 2));
+                            }
+                            else
+                            {
+                                var a = s.GetStringBetween("return", $"{varPlayer}").Substring(0, 3);
+                                value = int.Parse(a);
+                            }
                             result.TodoList.Add(new Tuple<int, string, int>(index, name, value));
                         }
                     }

@@ -60,6 +60,7 @@ namespace FFXIVTheMovie.ParserV3
             public ActiveEventObject TargetObject;
             public QuestVar Var;
             public QuestFlag Flag;
+            public int? TodoIndex = null;
             public SceneGroup EntryScene = new SceneGroup();
             public int AssignedGroupCount = 0;
             public int RequiredGroupCount = 1;
@@ -176,12 +177,12 @@ namespace FFXIVTheMovie.ParserV3
 
             public override string ToString()
             {
-                return $"SEQ_{Owner.SeqNumber}: {TargetObject}, {(Var != null ? Var.ToString() : "<No Var>")}, {(Flag != null ? Flag.ToString() : "<No Flag>")}{((ConditionBranch || EmoteBranch.HasValue) ? ", Branch" : "")}, {EntryScene}";
+                return $"SEQ_{Owner.SeqNumber}: {TargetObject}, {(Var != null ? Var.ToString() : "<No Var>")}, {(Flag != null ? Flag.ToString() : "<No Flag>")}{((ConditionBranch || EmoteBranch.HasValue) ? ", Branch" : "")}{(TodoIndex.HasValue ? $"(Todo:{TodoIndex})" : "")}, {EntryScene}";
             }
 
             public string ToSimpleString()
             {
-                return $"SEQ_{Owner.SeqNumber}: {TargetObject}, {(Var != null ? Var.ToString() : "<No Var>")}, {(Flag != null ? Flag.ToString() : "<No Flag>")}{((ConditionBranch || EmoteBranch.HasValue) ? ", Branch" : "")}";
+                return $"SEQ_{Owner.SeqNumber}: {TargetObject}, {(Var != null ? Var.ToString() : "<No Var>")}, {(Flag != null ? Flag.ToString() : "<No Flag>")}{((ConditionBranch || EmoteBranch.HasValue) ? ", Branch" : "")}{(TodoIndex.HasValue ? $"(Todo:{TodoIndex})" : "")}";
             }
 
             public bool IsPrefferedGroup(SceneGroup sceneGroup)
@@ -216,6 +217,20 @@ namespace FFXIVTheMovie.ParserV3
                     return true;
                 }
                 return this.Var != null && this.EntryScene.Identity != "unknown" && this.EntryScene.Identity == sceneGroup.Identity;
+            }
+
+            public string ToCppEventNotice()
+            {
+                if (!TodoIndex.HasValue)
+                    throw new Exception("[QuestVar]Trying to generate event notice on a entry that is not a todo item.");
+                if (Var != null)
+                {
+                    return $"eventMgr().sendEventNotice( player, getId(), {TodoIndex}, {(Var.Value > 1 ? "2" : "0")}, {(Var.Value > 1 ? $"quest.get{Var.Name}()" : "0")}, {(Var.Value > 1 ? Var.Value.ToString() : "0")} )";
+                }
+                else
+                {
+                    return $"eventMgr().sendEventNotice( player, getId(), {TodoIndex}, 0, 0, 0 )";
+                }
             }
         }
 
@@ -306,7 +321,6 @@ namespace FFXIVTheMovie.ParserV3
         {
             public string Name;
             public int Value;
-            public int? TodoIndex = null;
 
             public bool ForceSetValue;
 
@@ -341,16 +355,9 @@ namespace FFXIVTheMovie.ParserV3
                 return Name != null ? $"quest.set{Name}( 0 )" : "";
             }
 
-            public string ToCppEventNotice()
-            {
-                if (!TodoIndex.HasValue)
-                    throw new Exception("[QuestVar]Trying to generate event notice on a var that is not a todo item.");
-                return $"eventMgr().sendEventNotice( player, getId(), {TodoIndex}, {(Value > 1 ? "2" : "0")}, {(Value > 1 ? $"quest.get{Name}()" : "0")}, {(Value > 1 ? Value.ToString() : "0")} )";
-            }
-
             public override string ToString()
             {
-                return $"{Name} = {Value}{(TodoIndex.HasValue ? $"(Todo:{TodoIndex})" : "")}";
+                return $"{Name} = {Value}";
             }
         }
 

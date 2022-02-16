@@ -14,6 +14,17 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVna706":
+                    {
+                        result.Add("MOUNT_SCENE3", "50");
+                        break;
+                    }
+                case "HeaVna701":
+                    {
+                        result.Add("WARP_SCENE17", "402|-868|-184.2|-660.5|1.21|false");
+                        result.Add("WARP_SCENE28", "402|-868|-184.2|-660.5|1.21|false");
+                        break;
+                    }
                 case "ManSea001":
                     {
                         result.Add("WARP_GREHFARR", "181|9|40|14|0|false");
@@ -1091,11 +1102,15 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("SCENE_35", "dummy");
                         result.Add("SCENE_36", "dummy");
                         result.Add("SCENE_38", "GUIDANCESYSTEM");
+                        result.Add("SCENE_42", "dummye3");
+                        result.Add("SCENE_43", "dummye3");
+                        result.Add("WARP_SCENE43", "402|633.6|10.62|73.6|1|false");
                         break;
                     }
                 case "HeaVna703":
                     {
                         result.Add("SCENE_15", "GUIDANCESYSTEM");
+                        result.Add("WARP_SCENE22", "402|214.35|-66|-615.7|2.97|false");
                         break;
                     }
                 case "HeaVna702":
@@ -1108,6 +1123,7 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("SCENE_10", "dummy1");
                         result.Add("SCENE_12", "dummy2");
                         result.Add("SCENE_24", "dummy3");
+                        result.Add("WARP_SCENE24", "402|-644.12|-176.45|-583.89|0|false");
                         break;
                     }
                 case "HeaVna613":

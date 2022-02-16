@@ -87,7 +87,12 @@ namespace FFXIVTheMovie.ParserV3
                         line = line.GetStringBetween("if ", "then");
                     }
 
-                    if (line.StartsWith("return "))
+                    if (line == "return true")
+                    {
+                        result.Element |= SceneElement.ReturnTrue;
+                        continue;
+                    }
+                    else if (line.StartsWith("return "))
                     {
                         line = line.Substring(7);
                         if (line[0] == '(')
@@ -344,6 +349,7 @@ namespace FFXIVTheMovie.ParserV3
             CanCancel = 1 << 19,
             SetWeddingFestivalParam = 1 << 20,
             ENpcBind = 1 << 21,
+            ReturnTrue = 1 << 22,
 
             Basic = 1 << 31
         }
