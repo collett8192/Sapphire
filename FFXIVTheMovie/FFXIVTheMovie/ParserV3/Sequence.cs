@@ -106,7 +106,7 @@ namespace FFXIVTheMovie.ParserV3
                     return false;
                 }
 
-                if (TargetObject is ActiveActor && EntryScene.HasNonEmptyScene() && !EntryScene.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove) && group.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove))
+                if (TargetObject is ActiveActor && EntryScene.HasValidElement() && !EntryScene.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove) && group.ContainsSceneElement(LuaScene.SceneElement.TargetCanMove))
                 {
                     return false;
                 }
@@ -279,7 +279,7 @@ namespace FFXIVTheMovie.ParserV3
                 return id == "unknown" || t == "unknown" || t == id;
             }
 
-            public bool HasNonEmptyScene()
+            public bool HasValidElement()
             {
                 foreach (var scene in SceneList)
                 {

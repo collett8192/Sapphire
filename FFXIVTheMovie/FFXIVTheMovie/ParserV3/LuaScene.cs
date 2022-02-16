@@ -218,6 +218,11 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         result.Element |= SceneElement.TargetCanMove;
                     }
+                    if (f.FuncName == "SetSceneEndRollback")
+                    {
+                        result.ShouldCastAction = true;
+                        f.IsKeyFunction = true;
+                    }
                 }
                 if (result.Element == SceneElement.None && result.Type != SceneType.Normal)
                 {
@@ -298,6 +303,7 @@ namespace FFXIVTheMovie.ParserV3
         public SceneElement Element;
         public Dictionary<string, object> ParamTable = new Dictionary<string, object>();
         public string Identity = "unknown";
+        public bool ShouldCastAction = false;
         public bool IsIdentityCompatible(string id)
         {
             return id == "unknown" || this.Identity == "unknown" || this.Identity == id;
@@ -344,7 +350,7 @@ namespace FFXIVTheMovie.ParserV3
 
         public override string ToString()
         {
-            return $"{SceneFunctionName}: {Type}({Element}), id={Identity}";
+            return $"{SceneFunctionName}: {Type}({Element}){(ShouldCastAction ? ", ActionCast" : "")}, id={Identity}";
         }
 
         private LuaScene(int sceneNum)

@@ -47,7 +47,9 @@ namespace FFXIVTheMovie.ParserV3
                 case "SubSea054":
                     {
                         result.Add("_ACTOR1", "E");
-                        result.Add("_ACTOR1E", "1|2,12");
+                        result.Add("_ACTOR1E", "1|3,12");
+                        result.Add("SCENE_15", "SOZAIRARZAI");
+                        result.Add("_ALLOW_EMPTY_ENTRY", "");
                         break;
                     }
                 case "SubSea053":

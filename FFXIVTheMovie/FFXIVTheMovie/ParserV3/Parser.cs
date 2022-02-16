@@ -39,6 +39,7 @@ namespace FFXIVTheMovie.ParserV3
             ProcessCppCode();
             InitSceneGroupList();
             InitSeqList();
+            EntryPreProcess();
             bool isSimpleParse = false;
             allowEmptyEntry = seqList.Count > sceneGroupList.Count;
             int buildResult = 0;
@@ -51,6 +52,7 @@ namespace FFXIVTheMovie.ParserV3
                     allowEmptyEntry = true;
                     InitSceneGroupList();
                     InitSeqList();
+                    EntryPreProcess();
                     buildResult = BuildSeqList();
                 }
                 if (buildResult < 0)
@@ -73,6 +75,10 @@ namespace FFXIVTheMovie.ParserV3
             //return;
 
             outputCpp.Add("// FFXIVTheMovie.ParserV3.9");
+            if (CppOutputExtraInfo)
+            {
+                outputCpp.Add("// Extra info is ON");
+            }
             if (isSimpleParse)
             {
                 outputCpp.Add("// simple method used");
@@ -462,7 +468,7 @@ namespace FFXIVTheMovie.ParserV3
                 var seq = seqList[s];
                 var s2 = s + 1;
                 var nextSeq = seqList[s2];
-                while (!nextSeq.Ignore && s2 < seqList.Count - 1 && nextSeq.EntryList.Count == 1 && nextSeq.EntryList[0].EntryScene.SceneList.Count == 0)
+                while (BNpcHackUsed && !nextSeq.Ignore && s2 < seqList.Count - 1 && nextSeq.EntryList.Count == 1 && nextSeq.EntryList[0].EntryScene.SceneList.Count == 0)
                 {
                     s2++;
                     nextSeq = seqList[s2];
@@ -670,8 +676,37 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             else
                             {
-                                if (current.Element != LuaScene.SceneElement.None)
+                                if (current.Type != LuaScene.SceneType.Empty)
                                 {
+                                    if (current.ShouldCastAction)
+                                    {
+                                        int action = -1, actionMid = -1;
+                                        if (constTable.ContainsKey("EVENTACTION"))
+                                        {
+                                            action = constTable["EVENTACTION"];
+                                        }
+                                        if (constTable.ContainsKey("EVENTACTIONPROCESSMIDDLE"))
+                                        {
+                                            actionMid = constTable["EVENTACTIONPROCESSMIDDLE"];
+                                        }
+                                        if (action < 0)
+                                        {
+                                            action = actionMid;
+                                        }
+                                        else if (actionMid > 0 && entry.TargetObject is ActiveEObject)
+                                        {
+                                            action = actionMid;
+                                        }
+                                        if (action < 0)
+                                        {
+                                            outputCpp.Add($"    //eventMgr().eventActionStart( player, getId(), ***NOT_FOUND***, [ & ]( Entity::Player& player, uint32_t eventId, uint64_t additional )");
+                                        }
+                                        else
+                                        {
+                                            outputCpp.Add($"    eventMgr().eventActionStart( player, getId(), {action}, [ & ]( Entity::Player& player, uint32_t eventId, uint64_t additional )");
+                                        }
+                                        outputCpp.Add("    {");
+                                    }
                                     outputCpp.Add("    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )");
                                     outputCpp.Add("    {");
                                     bool hasIf = false;
@@ -858,6 +893,10 @@ namespace FFXIVTheMovie.ParserV3
                                     string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
                                     string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
                                     outputCpp.Add($"    eventMgr().playQuestScene( player, getId(), {current.SceneNumber}, {fullSceneFlag}, callback );");
+                                    if (current.ShouldCastAction)
+                                    {
+                                        outputCpp.Add("    }, nullptr, getId() );");
+                                    }
                                 }
                                 else
                                 {
@@ -921,11 +960,14 @@ namespace FFXIVTheMovie.ParserV3
                 }
             }
         }
-
+        private static bool BNpcHackUsed = false;
         private void BNpcHack()
         {
             //since we are not spawning bnpcs, move its credit to another entry and hope it's the one that suppose to do the spawning.
             //if u want to implement the quest manually based on the generated code, do not run this method.
+            
+            //return;
+
             HashSet<string> processedVars = new HashSet<string>();
             foreach (var seq in seqList)
             {
@@ -966,9 +1008,10 @@ namespace FFXIVTheMovie.ParserV3
                         break;
                 }
             }
+            BNpcHackUsed = true;
         }
 
-        private void EntryPostProcess()
+        private void EntryPreProcess()
         {
             int todoCurrentPos = 0;
             Tuple<int, string, int> lastTodo = null;
@@ -1065,7 +1108,16 @@ namespace FFXIVTheMovie.ParserV3
                         }
                         */
                     }
+                }
+            }
+        }
 
+        private void EntryPostProcess()
+        {
+            foreach (var seq in seqList)
+            {
+                foreach (var entry in seq.EntryList)
+                {
                     if (!entry.ConditionBranch && useBranchGlobal)
                     {
                         if (entry.TargetObject != null &&
@@ -1599,6 +1651,11 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         var sub = tmpList[1];
                         if ((sub.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0)
+                            nextGroup.SceneList.Add(sub);
+                    }
+                    else if (tmpList.Count > 1 && scene.ShouldCastAction)
+                    {
+                        var sub = tmpList[1];
                         nextGroup.SceneList.Add(sub);
                     }
                 }
