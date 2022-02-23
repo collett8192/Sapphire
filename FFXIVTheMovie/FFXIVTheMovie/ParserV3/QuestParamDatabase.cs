@@ -1074,6 +1074,10 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("SCENE_7", "dummy4");
                         result.Add("SCENE_8", "dummy5");
                         result.Add("SCENE_9", "dummye0");
+                        result.Add("SCENE_16", null);
+                        result.Add("PRIVATE_SCENE12", "507");
+                        result.Add("PRIVATE_SCENE15", "507");
+                        result.Add("PRIVATE_SCENE17", "433");
                         break;
                     }
                 case "HeaVna705":
