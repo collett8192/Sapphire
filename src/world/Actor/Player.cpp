@@ -1268,6 +1268,16 @@ void Sapphire::Entity::Player::update( uint64_t tickCount )
       gaugeDrkSetShadowTimer( shadowTimer );
       break;
     }
+    case Common::ClassJob::Dragoon:
+    {
+      auto drTimer = gaugeDrgGetDragonTimer();
+      if( drTimer > interval )
+        drTimer -= interval;
+      else
+        drTimer = 0;
+      gaugeDrgSetDragonTimer( drTimer );
+      break;
+    }
   }
 
   Chara::update( tickCount );
@@ -2755,9 +2765,15 @@ void Sapphire::Entity::Player::gaugeDrkSetDarkSideTimer( uint16_t value, bool se
     ( oldValue != 0 && value == 0 ) )
   {
     if( m_effect == 0 && value != 0 )
+    {
       setVisualEffect( 22, true );
+      sendDebug( "{0}", gaugeDrkGetDarkSideTimer() );
+    }
     else if ( m_effect == 22 && value == 0 )
+    {
       setVisualEffect( 0, true );
+      sendDebug( "{0}", gaugeDrkGetDarkSideTimer() );
+    }
   }
   if( sendPacket )
     sendActorGauge();
@@ -2807,6 +2823,71 @@ void Sapphire::Entity::Player::gaugeGnbSetComboStep( uint8_t value )
 uint8_t Sapphire::Entity::Player::gaugeGnbGetComboStep()
 {
   return m_gauge.gnb.ammoComboStep;
+}
+
+void Sapphire::Entity::Player::gaugeDrgSetDragonTimer( uint16_t value, bool sendPacket )
+{
+  assert( value >= 0 && value <= 30000 );
+  auto oldValue = gaugeDrgGetDragonTimer();
+  m_gauge.drg.dragonTimer = value;
+  if( ( oldValue == 0 && value != 0 ) ||
+    ( oldValue != 0 && value == 0 ) )
+  {
+    if( m_effect == 0 && value != 0 )
+    {
+      setVisualEffect( 21, true );
+    }
+    else if ( m_effect == 34 && value == 0 )
+    {
+      gaugeDrgSetDragonState( Sapphire::Common::DrgState::BloodOfTheDragon );
+      setVisualEffect( 21, true );
+      gaugeDrgSetDragonTimer( 30000, true );
+    }
+    else if ( m_effect == 21 && value == 0 )
+    {
+      gaugeDrgSetDragonState( Sapphire::Common::DrgState::None );
+      setVisualEffect( 0, true );
+    }
+  }
+  if( sendPacket )
+    sendActorGauge();
+}
+
+uint16_t Sapphire::Entity::Player::gaugeDrgGetDragonTimer()
+{
+  return m_gauge.drg.dragonTimer;
+}
+
+void Sapphire::Entity::Player::gaugeDrgSetDragonState( Sapphire::Common::DrgState value )
+{
+  auto oldValue = gaugeDrgGetDragonStateRaw();
+  m_gauge.drg.dragonState = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+bool Sapphire::Entity::Player::gaugeDrgGetDragonState( Sapphire::Common::DrgState state )
+{
+  return ( static_cast< uint8_t >( m_gauge.drg.dragonState ) & static_cast< uint8_t >( state ) ) > 0;
+}
+
+Sapphire::Common::DrgState Sapphire::Entity::Player::gaugeDrgGetDragonStateRaw()
+{
+  return m_gauge.drg.dragonState;
+}
+
+void Sapphire::Entity::Player::gaugeDrgSetEyes( uint8_t value )
+{
+  assert( value >= 0 && value <= 2 );
+  auto oldValue = gaugeDrgGetEyes();
+  m_gauge.drg.eyes = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+uint8_t Sapphire::Entity::Player::gaugeDrgGetEyes()
+{
+  return m_gauge.drg.eyes;
 }
 
 void Sapphire::Entity::Player::gaugeSamSetKenki( uint8_t value )

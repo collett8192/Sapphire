@@ -693,6 +693,11 @@ void Action::Action::buildEffects()
                   player->gaugeDrkSetDarkSideTimer( std::min( 60000, player->gaugeDrkGetDarkSideTimer() + m_lutEntry.bonusDataUInt16L ), true );
                   break;
                 }
+                case Common::ClassJob::Dragoon:
+                {
+                  player->gaugeDrgSetDragonTimer( std::min( 30000, player->gaugeDrgGetDragonTimer() + m_lutEntry.bonusDataUInt16L ), true );
+                  break;
+                }
               }
             }
           }
@@ -1111,10 +1116,12 @@ void Action::Action::addDefaultActorFilters()
       break;
     }
 
-//    case Common::CastType::RectangularAOE:
-//    {
-//      break;
-//    }
+   case Common::CastType::RectangularAOE:
+   {
+     auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange );
+     addActorFilter( filter );
+     break;
+   }
 
     default:
     {
