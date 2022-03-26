@@ -612,8 +612,7 @@ ActionLut::Lut ActionLut::m_actionLut =
 
   //Full Thrust, フルスラスト
   //has damage: potency 100, combo potency 530, directional potency 0
-  //applies to self: Sharper Fang and Claw, 竜牙竜爪効果アップ, duration 10000, param 0
-  { 84, { 100, 530, 0, 0, 802, 10000, 0, 0, 0, 0, 0, 0, 0 } },
+  { 84, { 100, 530, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Lance Charge, ランスチャージ
   //applies to self: Lance Charge, ランスチャージ, duration 20000, param 0
@@ -621,9 +620,8 @@ ActionLut::Lut ActionLut::m_actionLut =
 
   //Chaos Thrust, 桜華狂咲
   //has damage: potency 100, combo potency 290, directional potency 330
-  //applies to self: Enhanced Wheeling Thrust, 竜尾大車輪効果アップ, duration 10000, param 0
   //applies to targets: Chaos Thrust, 桜華狂咲, duration 24000, param 0
-  { 88, { 100, 290, 330, 0, 803, 10000, 0, 118, 24000, 0, 0, 0, 0 } },
+  { 88, { 100, 290, 330, 0, 0, 0, 0, 118, 24000, 0, 0, 0, 0 } },
 
   //Jump, ジャンプ
   //applies to self: Dive Ready, ミラージュダイブ実行可, duration 15000, param 0
@@ -637,7 +635,7 @@ ActionLut::Lut ActionLut::m_actionLut =
   { 86, { 170, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Spineshatter Dive, スパインダイブ
-  { 95, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+  { 95, { 240, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Dragonfire Dive, ドラゴンダイブ
   //has damage: potency 380, combo potency 0, directional potency 0
@@ -651,11 +649,11 @@ ActionLut::Lut ActionLut::m_actionLut =
   { 3553, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Fang and Claw, 竜牙竜爪
-  //applies to self: Raiden Thrust Ready, 竜眼雷電実行可, duration 10000, param 0
-  { 3554, { 0, 0, 0, 0, 1863, 10000, 0, 0, 0, 0, 0, 0, 0 } },
+  { 3554, { 340, 0, 380, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Wheeling Thrust, 竜尾大車輪
-  { 3556, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+  //has damage: potency 340, combo potency 0, directional potency 380
+  { 3556, { 340, 0, 380, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Geirskogul, ゲイルスコグル
   //has damage: potency 300, combo potency 0, directional potency 0
@@ -667,7 +665,8 @@ ActionLut::Lut ActionLut::m_actionLut =
 
   //Dragon Sight, ドラゴンサイト
   //applies to targets: Right Eye, 竜の右眼, duration 20000, param 0
-  { 7398, { 0, 0, 0, 0, 0, 0, 0, 1910, 20000, 0, 0, 0, 0 } },
+  //applies to self: Left Eye, duration 20000, param 0
+  { 7398, { 0, 0, 0, 0, 1454, 20000, 0, 1910, 20000, 0, 0, 0, 0 } },
 
   //Mirage Dive, ミラージュダイブ
   //has damage: potency 300, combo potency 0, directional potency 0
@@ -683,14 +682,14 @@ ActionLut::Lut ActionLut::m_actionLut =
 
   //High Jump, ハイジャンプ
   //applies to self: Dive Ready, ミラージュダイブ実行可, duration 15000, param 0
-  { 16478, { 0, 0, 0, 0, 1243, 15000, 0, 0, 0, 0, 0, 0, 0 } },
+  { 16478, { 400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Raiden Thrust, 竜眼雷電
   //has damage: potency 330, combo potency 0, directional potency 0
   { 16479, { 330, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Stardiver, スターダイバー
-  { 16480, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
+  { 16480, { 600, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
 
   //Spinning Edge, 双刃旋
   //has damage: potency 220, combo potency 0, directional potency 0
