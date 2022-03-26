@@ -1027,6 +1027,14 @@ namespace Sapphire::Entity
     void gaugeGnbSetComboStep( uint8_t value );
     uint8_t gaugeGnbGetComboStep();
 
+    void gaugeDrgSetDragonTimer ( uint16_t value, bool sendPacket = false );
+    uint16_t gaugeDrgGetDragonTimer();
+    void gaugeDrgSetDragonState ( Sapphire::Common::DrgState value );
+    bool gaugeDrgGetDragonState( Common::DrgState state );
+    Common::DrgState gaugeDrgGetDragonStateRaw();
+    void Sapphire::Entity::Player::gaugeDrgSetEyes( uint8_t value );
+    uint8_t Sapphire::Entity::Player::gaugeDrgGetEyes();
+
     void gaugeSamSetKenki( uint8_t value );
     uint8_t gaugeSamGetKenki();
     void gaugeSamSetSen( Common::SamSen type, bool value );
