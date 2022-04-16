@@ -753,8 +753,8 @@ namespace Sapphire::Network::Packets::Server
     uint16_t unknown1;
     uint16_t unknown2;
     uint16_t modelChara;
-    uint16_t currentMount;
     uint16_t rotation;
+    uint16_t currentMount;
     uint16_t activeMinion;
     uint8_t spawnIndex;
     uint8_t state;
