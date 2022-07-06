@@ -1095,12 +1095,13 @@ namespace FFXIVTheMovie.ParserV3
         {
             int todoCurrentPos = 0;
             Tuple<int, string, int> lastTodo = null;
+            bool todoDisabled = paramTable.ContainsKey("TODO_DISABLED");
             foreach (var seq in seqList)
             {
                 lastTodo = null;
                 foreach (var entry in seq.EntryList)
                 {
-                    if (seq.SeqNumber > 0 && fIsTodoChecked != null)
+                    if (!todoDisabled && seq.SeqNumber > 0 && fIsTodoChecked != null)
                     {
                         if (entry.Var != null)
                         {
@@ -1319,6 +1320,20 @@ namespace FFXIVTheMovie.ParserV3
                 else if (entry.Key.StartsWith("IGNORE_"))
                 {
                     //processed later
+                }
+                else if (entry.Key.StartsWith("TODO_CLEAR"))
+                {
+                    if (fIsTodoChecked != null)
+                    {
+                        fIsTodoChecked.TodoList.Clear();
+                    }
+                }
+                else if (entry.Key.StartsWith("TODO_REMOVE"))
+                {
+                    if (fIsTodoChecked != null)
+                    {
+                        fIsTodoChecked.TodoList.RemoveAt(int.Parse(entry.Value));
+                    }
                 }
                 else if (entry.Key == "_AGGRESSIVE_BNPC_HACK") { }
                 else if (entry.Key == "_ALLOW_EMPTY_ENTRY") { }

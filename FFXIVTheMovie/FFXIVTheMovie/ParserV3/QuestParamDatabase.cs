@@ -14,6 +14,57 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVnb108":
+                    {
+                        result.Add("WARP_SCENE1", "418|85|24|-6.53|-1.77|false");
+                        result.Add("TODO_DISABLED", "");
+                        result.Add("SCENE_34", "ACTOR29");
+                        result.Add("PRIVATE_SCENE36", "0");
+                        break;
+                    }
+                case "HeaVnb107":
+                    {
+                        result.Add("WARP_SCENE1", "418|85|24|-6.53|-1.77|false");
+                        result.Add("_ACTOR12", "B");
+                        result.Add("_ACTOR12B", "2|2");
+                        result.Add("_ACTOR13", "B");
+                        result.Add("_ACTOR13B", "2|2");
+                        break;
+                    }
+                case "HeaVnb106":
+                    {
+                        result.Add("TODO_REMOVE", "0");
+                        break;
+                    }
+                case "HeaVnb105":
+                    {
+                        result.Add("TODO_REMOVE", "0");
+                        result.Add("SCENE_10", null);
+                        result.Add("SCENE_13", "ACTOR4");
+                        break;
+                    }
+                case "HeaVnb104":
+                    {
+                        result.Add("_ACTOR7", "B");
+                        result.Add("_ACTOR7B", "3|2");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "3|2");
+                        result.Add("_ACTOR9", "B");
+                        result.Add("_ACTOR9B", "3|2");
+                        result.Add("TODO_REMOVE", "0");
+                        break;
+                    }
+                case "HeaVnb103":
+                    {
+                        result.Add("WARP_SCENE9", "399|-531|152.9|-487|0.219|false");
+                        break;
+                    }
+                case "HeaVnb101":
+                    {
+                        result.Add("PRIVATE_SCENE1", "0");
+                        result.Add("WARP_SCENE3", "418|113|24.4|-4.65|-0.856|false");
+                        break;
+                    }
                 case "HeaVna706":
                     {
                         result.Add("MOUNT_SCENE3", "50");
