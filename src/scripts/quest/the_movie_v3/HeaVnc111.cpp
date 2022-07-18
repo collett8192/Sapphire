@@ -1,5 +1,5 @@
-// FFXIVTheMovie.ParserV3
-// id hint used:
+// FFXIVTheMovie.ParserV3.9
+// param used:
 //SCENE_2 = dummy
 //SCENE_3 = dummy
 //SCENE_4 = dummy2
@@ -12,10 +12,10 @@
 
 using namespace Sapphire;
 
-class HeaVnc111 : public Sapphire::ScriptAPI::EventScript
+class HeaVnc111 : public Sapphire::ScriptAPI::QuestScript
 {
 public:
-  HeaVnc111() : Sapphire::ScriptAPI::EventScript( 67777 ){}; 
+  HeaVnc111() : Sapphire::ScriptAPI::QuestScript( 67777 ){}; 
   ~HeaVnc111() = default; 
 
   //SEQ_0, 1 entries
@@ -36,170 +36,183 @@ public:
   //LOCACTOR0 = 5852706
   //LOCACTOR1 = 6212252
 
+  static constexpr auto EVENT_ON_TALK = 0;
+  static constexpr auto EVENT_ON_EMOTE = 1;
+  static constexpr auto EVENT_ON_BNPC_KILL = 2;
+  static constexpr auto EVENT_ON_WITHIN_RANGE = 3;
+  static constexpr auto EVENT_ON_ENTER_TERRITORY = 4;
+  static constexpr auto EVENT_ON_EVENT_ITEM = 5;
+  static constexpr auto EVENT_ON_EOBJ_HIT = 6;
+  static constexpr auto EVENT_ON_SAY = 7;
+
 private:
-  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
+  void onProgress( World::Quest& quest, Entity::Player& player, uint32_t type, uint64_t param1, uint32_t param2, uint32_t param3 )
   {
-    switch( player.getQuestSeq( getId() ) )
+    switch( quest.getSeq() )
     {
       case 0:
       {
-        Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
+        if( type != EVENT_ON_BNPC_KILL ) Scene00000( quest, player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
         // +Callback Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=ALPHINAUD
         break;
       }
       case 1:
       {
-        Scene00002( player ); // Scene00002: Normal(None), id=dummy
-        // +Callback Scene00003: Normal(CutScene), id=dummy
+        if( type != EVENT_ON_BNPC_KILL ) Scene00003( quest, player ); // Scene00003: Normal(CutScene), id=dummy
         break;
       }
       case 2:
       {
-        Scene00004( player ); // Scene00004: Normal(Talk, NpcDespawn, TargetCanMove), id=dummy2
+        if( type != EVENT_ON_BNPC_KILL ) Scene00004( quest, player ); // Scene00004: Normal(Talk, NpcDespawn, TargetCanMove), id=dummy2
         break;
       }
       case 255:
       {
-        if( param1 == 1013227 || param2 == 1013227 ) // ACTOR2 = ALPHINAUD
+        if( param1 == 1013227 ) // ACTOR2 = ALPHINAUD
         {
-          Scene00005( player ); // Scene00005: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=ALPHINAUD
+          Scene00005( quest, player ); // Scene00005: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove, AutoFadeIn, SystemTalk, ENpcBind), id=ALPHINAUD
           // +Callback Scene00006: Normal(CutScene), id=ALPHINAUD
+          break;
         }
-        if( param1 == 1012580 || param2 == 1012580 ) // ACTOR3 = TATARU
+        if( param1 == 1012580 ) // ACTOR3 = TATARU
         {
-          Scene00007( player ); // Scene00007: Normal(Talk, TargetCanMove), id=TATARU
+          Scene00007( quest, player ); // Scene00007: Normal(Talk, TargetCanMove), id=TATARU
+          break;
         }
         break;
       }
       default:
       {
-        player.sendUrgent( "Sequence {} not defined.", player.getQuestSeq( getId() ) );
+        playerMgr().sendUrgent( player, "Sequence {} not defined.", quest.getSeq() );
         break;
       }
     }
   }
 
 public:
-  void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
+  void onTalk( World::Quest& quest, Entity::Player& player, uint64_t actorId ) override
   {
-    auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
-    auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
-    onProgress( player, actorId, actor, 0, 0 );
+    onProgress( quest, player, EVENT_ON_TALK, actorId, 0, 0 );
   }
 
-  void onEmote( uint64_t actorId, uint32_t eventId, uint32_t emoteId, Entity::Player& player ) override
+  void onEmote( World::Quest& quest, uint64_t actorId, uint32_t emoteId, Sapphire::Entity::Player& player ) override
   {
-    auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
-    auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
-    onProgress( player, actorId, actor, 1, emoteId );
+    playerMgr().sendDebug( player, "emote: {}", emoteId );
+    onProgress( quest, player, EVENT_ON_EMOTE, actorId, 0, emoteId );
   }
 
-  void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
+  void onBNpcKill( World::Quest& quest, uint16_t nameId, uint32_t entityId, Sapphire::Entity::Player& player ) override
   {
-    onProgress( player, npcId, 0, 2, 0 );
+    onProgress( quest, player, EVENT_ON_BNPC_KILL, static_cast< uint64_t >( nameId ), entityId, 0 );
   }
 
-  void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
+  void onWithinRange( World::Quest& quest, Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, 0 );
+    onProgress( quest, player, EVENT_ON_WITHIN_RANGE, static_cast< uint64_t >( param1 ), 0, 0 );
   }
 
-  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  void onEnterTerritory( World::Quest& quest, Sapphire::Entity::Player& player, uint16_t param1, uint16_t param2 ) override
   {
-    onProgress( player, param1, param2, 4, 0 );
+    onProgress( quest, player, EVENT_ON_ENTER_TERRITORY, static_cast< uint64_t >( param1 ), static_cast< uint32_t >( param2 ), 0 );
+  }
+  void onEventItem( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId ) override
+  {
+    onProgress( quest, player, EVENT_ON_EVENT_ITEM, actorId, 0, 0 );
+  }
+  void onEObjHit( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t actionId ) override
+  {
+    onProgress( quest, player, EVENT_ON_EOBJ_HIT, actorId, actionId, 0 );
+  }
+  void onSay( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t sayId ) override
+  {
+    onProgress( quest, player, EVENT_ON_SAY, actorId, sayId, 0 );
   }
 
 private:
-  void checkProgressSeq0( Entity::Player& player )
+  void checkProgressSeq0( World::Quest& quest, Entity::Player& player )
   {
-    player.updateQuest( getId(), 1 );
+    quest.setSeq( 1 );
   }
-  void checkProgressSeq1( Entity::Player& player )
+  void checkProgressSeq1( World::Quest& quest, Entity::Player& player )
   {
-    player.updateQuest( getId(), 2 );
+    quest.setSeq( 2 );
   }
-  void checkProgressSeq2( Entity::Player& player )
+  void checkProgressSeq2( World::Quest& quest, Entity::Player& player )
   {
-    player.updateQuest( getId(), 255 );
+    quest.setSeq( 255 );
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( World::Quest& quest, Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
-    player.sendDebug( "HeaVnc111:67777 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "HeaVnc111:67777 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      if( result.param1 > 0 && result.param2 == 1 )
+      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
       {
-        Scene00001( player );
+        Scene00001( quest, player );
       }
     };
-    player.playScene( getId(), 0, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 0, NONE, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( World::Quest& quest, Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
-    player.sendDebug( "HeaVnc111:67777 calling [BranchTrue]Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=ALPHINAUD" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "HeaVnc111:67777 calling Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=ALPHINAUD" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      checkProgressSeq0( player );
+      checkProgressSeq0( quest, player );
     };
-    player.playScene( getId(), 1, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 1, NONE, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00003( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
   {
-    player.sendDebug( "HeaVnc111:67777 calling Scene00002: Normal(None), id=dummy" );
-    Scene00003( player );
-  }
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "HeaVnc111:67777 calling [BranchTrue]Scene00003: Normal(CutScene), id=dummy" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "HeaVnc111:67777 calling Scene00003: Normal(CutScene), id=dummy" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      checkProgressSeq1( player );
+      checkProgressSeq1( quest, player );
     };
-    player.playScene( getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    eventMgr().playQuestScene( player, getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00004( World::Quest& quest, Entity::Player& player ) //SEQ_2: , <No Var>, <No Flag>
   {
-    player.sendDebug( "HeaVnc111:67777 calling Scene00004: Normal(Talk, NpcDespawn, TargetCanMove), id=dummy2" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "HeaVnc111:67777 calling Scene00004: Normal(Talk, NpcDespawn, TargetCanMove), id=dummy2" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      checkProgressSeq2( player );
+      checkProgressSeq2( quest, player );
     };
-    player.playScene( getId(), 4, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 4, NONE, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00005( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR2, <No Var>, <No Flag>
   {
-    player.sendDebug( "HeaVnc111:67777 calling Scene00005: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=ALPHINAUD" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "HeaVnc111:67777 calling Scene00005: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove, AutoFadeIn, SystemTalk, ENpcBind), id=ALPHINAUD" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      if( result.param1 > 0 && result.param2 == 1 )
+      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
       {
-        Scene00006( player );
+        Scene00006( quest, player );
       }
     };
-    player.playScene( getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    eventMgr().playQuestScene( player, getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
-  void Scene00006( Entity::Player& player )
+  void Scene00006( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR2, <No Var>, <No Flag>
   {
-    player.sendDebug( "HeaVnc111:67777 calling [BranchTrue]Scene00006: Normal(CutScene), id=ALPHINAUD" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "HeaVnc111:67777 calling Scene00006: Normal(CutScene), id=ALPHINAUD" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      if( player.giveQuestRewards( getId(), result.param3 ) )
-        player.finishQuest( getId() );
+      player.finishQuest( getId(), result.getResult( 1 ) );
     };
-    player.playScene( getId(), 6, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    eventMgr().playQuestScene( player, getId(), 6, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00007( Entity::Player& player )
+  void Scene00007( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR3, <No Var>, <No Flag>
   {
-    player.sendDebug( "HeaVnc111:67777 calling Scene00007: Normal(Talk, TargetCanMove), id=TATARU" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "HeaVnc111:67777 calling Scene00007: Normal(Talk, TargetCanMove), id=TATARU" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 7, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 7, NONE, callback );
   }
 };
 

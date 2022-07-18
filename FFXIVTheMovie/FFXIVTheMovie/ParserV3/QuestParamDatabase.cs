@@ -14,6 +14,51 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVnc110":
+                    {
+                        result.Add("WARP_SCENE2", "418|0.758|1.3|110.3|3.1415|false");
+                        break;
+                    }
+                case "HeaVnc108":
+                    {
+                        result.Add("PRIVATE_SCENE5", "428");
+                        break;
+                    }
+                case "HeaVnc106":
+                    {
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "2|2");
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "2|2");
+                        result.Add("_ACTOR17", "B");
+                        result.Add("_ACTOR17B", "2|2");
+                        break;
+                    }
+                case "HeaVnc104":
+                    {
+                        result.Add("_ACTOR9", "B");
+                        result.Add("_ACTOR9B", "1|2");
+                        result.Add("_ACTOR10", "B");
+                        result.Add("_ACTOR10B", "1|2");
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "1|2");
+                        break;
+                    }
+                case "HeaVnc101":
+                    {
+                        result.Add("SCENE_18", "HOARYBOULDER");
+                        result.Add("_ACTOR10", "B");
+                        result.Add("_ACTOR10B", "3|2");
+                        result.Add("_ACTOR11", "B");
+                        result.Add("_ACTOR11B", "3|2");
+                        result.Add("_ACTOR12", "B");
+                        result.Add("_ACTOR12B", "3|2");
+                        result.Add("_ACTOR13", "B");
+                        result.Add("_ACTOR13B", "3|2");
+                        result.Add("_ACTOR14", "B");
+                        result.Add("_ACTOR14B", "3|2");
+                        break;
+                    }
                 case "HeaVnb108":
                     {
                         result.Add("WARP_SCENE1", "418|85|24|-6.53|-1.77|false");
