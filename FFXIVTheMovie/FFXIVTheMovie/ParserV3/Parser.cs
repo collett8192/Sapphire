@@ -74,7 +74,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.9");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.10");
             if (CppOutputExtraInfo)
             {
                 outputCpp.Add("// Extra info is ON");
@@ -978,7 +978,7 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         if (!processedVars.Contains(enemyEntry.Var.Name))
                         {
-                            for (int i = 0; i < seq.EntryList.Count; i++)
+                            for (int i = seq.EntryList.IndexOf(enemyEntry) - 1; i >= 0; i--)
                             {
                                 var e = seq.EntryList[i];
                                 if (e == enemyEntry)

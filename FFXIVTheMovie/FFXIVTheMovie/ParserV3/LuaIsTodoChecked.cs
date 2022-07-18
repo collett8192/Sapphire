@@ -32,7 +32,7 @@ namespace FFXIVTheMovie.ParserV3
                             i++;
                             continue;
                         }
-                        else if (s.IndexOf($"{varPlayer}:GetQuest") >= 0)
+                        else if (s.IndexOf($"{varPlayer}:GetQuestU") >= 0)
                         {
                             var name = s.GetStringBetween(":GetQuest", "(");
                             int value;
