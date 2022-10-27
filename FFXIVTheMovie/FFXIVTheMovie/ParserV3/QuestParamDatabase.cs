@@ -14,6 +14,15 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVnd104":
+                    {
+                        result.Add("WARP_SCENE1", "418|0|-2.6|141.3|-3.1415|false");
+                        result.Add("WARP_SCENE5", "418|0|-2.6|141.3|-3.1415|false");
+                        result.Add("SCENE_4", "AYMERIC");
+                        result.Add("PRIVATE_SCENE3", "569");
+                        result.Add("PRIVATE_TEMPLEKNIGHTB02245", "569");
+                        break;
+                    }
                 case "HeaVnc110":
                     {
                         result.Add("WARP_SCENE2", "418|0.758|1.3|110.3|3.1415|false");
