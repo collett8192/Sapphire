@@ -2980,16 +2980,50 @@ Sapphire::TerritoryPtr Sapphire::Entity::Player::getOrCreatePrivateInstance( uin
 bool Sapphire::Entity::Player::enterPredefinedPrivateInstance( uint32_t zoneId )
 {
   auto it = Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.find( zoneId );
-  if( it != Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.end() )
-  {
-    auto info = it->second;
 
-    auto instance = getOrCreatePrivateInstance( zoneId );
-    if( instance )
-      return setInstance( instance, info.pos, info.rot );
+  auto& terriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+  auto terri = terriMgr.getZoneByTerritoryTypeId( zoneId );
+  if( terri )
+  {
+    sendDebug( "Entering {} as global zone.", zoneId );
+    auto currentZone = getCurrentTerritory();
+    if( currentZone->getAsDirector() )
+    {
+      sendUrgent( "Failed to set returning location as we are in an instance." );
+    }
+    else
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
+    if( it != Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.end() )
+    {
+      auto info = it->second;
+      forceZoneing( zoneId, info.pos.x, info.pos.y, info.pos.z, info.rot, false );
+    }
+    else
+    {
+      sendUrgent( "instance id: {} is not defined.", zoneId );
+      forceZoneing( zoneId, 0, 0, 0, 0, false );
+    }
   }
-  sendUrgent( "instance id: {} is not defined.", zoneId );
-  auto instance = getOrCreatePrivateInstance( zoneId );
-  if( instance )
-    return setInstance( instance );
+  else
+  {
+    if( it != Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.end() )
+    {
+      auto info = it->second;
+      auto instance = getOrCreatePrivateInstance( zoneId );
+      if( instance )
+        return setInstance( instance, info.pos, info.rot );
+    }
+    else
+    {
+      sendUrgent( "instance id: {} is not defined.", zoneId );
+      auto instance = getOrCreatePrivateInstance( zoneId );
+      if( instance )
+        return setInstance( instance );
+    }
+  }
 }

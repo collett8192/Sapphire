@@ -156,7 +156,8 @@ bool Sapphire::World::Manager::TerritoryMgr::isDefaultTerritory( uint32_t territ
     pTeri->territoryIntendedUse == TerritoryIntendedUse::OpenWorld ||
     pTeri->territoryIntendedUse == TerritoryIntendedUse::OpeningArea ||
     pTeri->territoryIntendedUse == TerritoryIntendedUse::GoldSaucer ||
-    pTeri->territoryIntendedUse == TerritoryIntendedUse::ChocoboSquare;
+    pTeri->territoryIntendedUse == TerritoryIntendedUse::ChocoboSquare ||
+    pTeri->territoryIntendedUse == TerritoryIntendedUse::MSQPrivateArea;
 }
 
 bool Sapphire::World::Manager::TerritoryMgr::isHousingTerritory( uint32_t territoryTypeId ) const
