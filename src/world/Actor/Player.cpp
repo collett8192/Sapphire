@@ -499,10 +499,14 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance )
   // zoning within the same zone won't cause the prev data to be overwritten
   if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
-    m_prevPos = m_pos;
-    m_prevRot = m_rot;
-    m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
-    m_prevTerritoryId = getTerritoryId();
+    // never returning to a BeforeTrialDung zone.
+    if( currentZone->getTerritoryTypeInfo()->territoryIntendedUse != Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
   }
 
   return teriMgr.movePlayer( instance, getAsPlayer() );
@@ -520,10 +524,14 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance, Common::FFXIV
   // zoning within the same zone won't cause the prev data to be overwritten
   if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
-    m_prevPos = m_pos;
-    m_prevRot = m_rot;
-    m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
-    m_prevTerritoryId = getTerritoryId();
+    // never returning to a BeforeTrialDung zone.
+    if( currentZone->getTerritoryTypeInfo()->territoryIntendedUse != Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
   }
 
   m_pos = pos;
@@ -2987,9 +2995,9 @@ bool Sapphire::Entity::Player::enterPredefinedPrivateInstance( uint32_t zoneId )
   {
     sendDebug( "Entering {} as global zone.", zoneId );
     auto currentZone = getCurrentTerritory();
-    if( currentZone->getAsDirector() )
+    if( currentZone->getAsDirector() || currentZone->getTerritoryTypeInfo()->territoryIntendedUse == Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
     {
-      sendUrgent( "Failed to set returning location as we are in an instance." );
+      sendUrgent( "Current zone is not suitable for returning, keeping previous location." );
     }
     else
     {
