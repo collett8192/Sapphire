@@ -498,10 +498,14 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance )
   // zoning within the same zone won't cause the prev data to be overwritten
   if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
-    m_prevPos = m_pos;
-    m_prevRot = m_rot;
-    m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
-    m_prevTerritoryId = getTerritoryId();
+    // never returning to a BeforeTrialDung zone.
+    if( currentZone->getTerritoryTypeInfo()->territoryIntendedUse != Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
   }
 
   return teriMgr.movePlayer( instance, getAsPlayer() );
@@ -519,10 +523,14 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance, Common::FFXIV
   // zoning within the same zone won't cause the prev data to be overwritten
   if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
-    m_prevPos = m_pos;
-    m_prevRot = m_rot;
-    m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
-    m_prevTerritoryId = getTerritoryId();
+    // never returning to a BeforeTrialDung zone.
+    if( currentZone->getTerritoryTypeInfo()->territoryIntendedUse != Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
   }
 
   m_pos = pos;
@@ -2974,16 +2982,50 @@ Sapphire::TerritoryPtr Sapphire::Entity::Player::getOrCreatePrivateInstance( uin
 bool Sapphire::Entity::Player::enterPredefinedPrivateInstance( uint32_t zoneId )
 {
   auto it = Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.find( zoneId );
-  if( it != Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.end() )
-  {
-    auto info = it->second;
 
-    auto instance = getOrCreatePrivateInstance( zoneId );
-    if( instance )
-      return setInstance( instance, info.pos, info.rot );
+  auto& terriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+  auto terri = terriMgr.getZoneByTerritoryTypeId( zoneId );
+  if( terri )
+  {
+    sendDebug( "Entering {} as global zone.", zoneId );
+    auto currentZone = getCurrentTerritory();
+    if( currentZone->getAsDirector() || currentZone->getTerritoryTypeInfo()->territoryIntendedUse == Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
+    {
+      sendUrgent( "Current zone is not suitable for returning, keeping previous location." );
+    }
+    else
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
+    if( it != Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.end() )
+    {
+      auto info = it->second;
+      forceZoneing( zoneId, info.pos.x, info.pos.y, info.pos.z, info.rot, false );
+    }
+    else
+    {
+      sendUrgent( "instance id: {} is not defined.", zoneId );
+      forceZoneing( zoneId, 0, 0, 0, 0, false );
+    }
   }
-  sendUrgent( "instance id: {} is not defined.", zoneId );
-  auto instance = getOrCreatePrivateInstance( zoneId );
-  if( instance )
-    return setInstance( instance );
+  else
+  {
+    if( it != Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.end() )
+    {
+      auto info = it->second;
+      auto instance = getOrCreatePrivateInstance( zoneId );
+      if( instance )
+        return setInstance( instance, info.pos, info.rot );
+    }
+    else
+    {
+      sendUrgent( "instance id: {} is not defined.", zoneId );
+      auto instance = getOrCreatePrivateInstance( zoneId );
+      if( instance )
+        return setInstance( instance );
+    }
+  }
 }

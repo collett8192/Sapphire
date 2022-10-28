@@ -156,7 +156,9 @@ bool Sapphire::World::Manager::TerritoryMgr::isDefaultTerritory( uint32_t territ
     pTeri->territoryIntendedUse == TerritoryIntendedUse::OpenWorld ||
     pTeri->territoryIntendedUse == TerritoryIntendedUse::OpeningArea ||
     pTeri->territoryIntendedUse == TerritoryIntendedUse::GoldSaucer ||
-    pTeri->territoryIntendedUse == TerritoryIntendedUse::ChocoboSquare;
+    pTeri->territoryIntendedUse == TerritoryIntendedUse::ChocoboSquare ||
+    pTeri->territoryIntendedUse == TerritoryIntendedUse::MSQPrivateArea ||
+    pTeri->territoryIntendedUse == TerritoryIntendedUse::BeforeTrialDung;
 }
 
 bool Sapphire::World::Manager::TerritoryMgr::isHousingTerritory( uint32_t territoryTypeId ) const
@@ -837,11 +839,12 @@ std::unordered_map< uint32_t, Sapphire::World::Manager::TerritoryMgr::InstanceSp
   { 881, { { 100, 0, 100 }, 0 } },
   { 918, { { 0, -200, -410 }, -3.1415 } },
   { 393, { { 3, 2.64, -95 }, -3.1415 } },
+  { 569, { { 0, 0, 0 }, 0 } },
 };
 
 std::unordered_map< uint32_t, uint32_t > Sapphire::World::Manager::TerritoryMgr::instanceExitEvent =
 {
-  //{ 131091, 212 }, scripted
+  { 131089, 212 },
   { 131085, 210 },
   { 131123, 198 },
   { 131075, 204 },
@@ -874,4 +877,5 @@ std::unordered_map< uint32_t, uint32_t > Sapphire::World::Manager::TerritoryMgr:
   { 131327, 881 },
   { 131363, 918 },
   { 131168, 393 },
+  { 131235, 569 },
 };
