@@ -53,14 +53,14 @@ namespace FFXIVTheMovie.ParserV3
             }
 
             List<string> list = new List<string>();
-            //list.Add("HeaVnd104");
+            //list.Add("HeaVne109");
 
             if (list.Count == 0)
             {
                 Console.WriteLine("Input quest id (XxxXxx000) to parse:");
                 Console.WriteLine("(ALL for all non-implemented quests)");
                 string id = Console.ReadLine();
-                if (id == "ALL")
+                if (id.ToUpper() == "ALL")
                 {
                     ParseV3();
                     return;
@@ -106,7 +106,7 @@ namespace FFXIVTheMovie.ParserV3
                 if (implementedQuestIds.Contains(questId))
                     continue;
 
-                //if (!questId.StartsWith("HeaVnd")) continue;
+                //if (!questId.StartsWith("HeaVne")) continue;
 
                 if (!questId.StartsWith("ManFst") &&
                     !questId.StartsWith("ManSea") &&

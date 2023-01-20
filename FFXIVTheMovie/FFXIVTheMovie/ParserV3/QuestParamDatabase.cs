@@ -14,6 +14,26 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVne108":
+                    {
+                        result.Add("SCENE_17", null);
+                        break;
+                    }
+                case "HeaVne107":
+                    {
+                        result.Add("_ACTOR2", "B");
+                        result.Add("_ACTOR2B", "1|2");
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "1|2");
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "1|2");
+                        break;
+                    }
+                case "HeaVne103":
+                    {
+                        result.Add("SCENE_5", "AYMERIC");
+                        break;
+                    }
                 case "HeaVnd104":
                     {
                         result.Add("WARP_SCENE1", "418|0|-2.6|141.3|-3.1415|false");

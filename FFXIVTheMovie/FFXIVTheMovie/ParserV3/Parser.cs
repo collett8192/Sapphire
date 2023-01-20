@@ -821,13 +821,15 @@ namespace FFXIVTheMovie.ParserV3
                                             {
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      //quest battle");
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
-                                                if (constTable.ContainsKey("QUESTBATTLE0"))
+                                                if (constTable.ContainsKey("QUESTBATTLE0") && constTable["QUESTBATTLE0"] <= 196)
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      teriMgr().createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
                                                 }
                                                 else
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      //teriMgr().createAndJoinQuestBattle( player, ??? );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing QuestBattle ID, returning to previous zone.\" );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( player.getTerritoryTypeId(), 0, player.getPos(), player.getRot() );");
                                                 }
                                             }
                                             else
