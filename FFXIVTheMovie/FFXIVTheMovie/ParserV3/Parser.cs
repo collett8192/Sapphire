@@ -821,7 +821,7 @@ namespace FFXIVTheMovie.ParserV3
                                             {
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      //quest battle");
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
-                                                if (constTable.ContainsKey("QUESTBATTLE0") && constTable["QUESTBATTLE0"] <= 196)
+                                                if (constTable.ContainsKey("QUESTBATTLE0"))
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      teriMgr().createAndJoinQuestBattle( player, {constTable["QUESTBATTLE0"]} );");
                                                 }
