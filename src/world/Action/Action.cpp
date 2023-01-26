@@ -563,9 +563,6 @@ void Action::Action::buildEffects()
         }
       }
 
-      if( actor->getAsPlayer() )
-        dodged = true;
-
       if( dodged )
         dmg.first = 0;
       else
