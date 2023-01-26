@@ -563,6 +563,9 @@ void Action::Action::buildEffects()
         }
       }
 
+      if( actor->getAsPlayer() )
+        dodged = true;
+
       if( dodged )
         dmg.first = 0;
       else
@@ -575,18 +578,18 @@ void Action::Action::buildEffects()
       {
         dmg.first = actor->applyShieldProtection( dmg.first );
         if( blocked > 0 )
-          m_effectBuilder->blockedDamage( actor, actor, dmg.first, static_cast< uint16_t >( blocked / originalDamage * 100 ) , dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None );
+          m_effectBuilder->blockedDamage( actor, actor, dmg.first, static_cast< uint16_t >( blocked / originalDamage * 100 ) , dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100 );
         else if (parried > 0 )
-          m_effectBuilder->parriedDamage( actor, actor, dmg.first, static_cast< uint16_t >( parried / originalDamage * 100 ), dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None );
+          m_effectBuilder->parriedDamage( actor, actor, dmg.first, static_cast< uint16_t >( parried / originalDamage * 100 ), dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100  );
         else
-          m_effectBuilder->damage( actor, actor, dmg.first, dmg.second, dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None );
+          m_effectBuilder->damage( actor, actor, dmg.first, dmg.second, dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100 );
 
         auto reflectDmg = Math::CalcStats::calcDamageReflect( m_pSource, actor, dmg.first,
           attackType == Common::AttackType::Physical ? Common::ActionTypeFilter::Physical :
           ( attackType == Common::AttackType::Magical ? Common::ActionTypeFilter::Magical : Common::ActionTypeFilter::Unknown ) );
         if( reflectDmg.first > 0 )
         {
-          m_effectBuilder->damage( actor, m_pSource, reflectDmg.first, reflectDmg.second, Common::ActionEffectResultFlag::Reflected );
+          m_effectBuilder->damage( actor, m_pSource, reflectDmg.first, reflectDmg.second, Common::ActionEffectResultFlag::Reflected, getExecutionDelay() + victimCounter * 100 );
         }
 
         auto absorb = Math::CalcStats::calcAbsorbHP( m_pSource, dmg.first );
@@ -594,7 +597,7 @@ void Action::Action::buildEffects()
         {
           if( absorb > actor->getHp() )
             absorb = actor->getHp();
-          m_effectBuilder->heal( actor, m_pSource, absorb, Common::ActionHitSeverityType::NormalHeal, Common::ActionEffectResultFlag::EffectOnSource );
+          m_effectBuilder->heal( actor, m_pSource, absorb, Common::ActionHitSeverityType::NormalHeal, Common::ActionEffectResultFlag::EffectOnSource, getExecutionDelay() + victimCounter * 100 );
         }
       }
       else
@@ -710,13 +713,13 @@ void Action::Action::buildEffects()
     {
       auto heal = calcHealing( m_lutEntry.healPotency );
       heal.first = Math::CalcStats::applyHealingReceiveMultiplier( *actor, heal.first );
-      m_effectBuilder->heal( actor, actor, heal.first, heal.second );
+      m_effectBuilder->heal( actor, actor, heal.first, heal.second, Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100 );
     }
 
     if( m_lutEntry.targetStatus != 0 )
     {
       if( !isComboAction() || isCorrectCombo() )
-        m_effectBuilder->applyStatusEffect( actor, m_pSource, m_lutEntry.targetStatus, m_lutEntry.targetStatusDuration, m_lutEntry.targetStatusParam );
+        m_effectBuilder->applyStatusEffect( actor, m_pSource, m_lutEntry.targetStatus, m_lutEntry.targetStatusDuration, m_lutEntry.targetStatusParam, getExecutionDelay() + victimCounter * 100 );
     }
   }
 
@@ -1273,4 +1276,11 @@ bool Action::Action::checkActionBonusRequirement()
   }
 
   return true;
+}
+
+uint64_t Action::Action::getExecutionDelay() const
+{
+  if( m_id == 139 )
+    return 1800;
+  return 600;
 }

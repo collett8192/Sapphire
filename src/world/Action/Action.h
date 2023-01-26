@@ -136,6 +136,7 @@ namespace Sapphire::World::Action
     bool isMagical() const;
     bool isGCD() const;
     bool isWeaponSkill() const;
+    uint64_t getExecutionDelay() const;
 
     static bool isAttackTypePhysical( Common::AttackType attackType );
     static bool isAttackTypeMagical( Common::AttackType attackType );
