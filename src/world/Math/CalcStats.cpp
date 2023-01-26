@@ -110,7 +110,7 @@ const int levelTable[81][6] =
 
 std::random_device CalcStats::dev;
 std::mt19937 CalcStats::rng( dev() );
-std::uniform_int_distribution< std::mt19937::result_type > CalcStats::range100( 0, 99 );
+std::uniform_int_distribution< std::mt19937::result_type > CalcStats::range10000( 0, 9999 );
 
 /*
    Class used for battle-related formulas and calculations.
@@ -563,13 +563,13 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcAutoA
 
   factor = std::floor( factor * speed( chara ) );
 
-  if( criticalHitProbability( chara, Common::CritDHBonusFilter::Damage ) > getRandomNumber0To99() )
+  if( criticalHitProbability( chara, Common::CritDHBonusFilter::Damage ) > getRandomNumber0To100() )
   {
     factor *= criticalHitBonus( chara );
     hitType = Sapphire::Common::ActionHitSeverityType::CritDamage;
   }
 
-  if( directHitProbability( chara, Common::CritDHBonusFilter::Damage ) > getRandomNumber0To99() )
+  if( directHitProbability( chara, Common::CritDHBonusFilter::Damage ) > getRandomNumber0To100() )
   {
     factor *= 1.25f;
     hitType = hitType == Sapphire::Common::ActionHitSeverityType::CritDamage ?
@@ -577,7 +577,7 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcAutoA
                          Sapphire::Common::ActionHitSeverityType::DirectHitDamage;
   }
 
-  factor *= 1.0f + ( ( getRandomNumber0To99() - 50.0f ) / 1000.0f );
+  factor *= 1.0f + ( ( getRandomNumber0To100() - 50.0f ) / 1000.0f );
 
   for( auto const& entry : chara.getStatusEffectMap() )
   {
@@ -676,7 +676,7 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
     }
   }
 
-  if( critProb > getRandomNumber0To99() )
+  if( critProb > getRandomNumber0To100() )
   {
     factor *= criticalHitBonus( chara );
     hitType = Sapphire::Common::ActionHitSeverityType::CritDamage;
@@ -695,7 +695,7 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
     }
   }
 
-  if( dhProb > getRandomNumber0To99() )
+  if( dhProb > getRandomNumber0To100() )
   {
     factor *= 1.25f;
     hitType = hitType == Sapphire::Common::ActionHitSeverityType::CritDamage ?
@@ -703,7 +703,7 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
                          Sapphire::Common::ActionHitSeverityType::DirectHitDamage;
   }
 
-  factor *= 1.0f + ( ( getRandomNumber0To99() - 50.0f ) / 1000.0f );
+  factor *= 1.0f + ( ( getRandomNumber0To100() - 50.0f ) / 1000.0f );
 
   Common::ActionTypeFilter actionTypeFilter = Common::ActionTypeFilter::Physical;
   if( pAction )
@@ -801,13 +801,13 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
     }
   }
 
-  if( critProb > getRandomNumber0To99() )
+  if( critProb > getRandomNumber0To100() )
   {
     factor *= criticalHitBonus( chara );
     hitType = Sapphire::Common::ActionHitSeverityType::CritHeal;
   }
 
-  factor *= 1.0f + ( ( getRandomNumber0To99() - 50.0f ) / 1000.0f );
+  factor *= 1.0f + ( ( getRandomNumber0To100() - 50.0f ) / 1000.0f );
 
   for( auto const& entry : chara.getStatusEffectMap() )
   {
@@ -874,7 +874,7 @@ float CalcStats::calcAbsorbHP( Sapphire::Entity::CharaPtr pChara, float damage )
 
 bool CalcStats::calcDodge( const Sapphire::Entity::Chara& chara )
 {
-  if( dodgeProbability( chara ) > getRandomNumber0To99() )
+  if( dodgeProbability( chara ) > getRandomNumber0To100() )
   {
     return true;
   }
@@ -883,7 +883,7 @@ bool CalcStats::calcDodge( const Sapphire::Entity::Chara& chara )
 
 float CalcStats::calcBlock( const Sapphire::Entity::Chara& chara, float damage )
 {
-  if( blockProbability( chara ) > getRandomNumber0To99() )
+  if( blockProbability( chara ) > getRandomNumber0To100() )
   {
     return damage * blockStrength( chara );
   }
@@ -892,14 +892,14 @@ float CalcStats::calcBlock( const Sapphire::Entity::Chara& chara, float damage )
 
 float CalcStats::calcParry( const Sapphire::Entity::Chara& chara, float damage )
 {
-  if( parryProbability( chara ) > getRandomNumber0To99() )
+  if( parryProbability( chara ) > getRandomNumber0To100() )
   {
     return damage * parryStrength( chara );
   }
   return 0;
 }
 
-uint32_t CalcStats::getRandomNumber0To99()
+float CalcStats::getRandomNumber0To100()
 {
-  return range100( rng );
+  return range10000( rng ) / 100.0f;
 }

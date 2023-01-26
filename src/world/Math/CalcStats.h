@@ -160,7 +160,7 @@ namespace Sapphire::Math
 
     static float calcParry( const Sapphire::Entity::Chara& chara, float damage );
 
-    static uint32_t getRandomNumber0To99();
+    static float getRandomNumber0To100();
   private:
 
     /*!
@@ -172,7 +172,7 @@ namespace Sapphire::Math
 
     static std::random_device dev;
     static std::mt19937 rng;
-    static std::uniform_int_distribution< std::mt19937::result_type > range100;
+    static std::uniform_int_distribution< std::mt19937::result_type > range10000;
   };
 
 }

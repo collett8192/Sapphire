@@ -22,7 +22,7 @@ public:
 
   void onExecute( Sapphire::World::Action::Action& action ) override
   {
-    if( action.getSourceChara()->getLevel() >= 30 && Math::CalcStats::getRandomNumber0To99() < 15 )
+    if( action.getSourceChara()->getLevel() >= 30 && Math::CalcStats::getRandomNumber0To100() < 15 )
     {
       auto pEffect = Sapphire::StatusEffect::make_StatusEffect( STATUS_ID_FREECURE, action.getSourceChara(), action.getSourceChara(), 15000, 3000 );
       action.getEffectbuilder()->applyStatusEffect( action.getSourceChara(), action.getSourceChara(), pEffect );

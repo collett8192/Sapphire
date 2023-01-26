@@ -72,11 +72,11 @@ std::pair< uint8_t, uint32_t > Sapphire::StatusEffect::StatusEffect::getTickEffe
     case Common::StatusEffectType::Dot:
     {
       auto value = m_value;
-      if( m_cachedSourceCrit > Sapphire::Math::CalcStats::getRandomNumber0To99() )
+      if( m_cachedSourceCrit > Sapphire::Math::CalcStats::getRandomNumber0To100() )
       {
         value *= m_cachedSourceCritBonus;
       }
-      value *= 1.0f + ( ( Sapphire::Math::CalcStats::getRandomNumber0To99() - 50.0f ) / 1000.0f );
+      value *= 1.0f + ( ( Sapphire::Math::CalcStats::getRandomNumber0To100() - 50.0f ) / 1000.0f );
       m_currTickEffect = std::make_pair( 1, value );
       break;
     }
@@ -84,11 +84,11 @@ std::pair< uint8_t, uint32_t > Sapphire::StatusEffect::StatusEffect::getTickEffe
     case Common::StatusEffectType::Hot:
     {
       auto value = m_value;
-      if( m_cachedSourceCrit > Sapphire::Math::CalcStats::getRandomNumber0To99() )
+      if( m_cachedSourceCrit > Sapphire::Math::CalcStats::getRandomNumber0To100() )
       {
         value *= m_cachedSourceCritBonus;
       }
-      value *= 1.0f + ( ( Sapphire::Math::CalcStats::getRandomNumber0To99() - 50.0f ) / 1000.0f );
+      value *= 1.0f + ( ( Sapphire::Math::CalcStats::getRandomNumber0To100() - 50.0f ) / 1000.0f );
       m_currTickEffect = std::make_pair( 2, value );
       break;
     }
