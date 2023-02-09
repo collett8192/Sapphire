@@ -20,6 +20,8 @@
 #include "Manager/TerritoryMgr.h"
 #include "Manager/RNGMgr.h"
 #include "Manager/MapMgr.h"
+#include <Manager/PlayerMgr.h>
+#include "Manager/EventMgr.h"
 
 #include "Territory/Territory.h"
 #include "Territory/ZonePosition.h"
@@ -236,6 +238,10 @@ Sapphire::Common::OnlineStatus Sapphire::Entity::Player::getOnlineStatus() const
 void Sapphire::Entity::Player::setOnlineStatusMask( uint64_t status )
 {
   m_onlineStatus = status;
+  sendToInRangeSet( makeActorControl( getId(), SetStatusIcon, static_cast< uint8_t >( getOnlineStatus() ) ), true );
+  auto statusPacket = makeZonePacket< FFXIVIpcSetOnlineStatus >( getId() );
+  statusPacket->data().onlineStatusFlags = status;
+  queuePacket( statusPacket );
 }
 
 uint64_t Sapphire::Entity::Player::getOnlineStatusMask() const
@@ -414,10 +420,35 @@ void Sapphire::Entity::Player::teleport( uint16_t aetheryteId, uint8_t type )
 
 }
 
-void Sapphire::Entity::Player::forceZoneing( uint32_t zoneId )
+void Sapphire::Entity::Player::forceZoneing( uint32_t zoneId, float x, float y, float z, float r, bool showZoneName )
 {
-  m_queuedZoneing = std::make_shared< QueuedZoning >( zoneId, getPos(), Util::getTimeMs(), 0.f );
-  //performZoning( zoneId, Common::ZoneingType::None, getPos() );
+  if( zoneId == 0 )
+  {
+    zoneId = getCurrentTerritory()->getTerritoryTypeId();
+    x = m_pos.x;
+    y = m_pos.y;
+    z = m_pos.z;
+    r = m_rot;
+  }
+  else
+  {
+    if( x == FLT_MAX )
+      x = m_pos.x;
+    if( y == FLT_MAX )
+      y = m_pos.y;
+    if( z == FLT_MAX )
+      z = m_pos.z;
+    if( r == FLT_MAX )
+      r = m_rot;
+  }
+  Common::FFXIVARR_POSITION3 pos { x, y, z };
+  m_queuedZoneing = std::make_shared< QueuedZoning >( zoneId, pos, Util::getTimeMs(), r );
+  prepareZoning( showZoneName ? zoneId : 0, true, 1, 0 );
+}
+
+void Sapphire::Entity::Player::performZoning( uint16_t territoryTypeId, uint32_t territoryId, const Common::FFXIVARR_POSITION3& pos, float rotation )
+{
+  forceZoneing( territoryTypeId, pos.x, pos.y, pos.z, rotation, false );
 }
 
 void Sapphire::Entity::Player::returnToHomepoint()
@@ -465,12 +496,16 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance )
   auto currentZone = getCurrentTerritory();
 
   // zoning within the same zone won't cause the prev data to be overwritten
-  if( instance->getTerritoryTypeId() != m_territoryTypeId )
+  if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
-    m_prevPos = m_pos;
-    m_prevRot = m_rot;
-    m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
-    m_prevTerritoryId = getTerritoryId();
+    // never returning to a BeforeTrialDung zone.
+    if( currentZone->getTerritoryTypeInfo()->territoryIntendedUse != Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
   }
 
   return teriMgr.movePlayer( instance, getAsPlayer() );
@@ -486,12 +521,16 @@ bool Sapphire::Entity::Player::setInstance( TerritoryPtr instance, Common::FFXIV
   auto currentZone = getCurrentTerritory();
 
   // zoning within the same zone won't cause the prev data to be overwritten
-  if( instance->getTerritoryTypeId() != m_territoryTypeId )
+  if( instance->getTerritoryTypeId() != m_territoryTypeId && ( teriMgr.isDefaultTerritory( currentZone->getTerritoryTypeId() ) || teriMgr.isHousingTerritory( currentZone->getTerritoryTypeId() ) ) )
   {
-    m_prevPos = m_pos;
-    m_prevRot = m_rot;
-    m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
-    m_prevTerritoryId = getTerritoryId();
+    // never returning to a BeforeTrialDung zone.
+    if( currentZone->getTerritoryTypeInfo()->territoryIntendedUse != Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
   }
 
   m_pos = pos;
@@ -513,15 +552,26 @@ bool Sapphire::Entity::Player::exitInstance()
 {
   auto& teriMgr = Common::Service< TerritoryMgr >::ref();
 
-  auto d = getCurrentTerritory()->getAsDirector();
+  auto d = getCurrentTerritory()->getAsInstanceContent();
   if( d && d->getContentFinderConditionId() > 0 )
   {
+    // shows correct name when leaving dungeon
     auto p = makeZonePacket< FFXIVDirectorUnk4 >( getId() );
     p->data().param[0] = d->getDirectorId();
     p->data().param[1] = 1534;
     p->data().param[2] = 1;
-    p->data().param[3] = d->getContentFinderConditionId();
+    p->data().param[3] = d->getContentId();
     queuePacket( p );
+
+    // clears CF state, otherwise the UI stays locked
+    struct UNK00A0 : FFXIVIpcBasePacket< 0x00A0 >
+    {
+      uint32_t unknown[4];
+    };
+    auto p2 = makeZonePacket< UNK00A0 >( getId() );
+    p2->data().unknown[0] = d->getContentFinderConditionId();
+    p2->data().unknown[1] = 5;
+    queuePacket( p2 );
 
     prepareZoning( 0, 1, 1, 0, 0, 1, 9 );
   }
@@ -797,15 +847,7 @@ void Sapphire::Entity::Player::gainLevel()
   m_hp = getMaxHp();
   m_mp = getMaxMp();
 
-  auto effectListPacket = makeZonePacket< FFXIVIpcStatusEffectList >( getId() );
-  effectListPacket->data().classId = static_cast< uint8_t > ( getClass() );
-  effectListPacket->data().level1 = getLevel();
-  effectListPacket->data().level = getLevel();
-  effectListPacket->data().current_hp = getMaxHp();
-  effectListPacket->data().current_mp = getMaxMp();
-  effectListPacket->data().max_hp = getMaxHp();
-  effectListPacket->data().max_mp = getMaxMp();
-  sendToInRangeSet( effectListPacket, true );
+  sendStatusEffectUpdate();
 
   sendToInRangeSet( makeActorControl( getId(), LevelUpEffect, static_cast< uint8_t >( getClass() ),
                                       getLevel(), getLevel() - 1 ), true );
@@ -987,6 +1029,13 @@ void Sapphire::Entity::Player::spawn( Entity::PlayerPtr pTarget )
   Logger::debug( "[{0}] Spawning {1} for {2}", pTarget->getId(), getName(), pTarget->getName() );
 
   pTarget->queuePacket( std::make_shared< PlayerSpawnPacket >( *getAsPlayer(), *pTarget ) );
+  if( m_effect > 0 )
+  {
+    auto effect = makeZonePacket< FFXIVIpcCharaVisualEffect >( pTarget->getId() );
+    effect->setSourceActor( getId() );
+    effect->data().id = m_effect;
+    pTarget->queuePacket( effect );
+  }
 }
 
 // despawn
@@ -1080,7 +1129,6 @@ bool Sapphire::Entity::Player::hasStateFlag( Common::PlayerStateFlag flag ) cons
 
 void Sapphire::Entity::Player::setStateFlag( Common::PlayerStateFlag flag )
 {
-  auto prevOnlineStatus = getOnlineStatus();
   int32_t iFlag = static_cast< uint32_t >( flag );
 
   uint16_t index;
@@ -1089,13 +1137,6 @@ void Sapphire::Entity::Player::setStateFlag( Common::PlayerStateFlag flag )
 
   m_stateFlags[ index ] |= value;
   sendStateFlags();
-
-  auto newOnlineStatus = getOnlineStatus();
-
-  if( prevOnlineStatus != newOnlineStatus )
-    sendToInRangeSet( makeActorControl( getId(), SetStatusIcon,
-                                        static_cast< uint8_t >( getOnlineStatus() ) ), true );
-
 }
 
 void Sapphire::Entity::Player::setStateFlags( std::vector< Common::PlayerStateFlag > flags )
@@ -1116,8 +1157,6 @@ void Sapphire::Entity::Player::unsetStateFlag( Common::PlayerStateFlag flag )
   if( !hasStateFlag( flag ) )
     return;
 
-  auto prevOnlineStatus = getOnlineStatus();
-
   int32_t iFlag = static_cast< uint32_t >( flag );
 
   uint16_t index;
@@ -1126,11 +1165,6 @@ void Sapphire::Entity::Player::unsetStateFlag( Common::PlayerStateFlag flag )
 
   m_stateFlags[ index ] ^= value;
   sendStateFlags();
-
-  auto newOnlineStatus = getOnlineStatus();
-
-  if( prevOnlineStatus != newOnlineStatus )
-    sendToInRangeSet( makeActorControl( getId(), SetStatusIcon, static_cast< uint8_t >( getOnlineStatus() ) ), true );
 }
 
 void Sapphire::Entity::Player::update( uint64_t tickCount )
@@ -1164,6 +1198,7 @@ void Sapphire::Entity::Player::update( uint64_t tickCount )
   if( !isAlive() )
     return;
 
+  int64_t interval = tickCount - m_lastUpdate;
   m_lastUpdate = tickCount;
 
   if( !checkAction() )
@@ -1205,13 +1240,70 @@ void Sapphire::Entity::Player::update( uint64_t tickCount )
     }
   }
 
+  switch( getClass() )
+  {
+    case Common::ClassJob::Conjurer:
+    case Common::ClassJob::Whitemage:
+    {
+      if( hasStateFlag( Common::PlayerStateFlag::InCombat ) )
+      {
+        if( gaugeWhmGetLily() < 3 )
+        {
+          auto lilyTimer = gaugeWhmGetLilyTimer();
+          lilyTimer += interval;
+          if( lilyTimer >= 30000 )
+          {
+            gaugeWhmSetLilyTimer( 0 ); // packet is sent together with following lily update
+            gaugeWhmSetLilies( gaugeWhmGetLily() + 1, gaugeWhmGetBloodLily() );
+          }
+          else
+          {
+            gaugeWhmSetLilyTimer( lilyTimer ); // don't send any packet, the client increases the timer by itself
+          }
+        }
+        else
+        {
+          gaugeWhmSetLilyTimer( 0 );
+        }
+      }
+      break;
+    }
+    case Common::ClassJob::Darkknight:
+    {
+      auto dsTimer = gaugeDrkGetDarkSideTimer();
+      if( dsTimer > interval )
+        dsTimer -= interval;
+      else
+        dsTimer = 0;
+      gaugeDrkSetDarkSideTimer( dsTimer );
+
+      auto shadowTimer = gaugeDrkGetShadowTimer();
+      if( shadowTimer > interval )
+        shadowTimer -= interval;
+      else
+        shadowTimer = 0;
+      gaugeDrkSetShadowTimer( shadowTimer );
+      break;
+    }
+    case Common::ClassJob::Dragoon:
+    {
+      auto drTimer = gaugeDrgGetDragonTimer();
+      if( drTimer > interval )
+        drTimer -= interval;
+      else
+        drTimer = 0;
+      gaugeDrgSetDragonTimer( drTimer );
+      break;
+    }
+  }
+
   Chara::update( tickCount );
 }
 
-void Sapphire::Entity::Player::onMobKill( uint16_t nameId )
+void Sapphire::Entity::Player::onMobKill( uint16_t nameId, uint32_t layoutId )
 {
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
-  scriptMgr.onBNpcKill( *getAsPlayer(), nameId );
+  scriptMgr.onBNpcKill( *getAsPlayer(), nameId, layoutId );
 
   if( isActionLearned( static_cast< uint8_t >( Common::UnlockEntry::HuntingLog ) ) )
   {
@@ -1529,13 +1621,17 @@ void Sapphire::Entity::Player::onMobAggro( BNpcPtr pBNpc )
 {
   hateListAdd( pBNpc );
   queuePacket( makeActorControl( getId(), ToggleAggro, 1 ) );
+  setStateFlag( Common::PlayerStateFlag::InCombat );
 }
 
 void Sapphire::Entity::Player::onMobDeaggro( BNpcPtr pBNpc )
 {
   hateListRemove( pBNpc );
   if( m_actorIdTohateSlotMap.empty() )
+  {
     queuePacket( makeActorControl( getId(), ToggleAggro ) );
+    unsetStateFlag( Common::PlayerStateFlag::InCombat );
+  }
 }
 
 bool Sapphire::Entity::Player::isLogin() const
@@ -1627,6 +1723,11 @@ void Sapphire::Entity::Player::mount( uint32_t id )
   }
 }
 
+void Sapphire::Entity::Player::setMount( uint32_t id )
+{
+  mount( id );
+}
+
 void Sapphire::Entity::Player::dismount()
 {
   if( m_mount > 0 )
@@ -1677,52 +1778,30 @@ uint32_t Sapphire::Entity::Player::getPersistentEmote() const
 
 void Sapphire::Entity::Player::autoAttack( CharaPtr pTarget )
 {
-
-  auto mainWeap = getItemAt( Common::GearSet0, Common::GearSetSlot::MainHand );
-
   pTarget->onActionHostile( getAsChara() );
-  //uint64_t tick = Util::getTimeMs();
-  //srand(static_cast< uint32_t >(tick));
-
-  auto& RNGMgr = Common::Service< World::Manager::RNGMgr >::ref();
-  auto variation = static_cast< uint32_t >( RNGMgr.getRandGenerator< float >( 0, 3 ).next() );
-
-  auto damage = Math::CalcStats::calcAutoAttackDamage( *this );
-
+  auto& exdData = Common::Service< Data::ExdDataGenerated >::ref();
+  World::Action::ActionPtr action;
   if( getClass() == ClassJob::Machinist || getClass() == ClassJob::Bard || getClass() == ClassJob::Archer )
   {
-    auto effectPacket = std::make_shared< Server::EffectPacket >( getId(), pTarget->getId(), 8 );
-    effectPacket->setRotation( Util::floatToUInt16Rot( getRot() ) );
-
-    Common::EffectEntry entry{};
-    entry.value = damage.first;
-    entry.effectType = Common::ActionEffectType::Damage;
-    entry.param0 = static_cast< uint8_t >( damage.second );
-    entry.param2 = 0x72;
-
-    effectPacket->addEffect( entry );
-
-    sendToInRangeSet( effectPacket, true );
+    auto actionData = exdData.get< Data::Action >( 8 );
+    assert( actionData );
+    action = World::Action::make_Action( getAsChara(), 8, 0, actionData );
   }
   else
   {
-    auto effectPacket = std::make_shared< Server::EffectPacket >( getId(), pTarget->getId(), 7 );
-    effectPacket->setRotation( Util::floatToUInt16Rot( getRot() ) );
-
-    Common::EffectEntry entry{};
-    entry.value = damage.first;
-    entry.effectType = Common::ActionEffectType::Damage;
-    entry.param0 = static_cast< uint8_t >( damage.second );
-    entry.param2 = 0x73;
-
-    effectPacket->addEffect( entry );
-
-    sendToInRangeSet( effectPacket, true );
-
+    auto actionData = exdData.get< Data::Action >( 7 );
+    assert( actionData );
+    action = World::Action::make_Action( getAsChara(), 7, 0, actionData );
   }
 
-  pTarget->takeDamage( damage.first );
+  action->setTargetId( pTarget->getId() );
+  action->setPos( getPos() );
+  action->setAutoAttack();
 
+  if( action->init() )
+  {
+    action->start();
+  }
 }
 
 
@@ -1873,6 +1952,7 @@ void Sapphire::Entity::Player::sendZonePackets()
   initZonePacket->data().zoneId = getCurrentTerritory()->getTerritoryTypeId();
   initZonePacket->data().weatherId = static_cast< uint8_t >( getCurrentTerritory()->getCurrentWeather() );
   initZonePacket->data().bitmask = 0x1;
+  initZonePacket->data().bitmask1 = 16;
   initZonePacket->data().festivalId = getCurrentTerritory()->getCurrentFestival().first;
   initZonePacket->data().additionalFestivalId = getCurrentTerritory()->getCurrentFestival().second;
   initZonePacket->data().pos.x = getPos().x;
@@ -1885,6 +1965,21 @@ void Sapphire::Entity::Player::sendZonePackets()
     initZonePacket->data().bitmask1 = 0x2A;
   }
   queuePacket( initZonePacket );
+
+  if( auto d = getCurrentTerritory()->getAsInstanceContent() )
+  {
+    if( d->getContentFinderConditionId() > 0 )
+    {
+      struct UNK00A0 : FFXIVIpcBasePacket< 0x00A0 >
+      {
+        uint32_t unknown[4];
+      };
+      auto p2 = makeZonePacket< UNK00A0 >( getId() );
+      p2->data().unknown[0] = d->getContentFinderConditionId();
+      p2->data().unknown[1] = 4;
+      queuePacket( p2 );
+    }
+  }
 
   getCurrentTerritory()->onPlayerZoneIn( *this );
 
@@ -1899,6 +1994,8 @@ void Sapphire::Entity::Player::sendZonePackets()
 
 //  if( getLastPing() == 0 )
 //    sendQuestInfo();
+
+  sendPartyList();
 
   m_bMarkedForZoning = false;
 }
@@ -2216,7 +2313,7 @@ void Sapphire::Entity::Player::updateHuntingLog( uint16_t id )
   const auto maxRank = 4;
   auto& pExdData = Common::Service< Data::ExdDataGenerated >::ref();
 
-  auto& logEntry = m_huntingLogEntries[ static_cast< uint8_t >( getClass() ) - 1 ];
+  auto logEntryIndex = static_cast< uint8_t >( getClass() ) - 1;
 
   bool logChanged = false;
 
@@ -2225,6 +2322,10 @@ void Sapphire::Entity::Player::updateHuntingLog( uint16_t id )
   auto classJobInfo = pExdData.get< Sapphire::Data::ClassJob >( currentClass );
   if( !classJobInfo )
     return;
+  if( classJobInfo->classJobParent > 0 )
+    logEntryIndex = classJobInfo->classJobParent;
+
+  auto& logEntry = m_huntingLogEntries[ logEntryIndex ];
 
   bool allSectionsComplete = true;
   for( int i = 1; i <= 10; ++i )
@@ -2301,7 +2402,7 @@ bool Sapphire::Entity::Player::hasQueuedAction() const
 
 void Sapphire::Entity::Player::setQueuedAction( Sapphire::World::Action::ActionPtr pAction )
 {
-  m_pQueuedAction = std::move( pAction ); // overwrite previous queued action if any
+  m_pQueuedAction = std::move( pAction );
 }
 
 bool Sapphire::Entity::Player::checkAction()
@@ -2356,6 +2457,233 @@ void Sapphire::Entity::Player::clearBuyBackMap()
   m_shopBuyBackMap.clear();
 }
 
+bool Sapphire::Entity::Player::isPartyLeader()
+{
+  if( !m_partyLeader )
+    return false;
+  return m_partyLeader->getId() == getId();
+}
+
+bool Sapphire::Entity::Player::isInParty()
+{
+  return m_partyLeader != nullptr;
+}
+
+Sapphire::Entity::PlayerPtr Sapphire::Entity::Player::getPartyLeader()
+{
+  return m_partyLeader;
+}
+
+bool Sapphire::Entity::Player::createEmptyParty()
+{
+  if( m_partyLeader )
+    return false;
+  m_partyLeader = getAsPlayer();
+  m_partyMemberList.clear();
+  m_partyMemberList.push_back( m_partyLeader );
+  setOnlineStatusMask( 0x0000803000000000 );
+  return true;
+}
+
+void Sapphire::Entity::Player::disbandParty()
+{
+  if( isPartyLeader() )
+  {
+    for( auto member : m_partyMemberList )
+    {
+      if( member->getId() == getId() )
+        continue;
+      member->m_partyLeader = nullptr;
+      member->setOnlineStatusMask( 0x0000800000000000 );
+      member->clearPartyList();
+    }
+    m_partyLeader = nullptr;
+    clearPartyList();
+  }
+}
+
+Sapphire::Entity::PlayerPtr Sapphire::Entity::Player::getPartyInvitationSender()
+{
+  return m_partyInvitationSender;
+}
+
+void Sapphire::Entity::Player::setPartyInvitationSender( PlayerPtr sender )
+{
+  m_partyInvitationSender = sender;
+}
+
+bool Sapphire::Entity::Player::addPartyMember( PlayerPtr member )
+{
+  if( !isPartyLeader() || member->isInParty() || getPartySize() >= 8 )
+    return false;
+  m_partyMemberList.push_back( member );
+  member->m_partyLeader = m_partyLeader;
+  member->setOnlineStatusMask( 0x0000802000000000 );
+  sendPartyListToParty();
+  return true;
+}
+
+bool Sapphire::Entity::Player::removePartyMember( PlayerPtr member )
+{
+  if( member->isInParty() && member->getPartyLeader()->getId() == getId() )
+  {
+    if( member->getId() == member->getPartyLeader()->getId() )
+    {
+      Entity::PlayerPtr nextLeader = nullptr;
+      for( auto it = m_partyMemberList.begin(); it != m_partyMemberList.end(); it++ )
+      {
+        if( !( *it )->isPartyLeader() )
+        {
+          nextLeader = *it;
+          break;
+        }
+      }
+      if( !nextLeader )
+      {
+        disbandParty();
+        return true;
+      }
+      changePartyLeader( nextLeader );
+      return nextLeader->removePartyMember( member );
+    }
+    else
+    {
+      bool flag = false;
+      for( auto it = m_partyMemberList.begin(); it != m_partyMemberList.end(); it++ )
+      {
+        if( ( *it )->getId() == member->getId() )
+        {
+          m_partyMemberList.erase( it );
+          member->m_partyLeader = nullptr;
+          member->setOnlineStatusMask( 0x0000800000000000 );
+          member->clearPartyList();
+          flag = true;
+          break;
+        }
+      }
+      if( flag )
+      {
+        sendPartyListToParty();
+        if( getPartySize() == 1 )
+        {
+          m_partyLeader = nullptr;
+          m_partyMemberList.clear();
+        }
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool Sapphire::Entity::Player::changePartyLeader( PlayerPtr newLeader )
+{
+  if( !isPartyLeader() || !newLeader->isInParty() || newLeader->getPartyLeader()->getId() != getId() )
+    return false;
+
+  for( auto it = m_partyMemberList.begin(); it != m_partyMemberList.end(); it++ )
+  {
+    if( ( *it )->getId() == newLeader->getId() )
+    {
+      newLeader->m_partyMemberList = m_partyMemberList;
+      m_partyMemberList.clear();
+      for( auto m : newLeader->m_partyMemberList )
+      {
+        m->m_partyLeader = newLeader;
+      }
+      newLeader->setOnlineStatusMask( 0x0000803000000000 );
+      setOnlineStatusMask( 0x0000802000000000 );
+      newLeader->sendPartyListToParty();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+uint8_t Sapphire::Entity::Player::getPartySize()
+{
+  if( isInParty() )
+  {
+    return m_partyMemberList.size();
+  }
+  return 0;
+}
+
+void Sapphire::Entity::Player::sendPartyListToParty( PlayerPtr filter )
+{
+  assert( isPartyLeader() );
+  FFXIVIpcPartyList partyList = {};
+  int i = 0;
+  int leaderIndex = 0;
+  for( auto member : m_partyMemberList )
+  {
+    assert( i < 8 );
+
+    memcpy( partyList.member[ i ].name, member->getName().c_str(), member->getName().length() + 1 );
+    partyList.member[ i ].contentId = member->getContentId();
+    partyList.member[ i ].charaId = member->getId();
+    partyList.member[ i ].u1 = 0xE0000000;
+    partyList.member[ i ].u2 = 0xE0000000;
+    partyList.member[ i ].hp = member->getHp();
+    partyList.member[ i ].maxHp = member->getMaxHp();
+    partyList.member[ i ].mp = member->getMp();
+    partyList.member[ i ].maxMp = 10000;
+    partyList.member[ i ].zoneId = member->getCurrentTerritory()->getTerritoryTypeId();
+    partyList.member[ i ].gposeSelectable = 1;
+    partyList.member[ i ].classId = static_cast< uint8_t >( member->getClass() );
+    partyList.member[ i ].level = member->getLevel();
+    if( member->isPartyLeader() )
+      leaderIndex = i;
+    i++;
+  }
+  partyList.partyId = 0x0044000000000001;
+  partyList.channelId = 0x0044000100000001;
+  partyList.leaderIndex = leaderIndex;
+  partyList.partySize = getPartySize();
+
+  for( auto member : m_partyMemberList )
+  {
+    if( !filter || member->getId() == filter->getId() )
+    {
+      auto packet = makeZonePacket< FFXIVIpcPartyList >( member->getId() );
+      memcpy( &packet->data().member[ 0 ], &partyList, sizeof( partyList ) );
+      member->queuePacket( packet );
+    }
+  }
+}
+
+void Sapphire::Entity::Player::sendPartyList()
+{
+  if( !isInParty() )
+  {
+    auto packet = makeZonePacket< FFXIVIpcPartyList >( getId() );
+    queuePacket( packet );
+  }
+  else
+  {
+    getPartyLeader()->sendPartyListToParty( getAsPlayer() );
+  }
+}
+
+void Sapphire::Entity::Player::clearPartyList()
+{
+  assert( !isInParty() );
+  auto packet = makeZonePacket< FFXIVIpcPartyList >( getId() );
+  queuePacket( packet );
+  m_partyMemberList.clear();
+}
+
+void Sapphire::Entity::Player::foreachPartyMember( std::function< void( PlayerPtr member ) > callback )
+{
+  if( !isPartyLeader() || !callback )
+    return;
+  for( auto member : m_partyMemberList )
+  {
+    callback( member );
+  }
+}
+
 void Sapphire::Entity::Player::gaugeClear()
 {
   std::memset( &m_gauge, 0, sizeof( m_gauge ) );
@@ -2374,4 +2702,365 @@ void Sapphire::Entity::Player::gaugeSetRaw( uint8_t* pData )
 {
   std::memcpy( &m_gauge, pData, 15 );
   sendActorGauge();
+}
+
+void Sapphire::Entity::Player::gaugeWarSetIb( uint8_t value )
+{
+  assert( value >= 0 && value <= 100 );
+  auto oldValue = gaugeWarGetIb();
+  if( ( oldValue == 0 && value != 0 ) ||
+      ( oldValue != 0 && value == 0 ) )
+  {
+    if( m_effect == 0 && value != 0 )
+      setVisualEffect( 7, true );
+    else if ( m_effect == 7 && value == 0 )
+      setVisualEffect( 0, true );
+  }
+  m_gauge.war.beastGauge = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+uint8_t Sapphire::Entity::Player::gaugeWarGetIb()
+{
+  return m_gauge.war.beastGauge;
+}
+
+void Sapphire::Entity::Player::gaugePldSetOath( uint8_t value )
+{
+  assert( value >= 0 && value <= 100 );
+  auto oldValue = gaugePldGetOath();
+  m_gauge.pld.oathGauge = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+uint8_t Sapphire::Entity::Player::gaugePldGetOath()
+{
+  return m_gauge.pld.oathGauge;
+}
+
+uint8_t Sapphire::Entity::Player::gaugeWhmGetLily()
+{
+  return m_gauge.whm.lilies;
+}
+
+uint8_t Sapphire::Entity::Player::gaugeWhmGetBloodLily()
+{
+  return m_gauge.whm.bloodLilies;
+}
+
+void Sapphire::Entity::Player::gaugeWhmSetLilies( uint8_t liles, uint8_t bloodLilies )
+{
+  assert( liles >= 0 && liles <= 3 );
+  assert( bloodLilies >= 0 && bloodLilies <= 3 );
+  m_gauge.whm.lilies = liles;
+  m_gauge.whm.bloodLilies = bloodLilies;
+  sendActorGauge();
+}
+
+void Sapphire::Entity::Player::gaugeWhmSetLilyTimer( uint16_t value, bool sendPacket )
+{
+  assert( value >= 0 && value <= 30000 );
+  m_gauge.whm.lilyTimer = value;
+  if( sendPacket )
+    sendActorGauge();
+}
+
+uint16_t Sapphire::Entity::Player::gaugeWhmGetLilyTimer()
+{
+  return m_gauge.whm.lilyTimer;
+}
+
+void Sapphire::Entity::Player::gaugeDrkSetBlood( uint8_t value )
+{
+  assert( value >= 0 && value <= 100 );
+  auto oldValue = gaugeDrkGetBlood();
+  m_gauge.drk.blood = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+uint8_t Sapphire::Entity::Player::gaugeDrkGetBlood()
+{
+  return m_gauge.drk.blood;
+}
+
+void Sapphire::Entity::Player::gaugeDrkSetDarkArts( bool value )
+{
+  auto oldValue = gaugeDrkGetDarkArts();
+  m_gauge.drk.darkArts = value ? 1 : 0;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+bool Sapphire::Entity::Player::gaugeDrkGetDarkArts()
+{
+  return m_gauge.drk.darkArts > 0;
+}
+
+void Sapphire::Entity::Player::gaugeDrkSetDarkSideTimer( uint16_t value, bool sendPacket )
+{
+  assert( value >= 0 && value <= 60000 );
+  auto oldValue = gaugeDrkGetDarkSideTimer();
+  m_gauge.drk.darksideTimer = value;
+  if( ( oldValue == 0 && value != 0 ) ||
+    ( oldValue != 0 && value == 0 ) )
+  {
+    if( m_effect == 0 && value != 0 )
+    {
+      setVisualEffect( 22, true );
+      sendDebug( "{0}", gaugeDrkGetDarkSideTimer() );
+    }
+    else if ( m_effect == 22 && value == 0 )
+    {
+      setVisualEffect( 0, true );
+      sendDebug( "{0}", gaugeDrkGetDarkSideTimer() );
+    }
+  }
+  if( sendPacket )
+    sendActorGauge();
+}
+
+uint16_t Sapphire::Entity::Player::gaugeDrkGetDarkSideTimer()
+{
+  return m_gauge.drk.darksideTimer;
+}
+
+void Sapphire::Entity::Player::gaugeDrkSetShadowTimer( uint16_t value, bool sendPacket )
+{
+  assert( value >= 0 && value <= 60000 );
+  m_gauge.drk.shadowTimer = value;
+  if( sendPacket )
+    sendActorGauge();
+}
+
+uint16_t Sapphire::Entity::Player::gaugeDrkGetShadowTimer()
+{
+  return m_gauge.drk.shadowTimer;
+}
+
+void Sapphire::Entity::Player::gaugeGnbSetAmmo( uint8_t value )
+{
+  assert( value >= 0 && value <= 2 );
+  auto oldValue = gaugeGnbGetAmmo();
+  m_gauge.gnb.ammo = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+uint8_t Sapphire::Entity::Player::gaugeGnbGetAmmo()
+{
+  return m_gauge.gnb.ammo;
+}
+
+void Sapphire::Entity::Player::gaugeGnbSetComboStep( uint8_t value )
+{
+  assert( value >= 0 && value <= 2 );
+  auto oldValue = gaugeGnbGetComboStep();
+  m_gauge.gnb.ammoComboStep = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+uint8_t Sapphire::Entity::Player::gaugeGnbGetComboStep()
+{
+  return m_gauge.gnb.ammoComboStep;
+}
+
+void Sapphire::Entity::Player::gaugeDrgSetDragonTimer( uint16_t value, bool sendPacket )
+{
+  assert( value >= 0 && value <= 30000 );
+  auto oldValue = gaugeDrgGetDragonTimer();
+  m_gauge.drg.dragonTimer = value;
+  if( ( oldValue == 0 && value != 0 ) ||
+    ( oldValue != 0 && value == 0 ) )
+  {
+    if( m_effect == 0 && value != 0 )
+    {
+      setVisualEffect( 21, true );
+    }
+    else if ( m_effect == 34 && value == 0 )
+    {
+      gaugeDrgSetDragonState( Sapphire::Common::DrgState::BloodOfTheDragon );
+      setVisualEffect( 21, true );
+      gaugeDrgSetDragonTimer( 30000, true );
+    }
+    else if ( m_effect == 21 && value == 0 )
+    {
+      gaugeDrgSetDragonState( Sapphire::Common::DrgState::None );
+      setVisualEffect( 0, true );
+    }
+  }
+  if( sendPacket )
+    sendActorGauge();
+}
+
+uint16_t Sapphire::Entity::Player::gaugeDrgGetDragonTimer()
+{
+  return m_gauge.drg.dragonTimer;
+}
+
+void Sapphire::Entity::Player::gaugeDrgSetDragonState( Sapphire::Common::DrgState value )
+{
+  auto oldValue = gaugeDrgGetDragonStateRaw();
+  m_gauge.drg.dragonState = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+bool Sapphire::Entity::Player::gaugeDrgGetDragonState( Sapphire::Common::DrgState state )
+{
+  return ( static_cast< uint8_t >( m_gauge.drg.dragonState ) & static_cast< uint8_t >( state ) ) > 0;
+}
+
+Sapphire::Common::DrgState Sapphire::Entity::Player::gaugeDrgGetDragonStateRaw()
+{
+  return m_gauge.drg.dragonState;
+}
+
+void Sapphire::Entity::Player::gaugeDrgSetEyes( uint8_t value )
+{
+  assert( value >= 0 && value <= 2 );
+  auto oldValue = gaugeDrgGetEyes();
+  m_gauge.drg.eyes = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+uint8_t Sapphire::Entity::Player::gaugeDrgGetEyes()
+{
+  return m_gauge.drg.eyes;
+}
+
+void Sapphire::Entity::Player::gaugeSamSetKenki( uint8_t value )
+{
+  assert( value >= 0 && value <= 100 );
+  auto oldValue = gaugeSamGetKenki();
+  m_gauge.sam.kenki = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+uint8_t Sapphire::Entity::Player::gaugeSamGetKenki()
+{
+  return m_gauge.sam.kenki;
+}
+
+void Sapphire::Entity::Player::gaugeSamSetSen( Sapphire::Common::SamSen type, bool value )
+{
+  auto sen = static_cast< uint8_t >( type );
+  auto current = static_cast< uint8_t >( gaugeSamGetSenRaw() );
+  if( value )
+    current |= sen;
+  else
+    current &= ~sen;
+  gaugeSamSetSen( static_cast< Sapphire::Common::SamSen >( current ) );
+}
+
+void Sapphire::Entity::Player::gaugeSamSetSen( Sapphire::Common::SamSen value )
+{
+  auto oldValue = gaugeSamGetSenRaw();
+  m_gauge.sam.sen = value;
+  if( oldValue != value )
+    sendActorGauge();
+}
+
+bool Sapphire::Entity::Player::gaugeSamGetSen( Sapphire::Common::SamSen type )
+{
+  return ( static_cast< uint8_t >( m_gauge.sam.sen ) & static_cast< uint8_t >( type ) ) > 0;
+}
+
+Sapphire::Common::SamSen Sapphire::Entity::Player::gaugeSamGetSenRaw()
+{
+  return m_gauge.sam.sen;
+}
+
+bool Sapphire::Entity::Player::gaugeSamHasAnySen()
+{
+  return static_cast< uint8_t >( m_gauge.sam.sen ) > 0;
+}
+
+void Sapphire::Entity::Player::setPosAndNotifyClient( float x, float y, float z, float rot )
+{
+  setRot( rot );
+  setPos( x, y, z, true );
+
+  auto setActorPosPacket = makeZonePacket< FFXIVIpcActorSetPos >( getId() );
+  setActorPosPacket->data().r16 = Common::Util::floatToUInt16Rot( rot );
+  setActorPosPacket->data().x = x;
+  setActorPosPacket->data().y = y;
+  setActorPosPacket->data().z = z;
+  queuePacket( setActorPosPacket );
+}
+
+Sapphire::TerritoryPtr Sapphire::Entity::Player::getOrCreatePrivateInstance( uint32_t zoneId )
+{
+  auto instance = m_privateInstanceMap[ zoneId ];
+  if( instance )
+    return instance;
+  auto& terriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+  instance = terriMgr.createTerritoryInstance( zoneId );
+  if( instance )
+  {
+    sendDebug( "Created instance with id: " + std::to_string( instance->getGuId() ) + " -> " + instance->getName() );
+    m_privateInstanceMap[ zoneId ] = instance;
+    return instance;
+  }
+  else
+  {
+    sendDebug( "Failed to create instance with id#{0}", zoneId );
+    return nullptr;
+  }
+}
+
+bool Sapphire::Entity::Player::enterPredefinedPrivateInstance( uint32_t zoneId )
+{
+  auto it = Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.find( zoneId );
+
+  auto& terriMgr = Common::Service< Sapphire::World::Manager::TerritoryMgr >::ref();
+  auto terri = terriMgr.getZoneByTerritoryTypeId( zoneId );
+  if( terri )
+  {
+    sendDebug( "Entering {} as global zone.", zoneId );
+    auto currentZone = getCurrentTerritory();
+    if( currentZone->getAsDirector() || currentZone->getTerritoryTypeInfo()->territoryIntendedUse == Sapphire::World::Manager::TerritoryMgr::TerritoryIntendedUse::BeforeTrialDung )
+    {
+      sendUrgent( "Current zone is not suitable for returning, keeping previous location." );
+    }
+    else
+    {
+      m_prevPos = m_pos;
+      m_prevRot = m_rot;
+      m_prevTerritoryTypeId = currentZone->getTerritoryTypeId();
+      m_prevTerritoryId = getTerritoryId();
+    }
+    if( it != Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.end() )
+    {
+      auto info = it->second;
+      forceZoneing( zoneId, info.pos.x, info.pos.y, info.pos.z, info.rot, false );
+    }
+    else
+    {
+      sendUrgent( "instance id: {} is not defined.", zoneId );
+      forceZoneing( zoneId, 0, 0, 0, 0, false );
+    }
+  }
+  else
+  {
+    if( it != Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo.end() )
+    {
+      auto info = it->second;
+      auto instance = getOrCreatePrivateInstance( zoneId );
+      if( instance )
+        return setInstance( instance, info.pos, info.rot );
+    }
+    else
+    {
+      sendUrgent( "instance id: {} is not defined.", zoneId );
+      auto instance = getOrCreatePrivateInstance( zoneId );
+      if( instance )
+        return setInstance( instance );
+    }
+  }
 }

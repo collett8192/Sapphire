@@ -31,15 +31,16 @@ void Sapphire::Entity::Player::finishQuest( uint16_t questId )
   //sendQuestTracker(); already sent in removeQuest()
 }
 
+void Sapphire::Entity::Player::finishQuest( uint16_t questId, uint32_t optionalChoice )
+{
+  giveQuestRewards( questId + 0x00010000 , optionalChoice );
+  finishQuest( questId );
+}
+
 void Sapphire::Entity::Player::unfinishQuest( uint16_t questId )
 {
   removeQuestsCompleted( questId );
-
-  auto questFinishPacket = makeZonePacket< FFXIVIpcQuestFinish >( getId() );
-  questFinishPacket->data().questId = questId;
-  questFinishPacket->data().flag1 = 0;
-  questFinishPacket->data().flag2 = 1;
-  queuePacket( questFinishPacket );
+  sendQuestInfo();
 }
 
 void Sapphire::Entity::Player::removeQuest( uint16_t questId )
@@ -946,6 +947,66 @@ void Sapphire::Entity::Player::updateQuest( uint16_t questId, uint8_t sequence )
   }
 }
 
+void Sapphire::Entity::Player::updateQuest( const World::Quest& quest )
+{
+  auto questId = quest.getId();
+  auto sequence = quest.getSeq();
+  if( hasQuest( questId ) )
+  {
+    uint8_t index = getQuestIndex( questId );
+    auto pNewQuest = m_activeQuests[ index ];
+    *pNewQuest = quest.getQuestData();
+
+    auto questUpdatePacket = makeZonePacket< FFXIVIpcQuestUpdate >( getId() );
+    pNewQuest->c.sequence = sequence;
+    questUpdatePacket->data().slot = index;
+    questUpdatePacket->data().questInfo = *pNewQuest;
+    queuePacket( questUpdatePacket );
+
+  }
+  else
+  {
+
+    uint8_t idx = 0;
+    bool hasFreeSlot = false;
+    for( ; idx < 30; idx++ )
+      if( !m_activeQuests[ idx ] )
+      {
+        hasFreeSlot = true;
+        break;
+      }
+
+    if( !hasFreeSlot )
+      return;
+
+    std::shared_ptr< QuestActive > pNewQuest( new QuestActive() );
+    *pNewQuest = quest.getQuestData();
+    m_activeQuests[ idx ] = pNewQuest;
+    m_questIdToQuestIdx[ questId ] = idx;
+    m_questIdxToQuestId[ idx ] = questId;
+
+    Common::Service< World::Manager::MapMgr >::ref().updateQuests( *this );
+
+    auto questUpdatePacket = makeZonePacket< FFXIVIpcQuestUpdate >( getId() );
+    questUpdatePacket->data().slot = idx;
+    questUpdatePacket->data().questInfo = *pNewQuest;
+    queuePacket( questUpdatePacket );
+
+    for( int32_t ii = 0; ii < 5; ii++ )
+    {
+      if( m_questTracking[ ii ] == -1 )
+      {
+        m_questTracking[ ii ] = idx;
+        break;
+      }
+    }
+
+    insertQuest( questId, idx, sequence );
+    sendQuestTracker();
+
+  }
+}
+
 void Sapphire::Entity::Player::sendQuestTracker()
 {
   auto trackerPacket = makeZonePacket< FFXIVIpcQuestTracker >( getId() );
@@ -1045,8 +1106,7 @@ void Sapphire::Entity::Player::removeQuestsCompleted( uint32_t questId )
 
   uint8_t value = 0x80 >> bitIndex;
 
-  if( m_questCompleteFlags[ index ] & value )
-    m_questCompleteFlags[ index ] ^= value;
+  m_questCompleteFlags[ index ] ^= value;
 
   Common::Service< World::Manager::MapMgr >::ref().updateQuests( *this );
 

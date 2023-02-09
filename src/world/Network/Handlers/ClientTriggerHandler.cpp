@@ -146,7 +146,7 @@ void Sapphire::Network::GameConnection::clientTriggerHandler( const Packets::FFX
     case ClientTriggerType::CastCancel: // Cancel cast
     {
       if( player.getCurrentAction() )
-        player.getCurrentAction()->setInterrupted( Common::ActionInterruptType::RegularInterrupt );
+        player.getCurrentAction()->interrupt();
       break;
     }
     case ClientTriggerType::Examine:
@@ -535,6 +535,11 @@ void Sapphire::Network::GameConnection::clientTriggerHandler( const Packets::FFX
       {
         player.setOnlineStatusMask( player.getOnlineStatusMask() & 0xFFFFFFFFFFFBFFFF );
       }
+      break;
+    }
+    case ClientTriggerType::Trigger612:
+    {
+      player.sendStateFlags();
       break;
     }
     default:

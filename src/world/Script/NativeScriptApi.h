@@ -3,7 +3,11 @@
 
 #include <string>
 #include <Event/EventHandler.h>
+#include "Manager/EventMgr.h"
+#include "Manager/PlayerMgr.h"
+#include "Manager/TerritoryMgr.h"
 #include "ForwardsZone.h"
+#include <Service.h>
 
 #ifdef _MSC_VER
 #define EXPORT __declspec( dllexport )
@@ -47,6 +51,8 @@ namespace Sapphire::ScriptAPI
     * @return The hash_code of the script
     */
     virtual std::size_t getType() const;
+
+    virtual void onDebug( Sapphire::Entity::Player& player, uint32_t param );
   };
 
 
@@ -125,9 +131,15 @@ namespace Sapphire::ScriptAPI
   public:
     explicit ActionScript( uint32_t actionId );
 
+    virtual void onBeforePreCheck( Sapphire::World::Action::Action& action );
+
     virtual void onStart( Sapphire::World::Action::Action& action );
 
     virtual void onExecute( Sapphire::World::Action::Action& action );
+
+    virtual void onBeforeBuildEffect( Sapphire::World::Action::Action& action, uint8_t victimCounter, uint8_t validVictimCounter );
+
+    virtual void onAfterBuildEffect( Sapphire::World::Action::Action& action );
 
     virtual void onInterrupt( Sapphire::World::Action::Action& action );
   };
@@ -171,6 +183,70 @@ namespace Sapphire::ScriptAPI
     virtual void onEventYield( Sapphire::Entity::Player& player, uint16_t scene, std::vector< uint32_t > param );
 
     virtual Event::EventHandler::QuestAvailability getQuestAvailability( Sapphire::Entity::Player& player, uint32_t eventId );
+  };
+
+  class QuestScript : public ScriptObject
+  {
+  protected:
+    template< typename Ret, class Obj >
+    inline std::function< void( Sapphire::Entity::Player& ) > bindScene( Ret ( Obj::*f )( Sapphire::Entity::Player& ) )
+    {
+      return std::bind( f, static_cast< Obj* >( this ), std::placeholders::_1 );
+    }
+
+    template< typename Ret, class Obj >
+    inline std::function< void( World::Quest&, Sapphire::Entity::Player& ) > bindQuestScene( Ret ( Obj::*f )( World::Quest&, Sapphire::Entity::Player& ) )
+    {
+      return std::bind( f, static_cast< Obj* >( this ), std::placeholders::_1, std::placeholders::_2 );
+    }
+
+    template< typename Ret, class Obj >
+    inline std::function< void( World::Quest& quest, Entity::Player& player, const Event::SceneResult& result ) >
+      bindSceneReturn( Ret ( Obj::*f )( World::Quest& quest, Entity::Player& player, const Event::SceneResult& result ) )
+    {
+      return std::bind( f, static_cast< Obj* >( this ), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 );
+    }
+
+  public:
+    explicit QuestScript( uint32_t eventId );
+
+    virtual void onTalk( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId );
+
+    virtual void onSay( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t sayId );
+
+    virtual void onEventItem( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId );
+
+    virtual void onBNpcKill( World::Quest& quest, uint16_t nameId, uint32_t entityId, Sapphire::Entity::Player& player );
+
+    virtual void onTriggerOwnerDeaggro( World::Quest& quest, uint32_t layoutId, uint32_t entityId, Sapphire::Entity::Player& player );
+
+    virtual void onEmote( World::Quest& quest, uint64_t actorId, uint32_t emoteId, Sapphire::Entity::Player& player );
+
+    virtual void onEnterTerritory( World::Quest& quest, Sapphire::Entity::Player& player, uint16_t param1, uint16_t param2 );
+
+    virtual void onWithinRange( World::Quest& quest, Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z );
+
+    virtual void onOutsideRange( World::Quest& quest, Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z );
+
+    virtual void onEventHandlerTradeReturn( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t subEvent, uint16_t param,
+      uint32_t catalogId );
+
+    virtual void onEObjHit( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t actionId );
+
+    World::Manager::EventMgr& eventMgr()
+    {
+      return Common::Service< World::Manager::EventMgr >::ref();
+    }
+
+    World::Manager::PlayerMgr& playerMgr()
+    {
+      return Common::Service< World::Manager::PlayerMgr >::ref();
+    }
+
+    World::Manager::TerritoryMgr& teriMgr()
+    {
+      return Common::Service< World::Manager::TerritoryMgr >::ref();
+    }
   };
 
   /*!

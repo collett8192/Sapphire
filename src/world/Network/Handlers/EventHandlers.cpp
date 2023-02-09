@@ -20,6 +20,7 @@
 
 #include "Event/EventHandler.h"
 #include "Manager/EventMgr.h"
+#include "Manager/TerritoryMgr.h"
 
 #include "Territory/InstanceContent.h"
 #include "Territory/QuestBattle.h"
@@ -68,12 +69,27 @@ void Sapphire::Network::GameConnection::eventHandlerTalk( const Packets::FFXIVAR
   {
     instance->onTalk( player, eventId, actorId );
   }
-  else if( !scriptMgr.onTalk( player, actorId, eventId ) &&
-           eventType == Event::EventHandler::EventHandlerType::Quest )
+
+  bool eventCalled = false;
+  if( eventType == Event::EventHandler::EventHandlerType::Warp )
   {
-    auto questInfo = exdData.get< Sapphire::Data::Quest >( eventId );
-    if( questInfo )
-      player.sendUrgent( "Quest not implemented: {0} ({1})", questInfo->name, questInfo->id );
+    auto it = Sapphire::World::Manager::TerritoryMgr::instanceExitEvent.find( eventId );
+    if( it != Sapphire::World::Manager::TerritoryMgr::instanceExitEvent.end() )
+    {
+      player.eventFinish( eventId, 1 );
+      player.exitInstance();
+      eventCalled = true;
+    }
+  }
+  if( !eventCalled )
+  {
+    if( !scriptMgr.onTalk( player, actorId, eventId ) &&
+      eventType == Event::EventHandler::EventHandlerType::Quest )
+    {
+      auto questInfo = exdData.get< Sapphire::Data::Quest >( eventId );
+      if( questInfo )
+        player.sendUrgent( "Quest not implemented: {0} ({1})", questInfo->name, questInfo->id );
+    }
   }
 
   player.checkEvent( eventId );
@@ -212,14 +228,31 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
   const auto eventId = packet.data().eventId;
   const auto scene = packet.data().scene;
   const auto param1 = packet.data().param1;
-  const auto param2 = packet.data().param2;
+  /*const auto param2 = packet.data().param2;
   const auto param3 = packet.data().param3;
-  const auto param4 = packet.data().param4;
+  const auto param4 = packet.data().param4;*/
 
   std::string eventName = eventMgr.getEventName( eventId );
 
-  player.sendDebug( "eventId: {0} ({0:08X}) scene: {1}, p1: {2}, p2: {3}, p3: {4}, p4: {5}",
-                    eventId, scene, param1, param2, param3, param4 );
+  /*player.sendDebug( "eventId: {0} ({0:08X}) scene: {1}, p1: {2}, p2: {3}, p3: {4}, p4: {5}",
+                    eventId, scene, param1, param2, param3, param4 );*/
+
+  struct ThreePointOhValuePeek
+  {
+    uint32_t handlerId;
+    uint16_t sceneId;
+    uint8_t errorCode;
+    uint8_t numOfResults;
+    uint32_t results[4];
+  };
+
+  auto peek = reinterpret_cast< const ThreePointOhValuePeek* >( &packet.data() );
+  player.sendDebug( "handler: {0} scene: {1}, err: {2}, num: {3}, r0: {4}, r1: {5}, r2: {6}",
+    peek->handlerId, peek->sceneId, peek->errorCode, peek->numOfResults,
+    peek->numOfResults > 0 ? peek->results[ 0 ] : 0,
+    peek->numOfResults > 1 ? peek->results[ 1 ] : 0,
+    peek->numOfResults > 2 ? peek->results[ 2 ] : 0,
+    peek->numOfResults > 3 ? peek->results[ 3 ] : 0 );
 
   auto pEvent = player.getEvent( eventId );
   if( pEvent )
@@ -234,9 +267,10 @@ void Sapphire::Network::GameConnection::eventHandlerReturn( const Packets::FFXIV
       result.actorId = pEvent->getActorId();
       result.eventId = eventId;
       result.param1 = param1;
-      result.param2 = param2;
-      result.param3 = param3;
-      result.param4 = param4;
+      result.param2 = peek->numOfResults > 0 ? peek->results[ 0 ] : 0;
+      result.param3 = peek->numOfResults > 1 ? peek->results[ 1 ] : 0;
+      result.param4 = peek->numOfResults > 2 ? peek->results[ 2 ] : 0;
+      result.param5 = peek->numOfResults > 3 ? peek->results[ 3 ] : 0;
       eventCallback( player, result );
     }
       // we might have a scene chain callback instead so check for that too

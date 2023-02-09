@@ -121,6 +121,8 @@ namespace Sapphire::Network
 
     DECLARE_HANDLER( chatHandler );
 
+    DECLARE_HANDLER( partyChatHandler );
+
     DECLARE_HANDLER( zoneLineHandler );
 
     DECLARE_HANDLER( clientTriggerHandler );
@@ -194,6 +196,18 @@ namespace Sapphire::Network
     DECLARE_HANDLER( worldInteractionhandler );
 
     DECLARE_HANDLER( diveHandler );
+
+    DECLARE_HANDLER( socialInviteHandler );
+
+    DECLARE_HANDLER( socialInviteResponseHandler );
+
+    DECLARE_HANDLER( partySetLeaderHandler );
+
+    DECLARE_HANDLER( leavePartyHandler );
+
+    DECLARE_HANDLER( kickPartyMemberHandler );
+
+    DECLARE_HANDLER( disbandPartyHandler );
 
     DECLARE_HANDLER( eventYieldHandler );
 

@@ -103,7 +103,34 @@ void Sapphire::Network::GameConnection::cfDutyAccepted( const Packets::FFXIVARR_
 
       player.prepareZoning( pInstance->getTerritoryTypeId(), true, 1, 0, 0, 1, 9 );
 
+      auto sourceZoneGuId = player.getCurrentTerritory()->getGuId();
       player.setInstance( instance );
+
+      if( player.isPartyLeader() )
+      {
+        player.foreachPartyMember( [ &player, &pInstance, sourceZoneGuId ]( Entity::PlayerPtr m )
+          {
+            if( m->getId() == player.getId() )
+              return;
+            if( m->hasStateFlag( PlayerStateFlag::InNpcEvent ) )
+            {
+              player.sendUrgent( "Cannot teleport {} to the instance, target in event.", m->getName() );
+              m->sendUrgent( "Too busy to join instance created by {}.", player.getName() );
+              return;
+            }
+            if( m->getCurrentTerritory()->getGuId() != sourceZoneGuId )
+            {
+              player.sendUrgent( "Cannot teleport {} to the instance, target in different zone.", m->getName() );
+              m->sendUrgent( "Too far to join instance created by {}.", player.getName() );
+              return;
+            }
+            m->prepareZoning( pInstance->getTerritoryTypeId(), true, 1, 0, 0, 1, 9 );
+            player.sendUrgent( "Teleporting {} to the instance...", m->getName() );
+            m->sendUrgent( "Joining instance created by {}.", player.getName() );
+            pInstance->bindPlayer( m->getId() );
+            m->setInstance( pInstance );
+          } );
+      }
     }
   }
   else

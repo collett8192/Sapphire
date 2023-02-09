@@ -199,13 +199,13 @@ bool Sapphire::World::Manager::TerritoryMgr::createDefaultTerritories()
     bool hasNaviMesh = pZone->getNaviProvider() != nullptr;
 
     Logger::info( "{0}\t{1}\t{2}\t{3:<10}\t{4}\t{5}\t{6}",
-                  territoryTypeId,
-                  guid,
-                  territoryInfo->territoryIntendedUse,
-                  territoryInfo->name,
-                  ( isPrivateTerritory( territoryTypeId ) ? "PRIVATE" : "PUBLIC" ),
-                  hasNaviMesh ? "NAVI" : "",
-                  pPlaceName->name );
+      territoryTypeId,
+      guid,
+      territoryInfo->territoryIntendedUse,
+      territoryInfo->name,
+      ( isPrivateTerritory( territoryTypeId ) ? "PRIVATE" : "PUBLIC" ),
+      hasNaviMesh ? "NAVI" : "",
+      pPlaceName->name );
 
     InstanceIdToTerritoryPtrMap instanceMap;
     instanceMap[ guid ] = pZone;
@@ -242,12 +242,12 @@ bool Sapphire::World::Manager::TerritoryMgr::createHousingTerritories()
       uint32_t guid = getNextInstanceId();
 
       Logger::info( "{0}\t{1}\t{2}\t{3:<10}\tHOUSING\t\t{4}#{5}",
-                    territoryTypeId,
-                    guid,
-                    territoryInfo->territoryIntendedUse,
-                    territoryInfo->name,
-                    pPlaceName->name,
-                    wardNum );
+        territoryTypeId,
+        guid,
+        territoryInfo->territoryIntendedUse,
+        territoryInfo->name,
+        pPlaceName->name,
+        wardNum );
 
       auto pHousingZone = make_HousingZone( wardNum, territoryTypeId, guid, territoryInfo->name, pPlaceName->name );
       pHousingZone->init();
@@ -469,7 +469,7 @@ Sapphire::TerritoryPtr Sapphire::World::Manager::TerritoryMgr::findOrCreateHousi
 
   auto parentZone = std::dynamic_pointer_cast< HousingZone >(
     getZoneByLandSetId( housingMgr.toLandSetId( static_cast< uint16_t >( landIdent.territoryTypeId ),
-                                                 static_cast< uint8_t >( landIdent.wardNum ) ) ) );
+      static_cast< uint8_t >( landIdent.wardNum ) ) ) );
 
   if( !parentZone )
     return nullptr;
@@ -514,8 +514,8 @@ Sapphire::TerritoryPtr Sapphire::World::Manager::TerritoryMgr::findOrCreateHousi
     return nullptr;
 
   auto zone = World::Territory::Housing::make_HousingInteriorTerritory( landIdent, territoryTypeId,
-                                                                        getNextInstanceId(), terriInfo->name,
-                                                                        house->getHouseName() );
+    getNextInstanceId(), terriInfo->name,
+    house->getHouseName() );
 
   zone->init();
 
@@ -811,3 +811,78 @@ void Sapphire::World::Manager::TerritoryMgr::createAndJoinQuestBattle( Entity::P
 }
 
 
+std::unordered_map< uint32_t, Sapphire::World::Manager::TerritoryMgr::InstanceSpawnInfo > Sapphire::World::Manager::TerritoryMgr::instanceSpawnInfo =
+{
+  { 212, { { 30, 1, 0 }, -3.1416 } },
+  { 210, { { 0, -0.2, 8 }, -3.1416 } },
+  { 198, { { 0, 1.605, 0 }, -3.1416 } },
+  { 204, { { 0, 0.5, 0 }, -3.1416 } },
+  { 205, { { 31, 1.6, 25.5 }, -2.68533 } },
+  { 331, { { -102.31, 3.9, -33.8 }, 1.568 } },
+  { 335, { { -555.5, -3.21, -344.4 }, 0.715 } },
+  { 351, { { -0, -2, 25 }, 3.1416 } },
+  { 395, { { -4, 0, 9 }, -3.1416 } },
+  { 433, { { 0, 0, 10 }, -3.1416 } },
+  { 428, { { 0, 0, 8 }, -3.1416 } },
+  { 462, { { 0, 0, 0 }, 0 } },
+  { 463, { { 11.7, 37.43, -20.4 }, 0.2 } },
+  { 507, { { -0.7, 0, 11.5 }, 3.1415 } },
+  { 636, { { 0, 0, 8 }, -3.1416 } },
+  { 680, { { 0, 16.35, -16.46 }, 0 } },
+  { 639, { { 0, 0, 10 }, -3.14 } },
+  { 681, { { 20, -1, 15 }, -2.25 } },
+  { 682, { { 144.15, -4.178, 55 }, 0 } },
+  { 683, { { 0, -5.169, 30 }, -3.14 } },
+  { 727, { { -454, 383, -127 }, 1.578 } },
+  { 738, { { 0, -2, 55 }, -3.14 } },
+  { 737, { { 250, 122, -346 }, -3.14 } },
+  { 744, { { 0, 0, 0 }, -3.14 } },
+  { 786, { { 0, -8, 43.5 }, 3.14 } },
+  { 829, { { -500, 107.7, 161.6 }, 2.75 } },
+  { 842, { { -66.5, 4.32, 72.36 }, 2.53 } },
+  { 877, { { 442.5, 4.95, 274 }, 0.85 } },
+  { 844, { { 0, 0, 0 }, -3.14 } },
+  { 880, { { 100, 0, 100 }, 3.14 } },
+  { 881, { { 100, 0, 100 }, 0 } },
+  { 918, { { 0, -200, -410 }, -3.1415 } },
+  { 393, { { 3, 2.64, -95 }, -3.1415 } },
+  { 569, { { 0, 0, 0 }, 0 } },
+};
+
+std::unordered_map< uint32_t, uint32_t > Sapphire::World::Manager::TerritoryMgr::instanceExitEvent =
+{
+  { 131089, 212 },
+  { 131085, 210 },
+  { 131123, 198 },
+  { 131075, 204 },
+  { 131076, 205 },
+  { 131138, 331 },
+  //{ 0, 335 }, no exit
+  { 131145, 351 },
+  { 131167, 395 },
+  { 131195, 433 },
+  { 131194, 428 },
+  { 131206, 462 },
+  { 131202, 463 },
+  { 131213, 507 },
+  { 131247, 636 },
+  { 131274, 680 },
+  { 131260, 639 },
+  { 131266, 681 },
+  //{ 131268, 682 }, scripted
+  { 131273, 683 },
+  { 131276, 727 },
+  { 131286, 738 },
+  { 131289, 737 },
+  { 131294, 744 },
+  { 131296, 786 },
+  { 131305, 829 },
+  { 131323, 842 },
+  //{ 0, 877 }, no exit
+  { 131311, 844 },
+  { 131326, 880 },
+  { 131327, 881 },
+  { 131363, 918 },
+  { 131168, 393 },
+  { 131235, 569 },
+};

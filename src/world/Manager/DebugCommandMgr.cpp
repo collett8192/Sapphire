@@ -915,6 +915,17 @@ void Sapphire::World::Manager::DebugCommandMgr::script( char* data, Entity::Play
       player.sendDebug( "Queued script reload for script: {0}", params );
     }
   }
+  else if ( subCommand == "debug" )
+  {
+    uint32_t id, param;
+    sscanf( params.c_str(), "%u %u", &id, &param );
+    if( id == 0 )
+    {
+      if( auto d = player.getCurrentTerritory()->getAsDirector() )
+        id = d->getDirectorId();
+    }
+    scriptMgr.onDebug( id, player, param );
+  }
   else
   {
     player.sendDebug( "Unknown script subcommand: {0}", subCommand );
@@ -1134,6 +1145,15 @@ void Sapphire::World::Manager::DebugCommandMgr::instance( char* data, Entity::Pl
 
     if( auto instance = player.getCurrentInstance() )
       instance->setCurrentBGM( bgmId );
+  }
+  else if( subCommand == "private" )
+  {
+    uint32_t zoneId = 0;
+    sscanf( params.c_str(), "%d", &zoneId );
+    if( zoneId > 0 )
+    {
+      player.enterPredefinedPrivateInstance( zoneId );
+    }
   }
   else
   {

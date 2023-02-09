@@ -55,7 +55,7 @@ void EventItemAction::execute()
   auto player = getSourceChara()->getAsPlayer();
   if( !player )
     return;
-
+  Manager::PlayerMgr::sendDebug( *player, "EventItemAction type {0} execute called.", m_eventItemAction->action );
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
 
@@ -67,4 +67,5 @@ void EventItemAction::execute()
 void EventItemAction::start()
 {
   m_startTime = Common::Util::getTimeMs();
+  m_started = true;
 }

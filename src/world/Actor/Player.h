@@ -159,7 +159,7 @@ namespace Sapphire::Entity
     void update( uint64_t tickCount ) override;
 
     /*! Event to be called upon Bnpc kill */
-    void onMobKill( uint16_t nameId );
+    void onMobKill( uint16_t nameId, uint32_t layoutId );
 
 
     // Quest
@@ -169,6 +169,7 @@ namespace Sapphire::Entity
 
     /*! update quest ( register it as active quest if new ) */
     void updateQuest( uint16_t questId, uint8_t sequence );
+    void updateQuest( const World::Quest& quest );
 
     /*! return true if quest is currently active */
     bool hasQuest( uint32_t questId );
@@ -187,6 +188,7 @@ namespace Sapphire::Entity
 
     /*! finish a given quest */
     void finishQuest( uint16_t questId );
+    void finishQuest( uint16_t questId, uint32_t optionalChoice );
 
     /*! finish a given quest */
     void unfinishQuest( uint16_t questId );
@@ -511,7 +513,8 @@ namespace Sapphire::Entity
     /*! gets the players territoryTypeId */
     uint32_t getTerritoryTypeId() const;
 
-    void forceZoneing( uint32_t zoneId );
+    void forceZoneing( uint32_t zoneId = 0, float x = FLT_MAX, float y = FLT_MAX, float z = FLT_MAX, float r = FLT_MAX, bool showZoneName = false );
+    void performZoning( uint16_t territoryTypeId, uint32_t territoryId, const Common::FFXIVARR_POSITION3& pos, float rotation );
 
     /*! return player to preset homepoint */
     void returnToHomepoint();
@@ -590,6 +593,7 @@ namespace Sapphire::Entity
 
     /*! mount the specified mount and send the packets */
     void mount( uint32_t id );
+    void setMount( uint32_t id );
 
     /*! dismount the current mount and send the packets */
     void dismount();
@@ -1016,9 +1020,76 @@ namespace Sapphire::Entity
     void sendActorGauge();
     void gaugeSetRaw( uint8_t* pData );
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    void gaugeWarSetIb( uint8_t value );
+    uint8_t gaugeWarGetIb();
 
+    void gaugePldSetOath( uint8_t value );
+    uint8_t gaugePldGetOath();
+
+    uint8_t gaugeWhmGetLily();
+    uint8_t gaugeWhmGetBloodLily();
+    void gaugeWhmSetLilies( uint8_t liles, uint8_t bloodLilies );
+    void gaugeWhmSetLilyTimer( uint16_t value, bool sendPacket = false );
+    uint16_t gaugeWhmGetLilyTimer();
+
+    void gaugeDrkSetBlood( uint8_t value );
+    uint8_t gaugeDrkGetBlood();
+    void gaugeDrkSetDarkArts( bool value );
+    bool gaugeDrkGetDarkArts();
+    void gaugeDrkSetDarkSideTimer( uint16_t value, bool sendPacket = false );
+    uint16_t gaugeDrkGetDarkSideTimer();
+    void gaugeDrkSetShadowTimer( uint16_t value, bool sendPacket = false );
+    uint16_t gaugeDrkGetShadowTimer();
+
+    void gaugeGnbSetAmmo( uint8_t value );
+    uint8_t gaugeGnbGetAmmo();
+    void gaugeGnbSetComboStep( uint8_t value );
+    uint8_t gaugeGnbGetComboStep();
+
+    void gaugeDrgSetDragonTimer ( uint16_t value, bool sendPacket = false );
+    uint16_t gaugeDrgGetDragonTimer();
+    void gaugeDrgSetDragonState ( Sapphire::Common::DrgState value );
+    bool gaugeDrgGetDragonState( Common::DrgState state );
+    Common::DrgState gaugeDrgGetDragonStateRaw();
+    void Sapphire::Entity::Player::gaugeDrgSetEyes( uint8_t value );
+    uint8_t Sapphire::Entity::Player::gaugeDrgGetEyes();
+
+    void gaugeSamSetKenki( uint8_t value );
+    uint8_t gaugeSamGetKenki();
+    void gaugeSamSetSen( Common::SamSen type, bool value );
+    void gaugeSamSetSen( Common::SamSen value );
+    bool gaugeSamGetSen( Common::SamSen type );
+    Common::SamSen gaugeSamGetSenRaw();
+    bool gaugeSamHasAnySen();
+
+    // party
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+  private:
+    PlayerPtr m_partyLeader;
+    PlayerPtr m_partyInvitationSender;
+    std::vector< PlayerPtr > m_partyMemberList;
+    void clearPartyList();
+    void sendPartyListToParty( PlayerPtr filter = nullptr );
+    void sendPartyList();
+  public:
+    bool isPartyLeader();
+    bool isInParty();
+    bool createEmptyParty();
+    void disbandParty();
+    PlayerPtr getPartyLeader();
+    PlayerPtr getPartyInvitationSender();
+    void setPartyInvitationSender( PlayerPtr sender );
+    bool addPartyMember( PlayerPtr member );
+    bool removePartyMember( PlayerPtr member );
+    bool changePartyLeader( PlayerPtr newLeader );
+    uint8_t getPartySize();
+    void foreachPartyMember( std::function< void( PlayerPtr member ) > callback);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
     void setPosAndNotifyClient( float x, float y, float z, float rot );
+    std::unordered_map< uint32_t, TerritoryPtr > m_privateInstanceMap;
+    TerritoryPtr getOrCreatePrivateInstance( uint32_t zoneId );
+    bool enterPredefinedPrivateInstance( uint32_t zoneId );
 
     Common::HuntingLogEntry& getHuntingLogEntry( uint8_t index );
 

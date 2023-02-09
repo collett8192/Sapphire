@@ -138,3 +138,62 @@ uint32_t Sapphire::World::Manager::EventMgr::mapEventActorToRealActor( uint32_t 
 
   return 0;
 }
+
+Sapphire::World::Quest Sapphire::World::Manager::EventMgr::getPlayerQuestDataFromEventId( Entity::Player& player, uint32_t eventId )
+{
+  for( uint16_t i = 0; i < 30; i++ )
+  {
+    auto activeQuests = player.getQuestActive( i );
+    if( !activeQuests )
+      continue;
+
+    uint32_t id = activeQuests->c.questId | static_cast< uint16_t >( Event::EventHandler::EventHandlerType::Quest ) << 16;
+    if( id == eventId )
+    {
+      return World::Quest( *activeQuests );
+    }
+  }
+  return {};
+}
+
+void Sapphire::World::Manager::EventMgr::playQuestScene( Entity::Player& player, uint32_t eventId, uint32_t scene, uint32_t flags, Event::EventHandler::QuestSceneReturnCallback eventCallback )
+{
+  if( eventCallback )
+  {
+    player.playScene( eventId, scene, flags, [ eventId, eventCallback, this ]( Entity::Player& player, const Event::SceneResult& result )
+      {
+        auto quest = getPlayerQuestDataFromEventId( player, eventId );
+        auto newQuest = false;
+        if( quest.getId() == 0 )
+        {
+          quest.setId( static_cast< uint16_t >( eventId & 0x0000FFFF ) );
+          newQuest = true;
+        }
+        auto copy = quest;
+        eventCallback( quest, player, result );
+        if( quest != copy && quest.getSeq() > 0 && ( newQuest || player.hasQuest( quest.getId() ) ) )
+          player.updateQuest( quest );
+      });
+  }
+  else
+  {
+    player.playScene( eventId, scene, flags, nullptr );
+  }
+}
+
+void Sapphire::World::Manager::EventMgr::eventFinish( Sapphire::Entity::Player& player, uint32_t eventId, uint32_t freePlayer )
+{
+  player.eventFinish( eventId, freePlayer );
+}
+
+void Sapphire::World::Manager::EventMgr::sendEventNotice( Entity::Player& player, uint32_t questId, int8_t noticeId, uint8_t numOfArgs, uint32_t var1, uint32_t var2 )
+{
+  player.sendQuestMessage( questId, noticeId, numOfArgs, var1, var2 );
+}
+
+void Sapphire::World::Manager::EventMgr::eventActionStart( Entity::Player& player, uint32_t eventId, uint32_t action,
+  World::Action::ActionCallback finishCallback, World::Action::ActionCallback interruptCallback,
+  uint64_t additional )
+{
+  player.eventActionStart( eventId, action, finishCallback, interruptCallback, additional );
+}

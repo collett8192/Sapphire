@@ -84,14 +84,11 @@ namespace Sapphire::Network::Packets::Server
       memset( m_data.unlockedRaids, 0xFF, sizeof( m_data.unlockedRaids ) );
       memset( m_data.unlockedTrials, 0xFF, sizeof( m_data.unlockedTrials ) );
 
-      // uncomment to enable custom unlocks
-
-      // everything
-      //memset( &m_data.unknownOword[ 0 ], 0xFF, reinterpret_cast< uint64_t >( &m_data.unknown5_55c ) - reinterpret_cast< uint64_t >( &m_data.unknownOword[ 0 ] ) );
-      // or select options below
-      //memset( m_data.unlockBitmask, 0xFF, sizeof( m_data.unlockBitmask ) );
-      //memset( m_data.mountGuideMask, 0xFF, sizeof( m_data.mountGuideMask ) );
-      //memset( m_data.minions, 0xFF, sizeof( m_data.minions ) );
+      //custom unlock
+      //memset( &m_data.unknownOword[ 0 ], 255, reinterpret_cast< uint64_t >( &m_data.unknown5_55c ) - reinterpret_cast< uint64_t >( &m_data.unknownOword[ 0 ] ) );
+      memset( m_data.unlockBitmask, 0xFF, sizeof( m_data.unlockBitmask ) );
+      memset( m_data.mountGuideMask, 0xFF, sizeof( m_data.mountGuideMask ) );
+      memset( m_data.minions, 0xFF, sizeof( m_data.minions ) );
     };
   };
 

@@ -52,6 +52,8 @@ namespace Sapphire::Scripting
      */
     void watchDirectories();
 
+    void onDebug( uint32_t id, Entity::Player& player, uint32_t param );
+
     void onPlayerFirstEnterWorld( Entity::Player& player );
 
     bool onTalk( Entity::Player& player, uint64_t actorId, uint32_t eventId );
@@ -67,15 +69,21 @@ namespace Sapphire::Scripting
     bool onEventItem( Entity::Player& player, uint32_t eventItemId, uint32_t eventId, uint32_t castTime,
                       uint64_t targetId );
 
-    bool onBNpcKill( Entity::Player& player, uint16_t nameId );
+    bool onBNpcKill( Entity::Player& player, uint16_t nameId, uint32_t layoutId );
 
     bool onEObjHit( Entity::Player& player, uint64_t actorId, uint32_t actionId );
+
+    bool onBeforePreCheck( World::Action::Action& action );
 
     bool onStart( World::Action::Action& action );
 
     bool onInterrupt( World::Action::Action& action );
 
     bool onExecute( World::Action::Action& action );
+
+    bool onBeforeBuildEffect( World::Action::Action& action, uint8_t victimCounter, uint8_t validVictimCounter );
+
+    bool onAfterBuildEffect( World::Action::Action& action );
 
     bool onStatusReceive( Entity::CharaPtr pActor, uint32_t effectId );
 
