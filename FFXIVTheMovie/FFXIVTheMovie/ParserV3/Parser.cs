@@ -671,7 +671,7 @@ namespace FFXIVTheMovie.ParserV3
                             {
                                 string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
                                 string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
-                                string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
+                                string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "HIDE_HOTBAR" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
                                 outputCpp.Add($"    eventMgr().playQuestScene( player, getId(), {current.SceneNumber}, {fullSceneFlag}, nullptr );");
                             }
                             else
@@ -893,7 +893,7 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add("    };");
                                     string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
                                     string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
-                                    string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "NONE" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
+                                    string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "HIDE_HOTBAR" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
                                     outputCpp.Add($"    eventMgr().playQuestScene( player, getId(), {current.SceneNumber}, {fullSceneFlag}, callback );");
                                     if (current.ShouldCastAction)
                                     {
