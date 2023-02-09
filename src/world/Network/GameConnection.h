@@ -214,6 +214,8 @@ namespace Sapphire::Network
     DECLARE_HANDLER( disbandPartyHandler );
 
     DECLARE_HANDLER( eventYieldHandler );
+
+    DECLARE_HANDLER( inventoryEquipRecommendedItemsHandler );
   };
 
 }
