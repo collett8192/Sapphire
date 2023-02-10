@@ -1301,14 +1301,14 @@ void Sapphire::Entity::Player::update( uint64_t tickCount )
   Chara::update( tickCount );
 }
 
-void Sapphire::Entity::Player::onMobKill( uint16_t nameId, uint32_t layoutId )
+void Sapphire::Entity::Player::onMobKill( Entity::BNpc& bnpc )
 {
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
-  scriptMgr.onBNpcKill( *getAsPlayer(), nameId, layoutId );
+  scriptMgr.onBNpcKill( *getAsPlayer(), bnpc );
 
   if( isActionLearned( static_cast< uint8_t >( Common::UnlockEntry::HuntingLog ) ) )
   {
-    updateHuntingLog( nameId );
+    updateHuntingLog( bnpc.getBNpcNameId() );
   }
 }
 

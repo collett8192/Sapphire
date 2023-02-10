@@ -63,6 +63,7 @@ namespace Sapphire::Entity
 
     uint32_t getBNpcBaseId() const;
     uint32_t getBNpcNameId() const;
+    uint32_t getLayoutId() const;
 
     uint8_t getEnemyType() const;
 

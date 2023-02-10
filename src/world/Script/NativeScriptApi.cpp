@@ -231,6 +231,10 @@ namespace Sapphire::ScriptAPI
   {
   }
 
+  void QuestScript::onBNpcKill( World::Quest& quest, Entity::BNpc& bnpc, Entity::Player& player )
+  {
+  }
+
   void QuestScript::onTriggerOwnerDeaggro( World::Quest& quest, uint32_t layoutId, uint32_t entityId, Sapphire::Entity::Player& player )
   {
   }

@@ -10,6 +10,7 @@
 #include "Territory/PublicContent.h"
 #include "Actor/Player.h"
 #include "Actor/EventObject.h"
+#include "Actor/BNpc.h"
 #include "ServerMgr.h"
 #include "Event/EventHandler.h"
 #include "Action/Action.h"
@@ -383,7 +384,7 @@ bool Sapphire::Scripting::ScriptMgr::onEventItem( Entity::Player& player, uint32
   return false;
 }
 
-bool Sapphire::Scripting::ScriptMgr::onBNpcKill( Entity::Player& player, uint16_t nameId, uint32_t layoutId )
+bool Sapphire::Scripting::ScriptMgr::onBNpcKill( Entity::Player& player, Entity::BNpc& bnpc )
 {
   auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
 
@@ -401,9 +402,9 @@ bool Sapphire::Scripting::ScriptMgr::onBNpcKill( Entity::Player& player, uint16_
     {
       std::string objName = eventMgr.getEventName( questId );
 
-      player.sendDebug( "Calling: {0}.onBnpcKill nameId#{1}", objName, nameId );
+      player.sendDebug( "Calling: {0}.onBnpcKill nameId#{1}", objName, bnpc.getBNpcNameId() );
 
-      script->onBNpcKill( nameId, player );
+      script->onBNpcKill( bnpc.getBNpcNameId(), player );
     }
     else
     {
@@ -412,13 +413,14 @@ bool Sapphire::Scripting::ScriptMgr::onBNpcKill( Entity::Player& player, uint16_
       {
         std::string objName = eventMgr.getEventName( questId );
 
-        player.sendDebug( "Calling: {0}.onBnpcKill nameId={1}, layoutId={2}", objName, nameId, layoutId );
+        player.sendDebug( "Calling: {0}.onBnpcKill nameId={1}, layoutId={2}", objName, bnpc.getBNpcNameId(), 0 );
         auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
         auto quest = eventMgr.getPlayerQuestDataFromEventId( player, questId );
         if( quest.getId() > 0 )
         {
           auto copy = quest;
-          threePointOhScript->onBNpcKill( quest, nameId, layoutId, player );
+          threePointOhScript->onBNpcKill( quest, bnpc.getBNpcNameId(), 0, player );
+          threePointOhScript->onBNpcKill( quest, bnpc, player );
           if( quest != copy )
             player.updateQuest( quest );
           return true;
