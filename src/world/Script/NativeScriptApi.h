@@ -6,6 +6,7 @@
 #include "Manager/EventMgr.h"
 #include "Manager/PlayerMgr.h"
 #include "Manager/TerritoryMgr.h"
+#include "Manager/WarpMgr.h"
 #include "ForwardsZone.h"
 #include <Service.h>
 
@@ -218,6 +219,8 @@ namespace Sapphire::ScriptAPI
 
     virtual void onBNpcKill( World::Quest& quest, uint16_t nameId, uint32_t entityId, Sapphire::Entity::Player& player );
 
+    virtual void onBNpcKill( World::Quest& quest, Entity::BNpc& bnpc, Sapphire::Entity::Player& player );
+
     virtual void onTriggerOwnerDeaggro( World::Quest& quest, uint32_t layoutId, uint32_t entityId, Sapphire::Entity::Player& player );
 
     virtual void onEmote( World::Quest& quest, uint64_t actorId, uint32_t emoteId, Sapphire::Entity::Player& player );
@@ -246,6 +249,11 @@ namespace Sapphire::ScriptAPI
     World::Manager::TerritoryMgr& teriMgr()
     {
       return Common::Service< World::Manager::TerritoryMgr >::ref();
+    }
+
+    World::Manager::WarpMgr& warpMgr()
+    {
+      return Common::Service< World::Manager::WarpMgr >::ref();
     }
   };
 

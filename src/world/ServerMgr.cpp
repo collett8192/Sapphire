@@ -42,6 +42,7 @@
 #include "Manager/NaviMgr.h"
 #include "Manager/ActionMgr.h"
 #include "Manager/MapMgr.h"
+#include "Manager/WarpMgr.h"
 
 #include "Territory/InstanceObjectCache.h"
 
@@ -189,8 +190,10 @@ void Sapphire::World::ServerMgr::run( int32_t argc, char* argv[] )
   Logger::info( "TerritoryMgr: Setting up zones" );
   auto pTeriMgr = std::make_shared< Manager::TerritoryMgr >();
   auto pHousingMgr = std::make_shared< Manager::HousingMgr >();
+  auto warpMgr = std::make_shared< Manager::WarpMgr >();
   Common::Service< Manager::HousingMgr >::set( pHousingMgr );
   Common::Service< Manager::TerritoryMgr >::set( pTeriMgr );
+  Common::Service< Manager::WarpMgr >::set( warpMgr );
 
   if( !pHousingMgr->init() )
   {

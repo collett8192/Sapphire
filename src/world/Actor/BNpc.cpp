@@ -168,6 +168,12 @@ uint32_t Sapphire::Entity::BNpc::getBNpcNameId() const
   return m_bNpcNameId;
 }
 
+uint32_t Sapphire::Entity::BNpc::getLayoutId() const
+{
+  // port this from 3.x?
+  return 0;
+}
+
 void Sapphire::Entity::BNpc::spawn( PlayerPtr pTarget )
 {
   m_lastRoamTargetReached = Util::getTimeSeconds();
@@ -590,7 +596,7 @@ void Sapphire::Entity::BNpc::onDeath()
     // TODO: handle drops 
     auto pPlayer = pHateEntry->m_pChara->getAsPlayer();
     if( pPlayer )
-      pPlayer->onMobKill( static_cast< uint16_t >( m_bNpcNameId ), 0 );
+      pPlayer->onMobKill( *this );
   }
   hateListClear();
 }

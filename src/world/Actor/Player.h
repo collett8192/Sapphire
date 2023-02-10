@@ -159,7 +159,7 @@ namespace Sapphire::Entity
     void update( uint64_t tickCount ) override;
 
     /*! Event to be called upon Bnpc kill */
-    void onMobKill( uint16_t nameId, uint32_t layoutId );
+    void onMobKill( Entity::BNpc& bnpc );
 
 
     // Quest
