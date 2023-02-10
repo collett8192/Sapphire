@@ -892,6 +892,7 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("ACTOR1", "dummy1");
                         result.Add("SCENE_2", "dummy1");
                         result.Add("SCENE_5", "ELYENORA");
+                        result.Add("WARP_SCENE5", "144|-34.5|0.64|100|-1.58|false");
                         break;
                     }
                 case "LucKmb109":

@@ -116,6 +116,8 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("#include <Service.h>");
             outputCpp.Add("#include \"Manager/TerritoryMgr.h\"");
             outputCpp.Add("#include \"Manager/EventMgr.h\"");
+            outputCpp.Add("#include \"Territory/Territory.h\"");
+            outputCpp.Add("#include \"Actor/BNpc.h\"");
             outputCpp.Add("");
             outputCpp.Add("using namespace Sapphire;");
             outputCpp.Add("");
@@ -435,9 +437,9 @@ namespace FFXIVTheMovie.ParserV3
             outputCpp.Add("    onProgress( quest, player, EVENT_ON_EMOTE, actorId, 0, emoteId );");
             outputCpp.Add("  }");
             outputCpp.Add("");
-            outputCpp.Add("  void onBNpcKill( World::Quest& quest, uint16_t nameId, uint32_t entityId, Sapphire::Entity::Player& player ) override");
+            outputCpp.Add("  void onBNpcKill( World::Quest& quest, Entity::BNpc& bnpc, Entity::Player& player ) override");
             outputCpp.Add("  {");
-            outputCpp.Add("    onProgress( quest, player, EVENT_ON_BNPC_KILL, static_cast< uint64_t >( nameId ), entityId, 0 );");
+            outputCpp.Add("    onProgress( quest, player, EVENT_ON_BNPC_KILL, static_cast< uint64_t >( bnpc.getBNpcNameId() ), bnpc.getLayoutId(), 0 );");
             outputCpp.Add("  }");
             outputCpp.Add("");
             outputCpp.Add("  void onWithinRange( World::Quest& quest, Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override");
@@ -812,7 +814,7 @@ namespace FFXIVTheMovie.ParserV3
                                             {
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendDebug( player, \"Finished with AutoFadeIn scene, reloading zone...\" );");
                                                 outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
-                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( player.getTerritoryTypeId(), 0, player.getPos(), player.getRot() );");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      warpMgr().requestMoveTerritory( player, Common::WarpType::WARP_TYPE_NORMAL, teriMgr().getZoneByTerritoryTypeId( player.getTerritoryTypeId() )->getGuId(), player.getPos(), player.getRot() );");
                                             }
                                         }
                                         else
@@ -850,7 +852,7 @@ namespace FFXIVTheMovie.ParserV3
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendDebug( player, \"Finished with AutoFadeIn scene, reloading zone...\" );");
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      eventMgr().eventFinish( player, result.eventId, 1 );");
-                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( player.getTerritoryTypeId(), 0, player.getPos(), player.getRot() );");
+                                                    outputCpp.Add($"{(hasIf ? "  " : "")}      warpMgr().requestMoveTerritory( player, Common::WarpType::WARP_TYPE_NORMAL, teriMgr().getZoneByTerritoryTypeId( player.getTerritoryTypeId() )->getGuId(), player.getPos(), player.getRot() );");
                                                 }
                                             }
                                         }
@@ -881,9 +883,13 @@ namespace FFXIVTheMovie.ParserV3
                                     else if (keyForWarp != null)
                                     {
                                         var dst = warpTable[keyForWarp];
-                                        outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing( {dst.Item1}, {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f, {dst.Item5:#0.0#}f, {dst.Item6} );");
-                                        //outputCpp.Add($"{(hasIf ? "  " : "")}      player.performZoning( {dst.Item1}, 0, {{ {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f }}, {dst.Item5:#0.0#}f );");
-                                        //outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to apply showZoneName = {dst.Item6}\" );");
+                                        bool fallback = dst.Item6.ToLower() == "true";
+                                        outputCpp.Add($"{(hasIf ? "  " : "")}      {(fallback ? "//" : "")}warpMgr().requestMoveTerritory( player, Common::WarpType::WARP_TYPE_NORMAL, teriMgr().getZoneByTerritoryTypeId( {dst.Item1} )->getGuId(), {{ {dst.Item2}, {dst.Item3}, {dst.Item4} }}, {dst.Item5} );");
+                                        if (fallback)
+                                        {
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      //warpMgr not supporting show zone text, fallback to old api");
+                                            outputCpp.Add($"{(hasIf ? "  " : "")}      player.forceZoneing( {dst.Item1}, {dst.Item2:#0.0#}f, {dst.Item3:#0.0#}f, {dst.Item4:#0.0#}f, {dst.Item5:#0.0#}f, {dst.Item6} );");
+                                        }
                                     }
 
                                     if (hasIf)
