@@ -4,12 +4,17 @@
 
 using namespace Sapphire;
 
-class I5001 :
+const uint32_t FFXIV_THE_MOVIE_INSTANCE_QUEST_ID = 67894;
+const uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_REQUIRED = 1;
+const uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_TARGET = 2;
+const uint32_t SCENE_LIST[] = { 1309, 0 };
+
+class I5004 :
   public Sapphire::ScriptAPI::InstanceContentScript
 {
 public:
-  I5001() :
-    Sapphire::ScriptAPI::InstanceContentScript( 5001 )
+  I5004() :
+    Sapphire::ScriptAPI::InstanceContentScript( 5004 )
   {
   }
   
@@ -22,11 +27,6 @@ public:
     while( instance.getCustomVar( 0 ) < instance.getCustomVar( 1 ) )
     {
       auto p = instance.getPlayer( instance.getCustomVar( 2 + instance.getCustomVar( 0 ) ) );
-
-      uint32_t FFXIV_THE_MOVIE_INSTANCE_QUEST_ID = 67775;
-      uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_REQUIRED = 2;
-      uint8_t FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_TARGET = 3;
-      uint32_t SCENE_LIST[] = { 0 }; // no cutscene to play
 
       if( p && p->getQuestSeq( FFXIV_THE_MOVIE_INSTANCE_QUEST_ID ) == FFXIV_THE_MOVIE_INSTANCE_QUEST_SEQ_REQUIRED )
       {
@@ -47,6 +47,12 @@ public:
     instance.setCustomVar( 1, instance.getCustomVar( 1 ) + 1 );
   }
 
+  bool the_movie_on_content_skipped( Sapphire::Entity::Player& player ) override
+  {
+    player.enterPredefinedPrivateInstance( 636 );
+    return true;
+  }
+
   void onDebug( Entity::Player& player, uint32_t param ) override
   {
     auto instance = player.getCurrentInstance();
@@ -59,4 +65,4 @@ public:
   
 };
 
-EXPOSE_SCRIPT( I5001 );
+EXPOSE_SCRIPT( I5004 );

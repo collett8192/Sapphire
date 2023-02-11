@@ -14,6 +14,22 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "HeaVng104":
+                    {
+                        result.Add("PRIVATE_SILENTCONJURER", "205");
+                        break;
+                    }
+                case "HeaVng103":
+                    {
+                        result.Add("PRIVATE_SCENE25", "636");
+                        result.Add("WARP_SCENE22", "132|40|-19|94.5|2.47|true");
+                        break;
+                    }
+                case "HeaVng102":
+                    {
+                        result.Add("WARP_SCENE7", "156|124.1|-15.1|-428.3|-2.81|true");
+                        break;
+                    }
                 case "HeaVne108":
                     {
                         result.Add("SCENE_17", null);
