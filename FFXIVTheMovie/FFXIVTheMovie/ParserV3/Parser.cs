@@ -74,7 +74,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.10");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.11");
             if (CppOutputExtraInfo)
             {
                 outputCpp.Add("// Extra info is ON");
@@ -236,7 +236,6 @@ namespace FFXIVTheMovie.ParserV3
                     }
                     else
                     {
-
                         if (entry.TargetObject is ActiveTerritory)
                         {
                             outputCpp.Add($"        if( type == EVENT_ON_ENTER_TERRITORY ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}");
@@ -252,7 +251,6 @@ namespace FFXIVTheMovie.ParserV3
                         string extraSpace = entry.Var != null ? "  " : "";
                         if (entry.Var != null)
                         {
-                            
                             if (/*entry.ConditionBranch && */entry.Var.Value > 1 && entry.Flag != null)
                             {
                                 outputCpp.Add($"          if( {entry.Flag.ToCppExprConditionNotDone()} )");
@@ -378,13 +376,13 @@ namespace FFXIVTheMovie.ParserV3
                             }
                             else
                             {
+                                if (entry.Owner.SeqNumber > 0 && entry.Owner.SeqNumber < 255 && entry.TodoIndex.HasValue)
+                                {
+                                    outputCpp.Add($"{extraSpace}          {entry.ToCppEventNotice()};");
+                                }
                                 if (entry.Var != null)
                                 {
                                     outputCpp.Add($"{extraSpace}          {entry.Var.ToCppExprOperation()};");
-                                    if (entry.Owner.SeqNumber > 0 && entry.Owner.SeqNumber < 255 && entry.TodoIndex.HasValue)
-                                    {
-                                        outputCpp.Add($"{extraSpace}          {entry.ToCppEventNotice()};");
-                                    }
                                     if (entry.Flag != null)
                                         outputCpp.Add($"{extraSpace}          {entry.Flag.ToCppExprSet()};");
                                     outputCpp.Add($"{extraSpace}          checkProgressSeq{seq.SeqNumber}( quest, player );");
@@ -842,7 +840,7 @@ namespace FFXIVTheMovie.ParserV3
                                                 }
                                                 if (s > 0 && entry.Flag != null)
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.Flag.ToCppExprSet()};");
-                                                if (s > 0 && s < 255 && entry.Var != null && entry.TodoIndex.HasValue)
+                                                if (s > 0 && s < 255 && entry.TodoIndex.HasValue)
                                                 {
                                                     outputCpp.Add($"{(hasIf ? "  " : "")}      {entry.ToCppEventNotice()};");
                                                 }
@@ -933,7 +931,7 @@ namespace FFXIVTheMovie.ParserV3
                                         }
                                         if (s > 0 && entry.Flag != null)
                                             outputCpp.Add($"    {entry.Flag.ToCppExprSet()};");
-                                        if (s > 0 && s < 255 && entry.Var != null && entry.TodoIndex.HasValue)
+                                        if (s > 0 && s < 255 && entry.TodoIndex.HasValue)
                                         {
                                             outputCpp.Add($"    {entry.ToCppEventNotice()};");
                                         }
@@ -1104,30 +1102,40 @@ namespace FFXIVTheMovie.ParserV3
             int todoCurrentPos = 0;
             Tuple<int, string, int> lastTodo = null;
             bool todoDisabled = paramTable.ContainsKey("TODO_DISABLED");
+            bool perfectTodoLength = fIsTodoChecked.TodoList.Count == seqList.Count - 2;
+            if (!perfectTodoLength)
+            {
+                if (!paramTable.ContainsKey("TODO_FORCED"))
+                {
+                    Console.WriteLine("Irregular Todo list detected, event message disabled. Use TODO_FORCED to disable this check.");
+                    todoDisabled = true;
+                }
+            }
+            
             foreach (var seq in seqList)
             {
                 lastTodo = null;
                 foreach (var entry in seq.EntryList)
                 {
-                    if (!todoDisabled && seq.SeqNumber > 0 && fIsTodoChecked != null)
+                    if (!todoDisabled && seq.SeqNumber > 0 && seq.SeqNumber < 255 && fIsTodoChecked != null)
                     {
-                        if (entry.Var != null)
+                        if (entry.Var != null || (perfectTodoLength && seq.EntryList.Count == 1) || (perfectTodoLength && entry.TargetObject is ActiveTerritory))
                         {
-                            if (lastTodo != null && lastTodo.Item2 == entry.Var.Name)
+                            if (entry.Var != null && lastTodo != null && lastTodo.Item2 == entry.Var.Name)
                             {
                                 entry.TodoIndex = lastTodo.Item1;
                             }
                             else if (todoCurrentPos < fIsTodoChecked.TodoList.Count)
                             {
+                                if (lastTodo != null && perfectTodoLength)
+                                    Debugger.Break();
                                 var todo = fIsTodoChecked.TodoList[todoCurrentPos];
-                                if (todo.Item2 == entry.Var.Name)
-                                {
-                                    lastTodo = todo;
-                                    entry.TodoIndex = todo.Item1;
-                                    todoCurrentPos++;
-                                }
+                                lastTodo = todo;
+                                entry.TodoIndex = todo.Item1;
+                                todoCurrentPos++;
                             }
                         }
+                        /*
                         else if (entry.EntryScene.ContainsSceneElement(LuaScene.SceneElement.ReturnTrue))
                         {
                             if (seq.EntryList.FirstOrDefault(e => e.TargetObject is ActiveTerritory) != null)
@@ -1141,6 +1149,7 @@ namespace FFXIVTheMovie.ParserV3
                                 }
                             }
                         }
+                        */
                     }
 
                     if (!entry.ConditionBranch && useBranchGlobal)
@@ -1173,6 +1182,8 @@ namespace FFXIVTheMovie.ParserV3
                         entry.InventoryBranch = true;
                     }
                 }
+                if (seq.SeqNumber > 0 && seq.SeqNumber < 255 && perfectTodoLength && lastTodo == null)
+                    todoCurrentPos++;
             }
 
         }
