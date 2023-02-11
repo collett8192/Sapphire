@@ -1,11 +1,11 @@
-// FFXIVTheMovie.ParserV3.9
-// param used:
-//TODO_REMOVE = 0
+// FFXIVTheMovie.ParserV3.11
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
 #include "Manager/TerritoryMgr.h"
 #include "Manager/EventMgr.h"
+#include "Territory/Territory.h"
+#include "Actor/BNpc.h"
 
 using namespace Sapphire;
 
@@ -202,9 +202,9 @@ public:
     onProgress( quest, player, EVENT_ON_EMOTE, actorId, 0, emoteId );
   }
 
-  void onBNpcKill( World::Quest& quest, uint16_t nameId, uint32_t entityId, Sapphire::Entity::Player& player ) override
+  void onBNpcKill( World::Quest& quest, Entity::BNpc& bnpc, Entity::Player& player ) override
   {
-    onProgress( quest, player, EVENT_ON_BNPC_KILL, static_cast< uint64_t >( nameId ), entityId, 0 );
+    onProgress( quest, player, EVENT_ON_BNPC_KILL, static_cast< uint64_t >( bnpc.getBNpcNameId() ), bnpc.getLayoutId(), 0 );
   }
 
   void onWithinRange( World::Quest& quest, Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
@@ -258,7 +258,7 @@ private:
         Scene00001( quest, player );
       }
     };
-    eventMgr().playQuestScene( player, getId(), 0, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 0, HIDE_HOTBAR, callback );
   }
   void Scene00001( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR0, UI8AL = 1, Flag8(1)=True
   {
@@ -268,7 +268,7 @@ private:
       checkProgressSeq0( quest, player );
       playerMgr().sendDebug( player, "Finished with AutoFadeIn scene, reloading zone..." );
       eventMgr().eventFinish( player, result.eventId, 1 );
-      player.performZoning( player.getTerritoryTypeId(), 0, player.getPos(), player.getRot() );
+      warpMgr().requestMoveTerritory( player, Common::WarpType::WARP_TYPE_NORMAL, teriMgr().getZoneByTerritoryTypeId( player.getTerritoryTypeId() )->getGuId(), player.getPos(), player.getRot() );
     };
     eventMgr().playQuestScene( player, getId(), 1, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -279,7 +279,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 2, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 2, HIDE_HOTBAR, callback );
   }
 
   void Scene00003( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR2, <No Var>, <No Flag>
@@ -288,7 +288,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 3, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 3, HIDE_HOTBAR, callback );
   }
 
   void Scene00004( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR3, <No Var>, <No Flag>
@@ -297,10 +297,10 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 4, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 4, HIDE_HOTBAR, callback );
   }
 
-  void Scene00005( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
+  void Scene00005( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>(Todo:0)
   {
     playerMgr().sendDebug( player, "HeaVnb106:67697 calling Scene00005: Normal(Talk, FadeIn, TargetCanMove, AutoFadeIn), id=VIDOFNIR" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
@@ -309,15 +309,16 @@ private:
     };
     eventMgr().playQuestScene( player, getId(), 5, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
-  void Scene00006( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>
+  void Scene00006( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>(Todo:0)
   {
     playerMgr().sendDebug( player, "HeaVnb106:67697 calling Scene00006: Normal(CutScene, AutoFadeIn), id=unknown" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
+      eventMgr().sendEventNotice( player, getId(), 0, 0, 0, 0 );
       checkProgressSeq1( quest, player );
       playerMgr().sendDebug( player, "Finished with AutoFadeIn scene, reloading zone..." );
       eventMgr().eventFinish( player, result.eventId, 1 );
-      player.performZoning( player.getTerritoryTypeId(), 0, player.getPos(), player.getRot() );
+      warpMgr().requestMoveTerritory( player, Common::WarpType::WARP_TYPE_NORMAL, teriMgr().getZoneByTerritoryTypeId( player.getTerritoryTypeId() )->getGuId(), player.getPos(), player.getRot() );
     };
     eventMgr().playQuestScene( player, getId(), 6, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
@@ -332,7 +333,7 @@ private:
       eventMgr().sendEventNotice( player, getId(), 1, 0, 0, 0 );
       checkProgressSeq2( quest, player );
     };
-    eventMgr().playQuestScene( player, getId(), 7, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 7, HIDE_HOTBAR, callback );
   }
 
   void Scene00008( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR6, <No Var>, <No Flag>
@@ -341,7 +342,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 8, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 8, HIDE_HOTBAR, callback );
   }
 
   void Scene00009( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR7, <No Var>, <No Flag>
@@ -350,7 +351,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 9, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 9, HIDE_HOTBAR, callback );
   }
 
   void Scene00010( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR4, <No Var>, <No Flag>
@@ -359,7 +360,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 10, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 10, HIDE_HOTBAR, callback );
   }
 
   void Scene00011( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR8, <No Var>, <No Flag>
@@ -368,7 +369,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 11, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 11, HIDE_HOTBAR, callback );
   }
 
   void Scene00012( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR9, <No Var>, <No Flag>
@@ -377,7 +378,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 12, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 12, HIDE_HOTBAR, callback );
   }
 
   void Scene00013( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR10, <No Var>, <No Flag>
@@ -386,7 +387,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 13, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 13, HIDE_HOTBAR, callback );
   }
 
   void Scene00014( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR11, <No Var>, <No Flag>
@@ -395,7 +396,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 14, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 14, HIDE_HOTBAR, callback );
   }
 
   void Scene00015( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR12, <No Var>, <No Flag>
@@ -404,7 +405,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 15, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 15, HIDE_HOTBAR, callback );
   }
 
   void Scene00016( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR8, <No Var>, <No Flag>
@@ -426,7 +427,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 17, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 17, HIDE_HOTBAR, callback );
   }
 
   void Scene00018( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR4, <No Var>, <No Flag>
@@ -435,7 +436,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 18, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 18, HIDE_HOTBAR, callback );
   }
 
   void Scene00019( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR10, <No Var>, <No Flag>
@@ -444,7 +445,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 19, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 19, HIDE_HOTBAR, callback );
   }
 
   void Scene00020( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR11, <No Var>, <No Flag>
@@ -453,7 +454,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 20, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 20, HIDE_HOTBAR, callback );
   }
 
   void Scene00021( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR12, <No Var>, <No Flag>
@@ -462,7 +463,7 @@ private:
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    eventMgr().playQuestScene( player, getId(), 21, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 21, HIDE_HOTBAR, callback );
   }
 };
 

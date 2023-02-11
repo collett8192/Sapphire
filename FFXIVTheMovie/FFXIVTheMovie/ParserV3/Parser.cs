@@ -1105,9 +1105,9 @@ namespace FFXIVTheMovie.ParserV3
             bool perfectTodoLength = fIsTodoChecked.TodoList.Count == seqList.Count - 2;
             if (!perfectTodoLength)
             {
-                if (!paramTable.ContainsKey("TODO_FORCED"))
+                if (!paramTable.ContainsKey("_TODO_FORCED"))
                 {
-                    Console.WriteLine("Irregular Todo list detected, event message disabled. Use TODO_FORCED to disable this check.");
+                    Console.WriteLine("Irregular Todo list detected, event message disabled. Use _TODO_FORCED to disable this check.");
                     todoDisabled = true;
                 }
             }

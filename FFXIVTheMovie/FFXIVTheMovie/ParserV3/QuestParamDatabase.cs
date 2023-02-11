@@ -121,14 +121,8 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("_ACTOR13B", "2|2");
                         break;
                     }
-                case "HeaVnb106":
-                    {
-                        result.Add("TODO_REMOVE", "0");
-                        break;
-                    }
                 case "HeaVnb105":
                     {
-                        result.Add("TODO_REMOVE", "0");
                         result.Add("SCENE_10", null);
                         result.Add("SCENE_13", "ACTOR4");
                         break;
@@ -142,6 +136,7 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("_ACTOR9", "B");
                         result.Add("_ACTOR9B", "3|2");
                         result.Add("TODO_REMOVE", "0");
+                        result.Add("_TODO_FORCED", "");
                         break;
                     }
                 case "HeaVnb103":
