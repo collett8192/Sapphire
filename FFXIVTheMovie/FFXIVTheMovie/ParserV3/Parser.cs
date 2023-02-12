@@ -1128,7 +1128,11 @@ namespace FFXIVTheMovie.ParserV3
                             else if (todoCurrentPos < fIsTodoChecked.TodoList.Count)
                             {
                                 if (lastTodo != null && perfectTodoLength)
-                                    Debugger.Break();
+                                {
+                                    //Debugger.Break();
+                                    Console.WriteLine("Need investigate todo list in this quest!");
+                                    continue;
+                                }
                                 var todo = fIsTodoChecked.TodoList[todoCurrentPos];
                                 lastTodo = todo;
                                 entry.TodoIndex = todo.Item1;
