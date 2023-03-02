@@ -67,5 +67,4 @@ void EventItemAction::execute()
 void EventItemAction::start()
 {
   m_startTime = Common::Util::getTimeMs();
-  m_started = true;
 }
