@@ -1036,7 +1036,9 @@ void Sapphire::Entity::Chara::onTick()
 
   if( thisTickDmg != 0 )
   {
-    takeDamage( thisTickDmg );
+    thisTickDmg = applyShieldProtection( thisTickDmg );
+    if( thisTickDmg > 0 )
+      takeDamage( thisTickDmg );
     sendToInRangeSet( makeActorControl( getId(), HPFloatingText, 0,
                                         static_cast< uint8_t >( ActionEffectType::Damage ), thisTickDmg ), true );
   }
