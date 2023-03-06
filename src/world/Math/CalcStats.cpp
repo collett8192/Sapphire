@@ -108,9 +108,7 @@ const int levelTable[81][6] =
   { 340, 380, 3300, 3600, 569, 569 },
 };
 
-std::random_device CalcStats::dev;
-std::mt19937 CalcStats::rng( dev() );
-std::uniform_int_distribution< std::mt19937::result_type > CalcStats::range10000( 0, 9999 );
+std::unique_ptr< RandGenerator< float > > CalcStats::rnd = nullptr;
 
 /*
    Class used for battle-related formulas and calculations.
@@ -874,5 +872,9 @@ float CalcStats::calcParry( const Sapphire::Entity::Chara& chara, float damage )
 
 float CalcStats::getRandomNumber0To100()
 {
-  return range10000( rng ) / 100.0f;
+  if( !rnd )
+  {
+    rnd = std::make_unique< RandGenerator< float > >( Service< RNGMgr >::ref().getRandGenerator< float >( 0, 100 ) );
+  }
+  return rnd->next();
 }
