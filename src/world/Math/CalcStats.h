@@ -1,12 +1,13 @@
 #ifndef _CALCSTATS_H
 #define _CALCSTATS_H
 
-#include <random>
 #include <Common.h>
 #include "Forwards.h"
+#include "Manager/RNGMgr.h"
 
 namespace Sapphire::Math
 {
+  using namespace Sapphire::World::Manager;
 
   class CalcStats
   {
@@ -170,9 +171,7 @@ namespace Sapphire::Math
      */
     static float calcAttackPower( const Sapphire::Entity::Chara& chara, uint32_t attackPower );
 
-    static std::random_device dev;
-    static std::mt19937 rng;
-    static std::uniform_int_distribution< std::mt19937::result_type > range10000;
+    static std::unique_ptr< RandGenerator< float > > rnd;
   };
 
 }
