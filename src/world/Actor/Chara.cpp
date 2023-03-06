@@ -519,10 +519,7 @@ void Sapphire::Entity::Chara::addStatusEffect( StatusEffect::StatusEffectPtr pEf
   for( auto effectIt : m_statusEffectMap )
   {
     auto statusEffect = effectIt.second;
-    if( static_cast< Common::StatusEffectType >( statusEffect->getEffectEntry().effectType ) == Common::StatusEffectType::Shield )
-    {
-      totalShieldValue += statusEffect->getEffectEntry().effectValue1;
-    }
+    totalShieldValue += statusEffect->getEffectEntry().getRemainingShield();
   }
 
   if( totalShieldValue > 0 )
@@ -654,10 +651,7 @@ void Sapphire::Entity::Chara::sendStatusEffectUpdate()
   for( auto effectIt : m_statusEffectMap )
   {
     auto statusEffect = effectIt.second;
-    if( static_cast< Common::StatusEffectType >( statusEffect->getEffectEntry().effectType ) == Common::StatusEffectType::Shield )
-    {
-      totalShieldValue += statusEffect->getEffectEntry().effectValue1;
-    }
+    totalShieldValue += statusEffect->getEffectEntry().getRemainingShield();
 
     float timeLeft = static_cast< float >( statusEffect->getDuration() -
                                            ( currentTimeMs - statusEffect->getStartTimeMs() ) ) / 1000;
@@ -692,10 +686,7 @@ void Sapphire::Entity::Chara::sendShieldUpdate()
   for( auto effectIt : m_statusEffectMap )
   {
     auto statusEffect = effectIt.second;
-    if( static_cast< Common::StatusEffectType >( statusEffect->getEffectEntry().effectType ) == Common::StatusEffectType::Shield )
-    {
-      totalShieldValue += statusEffect->getEffectEntry().effectValue1;
-    }
+    totalShieldValue += statusEffect->getEffectEntry().getRemainingShield();
   }
 
   if( totalShieldValue > 0 )
@@ -912,9 +903,7 @@ uint32_t Sapphire::Entity::Chara::getStatValue( Sapphire::Common::BaseParam base
       value = m_baseStats.haste;
       for( auto const& statusIt : m_statusEffectMap )
       {
-        auto effectEntry = statusIt.second->getEffectEntry();
-        if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) == Common::StatusEffectType::Haste )
-          value -= effectEntry.effectValue1;
+        value -= statusIt.second->getEffectEntry().getHasteBonus();
       }
       break;
     }
@@ -967,19 +956,19 @@ float Sapphire::Entity::Chara::applyShieldProtection( float damage )
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
 
-    if( static_cast< Sapphire::Common::StatusEffectType >( effectEntry.effectType ) == Sapphire::Common::StatusEffectType::Shield )
+    if( effectEntry.getType() == Sapphire::Common::StatusEffectType::Shield )
     {
       shieldChanged = true;
-      if( remainingDamage < effectEntry.effectValue1 )
+      if( remainingDamage < effectEntry.getRemainingShield() )
       {
-        effectEntry.effectValue1 -= static_cast< int32_t >( remainingDamage );
+        effectEntry.setRemainingShield( effectEntry.getRemainingShield() - static_cast< int32_t >( remainingDamage ) );
         status->replaceEffectEntry( effectEntry );
         remainingDamage = 0;
         break;
       }
       else
       {
-        remainingDamage -= effectEntry.effectValue1;
+        remainingDamage -= effectEntry.getRemainingShield();
         status->markToRemove();
       }
     }

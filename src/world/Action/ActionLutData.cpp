@@ -2911,8 +2911,8 @@ ActionLut::StatusEffectTable ActionLut::m_statusEffectTable =
   //No Mercy, ノー・マーシー: DamageMultiplier, All, 20%
   { 1831, { 1, 255, 20, 0, 0 } },
 
-  //Camouflage, カモフラージュ: DamageReceiveMultiplier, All, -10%
-  { 1832, { 2, 255, -10, 0, 0 } },
+  //Camouflage, カモフラージュ: DamageReceiveMultiplier, All, -10%, Parry 50%
+  { 1832, { 2, 255, -10, 0, 50 } },
 
   //Nebula, ネビュラ: DamageReceiveMultiplier, All, -30%
   { 1834, { 2, 255, -30, 0, 0 } },

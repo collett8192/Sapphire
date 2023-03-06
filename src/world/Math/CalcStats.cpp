@@ -193,22 +193,15 @@ float CalcStats::dodgeProbability( const Sapphire::Entity::Chara& chara )
 
 float CalcStats::blockProbability( const Chara& chara )
 {
-  // fake value: 20% for pld.
-  float result = chara.getClass() == Common::ClassJob::Paladin ? 20 : 0;
-  /*
   auto level = chara.getLevel();
   auto blockRate = static_cast< float >( chara.getStatValue( Common::BaseParam::BlockRate ) );
   auto levelVal =  static_cast< float >( levelTable[ level ][ Common::LevelTableEntry::DIV ] );
 
   float result = std::floor( ( 30 * blockRate ) / levelVal + 10 );
-  */
+
   for( auto const& entry : chara.getStatusEffectMap() )
   {
-    auto status = entry.second;
-    auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::BlockParryRateBonus )
-      continue;
-    result += effectEntry.effectValue2;
+    result += entry.second->getEffectEntry().getBlockRateBonus();
   }
 
   return result;
@@ -216,23 +209,12 @@ float CalcStats::blockProbability( const Chara& chara )
 
 float CalcStats::parryProbability( const Sapphire::Entity::Chara& chara )
 {
-  // fake value: 10% for players.
+  // dummy value: 10% for players.
   float result = chara.isPlayer() ? 10 : 0;
 
   for( auto const& entry : chara.getStatusEffectMap() )
   {
-    auto status = entry.second;
-    // hardcoded Camouflage
-    if( status->getId() == 1832 )
-    {
-      result += 50;
-      continue;
-    }
-    //
-    auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::BlockParryRateBonus )
-      continue;
-    result += effectEntry.effectValue3;
+    result += entry.second->getEffectEntry().getParryRateBonus();
   }
 
   return result;
@@ -254,11 +236,11 @@ float CalcStats::directHitProbability( const Chara& chara, Sapphire::Common::Cri
   {
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::CritDHRateBonus )
+    if( effectEntry.getType() != Common::StatusEffectType::CritDHRateBonus )
       continue;
-    if( effectEntry.effectValue1 & static_cast< int32_t >( filter ) )
+    if( static_cast< int32_t >( effectEntry.getActionTypeFilter() ) & static_cast< int32_t >( filter ) )
     {
-      result += effectEntry.effectValue3;
+      result += effectEntry.getDirectHitRateBonus();
     }
   }
   return result;
@@ -280,11 +262,11 @@ float CalcStats::criticalHitProbability( const Chara& chara, Sapphire::Common::C
   {
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::CritDHRateBonus )
+    if( effectEntry.getType() != Common::StatusEffectType::CritDHRateBonus )
       continue;
-    if( effectEntry.effectValue1 & static_cast< int32_t >( filter ) )
+    if( static_cast< int32_t >( effectEntry.getActionTypeFilter() ) & static_cast< int32_t >( filter ) )
     {
-      result += effectEntry.effectValue2;
+      result += effectEntry.getCritRateBonus();
     }
   }
   return result;
@@ -583,11 +565,11 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcAutoA
   {
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::DamageMultiplier )
+    if( effectEntry.getType() != Common::StatusEffectType::DamageMultiplier )
       continue;
-    if( effectEntry.effectValue1 & static_cast< int32_t >( Common::ActionTypeFilter::Physical ) )
+    if( static_cast< int32_t >( effectEntry.getActionTypeFilter() ) & static_cast< int32_t >( Common::ActionTypeFilter::Physical ) )
     {
-      factor *= 1.0f + ( effectEntry.effectValue2 / 100.0f );
+      factor *= 1.0f + ( effectEntry.getOutgoingDamageMultiplier() / 100.0f );
     }
   }
 
@@ -706,22 +688,21 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
   factor *= 1.0f + ( ( getRandomNumber0To100() - 50.0f ) / 1000.0f );
 
   Common::ActionTypeFilter actionTypeFilter = Common::ActionTypeFilter::Physical;
-  if( pAction )
+  if( pAction && pAction->isMagical() )
   {
-    if( pAction->isMagical() )
-      actionTypeFilter = Common::ActionTypeFilter::Magical;
+    actionTypeFilter = Common::ActionTypeFilter::Magical;
   }
 
   for( auto const& entry : chara.getStatusEffectMap() )
   {
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::DamageMultiplier )
+    if( effectEntry.getType() != Common::StatusEffectType::DamageMultiplier )
       continue;
 
-    if( effectEntry.effectValue1 & static_cast< int32_t >( actionTypeFilter ) )
+    if( static_cast< int32_t >( effectEntry.getActionTypeFilter() ) & static_cast< int32_t >( actionTypeFilter ) )
     {
-      factor *= 1.0f + ( effectEntry.effectValue2 / 100.0f );
+      factor *= 1.0f + ( effectEntry.getOutgoingDamageMultiplier() / 100.0f );
     }
   }
 
@@ -744,26 +725,23 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
   return std::pair( factor, hitType );
 }
 
-float CalcStats::applyDamageReceiveMultiplier( const Sapphire::Entity::Chara& chara, float originalDamage, Sapphire::Common::AttackType attackType )
+float CalcStats::applyDamageReceiveMultiplier( const Sapphire::Entity::Chara& chara, float originalDamage, Common::ActionTypeFilter typeFilter )
 {
+  if( typeFilter == ActionTypeFilter::Unknown )
+    return originalDamage;
+  
   float damage = originalDamage;
-
-  Common::ActionTypeFilter actionTypeFilter = Common::ActionTypeFilter::Unknown;
-  if( World::Action::Action::isAttackTypePhysical( attackType ) )
-    actionTypeFilter = Common::ActionTypeFilter::Physical;
-  else if( World::Action::Action::isAttackTypeMagical( attackType ) )
-    actionTypeFilter = Common::ActionTypeFilter::Magical;
 
   for( auto const& entry : chara.getStatusEffectMap() )
   {
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::DamageReceiveMultiplier )
+    if( effectEntry.getType() != Common::StatusEffectType::DamageReceiveMultiplier )
       continue;
 
-    if( effectEntry.effectValue1 & static_cast< int32_t >( actionTypeFilter ) )
+    if( static_cast< int32_t >( effectEntry.getActionTypeFilter() ) & static_cast< int32_t >( typeFilter ) )
     {
-      damage *= ( 1.0f + ( effectEntry.effectValue2 / 100.0f ) );
+      damage *= ( 1.0f + ( effectEntry.getIncomingDamageMultiplier() / 100.0f ) );
     }
   }
   return damage;
@@ -774,11 +752,7 @@ float CalcStats::applyHealingReceiveMultiplier( const Sapphire::Entity::Chara& c
   float heal = originalHeal;
   for( auto const& entry : chara.getStatusEffectMap() )
   {
-    auto status = entry.second;
-    auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::HealReceiveMultiplier )
-      continue;
-    heal *= ( 1.0f + ( effectEntry.effectValue2 / 100.0f ) );
+    heal *= ( 1.0f + ( entry.second->getEffectEntry().getIncomingHealMultiplier() / 100.0f ) );
   }
   return heal;
 }
@@ -813,12 +787,12 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
   {
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::HealCastMultiplier )
+    if( effectEntry.getType() != Common::StatusEffectType::HealCastMultiplier )
       continue;
 
     if( pAction->isGCD() ) // must be a "cast"
     {
-      factor *= 1.0f + ( effectEntry.effectValue2 / 100.0f );
+      factor *= 1.0f + ( effectEntry.getOutgoingHealMultiplier() / 100.0f );
     }
   }
 
@@ -837,14 +811,13 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcDamag
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
 
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) == Common::StatusEffectType::DamageReceiveTrigger && ( effectEntry.effectValue1 & static_cast< int32_t >( filter ) ) )
+    if( effectEntry.getType() == Common::StatusEffectType::DamageReceiveTrigger && ( static_cast< int32_t >( effectEntry.getActionTypeFilter() ) & static_cast< int32_t >( filter ) ) )
     {
-      if( static_cast< Common::StatusEffectTriggerResult >( effectEntry.effectValue3 ) == Common::StatusEffectTriggerResult::ReflectDamage )
+      if( effectEntry.getTriggerResult() == Common::StatusEffectTriggerResult::ReflectDamage )
       {
           auto wepDmg = Sapphire::Math::CalcStats::getWeaponDamage( pCharaVictim );
-          // any magical reflect damage exists?
-          auto damage = Sapphire::Math::CalcStats::calcActionDamage( nullptr, *pCharaVictim, effectEntry.effectValue2, wepDmg );
-          damage.first = Math::CalcStats::applyDamageReceiveMultiplier( *pCharaAttacker, damage.first, Common::AttackType::Physical );
+          auto damage = Sapphire::Math::CalcStats::calcActionDamage( nullptr, *pCharaVictim, effectEntry.getTriggerValue(), wepDmg );
+          damage.first = Math::CalcStats::applyDamageReceiveMultiplier( *pCharaAttacker, damage.first, effectEntry.getTriggerDamageType() );
 
           return damage;
       }
@@ -861,11 +834,11 @@ float CalcStats::calcAbsorbHP( Sapphire::Entity::CharaPtr pChara, float damage )
     auto status = entry.second;
     auto effectEntry = status->getEffectEntry();
 
-    if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) == Common::StatusEffectType::DamageDealtTrigger )
+    if( effectEntry.getType() == Common::StatusEffectType::DamageDealtTrigger )
     {
-      if( static_cast< Common::StatusEffectTriggerResult >( effectEntry.effectValue3 ) == Common::StatusEffectTriggerResult::AbsorbHP )
+      if( effectEntry.getTriggerResult() == Common::StatusEffectTriggerResult::AbsorbHP )
       {
-        result += damage * effectEntry.effectValue2 / 100.0f;
+        result += damage * effectEntry.getTriggerValue() / 100.0f;
       }
     }
   }

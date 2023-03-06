@@ -37,11 +37,10 @@ public:
       float shieldValue = heal.first * 1.25f;
       // apply new galvanize when not existing or larger than existing one
       auto oldEffect = pTarget->getStatusEffectById( STATUS_ID_GALVANIZE );
-      if( !oldEffect.second || oldEffect.second->getEffectEntry().effectValue1 <= shieldValue )
+      if( !oldEffect.second || oldEffect.second->getEffectEntry().getRemainingShield() <= shieldValue )
       {
         World::Action::StatusEffectEntry effectEntry;
-        effectEntry.effectType = static_cast< uint32_t >( Common::StatusEffectType::Shield );
-        effectEntry.effectValue1 = static_cast< int32_t >( shieldValue );
+        effectEntry.init( Common::StatusEffectType::Shield, shieldValue, 0, 0, 0 );
         auto pNewEffect = Sapphire::StatusEffect::make_StatusEffect( STATUS_ID_GALVANIZE, action.getSourceChara(), pTarget, 30000, 3000 );
         pNewEffect->replaceEffectEntry( effectEntry );
         action.getEffectbuilder()->applyStatusEffect( pTarget, action.getSourceChara(), pNewEffect );
@@ -53,11 +52,10 @@ public:
       {
         // apply catalyze when crit, same rule as galvanize
         oldEffect = pTarget->getStatusEffectById( STATUS_ID_CATALYZE );
-        if( !oldEffect.second || oldEffect.second->getEffectEntry().effectValue1 <= shieldValue )
+        if( !oldEffect.second || oldEffect.second->getEffectEntry().getRemainingShield() <= shieldValue )
         {
           World::Action::StatusEffectEntry effectEntry;
-          effectEntry.effectType = static_cast< uint32_t >( Common::StatusEffectType::Shield );
-          effectEntry.effectValue1 = static_cast< int32_t >( shieldValue ); // same shield value
+          effectEntry.init( Common::StatusEffectType::Shield, shieldValue, 0, 0, 0 );
           auto pNewEffect = Sapphire::StatusEffect::make_StatusEffect( STATUS_ID_CATALYZE, action.getSourceChara(), pTarget, 30000, 3000 );
           pNewEffect->replaceEffectEntry( effectEntry );
           action.getEffectbuilder()->applyStatusEffect( pTarget, action.getSourceChara(), pNewEffect );
