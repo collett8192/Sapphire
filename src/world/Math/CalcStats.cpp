@@ -653,7 +653,7 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
     {
       if( pAction->checkActionBonusRequirement() )
       {
-        critProb += lutEntry.bonusDataUInt16L;
+        critProb += lutEntry.getCritRateBonus();
       }
     }
   }
@@ -672,7 +672,7 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
     {
       if( pAction->checkActionBonusRequirement() )
       {
-        dhProb += lutEntry.bonusDataUInt16L;
+        dhProb += lutEntry.getDirectHitRateBonus();
       }
     }
   }
@@ -770,7 +770,7 @@ std::pair< float, Sapphire::Common::ActionHitSeverityType > CalcStats::calcActio
     {
       if( pAction->checkActionBonusRequirement() )
       {
-        critProb += lutEntry.bonusDataUInt16L;
+        critProb += lutEntry.getCritRateBonus();
       }
     }
   }

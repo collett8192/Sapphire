@@ -73,6 +73,7 @@ ActionTypeFilter Sapphire::World::Action::StatusEffectEntry::getActionTypeFilter
     case StatusEffectType::Dot:
     case StatusEffectType::Hot:
     case StatusEffectType::DamageMultiplier:
+    case StatusEffectType::DamageReceiveMultiplier:
     case StatusEffectType::CritDHRateBonus:
     case StatusEffectType::DamageDealtTrigger:
     case StatusEffectType::DamageReceiveTrigger:
@@ -348,4 +349,83 @@ bool Sapphire::World::Action::StatusEffectEntry::canApplyToAction( uint32_t acti
     default:
       return true;
   }
+}
+
+Sapphire::World::Action::ActionEntry::ActionEntry( uint16_t dp, uint16_t dcp, uint16_t ddp, uint16_t hp, uint16_t ss, uint32_t ssd, uint16_t ssp, uint16_t ts, uint32_t tsd, uint16_t tsp, uint8_t be, uint8_t br, uint32_t bdu32 )
+{
+  damagePotency = dp;
+  damageComboPotency = dcp;
+  damageDirectionalPotency = ddp;
+  healPotency = hp;
+  selfStatus = ss;
+  selfStatusDuration = ssd;
+  selfStatusParam = ssp;
+  targetStatus = ts;
+  targetStatusDuration = tsd;
+  targetStatusParam = tsp;
+  bonusEffect = be;
+  bonusRequirement = br;
+  bonusDataUInt32 = bdu32;
+}
+
+uint32_t Sapphire::World::Action::ActionEntry::getRawBonusData() const
+{
+  return bonusDataUInt32;
+}
+
+uint8_t Sapphire::World::Action::ActionEntry::getDamageFallOffPercentage() const
+{
+  if( bonusEffect & ActionBonusEffect::DamageFallOff )
+    return bonusDataByte1;
+  return 100;
+}
+
+uint16_t Sapphire::World::Action::ActionEntry::getSelfHealPotency() const
+{
+  if( bonusEffect & ActionBonusEffect::SelfHeal )
+    return bonusDataUInt16L;
+  return 0;
+}
+
+uint16_t Sapphire::World::Action::ActionEntry::getMPGainPercentage() const
+{
+  if( bonusEffect & ActionBonusEffect::GainMPPercentage )
+    return bonusDataUInt16L;
+  return 0;
+}
+
+ClassJob Sapphire::World::Action::ActionEntry::getAffectedJob() const
+{
+  if( bonusEffect & ActionBonusEffect::GainJobResource ||
+      bonusEffect & ActionBonusEffect::GainJobTimer )
+    return static_cast< Common::ClassJob >( bonusDataByte3 );
+  return ClassJob::Adventurer;
+}
+
+uint8_t Sapphire::World::Action::ActionEntry::getJobResourceGain() const
+{
+  if( bonusEffect & ActionBonusEffect::GainJobResource )
+    return bonusDataByte4;
+  return 0;
+}
+
+uint16_t Sapphire::World::Action::ActionEntry::getJobTimerGain() const
+{
+  if( bonusEffect & ActionBonusEffect::GainJobTimer )
+    return bonusDataUInt16L;
+  return 0;
+}
+
+uint16_t Sapphire::World::Action::ActionEntry::getCritRateBonus() const
+{
+  if( bonusEffect & ActionBonusEffect::CritBonus )
+    return bonusDataUInt16L;
+  return 0;
+}
+
+uint16_t Sapphire::World::Action::ActionEntry::getDirectHitRateBonus() const
+{
+  if( bonusEffect & ActionBonusEffect::DHBonus )
+    return bonusDataUInt16L;
+  return 0;
 }

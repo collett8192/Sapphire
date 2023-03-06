@@ -500,7 +500,7 @@ void Action::Action::buildEffects()
                        m_actionData->attackType,
                        m_lutEntry.damagePotency, m_lutEntry.damageComboPotency, m_lutEntry.damageDirectionalPotency,
                        m_lutEntry.healPotency, m_lutEntry.selfStatus, m_lutEntry.targetStatus,
-                       m_lutEntry.bonusEffect, m_lutEntry.bonusRequirement, m_lutEntry.bonusDataUInt32 );
+                       m_lutEntry.bonusEffect, m_lutEntry.bonusRequirement, m_lutEntry.getRawBonusData() );
   }
 
   uint8_t victimCounter = 0, validVictimCounter = 0;
@@ -529,7 +529,7 @@ void Action::Action::buildEffects()
         {
           if( checkActionBonusRequirement() )
           {
-            dmg.first = static_cast< uint32_t >( 1.0 * dmg.first * ( m_lutEntry.bonusDataByte1 / 100.0 ) );
+            dmg.first = static_cast< uint32_t >( 1.0 * dmg.first * ( m_lutEntry.getDamageFallOffPercentage() / 100.0 ) );
           }
         }
       }
@@ -618,7 +618,7 @@ void Action::Action::buildEffects()
         {
           if( checkActionBonusRequirement() )
           {
-            auto heal = calcHealing( m_lutEntry.bonusDataUInt16L );
+            auto heal = calcHealing( m_lutEntry.getSelfHealPotency() );
             heal.first = Math::CalcStats::applyHealingReceiveMultiplier( *m_pSource, heal.first );
             m_effectBuilder->heal( actor, m_pSource, heal.first, heal.second, Common::ActionEffectResultFlag::EffectOnSource );
           }
@@ -643,34 +643,34 @@ void Action::Action::buildEffects()
           if( m_lutEntry.bonusEffect & Common::ActionBonusEffect::GainMPPercentage )
           {
             if( checkActionBonusRequirement() )
-              m_effectBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.bonusDataUInt16L / 100, Common::ActionEffectResultFlag::EffectOnSource );
+              m_effectBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.getMPGainPercentage() / 100, Common::ActionEffectResultFlag::EffectOnSource );
           }
 
           if( m_lutEntry.bonusEffect & Common::ActionBonusEffect::GainJobResource )
           {
             if( checkActionBonusRequirement() )
             {
-              switch( static_cast< Common::ClassJob >( m_lutEntry.bonusDataByte3 ) )
+              switch( m_lutEntry.getAffectedJob() )
               {
                 case Common::ClassJob::Marauder:
                 case Common::ClassJob::Warrior:
                 {
-                  player->gaugeWarSetIb( std::min( 100, player->gaugeWarGetIb() + m_lutEntry.bonusDataByte4 ) );
+                  player->gaugeWarSetIb( std::min( 100, player->gaugeWarGetIb() + m_lutEntry.getJobResourceGain() ) );
                   break;
                 }
                 case Common::ClassJob::Darkknight:
                 {
-                  player->gaugeDrkSetBlood( std::min( 100, player->gaugeDrkGetBlood() + m_lutEntry.bonusDataByte4 ) );
+                  player->gaugeDrkSetBlood( std::min( 100, player->gaugeDrkGetBlood() + m_lutEntry.getJobResourceGain() ) );
                   break;
                 }
                 case Common::ClassJob::Gunbreaker:
                 {
-                  player->gaugeGnbSetAmmo( std::min( 2, player->gaugeGnbGetAmmo() + m_lutEntry.bonusDataByte4 ) );
+                  player->gaugeGnbSetAmmo( std::min( 2, player->gaugeGnbGetAmmo() + m_lutEntry.getJobResourceGain() ) );
                   break;
                 }
                 case Common::ClassJob::Samurai:
                 {
-                  player->gaugeSamSetKenki( std::min( 100, player->gaugeSamGetKenki() + m_lutEntry.bonusDataByte4 ) );
+                  player->gaugeSamSetKenki( std::min( 100, player->gaugeSamGetKenki() + m_lutEntry.getJobResourceGain() ) );
                   break;
                 }
               }
@@ -681,16 +681,16 @@ void Action::Action::buildEffects()
           {
             if( checkActionBonusRequirement() )
             {
-              switch( static_cast< Common::ClassJob >( m_lutEntry.bonusDataByte3 ) )
+              switch( m_lutEntry.getAffectedJob() )
               {
                 case Common::ClassJob::Darkknight:
                 {
-                  player->gaugeDrkSetDarkSideTimer( std::min( 60000, player->gaugeDrkGetDarkSideTimer() + m_lutEntry.bonusDataUInt16L ), true );
+                  player->gaugeDrkSetDarkSideTimer( std::min( 60000, player->gaugeDrkGetDarkSideTimer() + m_lutEntry.getJobTimerGain() ), true );
                   break;
                 }
                 case Common::ClassJob::Dragoon:
                 {
-                  player->gaugeDrgSetDragonTimer( std::min( 30000, player->gaugeDrgGetDragonTimer() + m_lutEntry.bonusDataUInt16L ), true );
+                  player->gaugeDrgSetDragonTimer( std::min( 30000, player->gaugeDrgGetDragonTimer() + m_lutEntry.getJobTimerGain() ), true );
                   break;
                 }
               }
