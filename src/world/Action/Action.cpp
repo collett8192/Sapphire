@@ -533,7 +533,7 @@ void Action::Action::buildEffects()
           }
         }
       }
-      dmg.first = Math::CalcStats::applyDamageReceiveMultiplier( *actor, dmg.first, attackType );
+      dmg.first = Math::CalcStats::applyDamageReceiveMultiplier( *actor, dmg.first, getActionTypeFilterFromAttackType( attackType ) );
 
       float originalDamage = dmg.first;
       bool dodged = false;
@@ -1244,6 +1244,25 @@ bool Action::Action::isAttackTypePhysical( Common::AttackType attackType )
 bool Action::Action::isAttackTypeMagical( Common::AttackType attackType )
 {
   return attackType == Common::AttackType::Magical;
+}
+
+ActionTypeFilter Sapphire::World::Action::Action::getActionTypeFilterFromAttackType( AttackType attackType )
+{
+  switch( attackType )
+  {
+    case AttackType::Physical:
+      return ActionTypeFilter::Physical;
+    case AttackType::Magical:
+      return ActionTypeFilter::Magical;
+    case AttackType::Slashing:
+      return static_cast< ActionTypeFilter >( static_cast< uint32_t >( ActionTypeFilter::Slashing ) + static_cast< uint32_t >( ActionTypeFilter::Physical ) );
+    case AttackType::Piercing:
+      return static_cast< ActionTypeFilter >( static_cast< uint32_t >( ActionTypeFilter::Piercing ) + static_cast< uint32_t >( ActionTypeFilter::Physical ) );
+    case AttackType::Blunt:
+      return static_cast< ActionTypeFilter >( static_cast< uint32_t >( ActionTypeFilter::Blunt ) + static_cast< uint32_t >( ActionTypeFilter::Physical ) );
+    default:
+      return ActionTypeFilter::Unknown;
+  }
 }
 
 void Action::Action::setPrimaryCost( Common::ActionPrimaryCostType type, uint16_t cost )

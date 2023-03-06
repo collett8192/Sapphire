@@ -140,6 +140,7 @@ namespace Sapphire::World::Action
 
     static bool isAttackTypePhysical( Common::AttackType attackType );
     static bool isAttackTypeMagical( Common::AttackType attackType );
+    static ActionTypeFilter getActionTypeFilterFromAttackType( AttackType attackType );
 
     /*!
      * @brief Starts the cast. Finishes it immediately if there is no cast time (weaponskills).

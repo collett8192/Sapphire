@@ -2,6 +2,9 @@
 #define SAPPHIRE_ACTIONLUT_H
 
 #include <unordered_map>
+#include <Common.h>
+
+using namespace Sapphire::Common;
 
 namespace Sapphire::World::Action
 {
@@ -39,11 +42,40 @@ namespace Sapphire::World::Action
 
   struct StatusEffectEntry
   {
+  private:
     uint32_t effectType;
     int32_t effectValue1;
     int32_t effectValue2;
     int32_t effectValue3;
     int32_t effectValue4;
+  public:
+    StatusEffectEntry() = default;
+    StatusEffectEntry( uint32_t type, int32_t v1, int32_t v2, int32_t v3, int32_t v4 );
+    void init( StatusEffectType type, int32_t v1, int32_t v2, int32_t v3, int32_t v4 );
+    StatusEffectType getType() const;
+    ActionTypeFilter getActionTypeFilter() const;
+    int32_t getMPRestoreTick() const;
+    int32_t getDotHotPotency() const;
+    int32_t getOutgoingDamageMultiplier() const;
+    int32_t getIncomingDamageMultiplier() const;
+    int32_t getOutgoingHealMultiplier() const;
+    int32_t getIncomingHealMultiplier() const;
+    int32_t getPotencyMultiplier() const;
+    int32_t getGCDBasedMPRestorePercentage() const;
+    int32_t getRemainingCharges() const; // -1 is infinite charges
+    void setRemainingCharges( int32_t charges );
+    int32_t getRemainingShield() const;
+    void setRemainingShield( int32_t shield );
+    int32_t getHasteBonus() const;
+    int32_t getBlockRateBonus() const;
+    int32_t getParryRateBonus() const;
+    int32_t getCritRateBonus() const;
+    int32_t getDirectHitRateBonus() const;
+    StatusEffectTriggerResult getTriggerResult() const;
+    int32_t getTriggerValue() const;
+    ActionTypeFilter getTriggerDamageType() const;
+
+    bool canApplyToAction( uint32_t actionId, uint8_t actionCategory ) const;
   };
 
   class ActionLut

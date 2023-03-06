@@ -71,8 +71,7 @@ public:
   void refresh( Sapphire::World::Action::StatusEffectEntry newEntry );
 
 private:
-  bool checkActionBoostType1( Sapphire::World::Action::Action* action ); // see cpp for more info
-  bool checkActionBoostType2( Sapphire::World::Action::Action* action ); // see cpp for more info
+  bool applyToAction( Sapphire::World::Action::Action* action );
 
   uint32_t m_id;
   Entity::CharaPtr m_sourceActor;

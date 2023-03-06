@@ -24,8 +24,7 @@ public:
   {
     auto pTarget = action.getHitChara();
     World::Action::StatusEffectEntry effectEntry;
-    effectEntry.effectType = static_cast< uint32_t >( Common::StatusEffectType::Shield );
-    effectEntry.effectValue1 = static_cast< int32_t >( ( 1.0 * pTarget->getMaxHp() ) * 0.25 );
+    effectEntry.init( Common::StatusEffectType::Shield, static_cast< int32_t >( ( 1.0 * pTarget->getMaxHp() ) * 0.25 ), 0, 0, 0 );
     auto pNewEffect = Sapphire::StatusEffect::make_StatusEffect( STATUS_ID_THE_BLACKEST_NIGHT, action.getSourceChara(), pTarget, 7000, 3000 );
     pNewEffect->replaceEffectEntry( effectEntry );
     action.getEffectbuilder()->applyStatusEffect( pTarget, action.getSourceChara(), pNewEffect );

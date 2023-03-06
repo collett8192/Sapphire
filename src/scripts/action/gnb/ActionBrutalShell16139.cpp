@@ -32,8 +32,7 @@ public:
       if( chara->getLevel() >= 52 && heal.first > 0 )
       {
         World::Action::StatusEffectEntry effectEntry;
-        effectEntry.effectType = static_cast< uint32_t >( Common::StatusEffectType::Shield );
-        effectEntry.effectValue1 = static_cast< int32_t >( heal.first );
+        effectEntry.init( Common::StatusEffectType::Shield, heal.first, 0, 0, 0 );
         auto pNewEffect = Sapphire::StatusEffect::make_StatusEffect( STATUS_ID_BRUTAL_SHELL, action.getSourceChara(), chara, 10000, 3000 );
         pNewEffect->replaceEffectEntry( effectEntry );
         action.getEffectbuilder()->applyStatusEffect( chara, chara, pNewEffect );

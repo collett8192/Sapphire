@@ -53,7 +53,7 @@ Sapphire::StatusEffect::StatusEffect::StatusEffect( uint32_t id, Entity::CharaPt
   if( Sapphire::World::Action::ActionLut::validStatusEffectExists( id ) )
     m_effectEntry = Sapphire::World::Action::ActionLut::getStatusEffectEntry( id );
   else
-    m_effectEntry.effectType = static_cast< uint32_t >( Common::StatusEffectType::Invalid );
+    m_effectEntry.init( Common::StatusEffectType::Invalid, 0, 0, 0, 0 );
 }
 
 Sapphire::StatusEffect::StatusEffect::~StatusEffect()
@@ -67,7 +67,7 @@ void Sapphire::StatusEffect::StatusEffect::registerTickEffect( uint8_t type, uin
 
 std::pair< uint8_t, uint32_t > Sapphire::StatusEffect::StatusEffect::getTickEffect()
 {
-  switch( static_cast< Common::StatusEffectType >( m_effectEntry.effectType ) )
+  switch( m_effectEntry.getType() )
   {
     case Common::StatusEffectType::Dot:
     {
@@ -110,11 +110,9 @@ void Sapphire::StatusEffect::StatusEffect::onTick()
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   scriptMgr.onStatusTick( m_targetActor, *this );
 
-  auto statusEffectType = static_cast< Common::StatusEffectType >( m_effectEntry.effectType );
-  if( statusEffectType == Common::StatusEffectType::MPRestore )
-  {
-    m_targetActor->restoreMP( m_effectEntry.effectValue1 * 10 );
-  }
+  auto mp = m_effectEntry.getMPRestoreTick();
+  if( mp > 0 )
+    m_targetActor->restoreMP( mp );
 }
 
 uint32_t Sapphire::StatusEffect::StatusEffect::getSrcActorId() const
@@ -138,28 +136,26 @@ void Sapphire::StatusEffect::StatusEffect::applyStatus()
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   scriptMgr.onStatusReceive( m_targetActor, m_id );
 
-  switch( static_cast< Common::StatusEffectType >( m_effectEntry.effectType ) )
+  switch( m_effectEntry.getType() )
   {
     case Common::StatusEffectType::Dot:
     {
       auto wepDmg = Sapphire::Math::CalcStats::getWeaponDamage( m_sourceActor );
-      auto damage = Sapphire::Math::CalcStats::calcDamageBaseOnPotency( *m_sourceActor, m_effectEntry.effectValue2, wepDmg );
+      auto damage = Sapphire::Math::CalcStats::calcDamageBaseOnPotency( *m_sourceActor, m_effectEntry.getDotHotPotency(), wepDmg );
 
       for( auto const& entry : m_sourceActor->getStatusEffectMap() )
       {
         auto status = entry.second;
         auto effectEntry = status->getEffectEntry();
-        if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::DamageMultiplier )
+        if( effectEntry.getType() != Common::StatusEffectType::DamageMultiplier )
           continue;
-        if( effectEntry.effectValue1 & m_effectEntry.effectValue1 )
+        if( static_cast< int32_t >( effectEntry.getActionTypeFilter() ) & static_cast< int32_t >( m_effectEntry.getActionTypeFilter() ) )
         {
-          damage *= 1.0f + ( effectEntry.effectValue2 / 100.0f );
+          damage *= 1.0f + ( effectEntry.getOutgoingDamageMultiplier() / 100.0f );
         }
       }
 
-      m_value = Sapphire::Math::CalcStats::applyDamageReceiveMultiplier( *m_targetActor, damage,
-        m_effectEntry.effectValue1 == static_cast< int32_t >( Common::ActionTypeFilter::Physical ) ? Common::AttackType::Physical :
-        ( m_effectEntry.effectValue1 == static_cast< int32_t >( Common::ActionTypeFilter::Magical ) ? Common::AttackType::Magical : Common::AttackType::Unknown_0 ) );
+      m_value = Sapphire::Math::CalcStats::applyDamageReceiveMultiplier( *m_targetActor, damage, m_effectEntry.getActionTypeFilter() );
       m_cachedSourceCrit = Sapphire::Math::CalcStats::criticalHitProbability( *m_sourceActor, Common::CritDHBonusFilter::Damage );
       m_cachedSourceCritBonus = Sapphire::Math::CalcStats::criticalHitBonus( *m_sourceActor );
       break;
@@ -168,19 +164,17 @@ void Sapphire::StatusEffect::StatusEffect::applyStatus()
     case Common::StatusEffectType::Hot:
     {
       auto wepDmg = Sapphire::Math::CalcStats::getWeaponDamage( m_sourceActor );
-      auto heal = Sapphire::Math::CalcStats::calcHealBaseOnPotency( *m_sourceActor, m_effectEntry.effectValue2, wepDmg );
+      auto heal = Sapphire::Math::CalcStats::calcHealBaseOnPotency( *m_sourceActor, m_effectEntry.getDotHotPotency(), wepDmg );
 
-      if( m_effectEntry.effectValue1 == 0 ) // this value is always 0 atm, if statement here just in case there is a hot that isn't a "cast"
+      for( auto const& entry : m_sourceActor->getStatusEffectMap() )
       {
-        for( auto const& entry : m_sourceActor->getStatusEffectMap() )
-        {
-          auto status = entry.second;
-          auto effectEntry = status->getEffectEntry();
-          if( static_cast< Common::StatusEffectType >( effectEntry.effectType ) != Common::StatusEffectType::HealCastMultiplier )
-            continue;
-          heal *= 1.0f + ( effectEntry.effectValue2 / 100.0f );
-        }
+        auto status = entry.second;
+        auto effectEntry = status->getEffectEntry();
+        if( effectEntry.getType() != Common::StatusEffectType::HealCastMultiplier )
+          continue;
+        heal *= 1.0f + ( effectEntry.getOutgoingHealMultiplier() / 100.0f );
       }
+
       m_value = Sapphire::Math::CalcStats::applyHealingReceiveMultiplier( *m_targetActor, heal );
       m_cachedSourceCrit = Sapphire::Math::CalcStats::criticalHitProbability( *m_sourceActor, Common::CritDHBonusFilter::Heal );
       m_cachedSourceCritBonus = Sapphire::Math::CalcStats::criticalHitBonus( *m_sourceActor );
@@ -202,7 +196,7 @@ void Sapphire::StatusEffect::StatusEffect::removeStatus()
   auto& scriptMgr = Common::Service< Scripting::ScriptMgr >::ref();
   scriptMgr.onStatusTimeOut( m_targetActor, m_id );
 
-  switch( static_cast< Common::StatusEffectType >( m_effectEntry.effectType ) )
+  switch( m_effectEntry.getType() )
   {
     case Common::StatusEffectType::Haste:
     {
@@ -213,7 +207,7 @@ void Sapphire::StatusEffect::StatusEffect::removeStatus()
     }
   }
 
-  // lol just hack it and hardcode this shit
+  // hardcoded for now, TODO: add m_statusForceRemoveReason so a proper check for "shield completely absorbed" is possible
   if( m_markToRemove && m_id == 1178 )
   {
     if( auto drk = m_sourceActor->getAsPlayer() )
@@ -294,17 +288,17 @@ void Sapphire::StatusEffect::StatusEffect::replaceEffectEntry( Sapphire::World::
 void Sapphire::StatusEffect::StatusEffect::onBeforeActionStart( Sapphire::World::Action::Action* action )
 {
   // todo: add script function for this if needed
-  switch( static_cast< Common::StatusEffectType >( m_effectEntry.effectType ) )
+  switch( m_effectEntry.getType() )
   {
     case Common::StatusEffectType::InstantCast:
     {
-      if( action->hasCastTime() && checkActionBoostType1( action ) )
+      if( action->hasCastTime() && applyToAction( action ) )
         action->setCastTime( 0 );
       break;
     }
     case Common::StatusEffectType::AlwaysCombo:
     {
-      if( checkActionBoostType1( action ) )
+      if( applyToAction( action ) )
         action->setAlwaysCombo();
       break;
     }
@@ -314,15 +308,15 @@ void Sapphire::StatusEffect::StatusEffect::onBeforeActionStart( Sapphire::World:
 void Sapphire::StatusEffect::StatusEffect::onActionExecute( Sapphire::World::Action::Action* action )
 {
   // todo: add script function for this if needed
-  switch( static_cast< Common::StatusEffectType >( m_effectEntry.effectType ) )
+  switch( m_effectEntry.getType() )
   {
     case Common::StatusEffectType::PotencyMultiplier:
     {
-      if( checkActionBoostType1( action ) )
+      if( applyToAction( action ) )
       {
-        action->getActionEntry().damagePotency *= 1.0 + ( m_effectEntry.effectValue4 / 100.0 );
-        action->getActionEntry().damageComboPotency *= 1.0 + ( m_effectEntry.effectValue4 / 100.0 );
-        action->getActionEntry().damageDirectionalPotency *= 1.0 + ( m_effectEntry.effectValue4 / 100.0 );
+        action->getActionEntry().damagePotency *= 1.0 + ( m_effectEntry.getPotencyMultiplier() / 100.0 );
+        action->getActionEntry().damageComboPotency *= 1.0 + ( m_effectEntry.getPotencyMultiplier() / 100.0 );
+        action->getActionEntry().damageDirectionalPotency *= 1.0 + ( m_effectEntry.getPotencyMultiplier() / 100.0 );
       }
       break;
     }
@@ -355,15 +349,15 @@ void Sapphire::StatusEffect::StatusEffect::refresh( Sapphire::World::Action::Sta
 
 bool Sapphire::StatusEffect::StatusEffect::onActionHitTarget( World::Action::Action* action, Entity::CharaPtr victim, int victimCounter )
 {
-  switch( static_cast< Common::StatusEffectType >( m_effectEntry.effectType ) )
+  switch( m_effectEntry.getType() )
   {
     case Common::StatusEffectType::MPRestorePerGCD:
     {
-      if( victimCounter == 1 && action->isGCD() )
+      if( victimCounter == 1 && action->isGCD() ) // only restore mp on first victim in case of aoe
       {
-        if( checkActionBoostType2( action ) )
+        if( applyToAction( action ) )
         {
-          float restored = 0.01f * m_targetActor->getMaxMp() * m_effectEntry.effectValue1;
+          float restored = 0.01f * m_targetActor->getMaxMp() * m_effectEntry.getGCDBasedMPRestorePercentage();
           action->getEffectbuilder()->restoreMP( victim, m_targetActor, static_cast< uint32_t >( restored ), Sapphire::Common::ActionEffectResultFlag::EffectOnSource );
         }
       }
@@ -373,94 +367,26 @@ bool Sapphire::StatusEffect::StatusEffect::onActionHitTarget( World::Action::Act
   return true;
 }
 
-bool Sapphire::StatusEffect::StatusEffect::checkActionBoostType1( World::Action::Action* action )
+bool Sapphire::StatusEffect::StatusEffect::applyToAction( World::Action::Action* action )
 {
-  // value1: remaining uses if >= 0, infinite uses if < 0 and can be custom data
-  // value2-4: affected action ids if value2 > 0,
-  //           otherwise value3 is actionCategory filter (4 bytes for 4 categories) and value4 is custom data
-  if( m_effectEntry.effectValue1 == 0 )
+  if( m_effectEntry.getRemainingCharges() == 0 )
     return false;
 
-  if( m_effectEntry.effectValue2 != 0 )
-  {
-    if( action->getId() != m_effectEntry.effectValue2 &&
-      action->getId() != m_effectEntry.effectValue3 &&
-      action->getId() != m_effectEntry.effectValue4 )
-      return false;
-  }
-  else
-  {
-    if( m_effectEntry.effectValue3 != 0 )
-    {
-      auto ac = action->getActionData()->actionCategory;
-      uint8_t f1 = static_cast< uint8_t >( m_effectEntry.effectValue3 );
-      uint8_t f2 = static_cast< uint8_t >( m_effectEntry.effectValue3 >> 8 );
-      uint8_t f3 = static_cast< uint8_t >( m_effectEntry.effectValue3 >> 16 );
-      uint8_t f4 = static_cast< uint8_t >( m_effectEntry.effectValue3 >> 24 );
-      bool passed = false;
-      if( f1 != 0 && ac == f1 )
-        passed = true;
-      else if ( f2 != 0 && ac == f2 )
-        passed = true;
-      else if ( f3 != 0 && ac == f3 )
-        passed = true;
-      else if ( f4 != 0 && ac == f4 )
-        passed = true;
-      if( !passed )
-        return false;
-    }
-  }
+  if( !m_effectEntry.canApplyToAction( action->getId(), action->getActionData()->actionCategory ) )
+    return false;
 
-  if( m_effectEntry.effectValue1 > 0 )
+  if( m_effectEntry.getRemainingCharges() > 0 )
   {
-    if( m_effectEntry.effectValue1 == getStacks() )
+    if( m_effectEntry.getRemainingCharges() == getStacks() )
     {
-      // if stacks equal to remaining uses, assume it is synced
+      // if stacks equal to remaining charges, assume it is synced
       setStacks( getStacks() - 1 );
       m_targetActor->sendStatusEffectUpdate();
     }
-    m_effectEntry.effectValue1--;
-    if( m_effectEntry.effectValue1 == 0 )
+    m_effectEntry.setRemainingCharges( m_effectEntry.getRemainingCharges() - 1 );
+    if( m_effectEntry.getRemainingCharges() == 0 )
     {
       markToRemove();
-    }
-  }
-
-  return true;
-}
-
-bool Sapphire::StatusEffect::StatusEffect::checkActionBoostType2( World::Action::Action* action )
-{
-  // value1: custom data
-  // value2-4: affected action ids if value2 > 0,
-  //           otherwise value3 is actionCategory filter (4 bytes for 4 categories) and value4 is custom data
-  if( m_effectEntry.effectValue2 != 0 )
-  {
-    if( action->getId() != m_effectEntry.effectValue2 &&
-      action->getId() != m_effectEntry.effectValue3 &&
-      action->getId() != m_effectEntry.effectValue4 )
-      return false;
-  }
-  else
-  {
-    if( m_effectEntry.effectValue3 != 0 )
-    {
-      auto ac = action->getActionData()->actionCategory;
-      uint8_t f1 = static_cast< uint8_t >( m_effectEntry.effectValue3 );
-      uint8_t f2 = static_cast< uint8_t >( m_effectEntry.effectValue3 >> 8 );
-      uint8_t f3 = static_cast< uint8_t >( m_effectEntry.effectValue3 >> 16 );
-      uint8_t f4 = static_cast< uint8_t >( m_effectEntry.effectValue3 >> 24 );
-      bool passed = false;
-      if( f1 != 0 && ac == f1 )
-        passed = true;
-      else if ( f2 != 0 && ac == f2 )
-        passed = true;
-      else if ( f3 != 0 && ac == f3 )
-        passed = true;
-      else if ( f4 != 0 && ac == f4 )
-        passed = true;
-      if( !passed )
-        return false;
     }
   }
 

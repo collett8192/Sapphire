@@ -1130,7 +1130,10 @@ namespace Sapphire::Common
     Unknown = 0,
     Physical = 1,
     Magical = 2,
-    All = 255,
+    Slashing = 4,
+    Piercing = 8,
+    Blunt = 16,
+    All = 255
   };
 
   enum class CritDHBonusFilter : int32_t
@@ -1143,6 +1146,7 @@ namespace Sapphire::Common
 
   enum class StatusEffectTriggerResult : int32_t
   {
+    None = 0,
     ReflectDamage = 1,
     AbsorbHP = 2,
   };
