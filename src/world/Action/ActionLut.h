@@ -10,6 +10,7 @@ namespace Sapphire::World::Action
 {
   struct ActionEntry
   {
+  public:
     uint16_t damagePotency;
     uint16_t damageComboPotency;
     uint16_t damageDirectionalPotency;
@@ -22,6 +23,7 @@ namespace Sapphire::World::Action
     uint16_t targetStatusParam;
     uint8_t bonusEffect;
     uint8_t bonusRequirement;
+  private:
     union
     {
       uint32_t bonusDataUInt32;
@@ -38,6 +40,18 @@ namespace Sapphire::World::Action
         uint8_t bonusDataByte4;
       };
     };
+  public:
+    ActionEntry() = default;
+    ActionEntry( uint16_t dp, uint16_t dcp, uint16_t ddp, uint16_t hp, uint16_t ss, uint32_t ssd, uint16_t ssp, uint16_t ts, uint32_t tsd, uint16_t tsp, uint8_t be, uint8_t br, uint32_t bdu32 );
+    uint32_t getRawBonusData() const;
+    uint8_t getDamageFallOffPercentage() const; // as the result percentage for 2nd (or more) victims, not the percentage to subtract from 100%
+    uint16_t getSelfHealPotency() const;
+    uint16_t getMPGainPercentage() const;
+    ClassJob getAffectedJob() const;
+    uint8_t getJobResourceGain() const;
+    uint16_t getJobTimerGain() const;
+    uint16_t getCritRateBonus() const;
+    uint16_t getDirectHitRateBonus() const;
   };
 
   struct StatusEffectEntry
