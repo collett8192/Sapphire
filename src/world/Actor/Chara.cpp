@@ -483,7 +483,6 @@ uint32_t Sapphire::Entity::Chara::getBonusStat( Common::BaseParam bonus ) const
 
 void Sapphire::Entity::Chara::autoAttack( CharaPtr pTarget )
 {
-  // moved to BNpc
 }
 
 /*! \param StatusEffectPtr to be applied to the actor */
