@@ -185,7 +185,7 @@ uint32_t CalcStats::calculateMaxHp( PlayerPtr pPlayer )
 
 float CalcStats::dodgeProbability( const Sapphire::Entity::Chara& chara )
 {
-  // fake value: 5% for players.
+  // dummy value: 5% for players.
   return chara.isPlayer() ? 5 : 0;
 }
 
@@ -505,6 +505,7 @@ float CalcStats::autoAttack( const Sapphire::Entity::Chara& chara )
   }
   else
   {
+    // dummy value for BNpc
     weaponDamage = chara.getLevel() * 3;
   }
 
