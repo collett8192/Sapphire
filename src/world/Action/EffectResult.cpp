@@ -115,22 +115,24 @@ void EffectResult::comboSucceed()
   m_type = Common::ActionEffectType::ComboSucceed;
 }
 
-void EffectResult::applyStatusEffect( uint16_t statusId, uint32_t duration, uint16_t param )
+void EffectResult::applyStatusEffect( uint16_t statusId, uint32_t duration, uint16_t param, bool statusToSource )
 {
   m_value = statusId;
   m_statusDuration = duration;
   m_param2 = param;
+  m_flag = statusToSource ? Common::ActionEffectResultFlag::EffectOnSource : Common::ActionEffectResultFlag::None;
 
-  m_type = Common::ActionEffectType::ApplyStatusEffectTarget;
+  m_type = statusToSource ? Common::ActionEffectType::ApplyStatusEffectSource : Common::ActionEffectType::ApplyStatusEffectTarget;
 }
 
-void EffectResult::applyStatusEffect( StatusEffect::StatusEffectPtr pStatusEffect )
+void EffectResult::applyStatusEffect( StatusEffect::StatusEffectPtr pStatusEffect, bool statusToSource )
 {
   m_value = pStatusEffect->getId();
   m_param2 = pStatusEffect->getParam();
   m_pPreBuiltStatusEffect = std::move( pStatusEffect );
+  m_flag = statusToSource ? Common::ActionEffectResultFlag::EffectOnSource : Common::ActionEffectResultFlag::None;
 
-  m_type = Common::ActionEffectType::ApplyStatusEffectTarget;
+  m_type = statusToSource ? Common::ActionEffectType::ApplyStatusEffectSource : Common::ActionEffectType::ApplyStatusEffectTarget;
 }
 
 void EffectResult::statusNoEffect( uint16_t statusId )
@@ -151,6 +153,13 @@ void EffectResult::mount( uint16_t mountId )
 void Sapphire::World::Action::EffectResult::provoke()
 {
   m_type = Common::ActionEffectType::Provoke;
+}
+
+void Sapphire::World::Action::EffectResult::invulnerable( uint16_t status )
+{
+  m_value = status;
+
+  m_type = Common::ActionEffectType::Invulnerable;
 }
 
 Common::EffectEntry EffectResult::buildEffectEntry() const
@@ -202,8 +211,9 @@ void EffectResult::execute()
     case Common::ActionEffectType::ApplyStatusEffectTarget:
     case Common::ActionEffectType::ApplyStatusEffectSource:
     {
+      auto applyTarget = m_type == Common::ActionEffectType::ApplyStatusEffectTarget ? m_target : m_source;
       //refreshing old buff
-      for( auto const& entry : m_target->getStatusEffectMap() )
+      for( auto const& entry : applyTarget->getStatusEffectMap() )
       {
         auto statusEffect = entry.second;
         if( statusEffect->getId() == m_value && statusEffect->getSrcActorId() == m_source->getId() )
@@ -216,17 +226,17 @@ void EffectResult::execute()
           {
             statusEffect->refresh();
           }
-          m_target->sendStatusEffectUpdate();
+          applyTarget->sendStatusEffectUpdate();
           return;
         }
       }
 
       if( m_pPreBuiltStatusEffect )
       {
-        m_target->addStatusEffect( m_pPreBuiltStatusEffect );
+        applyTarget->addStatusEffect( m_pPreBuiltStatusEffect );
       }
       else
-        m_target->addStatusEffectById( m_value, m_statusDuration, *m_source, m_param2 );
+        applyTarget->addStatusEffectById( m_value, m_statusDuration, *m_source, m_param2 );
 
       break;
     }

@@ -504,6 +504,7 @@ void Action::Action::buildEffects()
   }
 
   uint8_t victimCounter = 0, validVictimCounter = 0;
+  Entity::CharaPtr firstValidVictim = nullptr;
 
   for( auto& actor : m_hitActors )
   {
@@ -517,6 +518,8 @@ void Action::Action::buildEffects()
     }
     if( !shouldHitThisTarget )
       continue;
+
+    bool shouldTriggerActionBonus = true;
     if( m_lutEntry.damagePotency > 0 )
     {
       Common::AttackType attackType = static_cast< Common::AttackType >( m_actionData->attackType );
@@ -540,6 +543,12 @@ void Action::Action::buildEffects()
       float blocked = 0;
       float parried = 0;
 
+      if( actor->hasInvulnerableEffect() )
+      {
+        dmg.first = 0;
+        shouldTriggerActionBonus = false;
+      }
+
       if( dmg.first > 0 )
       {
         dodged = Math::CalcStats::calcDodge( *actor );
@@ -559,7 +568,10 @@ void Action::Action::buildEffects()
       }
 
       if( dodged )
+      {
         dmg.first = 0;
+        shouldTriggerActionBonus = false;
+      }
       else
       {
         dmg.first -= blocked;
@@ -575,10 +587,7 @@ void Action::Action::buildEffects()
           m_effectBuilder->parriedDamage( actor, actor, dmg.first, static_cast< uint16_t >( parried / originalDamage * 100 ), dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100  );
         else
           m_effectBuilder->damage( actor, actor, dmg.first, dmg.second, dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100 );
-
-        auto reflectDmg = Math::CalcStats::calcDamageReflect( m_pSource, actor, dmg.first,
-          attackType == Common::AttackType::Physical ? Common::ActionTypeFilter::Physical :
-          ( attackType == Common::AttackType::Magical ? Common::ActionTypeFilter::Magical : Common::ActionTypeFilter::Unknown ) );
+        auto reflectDmg = Math::CalcStats::calcDamageReflect( m_pSource, actor, dmg.first, getActionTypeFilterFromAttackType( attackType ) );
         if( reflectDmg.first > 0 )
         {
           m_effectBuilder->damage( actor, m_pSource, reflectDmg.first, reflectDmg.second, Common::ActionEffectResultFlag::Reflected, getExecutionDelay() + victimCounter * 100 );
@@ -600,11 +609,11 @@ void Action::Action::buildEffects()
         }
         else
         {
-          // todo: no effect or invulnerable
+          m_effectBuilder->invulnerable( actor );
         }
       }
 
-      if( !dodged )
+      if( shouldTriggerActionBonus )
       {
         if( ( !isComboAction() || isCorrectCombo() ) )
         {
@@ -624,7 +633,7 @@ void Action::Action::buildEffects()
           }
         }
 
-        if( validVictimCounter == 0 )
+        if( validVictimCounter == 0 ) // effects only apply once if aoe, on first valid target (can be single target action as well)
         {
           if( isCorrectCombo() )
             m_effectBuilder->comboSucceed( actor );
@@ -697,11 +706,13 @@ void Action::Action::buildEffects()
             }
           }
         }
+        if( validVictimCounter == 0 )
+          firstValidVictim = actor;
         validVictimCounter++;
       }
     }
 
-    if( m_lutEntry.healPotency > 0 )
+    if( m_lutEntry.healPotency > 0 && actor->getObjKind() == m_pSource->getObjKind() /* is friendly target, this will do for now */)
     {
       auto heal = calcHealing( m_lutEntry.healPotency );
       heal.first = Math::CalcStats::applyHealingReceiveMultiplier( *actor, heal.first );
@@ -710,15 +721,27 @@ void Action::Action::buildEffects()
 
     if( m_lutEntry.targetStatus != 0 )
     {
-      if( !isComboAction() || isCorrectCombo() )
-        m_effectBuilder->applyStatusEffect( actor, m_pSource, m_lutEntry.targetStatus, m_lutEntry.targetStatusDuration, m_lutEntry.targetStatusParam, getExecutionDelay() + victimCounter * 100 );
+      if( shouldTriggerActionBonus || actor->getObjKind() == m_pSource->getObjKind() /* is friendly target, this will do for now */ )
+      {
+        if( !isComboAction() || isCorrectCombo() )
+          m_effectBuilder->applyStatusEffect( actor, m_pSource, m_lutEntry.targetStatus, m_lutEntry.targetStatusDuration, m_lutEntry.targetStatusParam, getExecutionDelay() + victimCounter * 100 );
+      }
+      else if( actor->hasInvulnerableEffect() )
+      {
+          m_effectBuilder->invulnerable( actor, m_lutEntry.targetStatus );
+      }
     }
   }
 
   if( m_lutEntry.selfStatus != 0 )
   {
     if( !isComboAction() || isCorrectCombo() )
-      m_effectBuilder->applyStatusEffect( m_pSource, m_pSource, m_lutEntry.selfStatus, m_lutEntry.selfStatusDuration, m_lutEntry.selfStatusParam );
+    {
+      if( firstValidVictim )
+        m_effectBuilder->applyStatusEffect( firstValidVictim, m_pSource, m_lutEntry.selfStatus, m_lutEntry.selfStatusDuration, m_lutEntry.selfStatusParam, getExecutionDelay(), true );
+      else if ( m_lutEntry.damagePotency == 0 ) // only non-offensive actions can apply self status without a valid victim
+        m_effectBuilder->applyStatusEffect( m_pSource, m_pSource, m_lutEntry.selfStatus, m_lutEntry.selfStatusDuration, m_lutEntry.selfStatusParam, getExecutionDelay() );
+    }
   }
 
   scriptMgr.onBeforeBuildEffect( *this, victimCounter, validVictimCounter );
@@ -750,14 +773,23 @@ bool Action::Action::playerPreCheck( Entity::Player& player )
 {
   // lol
   if( !player.isAlive() )
+  {
+    player.sendUrgent( "Action::playerPreCheck not alive." );
     return false;
+  }
 
   // npc actions/non player actions
   if( m_actionData->classJob == -1 && !m_actionData->isRoleAction )
+  {
+    player.sendUrgent( "Action::playerPreCheck action not allowed." );
     return false;
+  }
 
   if( player.getLevel() < m_actionData->classJobLevel )
+  {
+    player.sendUrgent( "Action::playerPreCheck level too low." );
     return false;
+  }
 
   auto currentClass = player.getClass();
   auto actionClass = static_cast< Common::ClassJob >( m_actionData->classJob );
@@ -772,11 +804,17 @@ bool Action::Action::playerPreCheck( Entity::Player& player )
       return false;
 
     if( classJob->classJobParent != m_actionData->classJob )
+    {
+      player.sendUrgent( "Action::playerPreCheck class mismatch." );
       return false;
+    }
   }
 
   if( !m_actionData->canTargetSelf && getTargetId() == m_pSource->getId() )
+  {
+    player.sendUrgent( "Action::playerPreCheck cannot target self." );
     return false;
+  }
 
   // todo: does this need to check for party/alliance stuff or it's just same type?
   // todo: m_pTarget doesn't exist at this stage because we only fill it when we snapshot targets
@@ -792,7 +830,10 @@ bool Action::Action::playerPreCheck( Entity::Player& player )
 
 
   if( !hasResources() )
+  {
+    player.sendUrgent( "Action::playerPreCheck not enough resource." );
     return false;
+  }
 
   return true;
 }

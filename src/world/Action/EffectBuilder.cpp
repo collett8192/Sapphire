@@ -99,17 +99,17 @@ void EffectBuilder::comboSucceed( Entity::CharaPtr& target )
   moveToResultList( target, nextResult );
 }
 
-void EffectBuilder::applyStatusEffect( Entity::CharaPtr& target, Entity::CharaPtr& source, uint16_t statusId, uint32_t duration, uint16_t param, uint64_t resultDelayMs )
+void EffectBuilder::applyStatusEffect( Entity::CharaPtr& target, Entity::CharaPtr& source, uint16_t statusId, uint32_t duration, uint16_t param, uint64_t resultDelayMs, bool statusToSource )
 {
   EffectResultPtr nextResult = make_EffectResult( target, source, Common::Util::getTimeMs() + resultDelayMs );
-  nextResult->applyStatusEffect( statusId, duration, param );
+  nextResult->applyStatusEffect( statusId, duration, param, statusToSource );
   moveToResultList( target, nextResult );
 }
 
-void EffectBuilder::applyStatusEffect( Entity::CharaPtr& target, Entity::CharaPtr& source, StatusEffect::StatusEffectPtr pStatusEffect, uint64_t resultDelayMs )
+void EffectBuilder::applyStatusEffect( Entity::CharaPtr& target, Entity::CharaPtr& source, StatusEffect::StatusEffectPtr pStatusEffect, uint64_t resultDelayMs, bool statusToSource )
 {
   EffectResultPtr nextResult = make_EffectResult( target, source, Common::Util::getTimeMs() + resultDelayMs );
-  nextResult->applyStatusEffect( pStatusEffect );
+  nextResult->applyStatusEffect( pStatusEffect, statusToSource );
   moveToResultList( target, nextResult );
 }
 
@@ -131,6 +131,13 @@ void Sapphire::World::Action::EffectBuilder::provoke( Entity::CharaPtr& target )
 {
   EffectResultPtr nextResult = make_EffectResult( target, 0 );
   nextResult->provoke();
+  moveToResultList( target, nextResult );
+}
+
+void Sapphire::World::Action::EffectBuilder::invulnerable( Entity::CharaPtr& target, uint16_t status )
+{
+  EffectResultPtr nextResult = make_EffectResult( target, 0 );
+  nextResult->invulnerable( status );
   moveToResultList( target, nextResult );
 }
 

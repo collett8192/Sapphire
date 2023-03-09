@@ -36,14 +36,16 @@ namespace Sapphire::World::Action
 
     void comboSucceed( Entity::CharaPtr& target );
 
-    void applyStatusEffect( Entity::CharaPtr& target, Entity::CharaPtr& source, uint16_t statusId, uint32_t duration, uint16_t param, uint64_t resultDelayMs = 500 );
-    void applyStatusEffect( Entity::CharaPtr& target, Entity::CharaPtr& source, StatusEffect::StatusEffectPtr pStatusEffect, uint64_t resultDelayMs = 500 );
+    void applyStatusEffect( Entity::CharaPtr& target, Entity::CharaPtr& source, uint16_t statusId, uint32_t duration, uint16_t param, uint64_t resultDelayMs = 500, bool statusToSource = false );
+    void applyStatusEffect( Entity::CharaPtr& target, Entity::CharaPtr& source, StatusEffect::StatusEffectPtr pStatusEffect, uint64_t resultDelayMs = 500, bool statusToSource = false );
 
     void statusNoEffect( Entity::CharaPtr& target, uint16_t statusId );
 
     void mount( Entity::CharaPtr& target, uint16_t mountId, uint64_t resultDelayMs = 600 );
 
     void provoke( Entity::CharaPtr& target );
+
+    void invulnerable( Entity::CharaPtr& target, uint16_t status = 0 );
 
     void buildAndSendPackets();
 
