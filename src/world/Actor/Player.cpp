@@ -2460,6 +2460,16 @@ void Sapphire::Entity::Player::clearBuyBackMap()
   m_shopBuyBackMap.clear();
 }
 
+bool Sapphire::Entity::Player::canBlock()
+{
+  if( auto item = getEquippedSecondaryWeapon() )
+  {
+    if( item->getCategory() == ItemUICategory::Shield )
+      return true;
+  }
+  return false;
+}
+
 bool Sapphire::Entity::Player::isPartyLeader()
 {
   if( !m_partyLeader )
