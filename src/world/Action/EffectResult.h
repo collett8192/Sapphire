@@ -19,9 +19,9 @@ namespace Sapphire::World::Action
     explicit EffectResult( Entity::CharaPtr target, uint64_t delayMs );
 
     void dodge( Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
-    void damage( uint32_t amount, Common::ActionHitSeverityType severity, Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
-    void blockedDamage( uint32_t amount, uint16_t rate, Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
-    void parriedDamage( uint32_t amount, uint16_t rate, Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
+    void damage( uint32_t amount, Common::ActionHitSeverityType severity, uint8_t attackType, Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
+    void blockedDamage( uint32_t amount, uint16_t rate, uint8_t attackType, Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
+    void parriedDamage( uint32_t amount, uint16_t rate, uint8_t attackType, Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
     void heal( uint32_t amount, Common::ActionHitSeverityType severity, Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
     void restoreMP( uint32_t amount, Common::ActionEffectResultFlag flag = Common::ActionEffectResultFlag::None );
     void startCombo( uint16_t actionId );
@@ -37,7 +37,7 @@ namespace Sapphire::World::Action
     Entity::CharaPtr getTarget() const;
 
     uint32_t getValue() const;
-
+    Common::ActionEffectType getType() const;
     uint64_t getDelay();
 
     Common::EffectEntry buildEffectEntry() const;

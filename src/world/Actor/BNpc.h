@@ -80,6 +80,8 @@ namespace Sapphire::Entity
 
     bool moveTo( const Entity::Chara& targetChara );
 
+    void stopMoving();
+
     void sendPositionUpdate();
 
     BNpcState getState() const;
@@ -87,8 +89,7 @@ namespace Sapphire::Entity
 
     void hateListClear();
     CharaPtr hateListGetHighest();
-    void hateListAdd( CharaPtr pChara, int32_t hateAmount );
-    void hateListUpdate( CharaPtr pChara, int32_t hateAmount );
+    void hateListAddOrUpdate( CharaPtr pChara, int32_t hateAmount );
     void hateListRemove( CharaPtr pChara );
     bool hateListHasActor( CharaPtr pChara );
 
@@ -96,6 +97,7 @@ namespace Sapphire::Entity
     void deaggro( CharaPtr pChara );
 
     void update( uint64_t tickCount ) override;
+    void doDefaultBNpcUpdate( uint64_t tickCount );
     void onTick() override;
 
     void onActionHostile( CharaPtr pSource ) override;
@@ -118,8 +120,12 @@ namespace Sapphire::Entity
 
     bool hasFlag( uint32_t flag ) const;
     void setFlag( uint32_t flags );
+    void unsetFlag( uint32_t flag );
 
     void calculateStats() override;
+
+    void setCustomVar( uint32_t varId, uint64_t value );
+    uint64_t getCustomVar( uint32_t varId );
 
   private:
     uint32_t m_bNpcBaseId;
@@ -155,6 +161,7 @@ namespace Sapphire::Entity
 
     CharaPtr m_pOwner;
 
+    std::unordered_map< uint32_t, uint64_t > m_customVarMap;
   };
 
 }

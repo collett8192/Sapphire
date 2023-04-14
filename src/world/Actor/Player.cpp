@@ -1051,14 +1051,16 @@ void Sapphire::Entity::Player::despawn( Entity::PlayerPtr pTarget )
 
 Sapphire::Entity::ActorPtr Sapphire::Entity::Player::lookupTargetById( uint64_t targetId )
 {
-  ActorPtr targetActor;
+  if( targetId == 0 || targetId == INVALID_GAME_OBJECT_ID64 )
+    return nullptr;
+  
   auto inRange = getInRangeActors( true );
   for( auto actor : inRange )
   {
     if( actor->getId() == targetId )
-      targetActor = actor;
+      return actor;
   }
-  return targetActor;
+  return nullptr;
 }
 
 void Sapphire::Entity::Player::setLastPing( uint32_t ping )
@@ -1890,6 +1892,10 @@ void Sapphire::Entity::Player::sendZonePackets()
 
   sendInventory();
 
+  setTargetId( INVALID_GAME_OBJECT_ID64 );
+  setStance( Common::Stance::Passive );
+  setAutoattack( false );
+
   if( isLogin() )
   {
     queuePacket( makeActorControlSelf( getId(), SetCharaGearParamUI, m_equipDisplayFlags, 1 ) );
@@ -2455,6 +2461,16 @@ void Sapphire::Entity::Player::clearBuyBackMap()
     }
   }
   m_shopBuyBackMap.clear();
+}
+
+bool Sapphire::Entity::Player::canBlock()
+{
+  if( auto item = getEquippedSecondaryWeapon() )
+  {
+    if( item->getCategory() == ItemUICategory::Shield )
+      return true;
+  }
+  return false;
 }
 
 bool Sapphire::Entity::Player::isPartyLeader()

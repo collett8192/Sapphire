@@ -401,7 +401,7 @@ void Action::Action::execute()
   assert( m_pSource );
 
   // subtract costs first, if somehow the caster stops meeting those requirements cancel the cast
-  if( !consumeResources() )
+  if( m_pSource->getAsPlayer() && !consumeResources() )
   {
     interrupt();
     return;
@@ -420,13 +420,6 @@ void Action::Action::execute()
     {
       player->unsetStateFlag( PlayerStateFlag::Casting );
     }
-  }
-
-  if( isCorrectCombo() )
-  {
-    auto player = m_pSource->getAsPlayer();
-
-    player->sendDebug( "action combo success from action#{0}", player->getLastComboActionId() );
   }
 
   if( !hasClientsideTarget()  )
@@ -580,17 +573,24 @@ void Action::Action::buildEffects()
 
       if( dmg.first > 0 )
       {
+        auto attackTypeEffect = m_actionData->attackType;
+        if( attackTypeEffect == -1 )
+        {
+          //maybe set it base on job?
+          attackTypeEffect = 0;
+        }
+
         dmg.first = actor->applyShieldProtection( dmg.first );
         if( blocked > 0 )
-          m_effectBuilder->blockedDamage( actor, actor, dmg.first, static_cast< uint16_t >( blocked / originalDamage * 100 ) , dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100 );
+          m_effectBuilder->blockedDamage( actor, actor, dmg.first, static_cast< uint16_t >( blocked / originalDamage * 100 ), attackTypeEffect, dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100 );
         else if (parried > 0 )
-          m_effectBuilder->parriedDamage( actor, actor, dmg.first, static_cast< uint16_t >( parried / originalDamage * 100 ), dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100  );
+          m_effectBuilder->parriedDamage( actor, actor, dmg.first, static_cast< uint16_t >( parried / originalDamage * 100 ), attackTypeEffect, dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100  );
         else
-          m_effectBuilder->damage( actor, actor, dmg.first, dmg.second, dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100 );
+          m_effectBuilder->damage( actor, actor, dmg.first, attackTypeEffect, dmg.second, dmg.first == 0 ? Common::ActionEffectResultFlag::Absorbed : Common::ActionEffectResultFlag::None, getExecutionDelay() + victimCounter * 100 );
         auto reflectDmg = Math::CalcStats::calcDamageReflect( m_pSource, actor, dmg.first, getActionTypeFilterFromAttackType( attackType ) );
         if( reflectDmg.first > 0 )
         {
-          m_effectBuilder->damage( actor, m_pSource, reflectDmg.first, reflectDmg.second, Common::ActionEffectResultFlag::Reflected, getExecutionDelay() + victimCounter * 100 );
+          m_effectBuilder->damage( actor, m_pSource, reflectDmg.first, attackTypeEffect, reflectDmg.second, Common::ActionEffectResultFlag::Reflected, getExecutionDelay() + victimCounter * 100 );
         }
 
         auto absorb = Math::CalcStats::calcAbsorbHP( m_pSource, dmg.first );
@@ -638,14 +638,11 @@ void Action::Action::buildEffects()
           if( isCorrectCombo() )
             m_effectBuilder->comboSucceed( actor );
 
-          if( m_isAutoAttack && m_pSource->isPlayer() )
+          if( m_isAutoAttack && player )
           {
-            if( auto player = m_pSource->getAsPlayer() )
+            if( player->getClass() == Common::ClassJob::Paladin )
             {
-              if( player->getClass() == Common::ClassJob::Paladin )
-              {
-                player->gaugePldSetOath( std::min( 100, player->gaugePldGetOath() + 5 ) );
-              }
+              player->gaugePldSetOath( std::min( 100, player->gaugePldGetOath() + 5 ) );
             }
           }
 
@@ -655,7 +652,7 @@ void Action::Action::buildEffects()
               m_effectBuilder->restoreMP( actor, m_pSource, m_pSource->getMaxMp() * m_lutEntry.getMPGainPercentage() / 100, Common::ActionEffectResultFlag::EffectOnSource );
           }
 
-          if( m_lutEntry.bonusEffect & Common::ActionBonusEffect::GainJobResource )
+          if( ( m_lutEntry.bonusEffect & Common::ActionBonusEffect::GainJobResource ) && player )
           {
             if( checkActionBonusRequirement() )
             {
@@ -686,7 +683,7 @@ void Action::Action::buildEffects()
             }
           }
 
-          if( m_lutEntry.bonusEffect & Common::ActionBonusEffect::GainJobTimer )
+          if( ( m_lutEntry.bonusEffect & Common::ActionBonusEffect::GainJobTimer ) && player )
           {
             if( checkActionBonusRequirement() )
             {
@@ -1134,7 +1131,6 @@ void Action::Action::addDefaultActorFilters()
   switch( m_castType )
   {
     case Common::CastType::SingleTarget:
-    case Common::CastType::Type3:
     {
       auto filter = std::make_shared< World::Util::ActorFilterSingleTarget >( static_cast< uint32_t >( m_targetId ) );
 
@@ -1144,6 +1140,7 @@ void Action::Action::addDefaultActorFilters()
     }
 
     case Common::CastType::CircularAOE:
+    case Common::CastType::ConeAOE:
     {
       auto filter = std::make_shared< World::Util::ActorFilterInRange >( m_pos, m_effectRange );
 
@@ -1279,7 +1276,10 @@ bool Action::Action::isWeaponSkill() const
 
 bool Action::Action::isAttackTypePhysical( Common::AttackType attackType )
 {
-  return attackType == Common::AttackType::Physical;
+  return attackType == Common::AttackType::Physical ||
+    attackType == Common::AttackType::Slashing ||
+    attackType == Common::AttackType::Piercing ||
+    attackType == Common::AttackType::Blunt;
 }
 
 bool Action::Action::isAttackTypeMagical( Common::AttackType attackType )

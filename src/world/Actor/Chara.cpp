@@ -374,6 +374,8 @@ Change the current target and propagate to in range players
 */
 void Sapphire::Entity::Chara::changeTarget( uint64_t targetId )
 {
+  if( m_targetId == targetId )
+    return;
   setTargetId( targetId );
   FFXIVPacketBasePtr packet = makeActorControlTarget( m_id, SetTarget, 0, 0, 0, 0, targetId );
   sendToInRangeSet( packet );
@@ -791,6 +793,10 @@ void Sapphire::Entity::Chara::setAgentId( uint32_t agentId )
   m_agentId = agentId;
 }
 
+bool Sapphire::Entity::Chara::canBlock()
+{
+  return false;
+}
 
 float Sapphire::Entity::Chara::getRadius() const
 {
