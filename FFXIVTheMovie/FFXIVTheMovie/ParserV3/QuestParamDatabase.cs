@@ -14,6 +14,21 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "GaiUsd203":
+                    {
+                        result.Add("SCENE_4", "dummye0");
+                        result.Add("EOBJECT0", "dummye0");
+                        result.Add("_EOBJECT0", "S");
+                        result.Add("SCENE_8", "dummye1");
+                        result.Add("EOBJECT1", "dummye1");
+                        result.Add("_EOBJECT1", "S");
+                        result.Add("SCENE_13", "dummye4");
+                        result.Add("EOBJECT4", "dummye4");
+                        result.Add("_EOBJECT4", "S");
+                        result.Add("SCENE_7", null);
+                        result.Add("SCENE_18", null);
+                        break;
+                    }
                 case "HeaVng104":
                     {
                         result.Add("PRIVATE_SILENTCONJURER", "205");
