@@ -667,10 +667,10 @@ namespace Sapphire::Common
     //WeaponOverride = -1, // Needs more investigation (takes the damage type of the equipped weapon)?
     Physical = -1, // seems to be the case
     Unknown_0 = 0,
-    Slashing = 1, // likely not used post 5.0
-    Piercing = 2, // likely not used post 5.0
-    Blunt = 3, // likely not used post 5.0
-    Unknown_4 = 4, // likely not used post 5.0
+    Slashing = 1,
+    Piercing = 2,
+    Blunt = 3,
+    Unknown_4 = 4,
     Magical = 5,
     Darkness = 6,
     Unknown_7 = 7,

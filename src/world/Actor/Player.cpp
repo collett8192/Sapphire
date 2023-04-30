@@ -87,8 +87,7 @@ Sapphire::Entity::Player::Player() :
   m_onEnterEventDone( false ),
   m_falling( false ),
   m_pQueuedAction( nullptr ),
-  m_cfNotifiedContent( 0 ),
-  m_the_movie_hack_flag( 0 )
+  m_cfNotifiedContent( 0 )
 {
   m_id = 0;
   m_currentStance = Stance::Passive;

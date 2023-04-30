@@ -1,8 +1,8 @@
 #ifndef _CORE_NETWORK_PACKETS_IPCS_H
 #define _CORE_NETWORK_PACKETS_IPCS_H
-
+ 
 #include <stdint.h>
-
+ 
 namespace Sapphire::Network::Packets
 {
 
@@ -118,7 +118,7 @@ namespace Sapphire::Network::Packets
     MarketBoardItemListingCount = 0x0068, // updated 5.58 hotfix
     MarketBoardItemListingHistory = 0x01BA, // updated 5.58 hotfix
     MarketBoardItemListing = 0x0076, // updated 5.58 hotfix
-    
+
     CharaFreeCompanyTag = 0x013B, // updated 4.5
     FreeCompanyBoardMsg = 0x03DB, // updated 5.58 hotfix
     FreeCompanyInfo = 0x01F7, // updated 5.58 hotfix
@@ -386,7 +386,7 @@ namespace Sapphire::Network::Packets
     UpdatePositionHandler = 0x01AF, // updated 5.58 hotfix
 
     InventoryModifyHandler = 0x029E, // updated 5.58 hotfix
-    
+
     InventoryEquipRecommendedItems = 0x01C9, // updated 5.58 hotfix
 
     ReqPlaceHousingItem = 0x02D4, // updated 5.58 hotfix
@@ -452,5 +452,5 @@ namespace Sapphire::Network::Packets
 
 
 }
-
+ 
 #endif /*_CORE_NETWORK_PACKETS_IPCS_H*/

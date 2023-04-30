@@ -95,6 +95,7 @@ void Sapphire::Network::GameConnection::cfDutyAccepted( const Packets::FFXIVARR_
       if( !instance )
         return;
 
+      player.m_cfNotifiedContent = 0;
       auto pInstance = instance->getAsInstanceContent();
       pInstance->bindPlayer( player.getId() );
 

@@ -135,13 +135,6 @@ void Sapphire::Network::GameConnection::eventHandlerEmote( const Packets::FFXIVA
       player.sendUrgent( "Quest not implemented: {0}", questInfo->name );
   }
 
-  if( player.m_the_movie_hack_flag == 1 )
-  {
-    player.m_the_movie_hack_flag = 0;
-    player.sendDebug( "[the_movie_hack]Passing {0}.{1} to {0}.onTalk", objName, eventName );
-    scriptMgr.onTalk( player, actorId, eventId );
-  }
-
   player.checkEvent( eventId );
 }
 
