@@ -14,6 +14,12 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "GaiUsd204":
+                    {
+                        result.Add("IGNORE_SEQ2", "");
+                        result.Add("WARP_SCENE3", "156|668|-1|-108|0.929|false");
+                        break;
+                    }
                 case "GaiUsd203":
                     {
                         result.Add("SCENE_4", "dummye0");

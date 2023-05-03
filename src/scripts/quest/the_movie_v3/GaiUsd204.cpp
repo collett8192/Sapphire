@@ -1,5 +1,8 @@
 // FFXIVTheMovie.ParserV3.11
 // fake IsAnnounce table
+// param used:
+//IGNORE_SEQ2 SET!!
+//WARP_SCENE3 = 156|668|-1|-108|0.929|false
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
@@ -10,19 +13,29 @@
 
 using namespace Sapphire;
 
-class GaiUsd205 : public Sapphire::ScriptAPI::QuestScript
+class GaiUsd204 : public Sapphire::ScriptAPI::QuestScript
 {
 public:
-  GaiUsd205() : Sapphire::ScriptAPI::QuestScript( 66739 ){}; 
-  ~GaiUsd205() = default; 
+  GaiUsd204() : Sapphire::ScriptAPI::QuestScript( 66738 ){}; 
+  ~GaiUsd204() = default; 
 
   //SEQ_0, 1 entries
+  //SEQ_1, 1 entries
+  //SEQ_2, 1 entries
+  //SEQ_3, 1 entries
   //SEQ_255, 1 entries
 
   //ACTOR0 = 1007763
-  //ACTOR1 = 1006725
-  //NCUTEVENTGAIUSD2051 = 446
-  //NCUTEVENTGAIUSD2052 = 454
+  //EOBJECT0 = 2002897
+  //EVENTACTIONWAITING2MIDDLE = 12
+  //INSTANCEDUNGEON0 = 30001
+  //NCUTEVENTGAIUSD2041 = 408
+  //NCUTEVENTGAIUSD2042 = 445
+  //POPRANGE0 = 4506564
+  //POPRANGE1 = 4585913
+  //TERRITORYTYPE0 = 156
+  //UNLOCKADDNEWCONTENTTOCF = 3702
+  //UNLOCKIMAGEDUNGEONCRYSTALTOWER = 147
 
   static constexpr auto EVENT_ON_TALK = 0;
   static constexpr auto EVENT_ON_EMOTE = 1;
@@ -44,10 +57,24 @@ private:
         // +Callback Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=GRAHATIA
         break;
       }
+      case 1:
+      {
+        if( type != EVENT_ON_BNPC_KILL ) Scene00003( quest, player ); // Scene00003: Normal(CutScene, Message, AutoFadeIn), id=unknown
+        break;
+      }
+      case 2:
+      {
+        // empty entry
+        break;
+      }
+      case 3:
+      {
+        if( type != EVENT_ON_BNPC_KILL ) Scene00004( quest, player ); // Scene00004: Normal(CutScene), id=unknown
+        break;
+      }
       case 255:
       {
-        if( type != EVENT_ON_BNPC_KILL ) Scene00002( quest, player ); // Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RAMMBROES
-        // +Callback Scene00003: Normal(CutScene), id=unknown
+        if( type != EVENT_ON_BNPC_KILL ) Scene00005( quest, player ); // Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=GRAHATIA
         break;
       }
       default:
@@ -100,12 +127,24 @@ public:
 private:
   void checkProgressSeq0( World::Quest& quest, Entity::Player& player )
   {
+    quest.setSeq( 1 );
+  }
+  void checkProgressSeq1( World::Quest& quest, Entity::Player& player )
+  {
+    quest.setSeq( 2 );
+  }
+  void checkProgressSeq2( World::Quest& quest, Entity::Player& player )
+  {
+    quest.setSeq( 3 );
+  }
+  void checkProgressSeq3( World::Quest& quest, Entity::Player& player )
+  {
     quest.setSeq( 255 );
   }
 
   void Scene00000( World::Quest& quest, Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
-    playerMgr().sendDebug( player, "GaiUsd205:66739 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
+    playerMgr().sendDebug( player, "GaiUsd204:66738 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
       if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
@@ -117,7 +156,7 @@ private:
   }
   void Scene00001( World::Quest& quest, Entity::Player& player ) //SEQ_0: , <No Var>, <No Flag>
   {
-    playerMgr().sendDebug( player, "GaiUsd205:66739 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=GRAHATIA" );
+    playerMgr().sendDebug( player, "GaiUsd204:66738 calling Scene00001: Normal(Talk, QuestAccept, TargetCanMove), id=GRAHATIA" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
       checkProgressSeq0( quest, player );
@@ -125,27 +164,43 @@ private:
     eventMgr().playQuestScene( player, getId(), 1, HIDE_HOTBAR, callback );
   }
 
-  void Scene00002( World::Quest& quest, Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
+  void Scene00003( World::Quest& quest, Entity::Player& player ) //SEQ_1: , <No Var>, <No Flag>(Todo:0)
   {
-    playerMgr().sendDebug( player, "GaiUsd205:66739 calling Scene00002: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=RAMMBROES" );
+    playerMgr().sendDebug( player, "GaiUsd204:66738 calling Scene00003: Normal(CutScene, Message, AutoFadeIn), id=unknown" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      eventMgr().sendEventNotice( player, getId(), 0, 0, 0, 0 );
+      checkProgressSeq1( quest, player );
+      eventMgr().eventFinish( player, result.eventId, 1 );
+      warpMgr().requestMoveTerritory( player, Common::WarpType::WARP_TYPE_NORMAL, teriMgr().getZoneByTerritoryTypeId( 156 )->getGuId(), { 668, -1, -108 }, 0.929 );
+    };
+    eventMgr().playQuestScene( player, getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+
+  void Scene00004( World::Quest& quest, Entity::Player& player ) //SEQ_3: , <No Var>, <No Flag>(Todo:2)
+  {
+    playerMgr().sendDebug( player, "GaiUsd204:66738 calling Scene00004: Normal(CutScene), id=unknown" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      eventMgr().sendEventNotice( player, getId(), 2, 0, 0, 0 );
+      checkProgressSeq3( quest, player );
+    };
+    eventMgr().playQuestScene( player, getId(), 4, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+  void Scene00005( World::Quest& quest, Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "GaiUsd204:66738 calling Scene00005: Normal(Talk, QuestReward, QuestComplete, TargetCanMove), id=GRAHATIA" );
     auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
       if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
       {
-        Scene00003( quest, player );
+        player.finishQuest( getId(), result.getResult( 1 ) );
       }
     };
-    eventMgr().playQuestScene( player, getId(), 2, HIDE_HOTBAR, callback );
-  }
-  void Scene00003( World::Quest& quest, Entity::Player& player ) //SEQ_255: , <No Var>, <No Flag>
-  {
-    playerMgr().sendDebug( player, "GaiUsd205:66739 calling Scene00003: Normal(CutScene), id=unknown" );
-    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
-    {
-      player.finishQuest( getId(), result.getResult( 1 ) );
-    };
-    eventMgr().playQuestScene( player, getId(), 3, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    eventMgr().playQuestScene( player, getId(), 5, HIDE_HOTBAR, callback );
   }
 };
 
-EXPOSE_SCRIPT( GaiUsd205 );
+EXPOSE_SCRIPT( GaiUsd204 );
