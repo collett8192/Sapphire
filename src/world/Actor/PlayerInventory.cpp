@@ -107,7 +107,7 @@ void Sapphire::Entity::Player::initInventory()
 
 void Sapphire::Entity::Player::sendItemLevel()
 {
-  queuePacket( makeActorControl( getId(), SetItemLevel, getItemLevel(), 0 ) );
+  queuePacket( makeActorControl( getId(), SetItemLevel, /*getItemLevel()*/ 530, 0 ) );
 }
 
 void Sapphire::Entity::Player::calculateItemLevel()
