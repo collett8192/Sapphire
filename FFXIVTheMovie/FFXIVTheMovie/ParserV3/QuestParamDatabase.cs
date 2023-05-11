@@ -14,6 +14,17 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "GaiUsd602":
+                    {
+                        result.Add("SCENE_4", "INVESTIGATORB");
+                        result.Add("WARP_SCENE4", "156|444|-5.41|-466.9|1.21553|false");
+                        break;
+                    }
+                case "GaiUsd401":
+                    {
+                        result.Add("WARP_SCENE3", "156|731.26|15.43|-58.536|0.8927|false");
+                        break;
+                    }
                 case "GaiUsd204":
                     {
                         result.Add("IGNORE_SEQ2", "");
@@ -1017,6 +1028,8 @@ namespace FFXIVTheMovie.ParserV3
                 case "GaiUsd601":
                     {
                         result.Add("SCENE_3", "WEDGE");
+                        result.Add("WARP_SCENE3", "156|731.26|15.43|-58.536|-2.238|false");
+                        result.Add("WARP_SCENE8", "156|444|-5.41|-466.9|1.21553|false");
                         break;
                     }
                 case "StmBdg102":
