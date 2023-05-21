@@ -14,6 +14,30 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "StmBda139":
+                    {
+                        result.Add("WARP_SCENE26", "628|-130.2|-7|-59|1.57|false");
+                        result.Add("PRIVATE_SCENE8", "680");
+                        result.Add("PRIVATE_SCENE14", "680");
+                        result.Add("PRIVATE_SCENE18", "680");
+                        result.Add("PRIVATE_SCENE27", "680");
+                    }
+                    break;
+                case "StmBda138":
+                    {
+                        result.Add("_ACTOR5", "B");
+                        result.Add("_ACTOR5B", "2|2");
+                        result.Add("_ACTOR6", "B");
+                        result.Add("_ACTOR6B", "2|2");
+                        result.Add("_ACTOR7", "B");
+                        result.Add("_ACTOR7B", "2|2");
+                        break;
+                    }
+                case "StmBda101":
+                    {
+                        result.Add("WARP_SCENE18", "612|-660|130|-533.333|0.96|false");
+                    }
+                    break;
                 case "GaiUsd602":
                     {
                         result.Add("SCENE_4", "INVESTIGATORB");
@@ -1171,6 +1195,9 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         result.Add("ACTOR3", "RAUBAHN");
                         result.Add("ACTOR4", "ALISAIE");
+                        result.Add("SCENE_13", "RAUBAHN");
+                        result.Add("SCENE_19", "dummyt");
+                        result.Add("SCENE_20", "dummyt");
                         break;
                     }
                 case "StmBda112":
@@ -1192,6 +1219,7 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("SCENE_29", "enemy3");
                         result.Add("SCENE_30", "enemy4");
                         result.Add("ACTOR3", "dummy3");
+                        result.Add("_AGGRESSIVE_BNPC_HACK", "");
                         break;
                     }
                 case "HeaVng101":
