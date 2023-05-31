@@ -13,6 +13,7 @@ namespace FFXIVTheMovie.ParserV3
         public List<EventEntry> EntryList = new List<EventEntry>();
         public bool Ignore = false;
         public bool MarkForAlternativeQuestComplete = false;
+        public bool ForceAddEventItem = false;
 
         public Sequence(int seq)
         {
@@ -31,6 +32,8 @@ namespace FFXIVTheMovie.ParserV3
 
         public bool ShouldGiveEventItemAtSeqUpdate()
         {
+            if (ForceAddEventItem)
+                return true;
             foreach (var entry in EntryList)
             {
                 foreach (var scene in entry.EntryScene.SceneList)

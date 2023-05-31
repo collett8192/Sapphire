@@ -1344,6 +1344,10 @@ namespace FFXIVTheMovie.ParserV3
                 {
                     //processed later
                 }
+                else if (entry.Key.StartsWith("FORCEITEM_"))
+                {
+                    //processed later
+                }
                 else if (entry.Key.StartsWith("TODO_CLEAR"))
                 {
                     if (fIsTodoChecked != null)
@@ -1376,6 +1380,10 @@ namespace FFXIVTheMovie.ParserV3
                 if (paramTable.ContainsKey($"IGNORE_SEQ{seq.SeqNumber}"))
                 {
                     seq.Ignore = true;
+                }
+                if (paramTable.ContainsKey($"FORCEITEM_SEQ{seq.SeqNumber}"))
+                {
+                    seq.ForceAddEventItem = true;
                 }
                 if (seq.SeqNumber == 255 && paramTable.ContainsKey("ALTERNATIVE_QUEST_COMPLETE"))
                 {

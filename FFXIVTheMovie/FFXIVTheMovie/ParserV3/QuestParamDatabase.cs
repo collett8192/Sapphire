@@ -14,6 +14,42 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "StmBda206":
+                    {
+                        result.Add("PRIVATE_SCENE1", "639");
+                    }
+                    break;
+                case "StmBda205":
+                    {
+                        result.Add("WARP_SCENE19", "628|147.7|14.78|92.57|1.59|false");
+                    }
+                    break;
+                case "StmBda204":
+                    {
+                        result.Add("ID_ACTOR6", "2097153");
+                        result.Add("FORCEITEM_SEQ2", "");
+                        result.Add("_ACTOR6", "B");
+                        result.Add("_ACTOR6B", "2|2");
+                        result.Add("_ACTOR9", "B");
+                        result.Add("_ACTOR9B", "5|2");
+                        result.Add("_ACTOR10", "B");
+                        result.Add("_ACTOR10B", "5|2");
+                        result.Add("_ACTOR11", "B");
+                        result.Add("_ACTOR11B", "5|2");
+                        result.Add("TODO_DISABLED", "");
+                        break;
+                    }
+                case "StmBda203":
+                    {
+                        result.Add("PRIVATE_SCENE7", "639");
+                        result.Add("PRIVATE_SCENE14", "639");
+                    }
+                    break;
+                case "StmBda201":
+                    {
+                        result.Add("WARP_SCENE2", "628|-65.5|-2.71|-59|1.55|false");
+                    }
+                    break;
                 case "StmBda139":
                     {
                         result.Add("WARP_SCENE26", "628|-130.2|-7|-59|1.57|false");
