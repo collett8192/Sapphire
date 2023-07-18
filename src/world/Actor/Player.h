@@ -1062,30 +1062,8 @@ namespace Sapphire::Entity
     Common::SamSen gaugeSamGetSenRaw();
     bool gaugeSamHasAnySen();
 
-    // party
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-  private:
-    PlayerPtr m_partyLeader;
-    PlayerPtr m_partyInvitationSender;
-    std::vector< PlayerPtr > m_partyMemberList;
-    void clearPartyList();
-    void sendPartyListToParty( PlayerPtr filter = nullptr );
-    void sendPartyList();
-  public:
-    bool isPartyLeader();
-    bool isInParty();
-    bool createEmptyParty();
-    void disbandParty();
-    PlayerPtr getPartyLeader();
-    PlayerPtr getPartyInvitationSender();
-    void setPartyInvitationSender( PlayerPtr sender );
-    bool addPartyMember( PlayerPtr member );
-    bool removePartyMember( PlayerPtr member );
-    bool changePartyLeader( PlayerPtr newLeader );
-    uint8_t getPartySize();
-    void foreachPartyMember( std::function< void( PlayerPtr member ) > callback);
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
     void setPosAndNotifyClient( float x, float y, float z, float rot );
     std::unordered_map< uint32_t, TerritoryPtr > m_privateInstanceMap;
     TerritoryPtr getOrCreatePrivateInstance( uint32_t zoneId );

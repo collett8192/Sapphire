@@ -106,7 +106,7 @@ void Sapphire::Network::GameConnection::cfDutyAccepted( const Packets::FFXIVARR_
       auto sourceZoneGuId = player.getCurrentTerritory()->getGuId();
       player.setInstance( instance );
 
-      if( player.isPartyLeader() )
+      /*if( player.isPartyLeader() )
       {
         player.foreachPartyMember( [ &player, &pInstance, sourceZoneGuId ]( Entity::PlayerPtr m )
           {
@@ -130,7 +130,7 @@ void Sapphire::Network::GameConnection::cfDutyAccepted( const Packets::FFXIVARR_
             pInstance->bindPlayer( m->getId() );
             m->setInstance( pInstance );
           } );
-      }
+      }*/
     }
   }
   else
