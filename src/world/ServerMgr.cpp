@@ -43,6 +43,8 @@
 #include "Manager/ActionMgr.h"
 #include "Manager/MapMgr.h"
 #include "Manager/WarpMgr.h"
+#include "Manager/ChatChannelMgr.h"
+#include "Manager/PartyMgr.h"
 
 #include "Territory/InstanceObjectCache.h"
 
@@ -154,6 +156,9 @@ void Sapphire::World::ServerMgr::run( int32_t argc, char* argv[] )
   }
   Common::Service< Db::DbWorkerPool< Db::ZoneDbConnection > >::set( pDb );
 
+  auto pChatChannelMgr = std::make_shared< Manager::ChatChannelMgr >();
+  Common::Service< Manager::ChatChannelMgr >::set( pChatChannelMgr );
+
   Logger::info( "LinkshellMgr: Caching linkshells" );
   auto pLsMgr = std::make_shared< Manager::LinkshellMgr >();
   if( !pLsMgr->loadLinkshells() )
@@ -230,6 +235,7 @@ void Sapphire::World::ServerMgr::run( int32_t argc, char* argv[] )
   auto pEventMgr = std::make_shared< Manager::EventMgr >();
   auto pItemMgr = std::make_shared< Manager::ItemMgr >();
   auto pRNGMgr = std::make_shared< Manager::RNGMgr >();
+  auto pPartyMgr = std::make_shared< Manager::PartyMgr >();
 
   Common::Service< DebugCommandMgr >::set( pDebugCom );
   Common::Service< Manager::PlayerMgr >::set( pPlayerMgr );
@@ -238,6 +244,7 @@ void Sapphire::World::ServerMgr::run( int32_t argc, char* argv[] )
   Common::Service< Manager::EventMgr >::set( pEventMgr );
   Common::Service< Manager::ItemMgr >::set( pItemMgr );
   Common::Service< Manager::RNGMgr >::set( pRNGMgr );
+  Common::Service< Manager::PartyMgr >::set( pPartyMgr );
 
   Logger::info( "World server running on {0}:{1}", m_ip, m_port );
 
@@ -323,6 +330,7 @@ void Sapphire::World::ServerMgr::mainLoop()
         {
           Logger::info( "[{0}] Session removal", it->second->getId() );
           it = m_sessionMapById.erase( it );
+          removeSession( pPlayer->getContentId() );
           removeSession( pPlayer->getName() );
           continue;
         }
@@ -337,6 +345,7 @@ void Sapphire::World::ServerMgr::mainLoop()
         // if( it->second.unique() )
         {
           it = m_sessionMapById.erase( it );
+          removeSession( pPlayer->getContentId() );
           removeSession( pPlayer->getName() );
         }
       }
@@ -375,15 +384,11 @@ bool Sapphire::World::ServerMgr::createSession( uint32_t sessionId )
     return false;
   }
 
+  m_sessionMapByContentId[ newSession->getPlayer()->getContentId() ] = newSession;
   m_sessionMapByName[ newSession->getPlayer()->getName() ] = newSession;
 
   return true;
 
-}
-
-void Sapphire::World::ServerMgr::removeSession( uint32_t sessionId )
-{
-  m_sessionMapById.erase( sessionId );
 }
 
 Sapphire::World::SessionPtr Sapphire::World::ServerMgr::getSession( uint32_t id )
@@ -392,6 +397,16 @@ Sapphire::World::SessionPtr Sapphire::World::ServerMgr::getSession( uint32_t id 
   auto it = m_sessionMapById.find( id );
 
   if( it != m_sessionMapById.end() )
+    return ( it->second );
+
+  return nullptr;
+}
+
+Sapphire::World::SessionPtr Sapphire::World::ServerMgr::getSession( uint64_t contentId )
+{
+  auto it = m_sessionMapByContentId.find( contentId );
+
+  if( it != m_sessionMapByContentId.end() )
     return ( it->second );
 
   return nullptr;
@@ -407,6 +422,16 @@ Sapphire::World::SessionPtr Sapphire::World::ServerMgr::getSession( const std::s
     return ( it->second );
 
   return nullptr;
+}
+
+void Sapphire::World::ServerMgr::removeSession( uint32_t sessionId )
+{
+  m_sessionMapById.erase( sessionId );
+}
+
+void Sapphire::World::ServerMgr::removeSession( uint64_t contentId )
+{
+  m_sessionMapByContentId.erase( contentId );
 }
 
 void Sapphire::World::ServerMgr::removeSession( const std::string& playerName )

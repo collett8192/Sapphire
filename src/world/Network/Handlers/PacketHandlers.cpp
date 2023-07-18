@@ -47,6 +47,8 @@
 #include "Manager/HousingMgr.h"
 #include "Manager/RNGMgr.h"
 #include "Manager/ItemMgr.h"
+#include "Manager/PartyMgr.h"
+#include "Manager/ChatChannelMgr.h"
 
 #include "Action/Action.h"
 #include "Inventory/Item.h"
@@ -96,6 +98,7 @@ void Sapphire::Network::GameConnection::setSearchInfoHandler( const Packets::FFX
   searchInfoPacket->data().selectRegion = player.getSearchSelectRegion();
   strcpy( searchInfoPacket->data().searchMessage, player.getSearchMessage() );
   queueOutPacket( searchInfoPacket );
+
 }
 
 void Sapphire::Network::GameConnection::reqSearchInfoHandler( const Packets::FFXIVARR_PACKET_RAW& inPacket,
@@ -625,10 +628,22 @@ void Sapphire::Network::GameConnection::tellHandler( const Packets::FFXIVARR_PAC
 
   if( player.isActingAsGm() )
   {
-    tellPacket->data().flags |= TellFlags::GmTellMsg;
+    tellPacket->data().flags |= ChatFromType::GmTellMsg;
   }
 
   pTargetPlayer->queueChatPacket( tellPacket );
+}
+
+void Sapphire::Network::GameConnection::channelChatHandler( const Packets::FFXIVARR_PACKET_RAW& inPacket, Entity::Player& player )
+{
+  const auto packet = ChatChannelPacket< Client::FFXIVIpcChannelChatHandler >( inPacket );
+  auto& data = packet.data();
+
+  auto& chatChannelMgr = Common::Service< ChatChannelMgr >::ref();
+
+  std::string message = std::string( data.message );
+
+  chatChannelMgr.sendMessageToChannel( data.channelId, player, message );
 }
 
 void Sapphire::Network::GameConnection::performNoteHandler( const Packets::FFXIVARR_PACKET_RAW& inPacket,
