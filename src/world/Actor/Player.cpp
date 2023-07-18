@@ -2052,8 +2052,6 @@ void Sapphire::Entity::Player::sendZonePackets()
 //  if( getLastPing() == 0 )
 //    sendQuestInfo();
 
-  sendPartyList();
-
   m_bMarkedForZoning = false;
 }
 
