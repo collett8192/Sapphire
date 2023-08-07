@@ -1148,6 +1148,7 @@ namespace Sapphire::Common
     PotencyMultiplier = 17,
     Invulnerable = 18,
     CannotDie = 19,
+    ActionResource = 20,
   };
 
   enum class ActionTypeFilter : int32_t

@@ -302,6 +302,11 @@ void Sapphire::StatusEffect::StatusEffect::onBeforeActionStart( Sapphire::World:
         action->setAlwaysCombo();
       break;
     }
+    case Common::StatusEffectType::ActionResource:
+    {
+      applyToAction( action );
+      break;
+    }
   }
 }
 

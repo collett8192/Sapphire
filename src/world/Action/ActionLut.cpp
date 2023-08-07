@@ -179,6 +179,7 @@ int32_t Sapphire::World::Action::StatusEffectEntry::getRemainingCharges() const
     case StatusEffectType::AlwaysCombo:
     case StatusEffectType::InstantCast:
     case StatusEffectType::PotencyMultiplier:
+    case StatusEffectType::ActionResource:
       return effectValue1;
     default:
       return -1;
@@ -192,6 +193,7 @@ void Sapphire::World::Action::StatusEffectEntry::setRemainingCharges( int32_t ch
     case StatusEffectType::AlwaysCombo:
     case StatusEffectType::InstantCast:
     case StatusEffectType::PotencyMultiplier:
+    case StatusEffectType::ActionResource:
       effectValue1 = charges;
   }
 }
@@ -322,6 +324,7 @@ bool Sapphire::World::Action::StatusEffectEntry::canApplyToAction( uint32_t acti
     case StatusEffectType::InstantCast:
     case StatusEffectType::PotencyMultiplier:
     case StatusEffectType::MPRestorePerGCD:
+    case StatusEffectType::ActionResource:
       if ( effectValue2 != 0 )
       {
         if( actionId != effectValue2 && actionId != effectValue3 && actionId != effectValue4 )
