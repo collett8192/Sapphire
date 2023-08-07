@@ -85,7 +85,7 @@ ActionLut::Lut ActionLut::m_actionLut =
 
   //Divine Veil, ディヴァインヴェール
   //applies to targets: Divine Veil, ディヴァインヴェール［バリア］, duration 0, param 0
-  { 3540, { 0, 0, 0, 0, 0, 0, 0, 727, 0, 0, 0, 0, 0 } },
+  { 3540, { 0, 0, 0, 0, 0, 0, 0, 727, 30000, 0, 0, 0, 0 } },
 
   //Clemency, クレメンシー
   //has heal: potency 1200
@@ -93,8 +93,8 @@ ActionLut::Lut ActionLut::m_actionLut =
 
   //Royal Authority, ロイヤルアソリティ
   //has damage: potency 100, combo potency 550, directional potency 0
-  //applies to self: Sword Oath, 忠義の剣, duration 15000, param 0
-  { 3539, { 100, 550, 0, 0, 1902, 15000, 0, 0, 0, 0, 0, 0, 0 } },
+  //applies to self: Sword Oath, 忠義の剣, duration 15000, param 3
+  { 3539, { 100, 550, 0, 0, 1902, 15000, 3, 0, 0, 0, 0, 0, 0 } },
 
   //Intervention, インターベンション
   { 7382, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } },
@@ -3563,4 +3563,7 @@ ActionLut::StatusEffectTable ActionLut::m_statusEffectTable =
 
   //Divine Benison, ディヴァインベニゾン (scripted)
   { 1218, { 0, 0, 0, 0, 0 } },
+
+  //Sword Oath, 忠義の剣: ActionResource, 3 uses
+  { 1902, { 20, 3, 16460, 0, 0 } },
 };
