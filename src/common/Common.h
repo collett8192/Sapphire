@@ -1148,6 +1148,7 @@ namespace Sapphire::Common
     PotencyMultiplier = 17,
     Invulnerable = 18,
     CannotDie = 19,
+    ActionResource = 20,
   };
 
   enum class ActionTypeFilter : int32_t
@@ -1193,6 +1194,16 @@ namespace Sapphire::Common
     NoRequirement = 0,
     RequireCorrectCombo = 1,
     RequireCorrectPositional = 2,
+  };
+
+  enum class StatusRefreshPolicy : uint8_t
+  {
+    Stack = 0,
+    ReplaceOrApply = 1,
+    Extend = 2,
+    ExtendOrApply = 3,
+    Reject = 4,
+    Custom = 15, // script handled
   };
 
   enum class AstCardType : uint8_t

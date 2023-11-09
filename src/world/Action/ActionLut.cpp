@@ -179,6 +179,7 @@ int32_t Sapphire::World::Action::StatusEffectEntry::getRemainingCharges() const
     case StatusEffectType::AlwaysCombo:
     case StatusEffectType::InstantCast:
     case StatusEffectType::PotencyMultiplier:
+    case StatusEffectType::ActionResource:
       return effectValue1;
     default:
       return -1;
@@ -192,6 +193,7 @@ void Sapphire::World::Action::StatusEffectEntry::setRemainingCharges( int32_t ch
     case StatusEffectType::AlwaysCombo:
     case StatusEffectType::InstantCast:
     case StatusEffectType::PotencyMultiplier:
+    case StatusEffectType::ActionResource:
       effectValue1 = charges;
   }
 }
@@ -322,6 +324,7 @@ bool Sapphire::World::Action::StatusEffectEntry::canApplyToAction( uint32_t acti
     case StatusEffectType::InstantCast:
     case StatusEffectType::PotencyMultiplier:
     case StatusEffectType::MPRestorePerGCD:
+    case StatusEffectType::ActionResource:
       if ( effectValue2 != 0 )
       {
         if( actionId != effectValue2 && actionId != effectValue3 && actionId != effectValue4 )
@@ -351,21 +354,46 @@ bool Sapphire::World::Action::StatusEffectEntry::canApplyToAction( uint32_t acti
   }
 }
 
-Sapphire::World::Action::ActionEntry::ActionEntry( uint16_t dp, uint16_t dcp, uint16_t ddp, uint16_t hp, uint16_t ss, uint32_t ssd, uint16_t ssp, uint16_t ts, uint32_t tsd, uint16_t tsp, uint8_t be, uint8_t br, uint32_t bdu32 )
+Sapphire::World::Action::ActionEntry::ActionEntry( uint16_t dp, uint16_t dcp, uint16_t ddp, uint16_t hp, uint16_t ss, uint32_t ssd, uint16_t ssp, uint16_t ts, uint32_t tsd, uint16_t tsp, uint8_t be, uint8_t br, uint32_t bdu32 ) :
+  damagePotency( dp ),
+  damageComboPotency( dcp ),
+  damageDirectionalPotency( ddp ),
+  healPotency( hp ),
+  selfStatus( ss ),
+  selfStatusDuration( ssd ),
+  selfStatusParam( ssp ),
+  targetStatus( ts ),
+  targetStatusDuration( tsd ),
+  targetStatusParam ( tsp ),
+  bonusEffect( be ),
+  bonusRequirement( br ),
+  bonusDataUInt32 ( bdu32 ),
+  selfStatusRefreshPolicy( 1 ),
+  selfStatusRefreshValue( 0 ),
+  targetStatusRefreshPolicy( 1 ),
+  targetStatusRefreshValue( 0 )
 {
-  damagePotency = dp;
-  damageComboPotency = dcp;
-  damageDirectionalPotency = ddp;
-  healPotency = hp;
-  selfStatus = ss;
-  selfStatusDuration = ssd;
-  selfStatusParam = ssp;
-  targetStatus = ts;
-  targetStatusDuration = tsd;
-  targetStatusParam = tsp;
-  bonusEffect = be;
-  bonusRequirement = br;
-  bonusDataUInt32 = bdu32;
+}
+
+Sapphire::World::Action::ActionEntry::ActionEntry( uint16_t dp, uint16_t dcp, uint16_t ddp, uint16_t hp, uint16_t ss, uint32_t ssd, uint16_t ssp, uint16_t ts, uint32_t tsd, uint16_t tsp, uint8_t be, uint8_t br, uint32_t bdu32, int ssrp, int32_t ssrv, int tsrp, int32_t tsrv ) :
+  damagePotency( dp ),
+  damageComboPotency( dcp ),
+  damageDirectionalPotency( ddp ),
+  healPotency( hp ),
+  selfStatus( ss ),
+  selfStatusDuration( ssd ),
+  selfStatusParam( ssp ),
+  targetStatus( ts ),
+  targetStatusDuration( tsd ),
+  targetStatusParam ( tsp ),
+  bonusEffect( be ),
+  bonusRequirement( br ),
+  bonusDataUInt32 ( bdu32 ),
+  selfStatusRefreshPolicy( static_cast< uint8_t >( ssrp ) ),
+  selfStatusRefreshValue( ssrv ),
+  targetStatusRefreshPolicy( static_cast< uint8_t >( tsrp ) ),
+  targetStatusRefreshValue( tsrv )
+{
 }
 
 uint32_t Sapphire::World::Action::ActionEntry::getRawBonusData() const
@@ -428,4 +456,26 @@ uint16_t Sapphire::World::Action::ActionEntry::getDirectHitRateBonus() const
   if( bonusEffect & ActionBonusEffect::DHBonus )
     return bonusDataUInt16L;
   return 0;
+}
+
+Sapphire::Common::StatusRefreshPolicy Sapphire::World::Action::ActionEntry::getSelfStatusRefreshPolicy( bool sameSource )
+{
+  uint8_t policy = sameSource ? selfStatusRefreshPolicy >> 4 : selfStatusRefreshPolicy & 0x0F;
+  return static_cast< Sapphire::Common::StatusRefreshPolicy >( policy );
+}
+
+Sapphire::Common::StatusRefreshPolicy Sapphire::World::Action::ActionEntry::getTargetStatusRefreshPolicy( bool sameSource )
+{
+  uint8_t policy = sameSource ? targetStatusRefreshPolicy >> 4 : targetStatusRefreshPolicy & 0x0F;
+  return static_cast< Sapphire::Common::StatusRefreshPolicy >( policy );
+}
+
+int32_t Sapphire::World::Action::ActionEntry::getSelfStatusRefreshValue()
+{
+  return selfStatusRefreshValue;
+}
+
+int32_t Sapphire::World::Action::ActionEntry::getTargetStatusRefreshValue()
+{
+  return targetStatusRefreshValue;
 }

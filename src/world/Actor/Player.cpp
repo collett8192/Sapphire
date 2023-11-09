@@ -1260,13 +1260,13 @@ void Sapphire::Entity::Player::update( uint64_t tickCount )
           auto chara = actor->getAsChara();
 
           // default autoattack range
-          float range = 3.f + chara->getRadius();
+          float range = 3.f + chara->getRadius() + getRadius() * 0.5f;
 
           // default autoattack range for ranged classes
           if( getClass() == ClassJob::Machinist ||
               getClass() == ClassJob::Bard ||
               getClass() == ClassJob::Archer )
-            range = 25;
+            range = 25.f + chara->getRadius() + getRadius() * 0.5f;
 
 
           if( Util::distance( getPos().x, getPos().y, getPos().z,
@@ -1673,14 +1673,17 @@ void Sapphire::Entity::Player::sendHateList()
 void Sapphire::Entity::Player::onMobAggro( BNpcPtr pBNpc )
 {
   hateListAdd( pBNpc );
-  queuePacket( makeActorControl( getId(), ToggleAggro, 1 ) );
-  setStateFlag( Common::PlayerStateFlag::InCombat );
+  if( !hasStateFlag( Common::PlayerStateFlag::InCombat ) )
+  {
+    queuePacket( makeActorControl( getId(), ToggleAggro, 1 ) );
+    setStateFlag( Common::PlayerStateFlag::InCombat );
+  }
 }
 
 void Sapphire::Entity::Player::onMobDeaggro( BNpcPtr pBNpc )
 {
   hateListRemove( pBNpc );
-  if( m_actorIdTohateSlotMap.empty() )
+  if( m_actorIdTohateSlotMap.empty() && hasStateFlag( Common::PlayerStateFlag::InCombat ) )
   {
     queuePacket( makeActorControl( getId(), ToggleAggro ) );
     unsetStateFlag( Common::PlayerStateFlag::InCombat );

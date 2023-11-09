@@ -302,6 +302,11 @@ void Sapphire::StatusEffect::StatusEffect::onBeforeActionStart( Sapphire::World:
         action->setAlwaysCombo();
       break;
     }
+    case Common::StatusEffectType::ActionResource:
+    {
+      applyToAction( action );
+      break;
+    }
   }
 }
 
@@ -339,6 +344,12 @@ void Sapphire::StatusEffect::StatusEffect::refresh()
   m_cachedSourceCritBonus = 0;
   m_cachedSourceCrit = 0;
   applyStatus();
+}
+
+void Sapphire::StatusEffect::StatusEffect::refresh( uint32_t newDuration )
+{
+  m_duration = newDuration;
+  refresh();
 }
 
 void Sapphire::StatusEffect::StatusEffect::refresh( Sapphire::World::Action::StatusEffectEntry newEntry )
