@@ -14,6 +14,99 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "StmBda323":
+                    {
+                        result.Add("_ACTOR10", "B");
+                        result.Add("_ACTOR10B", "2|2");
+                        result.Add("_ACTOR11", "B");
+                        result.Add("_ACTOR11B", "2|2");
+                        result.Add("_ACTOR12", "B");
+                        result.Add("_ACTOR12B", "2|2");
+                        result.Add("_ACTOR13", "B");
+                        result.Add("_ACTOR13B", "2|2");
+                        break;
+                    }
+                case "StmBda322":
+                    {
+                        result.Add("SCENE_8", "YUGIRI");
+                        result.Add("WARP_SCENE11", "614|484.87|6.346|376.551|2|false");
+                    }
+                    break;
+                case "StmBda321":
+                    {
+                        result.Add("SCENE_10", "SOLDIERC02495");
+                        result.Add("SCENE_19", "SOLDIERD02496");
+                        result.Add("PRIVATE_SCENE26", "681");
+                    }
+                    break;
+                case "StmBda317":
+                    {
+                        result.Add("_ACTOR5", "B");
+                        result.Add("_ACTOR5B", "2|2");
+                        result.Add("_ACTOR6", "B");
+                        result.Add("_ACTOR6B", "2|2");
+                        result.Add("_ACTOR7", "B");
+                        result.Add("_ACTOR7B", "2|2");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "2|2");
+                        break;
+                    }
+                case "StmBda325":
+                    {
+                        result.Add("PRIVATE_RESSIANGATEKEEPER", "681");
+                        result.Add("_ACTOR2", "B");
+                        result.Add("_ACTOR2B", "2|2");
+                        result.Add("_ACTOR5", "B");
+                        result.Add("_ACTOR5B", "2|2");
+                        result.Add("_ACTOR6", "B");
+                        result.Add("_ACTOR6B", "2|2");
+                    }
+                    break;
+                case "StmBda314":
+                    {
+                        result.Add("_ACTOR2", "B");
+                        result.Add("_ACTOR2B", "1|2");
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "1|2");
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "1|2");
+                        break;
+                    }
+                case "StmBda313":
+                    {
+                        result.Add("WARP_SCENE5", "613|-725.7|0.206|-314.75|-2.386|false");
+                    }
+                    break;
+                case "StmBda310":
+                    {
+                        result.Add("FORCEITEM_SEQ2", "");
+                        result.Add("ID_ACTOR6", "2097153");
+                    }
+                    break;
+                case "StmBda308":
+                    {
+                        result.Add("SCENE_5", "ALISAIE");
+                        result.Add("MOUNT_SCENE5", "118");
+                        result.Add("WARP_SCENE5", "613|309.2264|-104.7647|-331.0097|-2.51218|false");
+                    }
+                    break;
+                case "StmBda306":
+                    {
+                        result.Add("WARP_SCENE12", "613|421.894|-98.99|-224.644|-1.385|false");
+                    }
+                    break;
+                case "StmBda303":
+                    {
+                        result.Add("WARP_SCENE12", "613|-708.77|-0.099|-302.91|-1.65|false");
+                        result.Add("WARP_SCENE18", "613|-740.88|1.86|-310.57|-2.08|false");
+                    }
+                    break;
+                case "StmBda302":
+                    {
+                        result.Add("SCENE_6", "dummye0");
+                        result.Add("SCENE_7", "dummye0");
+                    }
+                    break;
                 case "StmBda206":
                     {
                         result.Add("PRIVATE_SCENE1", "639");
@@ -1216,6 +1309,10 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("SCENE_16", "BIGSOLDIER02496");
                         result.Add("SCENE_19", "SMALLSOLDIER02496");
                         result.Add("SCENE_22", "MIDDLESOLDIER02496");
+                        result.Add("_ACTOR7", "E");
+                        result.Add("_ACTOR7E", "5|4,59");
+                        result.Add("_ACTOR8", "E");
+                        result.Add("_ACTOR8E", "5|4,59");
                         break;
                     }
                 case "StmBda312":

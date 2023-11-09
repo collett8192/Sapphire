@@ -335,7 +335,7 @@ namespace FFXIVTheMovie.ParserV3
                             outputCpp.Add($"{extraSpace}          }}");
                             if (scene4 != null)
                             {
-                                outputCpp.Add($"{extraSpace}          // WTF IS THIS????? {scene4}");
+                                outputCpp.Add($"{extraSpace}          // Extra scene for not meeting requirement, most likely wearing specific gear: {scene4}");
                             }
                         }
                         else if (entry.InventoryBranch)
@@ -878,7 +878,7 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         outputCpp.Add($"{(hasIf ? "  " : "")}      player.setMount( {mountTable[keyForMount]} );");
                                     }
-                                    else if (keyForWarp != null)
+                                    if (keyForWarp != null)
                                     {
                                         var dst = warpTable[keyForWarp];
                                         bool fallback = dst.Item6.ToLower() == "true";
@@ -1047,6 +1047,11 @@ namespace FFXIVTheMovie.ParserV3
                                 entry.EmoteBranch = emote;
                                 switch (type)
                                 {
+                                    case "4":
+                                        {
+                                            entry.RequiredGroupCount = 4;
+                                            break;
+                                        }
                                     case "3":
                                         {
                                             entry.RequiredGroupCount = 3;
@@ -1130,13 +1135,17 @@ namespace FFXIVTheMovie.ParserV3
                                 if (lastTodo != null && perfectTodoLength)
                                 {
                                     //Debugger.Break();
-                                    Console.WriteLine("Need investigate todo list in this quest!");
-                                    continue;
+                                    //Console.WriteLine("Need investigate todo list in this quest!");
+
+                                    // probably missing counter
                                 }
-                                var todo = fIsTodoChecked.TodoList[todoCurrentPos];
-                                lastTodo = todo;
-                                entry.TodoIndex = todo.Item1;
-                                todoCurrentPos++;
+                                else
+                                {
+                                    var todo = fIsTodoChecked.TodoList[todoCurrentPos];
+                                    lastTodo = todo;
+                                    entry.TodoIndex = todo.Item1;
+                                    todoCurrentPos++;
+                                }
                             }
                         }
                         /*

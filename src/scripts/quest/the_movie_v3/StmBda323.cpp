@@ -1,16 +1,27 @@
-// FFXIVTheMovie.ParserV3.1
+// FFXIVTheMovie.ParserV3.11
+// param used:
+//_ACTOR10 = B
+//_ACTOR10B = 2|2
+//_ACTOR11 = B
+//_ACTOR11B = 2|2
+//_ACTOR12 = B
+//_ACTOR12B = 2|2
+//_ACTOR13 = B
+//_ACTOR13B = 2|2
 #include <Actor/Player.h>
 #include <ScriptObject.h>
 #include <Service.h>
 #include "Manager/TerritoryMgr.h"
 #include "Manager/EventMgr.h"
+#include "Territory/Territory.h"
+#include "Actor/BNpc.h"
 
 using namespace Sapphire;
 
-class StmBda323 : public Sapphire::ScriptAPI::EventScript
+class StmBda323 : public Sapphire::ScriptAPI::QuestScript
 {
 public:
-  StmBda323() : Sapphire::ScriptAPI::EventScript( 68035 ){}; 
+  StmBda323() : Sapphire::ScriptAPI::QuestScript( 68035 ){}; 
   ~StmBda323() = default; 
 
   //SEQ_0, 9 entries
@@ -45,557 +56,612 @@ public:
   //NCUT02 = 1433
   //NCUT03 = 1434
 
+  static constexpr auto EVENT_ON_TALK = 0;
+  static constexpr auto EVENT_ON_EMOTE = 1;
+  static constexpr auto EVENT_ON_BNPC_KILL = 2;
+  static constexpr auto EVENT_ON_WITHIN_RANGE = 3;
+  static constexpr auto EVENT_ON_ENTER_TERRITORY = 4;
+  static constexpr auto EVENT_ON_EVENT_ITEM = 5;
+  static constexpr auto EVENT_ON_EOBJ_HIT = 6;
+  static constexpr auto EVENT_ON_SAY = 7;
+
 private:
-  void onProgress( Entity::Player& player, uint64_t param1, uint32_t param2, uint32_t type, uint32_t param3 )
+  void onProgress( World::Quest& quest, Entity::Player& player, uint32_t type, uint64_t param1, uint32_t param2, uint32_t param3 )
   {
-    switch( player.getQuestSeq( getId() ) )
+    switch( quest.getSeq() )
     {
       case 0:
       {
-        if( param1 == 1020059 || param2 == 1020059 ) // ACTOR0 = ISSE
+        if( param1 == 1020059 ) // ACTOR0 = ISSE
         {
-          Scene00000( player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
-          // +Callback Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=ISSE
+          if( quest.getUI8AL() != 1 )
+          {
+            Scene00000( quest, player ); // Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown
+            // +Callback Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=ISSE
+          }
+          break;
         }
-        if( param1 == 1020057 || param2 == 1020057 ) // ACTOR1 = ALISAIE
+        if( param1 == 1020057 ) // ACTOR1 = ALISAIE
         {
-          Scene00002( player ); // Scene00002: Normal(Talk, TargetCanMove), id=ALISAIE
+          Scene00002( quest, player ); // Scene00002: Normal(Talk, TargetCanMove), id=ALISAIE
+          break;
         }
-        if( param1 == 1020058 || param2 == 1020058 ) // ACTOR2 = GOSETSU
+        if( param1 == 1020058 ) // ACTOR2 = GOSETSU
         {
-          Scene00003( player ); // Scene00003: Normal(Talk, TargetCanMove), id=GOSETSU
+          Scene00003( quest, player ); // Scene00003: Normal(Talk, TargetCanMove), id=GOSETSU
+          break;
         }
-        if( param1 == 1020189 || param2 == 1020189 ) // ACTOR3 = YUGIRI
+        if( param1 == 1020189 ) // ACTOR3 = YUGIRI
         {
-          Scene00004( player ); // Scene00004: Normal(Talk, TargetCanMove), id=YUGIRI
+          Scene00004( quest, player ); // Scene00004: Normal(Talk, TargetCanMove), id=YUGIRI
+          break;
         }
-        if( param1 == 1020060 || param2 == 1020060 ) // ACTOR4 = unknown
+        if( param1 == 1020060 ) // ACTOR4 = unknown
         {
-          Scene00005( player ); // Scene00005: Normal(None), id=unknown
+          Scene00005( quest, player ); // Scene00005: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1020061 || param2 == 1020061 ) // ACTOR5 = unknown
+        if( param1 == 1020061 ) // ACTOR5 = unknown
         {
-          Scene00006( player ); // Scene00006: Normal(None), id=unknown
+          Scene00006( quest, player ); // Scene00006: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1023077 || param2 == 1023077 ) // ACTOR6 = unknown
+        if( param1 == 1023077 ) // ACTOR6 = unknown
         {
-          Scene00007( player ); // Scene00007: Normal(None), id=unknown
+          Scene00007( quest, player ); // Scene00007: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1023078 || param2 == 1023078 ) // ACTOR7 = unknown
+        if( param1 == 1023078 ) // ACTOR7 = unknown
         {
-          Scene00008( player ); // Scene00008: Normal(None), id=unknown
+          Scene00008( quest, player ); // Scene00008: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1023079 || param2 == 1023079 ) // ACTOR8 = unknown
+        if( param1 == 1023079 ) // ACTOR8 = unknown
         {
-          Scene00009( player ); // Scene00009: Normal(None), id=unknown
+          Scene00009( quest, player ); // Scene00009: Empty(None), id=unknown
+          break;
         }
         break;
       }
       case 1:
       {
-        if( param1 == 1020062 || param2 == 1020062 ) // ACTOR9 = ISSE
+        if( param1 == 1020062 ) // ACTOR9 = ISSE
         {
-          if( player.getQuestUI8AL( getId() ) != 1 )
+          if( quest.getUI8AL() != 1 )
           {
-            Scene00010( player ); // Scene00010: Normal(Talk, TargetCanMove), id=ISSE
+            Scene00010( quest, player ); // Scene00010: Normal(Talk, TargetCanMove), id=ISSE
             // +Callback Scene00011: Normal(CutScene), id=unknown
           }
+          break;
         }
-        if( param1 == 1020057 || param2 == 1020057 ) // ACTOR1 = ALISAIE
+        if( param1 == 1020057 ) // ACTOR1 = ALISAIE
         {
-          Scene00012( player ); // Scene00012: Normal(Talk, TargetCanMove), id=ALISAIE
+          Scene00012( quest, player ); // Scene00012: Normal(Talk, TargetCanMove), id=ALISAIE
+          break;
         }
-        if( param1 == 1020058 || param2 == 1020058 ) // ACTOR2 = GOSETSU
+        if( param1 == 1020058 ) // ACTOR2 = GOSETSU
         {
-          Scene00013( player ); // Scene00013: Normal(Talk, TargetCanMove), id=GOSETSU
+          Scene00013( quest, player ); // Scene00013: Normal(Talk, TargetCanMove), id=GOSETSU
+          break;
         }
-        if( param1 == 1020189 || param2 == 1020189 ) // ACTOR3 = YUGIRI
+        if( param1 == 1020189 ) // ACTOR3 = YUGIRI
         {
-          Scene00014( player ); // Scene00014: Normal(Talk, TargetCanMove), id=YUGIRI
+          Scene00014( quest, player ); // Scene00014: Normal(Talk, TargetCanMove), id=YUGIRI
+          break;
         }
-        if( param1 == 1020060 || param2 == 1020060 ) // ACTOR4 = unknown
+        if( param1 == 1020060 ) // ACTOR4 = unknown
         {
-          Scene00015( player ); // Scene00015: Normal(None), id=unknown
+          Scene00015( quest, player ); // Scene00015: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1020061 || param2 == 1020061 ) // ACTOR5 = unknown
+        if( param1 == 1020061 ) // ACTOR5 = unknown
         {
-          Scene00016( player ); // Scene00016: Normal(None), id=unknown
+          Scene00016( quest, player ); // Scene00016: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1023077 || param2 == 1023077 ) // ACTOR6 = unknown
+        if( param1 == 1023077 ) // ACTOR6 = unknown
         {
-          Scene00017( player ); // Scene00017: Normal(None), id=unknown
+          Scene00017( quest, player ); // Scene00017: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1023078 || param2 == 1023078 ) // ACTOR7 = unknown
+        if( param1 == 1023078 ) // ACTOR7 = unknown
         {
-          Scene00018( player ); // Scene00018: Normal(None), id=unknown
+          Scene00018( quest, player ); // Scene00018: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1023079 || param2 == 1023079 ) // ACTOR8 = unknown
+        if( param1 == 1023079 ) // ACTOR8 = unknown
         {
-          Scene00019( player ); // Scene00019: Normal(None), id=unknown
+          Scene00019( quest, player ); // Scene00019: Empty(None), id=unknown
+          break;
         }
         break;
       }
       case 2:
       {
-        if( param1 == 1020063 || param2 == 1020063 ) // ACTOR10 = YUGIRI
+        if( param1 == 1020063 ) // ACTOR10 = YUGIRI, CB=2
         {
-          if( player.getQuestUI8AL( getId() ) != 4 )
+          if( !quest.getBitFlag8( 1 ) )
           {
-            Scene00020( player ); // Scene00020: Normal(Talk, TargetCanMove), id=YUGIRI
-            // +Callback Scene00021: Normal(Talk, TargetCanMove), id=YUGIRI
+            Scene00020( quest, player ); // Scene00020: Normal(Talk, TargetCanMove), id=YUGIRI
           }
-        }
-        if( param1 == 1020064 || param2 == 1020064 ) // ACTOR11 = GOSETSU
-        {
-          if( player.getQuestUI8AL( getId() ) != 4 )
+          else
           {
-            Scene00022( player ); // Scene00022: Normal(Talk, TargetCanMove), id=GOSETSU
-            // +Callback Scene00023: Normal(Talk, TargetCanMove), id=GOSETSU
+            Scene00021( quest, player ); // Scene00021: Normal(Talk, TargetCanMove), id=YUGIRI
           }
+          break;
         }
-        if( param1 == 1020065 || param2 == 1020065 ) // ACTOR12 = LYSE
+        if( param1 == 1020064 ) // ACTOR11 = GOSETSU, CB=2
         {
-          if( player.getQuestUI8AL( getId() ) != 4 )
+          if( !quest.getBitFlag8( 2 ) )
           {
-            Scene00024( player ); // Scene00024: Normal(Talk, TargetCanMove), id=LYSE
-            // +Callback Scene00025: Normal(Talk, TargetCanMove), id=LYSE
+            Scene00022( quest, player ); // Scene00022: Normal(Talk, TargetCanMove), id=GOSETSU
           }
-        }
-        if( param1 == 1020066 || param2 == 1020066 ) // ACTOR13 = ALISAIE
-        {
-          if( player.getQuestUI8AL( getId() ) != 4 )
+          else
           {
-            Scene00026( player ); // Scene00026: Normal(Talk, TargetCanMove), id=ALISAIE
-            // +Callback Scene00027: Normal(Talk, TargetCanMove), id=ALISAIE
+            Scene00023( quest, player ); // Scene00023: Normal(Talk, TargetCanMove), id=GOSETSU
           }
+          break;
         }
-        if( param1 == 1020067 || param2 == 1020067 ) // ACTOR14 = ALPHINAUD
+        if( param1 == 1020065 ) // ACTOR12 = LYSE, CB=2
         {
-          Scene00028( player ); // Scene00028: Normal(Talk, TargetCanMove), id=ALPHINAUD
+          if( !quest.getBitFlag8( 3 ) )
+          {
+            Scene00024( quest, player ); // Scene00024: Normal(Talk, TargetCanMove), id=LYSE
+          }
+          else
+          {
+            Scene00025( quest, player ); // Scene00025: Normal(Talk, TargetCanMove), id=LYSE
+          }
+          break;
         }
-        if( param1 == 1023080 || param2 == 1023080 ) // ACTOR15 = unknown
+        if( param1 == 1020066 ) // ACTOR13 = ALISAIE, CB=2
         {
-          Scene00029( player ); // Scene00029: Normal(None), id=unknown
+          if( !quest.getBitFlag8( 4 ) )
+          {
+            Scene00026( quest, player ); // Scene00026: Normal(Talk, TargetCanMove, ENpcBind), id=ALISAIE
+          }
+          else
+          {
+            Scene00027( quest, player ); // Scene00027: Normal(Talk, TargetCanMove), id=ALISAIE
+          }
+          break;
         }
-        if( param1 == 1023081 || param2 == 1023081 ) // ACTOR16 = unknown
+        if( param1 == 1020067 ) // ACTOR14 = ALPHINAUD
         {
-          Scene00030( player ); // Scene00030: Normal(None), id=unknown
+          Scene00028( quest, player ); // Scene00028: Normal(Talk, TargetCanMove), id=ALPHINAUD
+          break;
+        }
+        if( param1 == 1023080 ) // ACTOR15 = unknown
+        {
+          Scene00029( quest, player ); // Scene00029: Empty(None), id=unknown
+          break;
+        }
+        if( param1 == 1023081 ) // ACTOR16 = unknown
+        {
+          Scene00030( quest, player ); // Scene00030: Empty(None), id=unknown
+          break;
         }
         break;
       }
       case 255:
       {
-        if( param1 == 1020067 || param2 == 1020067 ) // ACTOR14 = ALPHINAUD
+        if( param1 == 1020067 ) // ACTOR14 = ALPHINAUD
         {
-          Scene00031( player ); // Scene00031: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=ALPHINAUD
+          Scene00031( quest, player ); // Scene00031: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove, ENpcBind), id=ALPHINAUD
           // +Callback Scene00032: Normal(CutScene), id=unknown
+          break;
         }
-        if( param1 == 1020063 || param2 == 1020063 ) // ACTOR10 = YUGIRI
+        if( param1 == 1020063 ) // ACTOR10 = YUGIRI
         {
-          Scene00033( player ); // Scene00033: Normal(Talk, TargetCanMove), id=YUGIRI
+          Scene00033( quest, player ); // Scene00033: Normal(Talk, TargetCanMove), id=YUGIRI
+          break;
         }
-        if( param1 == 1020064 || param2 == 1020064 ) // ACTOR11 = GOSETSU
+        if( param1 == 1020064 ) // ACTOR11 = GOSETSU
         {
-          Scene00034( player ); // Scene00034: Normal(Talk, TargetCanMove), id=GOSETSU
+          Scene00034( quest, player ); // Scene00034: Normal(Talk, TargetCanMove), id=GOSETSU
+          break;
         }
-        if( param1 == 1020065 || param2 == 1020065 ) // ACTOR12 = LYSE
+        if( param1 == 1020065 ) // ACTOR12 = LYSE
         {
-          Scene00035( player ); // Scene00035: Normal(Talk, TargetCanMove), id=LYSE
+          Scene00035( quest, player ); // Scene00035: Normal(Talk, TargetCanMove), id=LYSE
+          break;
         }
-        if( param1 == 1020066 || param2 == 1020066 ) // ACTOR13 = ALISAIE
+        if( param1 == 1020066 ) // ACTOR13 = ALISAIE
         {
-          Scene00036( player ); // Scene00036: Normal(Talk, TargetCanMove), id=ALISAIE
+          Scene00036( quest, player ); // Scene00036: Normal(Talk, TargetCanMove), id=ALISAIE
+          break;
         }
-        if( param1 == 1023080 || param2 == 1023080 ) // ACTOR15 = unknown
+        if( param1 == 1023080 ) // ACTOR15 = unknown
         {
-          Scene00037( player ); // Scene00037: Normal(None), id=unknown
+          Scene00037( quest, player ); // Scene00037: Empty(None), id=unknown
+          break;
         }
-        if( param1 == 1023081 || param2 == 1023081 ) // ACTOR16 = unknown
+        if( param1 == 1023081 ) // ACTOR16 = unknown
         {
-          Scene00038( player ); // Scene00038: Normal(None), id=unknown
+          Scene00038( quest, player ); // Scene00038: Empty(None), id=unknown
+          break;
         }
         break;
       }
       default:
       {
-        player.sendUrgent( "Sequence {} not defined.", player.getQuestSeq( getId() ) );
+        playerMgr().sendUrgent( player, "Sequence {} not defined.", quest.getSeq() );
         break;
       }
     }
   }
 
 public:
-  void onTalk( uint32_t eventId, Entity::Player& player, uint64_t actorId ) override
+  void onTalk( World::Quest& quest, Entity::Player& player, uint64_t actorId ) override
   {
-    auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
-    auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
-    onProgress( player, actorId, actor, 0, 0 );
+    onProgress( quest, player, EVENT_ON_TALK, actorId, 0, 0 );
   }
 
-  void onEmote( uint64_t actorId, uint32_t eventId, uint32_t emoteId, Entity::Player& player ) override
+  void onEmote( World::Quest& quest, uint64_t actorId, uint32_t emoteId, Sapphire::Entity::Player& player ) override
   {
-    auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
-    auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
-    onProgress( player, actorId, actor, 1, emoteId );
+    playerMgr().sendDebug( player, "emote: {}", emoteId );
+    onProgress( quest, player, EVENT_ON_EMOTE, actorId, 0, emoteId );
   }
 
-  void onBNpcKill( uint32_t npcId, Entity::Player& player ) override
+  void onBNpcKill( World::Quest& quest, Entity::BNpc& bnpc, Entity::Player& player ) override
   {
-    onProgress( player, npcId, 0, 2, 0 );
+    onProgress( quest, player, EVENT_ON_BNPC_KILL, static_cast< uint64_t >( bnpc.getBNpcNameId() ), bnpc.getLayoutId(), 0 );
   }
 
-  void onWithinRange( Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
+  void onWithinRange( World::Quest& quest, Sapphire::Entity::Player& player, uint32_t eventId, uint32_t param1, float x, float y, float z ) override
   {
-    onProgress( player, param1, param1, 3, 0 );
+    onProgress( quest, player, EVENT_ON_WITHIN_RANGE, static_cast< uint64_t >( param1 ), 0, 0 );
   }
 
-  void onEnterTerritory( Sapphire::Entity::Player& player, uint32_t eventId, uint16_t param1, uint16_t param2 ) override
+  void onEnterTerritory( World::Quest& quest, Sapphire::Entity::Player& player, uint16_t param1, uint16_t param2 ) override
   {
-    onProgress( player, param1, param2, 4, 0 );
+    onProgress( quest, player, EVENT_ON_ENTER_TERRITORY, static_cast< uint64_t >( param1 ), static_cast< uint32_t >( param2 ), 0 );
+  }
+  void onEventItem( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId ) override
+  {
+    onProgress( quest, player, EVENT_ON_EVENT_ITEM, actorId, 0, 0 );
+  }
+  void onEObjHit( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t actionId ) override
+  {
+    onProgress( quest, player, EVENT_ON_EOBJ_HIT, actorId, actionId, 0 );
+  }
+  void onSay( World::Quest& quest, Sapphire::Entity::Player& player, uint64_t actorId, uint32_t sayId ) override
+  {
+    onProgress( quest, player, EVENT_ON_SAY, actorId, sayId, 0 );
   }
 
 private:
-  void checkProgressSeq0( Entity::Player& player )
+  void checkProgressSeq0( World::Quest& quest, Entity::Player& player )
   {
-    player.updateQuest( getId(), 1 );
+    quest.setSeq( 1 );
   }
-  void checkProgressSeq1( Entity::Player& player )
+  void checkProgressSeq1( World::Quest& quest, Entity::Player& player )
   {
-    if( player.getQuestUI8AL( getId() ) == 1 )
+    if( quest.getUI8AL() == 1 )
     {
-      player.setQuestUI8AL( getId(), 0 );
-      player.updateQuest( getId(), 2 );
+      quest.setUI8AL( 0 );
+      quest.setBitFlag8( 1, false );
+      quest.setSeq( 2 );
     }
   }
-  void checkProgressSeq2( Entity::Player& player )
+  void checkProgressSeq2( World::Quest& quest, Entity::Player& player )
   {
-    if( player.getQuestUI8AL( getId() ) == 4 )
-      if( player.getQuestUI8AL( getId() ) == 4 )
-        if( player.getQuestUI8AL( getId() ) == 4 )
-          if( player.getQuestUI8AL( getId() ) == 4 )
-          {
-            player.setQuestUI8AL( getId(), 0 );
-            player.setQuestUI8AL( getId(), 0 );
-            player.setQuestUI8AL( getId(), 0 );
-            player.setQuestUI8AL( getId(), 0 );
-            player.updateQuest( getId(), 255 );
-          }
+    if( quest.getUI8AL() == 4 )
+    {
+      quest.setUI8AL( 0 );
+      quest.setBitFlag8( 1, false );
+      quest.setBitFlag8( 2, false );
+      quest.setBitFlag8( 3, false );
+      quest.setBitFlag8( 4, false );
+      quest.setSeq( 255 );
+    }
   }
 
-  void Scene00000( Entity::Player& player )
+  void Scene00000( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR0, UI8AL = 1, Flag8(1)=True
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00000: Normal(QuestOffer, TargetCanMove), id=unknown" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      if( result.param1 > 0 && result.param2 == 1 )
+      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
       {
-        Scene00001( player );
+        Scene00001( quest, player );
       }
     };
-    player.playScene( getId(), 0, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 0, HIDE_HOTBAR, callback );
   }
-  void Scene00001( Entity::Player& player )
+  void Scene00001( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR0, UI8AL = 1, Flag8(1)=True
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=ISSE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00001: Normal(Talk, NpcDespawn, QuestAccept, TargetCanMove), id=ISSE" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      checkProgressSeq0( player );
+      checkProgressSeq0( quest, player );
     };
-    player.playScene( getId(), 1, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 1, HIDE_HOTBAR, callback );
   }
 
-  void Scene00002( Entity::Player& player )
+  void Scene00002( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR1, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00002: Normal(Talk, TargetCanMove), id=ALISAIE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-    };
-    player.playScene( getId(), 2, NONE, callback );
-  }
-
-  void Scene00003( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00003: Normal(Talk, TargetCanMove), id=GOSETSU" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00002: Normal(Talk, TargetCanMove), id=ALISAIE" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 3, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 2, HIDE_HOTBAR, callback );
   }
 
-  void Scene00004( Entity::Player& player )
+  void Scene00003( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR2, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00004: Normal(Talk, TargetCanMove), id=YUGIRI" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00003: Normal(Talk, TargetCanMove), id=GOSETSU" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 4, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 3, HIDE_HOTBAR, callback );
   }
 
-  void Scene00005( Entity::Player& player )
+  void Scene00004( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR3, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00005: Normal(None), id=unknown" );
-  }
-
-  void Scene00006( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00006: Normal(None), id=unknown" );
-  }
-
-  void Scene00007( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00007: Normal(None), id=unknown" );
-  }
-
-  void Scene00008( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00008: Normal(None), id=unknown" );
-  }
-
-  void Scene00009( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00009: Normal(None), id=unknown" );
-  }
-
-  void Scene00010( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00010: Normal(Talk, TargetCanMove), id=ISSE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      Scene00011( player );
-    };
-    player.playScene( getId(), 10, NONE, callback );
-  }
-  void Scene00011( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00011: Normal(CutScene), id=unknown" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      player.setQuestUI8AL( getId(), 1 );
-      checkProgressSeq1( player );
-    };
-    player.playScene( getId(), 11, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
-  }
-
-  void Scene00012( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00012: Normal(Talk, TargetCanMove), id=ALISAIE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00004: Normal(Talk, TargetCanMove), id=YUGIRI" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 12, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 4, HIDE_HOTBAR, callback );
   }
 
-  void Scene00013( Entity::Player& player )
+  void Scene00005( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR4, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00013: Normal(Talk, TargetCanMove), id=GOSETSU" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00005: Empty(None), id=unknown" );
+  }
+
+  void Scene00006( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR5, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00006: Empty(None), id=unknown" );
+  }
+
+  void Scene00007( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR6, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00007: Empty(None), id=unknown" );
+  }
+
+  void Scene00008( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR7, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00008: Empty(None), id=unknown" );
+  }
+
+  void Scene00009( World::Quest& quest, Entity::Player& player ) //SEQ_0: ACTOR8, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00009: Empty(None), id=unknown" );
+  }
+
+  void Scene00010( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR9, UI8AL = 1, Flag8(1)=True(Todo:0)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00010: Normal(Talk, TargetCanMove), id=ISSE" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      Scene00011( quest, player );
+    };
+    eventMgr().playQuestScene( player, getId(), 10, HIDE_HOTBAR, callback );
+  }
+  void Scene00011( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR9, UI8AL = 1, Flag8(1)=True(Todo:0)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00011: Normal(CutScene), id=unknown" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      quest.setUI8AL( 1 );
+      quest.setBitFlag8( 1, true );
+      eventMgr().sendEventNotice( player, getId(), 0, 0, 0, 0 );
+      checkProgressSeq1( quest, player );
+    };
+    eventMgr().playQuestScene( player, getId(), 11, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+  }
+
+  void Scene00012( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR1, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00012: Normal(Talk, TargetCanMove), id=ALISAIE" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 13, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 12, HIDE_HOTBAR, callback );
   }
 
-  void Scene00014( Entity::Player& player )
+  void Scene00013( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR2, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00014: Normal(Talk, TargetCanMove), id=YUGIRI" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00013: Normal(Talk, TargetCanMove), id=GOSETSU" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 14, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 13, HIDE_HOTBAR, callback );
   }
 
-  void Scene00015( Entity::Player& player )
+  void Scene00014( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR3, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00015: Normal(None), id=unknown" );
-  }
-
-  void Scene00016( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00016: Normal(None), id=unknown" );
-  }
-
-  void Scene00017( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00017: Normal(None), id=unknown" );
-  }
-
-  void Scene00018( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00018: Normal(None), id=unknown" );
-  }
-
-  void Scene00019( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00019: Normal(None), id=unknown" );
-  }
-
-  void Scene00020( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00020: Normal(Talk, TargetCanMove), id=YUGIRI" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      Scene00021( player );
-    };
-    player.playScene( getId(), 20, NONE, callback );
-  }
-  void Scene00021( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00021: Normal(Talk, TargetCanMove), id=YUGIRI" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-      checkProgressSeq2( player );
-    };
-    player.playScene( getId(), 21, NONE, callback );
-  }
-
-  void Scene00022( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00022: Normal(Talk, TargetCanMove), id=GOSETSU" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      Scene00023( player );
-    };
-    player.playScene( getId(), 22, NONE, callback );
-  }
-  void Scene00023( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00023: Normal(Talk, TargetCanMove), id=GOSETSU" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-      checkProgressSeq2( player );
-    };
-    player.playScene( getId(), 23, NONE, callback );
-  }
-
-  void Scene00024( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00024: Normal(Talk, TargetCanMove), id=LYSE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      Scene00025( player );
-    };
-    player.playScene( getId(), 24, NONE, callback );
-  }
-  void Scene00025( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00025: Normal(Talk, TargetCanMove), id=LYSE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-      checkProgressSeq2( player );
-    };
-    player.playScene( getId(), 25, NONE, callback );
-  }
-
-  void Scene00026( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00026: Normal(Talk, TargetCanMove), id=ALISAIE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      Scene00027( player );
-    };
-    player.playScene( getId(), 26, NONE, callback );
-  }
-  void Scene00027( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00027: Normal(Talk, TargetCanMove), id=ALISAIE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
-    {
-      player.setQuestUI8AL( getId(), player.getQuestUI8AL( getId() ) + 1 );
-      checkProgressSeq2( player );
-    };
-    player.playScene( getId(), 27, NONE, callback );
-  }
-
-  void Scene00028( Entity::Player& player )
-  {
-    player.sendDebug( "StmBda323:68035 calling Scene00028: Normal(Talk, TargetCanMove), id=ALPHINAUD" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00014: Normal(Talk, TargetCanMove), id=YUGIRI" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 28, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 14, HIDE_HOTBAR, callback );
   }
 
-  void Scene00029( Entity::Player& player )
+  void Scene00015( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR4, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00029: Normal(None), id=unknown" );
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00015: Empty(None), id=unknown" );
   }
 
-  void Scene00030( Entity::Player& player )
+  void Scene00016( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR5, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00030: Normal(None), id=unknown" );
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00016: Empty(None), id=unknown" );
   }
 
-  void Scene00031( Entity::Player& player )
+  void Scene00017( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR6, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00031: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove), id=ALPHINAUD" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00017: Empty(None), id=unknown" );
+  }
+
+  void Scene00018( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR7, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00018: Empty(None), id=unknown" );
+  }
+
+  void Scene00019( World::Quest& quest, Entity::Player& player ) //SEQ_1: ACTOR8, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00019: Empty(None), id=unknown" );
+  }
+
+  void Scene00020( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR10, UI8AL = 4, Flag8(1)=True, Branch(Todo:1)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00020: Normal(Talk, TargetCanMove), id=YUGIRI" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      if( result.param1 > 0 && result.param2 == 1 )
+      quest.setUI8AL( quest.getUI8AL() + 1 );
+      quest.setBitFlag8( 1, true );
+      eventMgr().sendEventNotice( player, getId(), 1, 2, quest.getUI8AL(), 4 );
+      checkProgressSeq2( quest, player );
+    };
+    eventMgr().playQuestScene( player, getId(), 20, HIDE_HOTBAR, callback );
+  }
+  void Scene00021( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR10, UI8AL = 4, Flag8(1)=True, Branch(Todo:1)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00021: Normal(Talk, TargetCanMove), id=YUGIRI" );
+    eventMgr().playQuestScene( player, getId(), 21, HIDE_HOTBAR, nullptr );
+  }
+
+  void Scene00022( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR11, UI8AL = 4, Flag8(2)=True, Branch(Todo:1)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00022: Normal(Talk, TargetCanMove), id=GOSETSU" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      quest.setUI8AL( quest.getUI8AL() + 1 );
+      quest.setBitFlag8( 2, true );
+      eventMgr().sendEventNotice( player, getId(), 1, 2, quest.getUI8AL(), 4 );
+      checkProgressSeq2( quest, player );
+    };
+    eventMgr().playQuestScene( player, getId(), 22, HIDE_HOTBAR, callback );
+  }
+  void Scene00023( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR11, UI8AL = 4, Flag8(2)=True, Branch(Todo:1)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00023: Normal(Talk, TargetCanMove), id=GOSETSU" );
+    eventMgr().playQuestScene( player, getId(), 23, HIDE_HOTBAR, nullptr );
+  }
+
+  void Scene00024( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR12, UI8AL = 4, Flag8(3)=True, Branch(Todo:1)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00024: Normal(Talk, TargetCanMove), id=LYSE" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      quest.setUI8AL( quest.getUI8AL() + 1 );
+      quest.setBitFlag8( 3, true );
+      eventMgr().sendEventNotice( player, getId(), 1, 2, quest.getUI8AL(), 4 );
+      checkProgressSeq2( quest, player );
+    };
+    eventMgr().playQuestScene( player, getId(), 24, HIDE_HOTBAR, callback );
+  }
+  void Scene00025( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR12, UI8AL = 4, Flag8(3)=True, Branch(Todo:1)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00025: Normal(Talk, TargetCanMove), id=LYSE" );
+    eventMgr().playQuestScene( player, getId(), 25, HIDE_HOTBAR, nullptr );
+  }
+
+  void Scene00026( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR13, UI8AL = 4, Flag8(4)=True, Branch(Todo:1)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00026: Normal(Talk, TargetCanMove, ENpcBind), id=ALISAIE" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      quest.setUI8AL( quest.getUI8AL() + 1 );
+      quest.setBitFlag8( 4, true );
+      eventMgr().sendEventNotice( player, getId(), 1, 2, quest.getUI8AL(), 4 );
+      checkProgressSeq2( quest, player );
+    };
+    eventMgr().playQuestScene( player, getId(), 26, HIDE_HOTBAR, callback );
+  }
+  void Scene00027( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR13, UI8AL = 4, Flag8(4)=True, Branch(Todo:1)
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00027: Normal(Talk, TargetCanMove), id=ALISAIE" );
+    eventMgr().playQuestScene( player, getId(), 27, HIDE_HOTBAR, nullptr );
+  }
+
+  void Scene00028( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR14, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00028: Normal(Talk, TargetCanMove), id=ALPHINAUD" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+    };
+    eventMgr().playQuestScene( player, getId(), 28, HIDE_HOTBAR, callback );
+  }
+
+  void Scene00029( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR15, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00029: Empty(None), id=unknown" );
+  }
+
+  void Scene00030( World::Quest& quest, Entity::Player& player ) //SEQ_2: ACTOR16, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00030: Empty(None), id=unknown" );
+  }
+
+  void Scene00031( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR14, <No Var>, <No Flag>
+  {
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00031: Normal(Talk, FadeIn, QuestReward, QuestComplete, TargetCanMove, ENpcBind), id=ALPHINAUD" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
+    {
+      if( result.numOfResults > 0 && result.getResult( 0 ) == 1 )
       {
-        Scene00032( player );
+        Scene00032( quest, player );
       }
     };
-    player.playScene( getId(), 31, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    eventMgr().playQuestScene( player, getId(), 31, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
-  void Scene00032( Entity::Player& player )
+  void Scene00032( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR14, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00032: Normal(CutScene), id=unknown" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00032: Normal(CutScene), id=unknown" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
-      if( player.giveQuestRewards( getId(), result.param3 ) )
-      {
-        player.finishQuest( getId() );
-      }
+      player.finishQuest( getId(), result.getResult( 1 ) );
     };
-    player.playScene( getId(), 32, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
+    eventMgr().playQuestScene( player, getId(), 32, FADE_OUT | CONDITION_CUTSCENE | HIDE_UI, callback );
   }
 
-  void Scene00033( Entity::Player& player )
+  void Scene00033( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR10, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00033: Normal(Talk, TargetCanMove), id=YUGIRI" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00033: Normal(Talk, TargetCanMove), id=YUGIRI" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 33, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 33, HIDE_HOTBAR, callback );
   }
 
-  void Scene00034( Entity::Player& player )
+  void Scene00034( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR11, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00034: Normal(Talk, TargetCanMove), id=GOSETSU" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00034: Normal(Talk, TargetCanMove), id=GOSETSU" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 34, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 34, HIDE_HOTBAR, callback );
   }
 
-  void Scene00035( Entity::Player& player )
+  void Scene00035( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR12, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00035: Normal(Talk, TargetCanMove), id=LYSE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00035: Normal(Talk, TargetCanMove), id=LYSE" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 35, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 35, HIDE_HOTBAR, callback );
   }
 
-  void Scene00036( Entity::Player& player )
+  void Scene00036( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR13, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00036: Normal(Talk, TargetCanMove), id=ALISAIE" );
-    auto callback = [ & ]( Entity::Player& player, const Event::SceneResult& result )
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00036: Normal(Talk, TargetCanMove), id=ALISAIE" );
+    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )
     {
     };
-    player.playScene( getId(), 36, NONE, callback );
+    eventMgr().playQuestScene( player, getId(), 36, HIDE_HOTBAR, callback );
   }
 
-  void Scene00037( Entity::Player& player )
+  void Scene00037( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR15, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00037: Normal(None), id=unknown" );
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00037: Empty(None), id=unknown" );
   }
 
-  void Scene00038( Entity::Player& player )
+  void Scene00038( World::Quest& quest, Entity::Player& player ) //SEQ_255: ACTOR16, <No Var>, <No Flag>
   {
-    player.sendDebug( "StmBda323:68035 calling Scene00038: Normal(None), id=unknown" );
+    playerMgr().sendDebug( player, "StmBda323:68035 calling Scene00038: Empty(None), id=unknown" );
   }
 };
 
