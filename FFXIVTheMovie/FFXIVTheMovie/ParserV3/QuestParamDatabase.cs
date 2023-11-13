@@ -14,6 +14,70 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "StmBda419":
+                    {
+                        result.Add("WARP_SCENE8", "614|175.37|5.17|-420.5|-0.37|false");
+                        break;
+                    }
+                case "StmBda417":
+                    {
+                        result.Add("ID_ACTOR18", "2097153");
+                        result.Add("SCENE_38", null);
+                        break;
+                    }
+                case "StmBda416":
+                    {
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "1|2");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "1|2");
+                        result.Add("_ACTOR10", "B");
+                        result.Add("_ACTOR10B", "1|2");
+                        result.Add("_ACTOR11", "B");
+                        result.Add("_ACTOR11B", "1|2");
+                        break;
+                    }
+                case "StmBda413":
+                    {
+                        result.Add("_ACTOR6", "B");
+                        result.Add("_ACTOR6B", "3|2");
+                        result.Add("_ACTOR7", "B");
+                        result.Add("_ACTOR7B", "3|2");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "3|2");
+                        break;
+                    }
+                case "StmBda412":
+                    {
+                        result.Add("ID_ACTOR7", "2097153");
+                        break;
+                    }
+                case "StmBda410":
+                    {
+                        result.Add("WARP_SCENE6", "622|77.57|4|38.21|1.75|false");
+                        result.Add("WARP_SCENE23", "622|77.57|4|38.21|1.75|false");
+                        break;
+                    }
+                case "StmBda409":
+                    {
+                        result.Add("WARP_SCENE2", "622|-31.9|121.122|63.6|-1.573|false");
+                        break;
+                    }
+                case "StmBda402":
+                    {
+                        result.Add("IGNORE_SEQ1", "");
+                        break;
+                    }
+                case "StmBda401":
+                    {
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "1|2");
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "1|2");
+                        result.Add("_ACTOR5", "B");
+                        result.Add("_ACTOR5B", "1|2");
+                        break;
+                    }
                 case "StmBda323":
                     {
                         result.Add("_ACTOR10", "B");
@@ -1262,7 +1326,7 @@ namespace FFXIVTheMovie.ParserV3
                         result.Add("EVENTRANGE0", "r0");
                         result.Add("SCENE_3", "r0");
                         result.Add("SCENE_4", "r0");
-                        result.Add("SCENE_5", "r0");
+                        result.Add("SCENE_5", "dummye0");
                         break;
                     }
                 case "StmBda411":
