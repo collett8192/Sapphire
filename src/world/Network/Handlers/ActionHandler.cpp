@@ -98,6 +98,17 @@ void Sapphire::Network::GameConnection::placedActionHandler( const Packets::FFXI
   const auto sequence = packet.data().sequence;
   const auto pos = packet.data().pos;
 
+  auto& exdData = Common::Service< Data::ExdDataGenerated >::ref();
+  auto& actionMgr = Common::Service< World::Manager::ActionMgr >::ref();
+
+  if( type == Common::SkillType::EventItem )
+  {
+    auto action = exdData.get< Data::EventItem >( actionId );
+    assert( action );
+    actionMgr.handleEventItemAction( player, actionId, action, sequence, 0xF000000000000000 );
+    return;
+  }
+
   // todo: find out if there are any other action types which actually use this handler
   if( type != Common::SkillType::Normal )
   {
@@ -108,14 +119,11 @@ void Sapphire::Network::GameConnection::placedActionHandler( const Packets::FFXI
   player.sendDebug( "Skill type: {0}, sequence: {1}, actionId: {2}, x:{3}, y:{4}, z:{5}",
                     type, sequence, actionId, pos.x, pos.y, pos.z );
 
-  auto& exdData = Common::Service< Data::ExdDataGenerated >::ref();
-
   auto action = exdData.get< Data::Action >( actionId );
 
   // ignore invalid actions
   if( !action )
     return;
 
-  auto& actionMgr = Common::Service< World::Manager::ActionMgr >::ref();
   actionMgr.handlePlacedAction( player, actionId, action, pos, sequence );
 }
