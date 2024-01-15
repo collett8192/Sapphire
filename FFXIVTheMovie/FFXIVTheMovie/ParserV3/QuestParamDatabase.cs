@@ -14,6 +14,80 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "StmBda612":
+                    {
+                        result.Add("_ACTOR7", "B");
+                        result.Add("_ACTOR7B", "2|2");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "2|2");
+                        result.Add("_ACTOR9", "B");
+                        result.Add("_ACTOR9B", "2|2");
+                        break;
+                    }
+                case "StmBda611":
+                    {
+                        result.Add("WARP_SCENE14", "620|-117.8|305.32|177.75|2.32|false");
+                        result.Add("WARP_SCENE27", "620|-117.8|305.32|177.75|2.32|false");
+                        result.Add("WARP_SCENE32", "620|-117.8|305.32|177.75|2.32|false");
+                        result.Add("WARP_SCENE42", "620|-117.8|305.32|177.75|2.32|false");
+                        result.Add("WARP_SCENE49", "620|-117.8|305.32|177.75|2.32|false");
+                        result.Add("_ACTOR7", "B");
+                        result.Add("_ACTOR7B", "3|2");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "3|2");
+                        result.Add("_ACTOR9", "B");
+                        result.Add("_ACTOR9B", "3|2");
+                        break;
+                    }
+                case "StmBda606":
+                    {
+                        result.Add("PRIVATE_SCENE10", "683");
+                        result.Add("PRIVATE_SCENE13", "683");
+                        result.Add("PRIVATE_SCENE19", "683");
+                        result.Add("PRIVATE_SCENE24", "683");
+                        result.Add("WARP_SCENE25", "612|511.83|122.46|-241.57|-1.294|false");
+                        break;
+                    }
+                case "StmBda604":
+                    {
+                        result.Add("WARP_RESISTANCEGATEGUARD", "612|-65.76|56|217|1.08|false");
+                        break;
+                    }
+                case "StmBda602":
+                    {
+                        result.Add("WARP_SCENE29", "612|-94.6|50|189.46|2.67|false");
+                        break;
+                    }
+                case "StmBda508":
+                    {
+                        result.Add("WARP_SCENE10", "129|-357.177|8|42.83|1.57|true");
+                        break;
+                    }
+                case "StmBda507":
+                    {
+                        result.Add("WARP_SCENE32", "628|-173.78|-7|51.5|0|true");
+                        result.Add("PRIVATE_SCENE8", "682");
+                        result.Add("PRIVATE_SCENE18", "682");
+                        break;
+                    }
+                case "StmBda505":
+                    {
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "2|2");
+                        result.Add("_ACTOR5", "B");
+                        result.Add("_ACTOR5B", "2|2");
+                        break;
+                    }
+                case "StmBda504":
+                    {
+                        result.Add("_ACTOR5", "B");
+                        result.Add("_ACTOR5B", "1|2");
+                        result.Add("_ACTOR6", "B");
+                        result.Add("_ACTOR6B", "1|2");
+                        result.Add("_ACTOR7", "B");
+                        result.Add("_ACTOR7B", "1|2");
+                        break;
+                    }
                 case "StmBda419":
                     {
                         result.Add("WARP_SCENE8", "614|175.37|5.17|-420.5|-0.37|false");

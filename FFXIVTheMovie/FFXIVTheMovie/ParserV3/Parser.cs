@@ -13,6 +13,8 @@ namespace FFXIVTheMovie.ParserV3
     public class Parser
     {
         public static readonly bool CppOutputExtraInfo = false;
+        public static readonly bool UseBNpcHack = true;
+        public static readonly bool UseGroundAoeEventItemHack = true;
 
         string questId;
         string outputFolder;
@@ -74,7 +76,7 @@ namespace FFXIVTheMovie.ParserV3
 
             //return;
 
-            outputCpp.Add("// FFXIVTheMovie.ParserV3.11");
+            outputCpp.Add("// FFXIVTheMovie.ParserV3.12");
             if (CppOutputExtraInfo)
             {
                 outputCpp.Add("// Extra info is ON");
@@ -244,6 +246,10 @@ namespace FFXIVTheMovie.ParserV3
                         {
                             var objId = constTable.ContainsKey(entry.TargetObject.Name) ? constTable[entry.TargetObject.Name].ToString() : "/*UNKNOWN*/1";
                             var unmappedId = unmappedObjTable.ContainsKey(entry.TargetObject.Name) ? unmappedObjTable[entry.TargetObject.Name].ToString() : null;
+                            if (entry.InventoryBranch && UseGroundAoeEventItemHack)
+                            {
+                                unmappedId = "0xF000000000000000/*Ground aoe hack enabled*/";
+                            }
                             outputCpp.Add($"        if( param1 == {objId}{(unmappedId != null ? $" || param1 == {unmappedId}" : "")} ) // {entry.TargetObject.Name} = {entry.EntryScene.Identity}{(entry.ConditionBranch ? $", CB={entry.RequiredGroupCount}" : "")}{(entry.EmoteBranch != null ? $", EB={entry.RequiredGroupCount}(emote={entry.EmoteBranch.Value})" : "")}");
                         }
 
@@ -671,14 +677,45 @@ namespace FFXIVTheMovie.ParserV3
                             {
                                 string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
                                 string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
+                                if (extraSceneFlag != null && (current.Element & LuaScene.SceneElement.CreateCharacterTalk) > 0 && (current.Element & LuaScene.SceneElement.ENpcBind) == 0) { extraSceneFlag += " | INVIS_ENPC"; }
                                 string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "HIDE_HOTBAR" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
                                 outputCpp.Add($"    eventMgr().playQuestScene( player, getId(), {current.SceneNumber}, {fullSceneFlag}, nullptr );");
                             }
                             else
                             {
-                                if (current.Type != LuaScene.SceneType.Empty)
+                                string keyForPrivate = $"{current.Identity}";
+                                if (!privateInstanceEntranceTable.ContainsKey(keyForPrivate))
                                 {
-                                    if (current.ShouldCastAction)
+                                    keyForPrivate = $"SCENE{current.SceneNumber}";
+                                    if (!privateInstanceEntranceTable.ContainsKey(keyForPrivate))
+                                    {
+                                        keyForPrivate = null;
+                                    }
+                                }
+
+                                string keyForWarp = $"{current.Identity}";
+                                if (!warpTable.ContainsKey(keyForWarp))
+                                {
+                                    keyForWarp = $"SCENE{current.SceneNumber}";
+                                    if (!warpTable.ContainsKey(keyForWarp))
+                                    {
+                                        keyForWarp = null;
+                                    }
+                                }
+
+                                string keyForMount = $"{current.Identity}";
+                                if (!mountTable.ContainsKey(keyForMount))
+                                {
+                                    keyForMount = $"SCENE{current.SceneNumber}";
+                                    if (!mountTable.ContainsKey(keyForMount))
+                                    {
+                                        keyForMount = null;
+                                    }
+                                }
+
+                                if (current.Type != LuaScene.SceneType.Empty || keyForWarp != null || keyForPrivate != null)
+                                {
+                                    /*if (current.ShouldCastAction)
                                     {
                                         int action = -1, actionMid = -1;
                                         if (constTable.ContainsKey("EVENTACTION"))
@@ -699,14 +736,16 @@ namespace FFXIVTheMovie.ParserV3
                                         }
                                         if (action < 0)
                                         {
-                                            outputCpp.Add($"    //eventMgr().eventActionStart( player, getId(), ***NOT_FOUND***, [ & ]( Entity::Player& player, uint32_t eventId, uint64_t additional )");
+                                            current.ShouldCastAction = false;
+                                            outputCpp.Add($"    //detected event action but id not found");
+                                            //outputCpp.Add($"    //eventMgr().eventActionStart( player, getId(), ***NOT_FOUND***, [ & ]( Entity::Player& player, uint32_t eventId, uint64_t additional )");
                                         }
                                         else
                                         {
                                             outputCpp.Add($"    eventMgr().eventActionStart( player, getId(), {action}, [ & ]( Entity::Player& player, uint32_t eventId, uint64_t additional )");
+                                            outputCpp.Add("    {");
                                         }
-                                        outputCpp.Add("    {");
-                                    }
+                                    }*/
                                     outputCpp.Add("    auto callback = [ & ]( World::Quest& quest, Entity::Player& player , const Event::SceneResult& result )");
                                     outputCpp.Add("    {");
                                     bool hasIf = false;
@@ -752,36 +791,6 @@ namespace FFXIVTheMovie.ParserV3
                                         }
                                         outputCpp.Add("      {");
                                         hasIf = true;
-                                    }
-
-                                    string keyForPrivate = $"{current.Identity}";
-                                    if (!privateInstanceEntranceTable.ContainsKey(keyForPrivate))
-                                    {
-                                        keyForPrivate = $"SCENE{current.SceneNumber}";
-                                        if (!privateInstanceEntranceTable.ContainsKey(keyForPrivate))
-                                        {
-                                            keyForPrivate = null;
-                                        }
-                                    }
-
-                                    string keyForWarp = $"{current.Identity}";
-                                    if (!warpTable.ContainsKey(keyForWarp))
-                                    {
-                                        keyForWarp = $"SCENE{current.SceneNumber}";
-                                        if (!warpTable.ContainsKey(keyForWarp))
-                                        {
-                                            keyForWarp = null;
-                                        }
-                                    }
-
-                                    string keyForMount = $"{current.Identity}";
-                                    if (!mountTable.ContainsKey(keyForMount))
-                                    {
-                                        keyForMount = $"SCENE{current.SceneNumber}";
-                                        if (!mountTable.ContainsKey(keyForMount))
-                                        {
-                                            keyForMount = null;
-                                        }
                                     }
 
                                     bool shouldUseFakeZoneing = keyForPrivate == null && keyForWarp == null;
@@ -897,12 +906,13 @@ namespace FFXIVTheMovie.ParserV3
                                     outputCpp.Add("    };");
                                     string baseSceneFlag = current.Type == LuaScene.SceneType.Snipe ? "INVIS_ENPC" : null;
                                     string extraSceneFlag = (current.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0 ? "FADE_OUT | CONDITION_CUTSCENE | HIDE_UI" : null;
+                                    if (extraSceneFlag != null && (current.Element & LuaScene.SceneElement.CreateCharacterTalk) > 0 && (current.Element & LuaScene.SceneElement.ENpcBind) == 0) { extraSceneFlag += " | INVIS_ENPC"; }
                                     string fullSceneFlag = baseSceneFlag == null ? (extraSceneFlag == null ? "HIDE_HOTBAR" : extraSceneFlag) : (extraSceneFlag == null ? baseSceneFlag : $"{baseSceneFlag} | {extraSceneFlag}");
                                     outputCpp.Add($"    eventMgr().playQuestScene( player, getId(), {current.SceneNumber}, {fullSceneFlag}, callback );");
-                                    if (current.ShouldCastAction)
+                                    /*if (current.ShouldCastAction)
                                     {
                                         outputCpp.Add("    }, nullptr, getId() );");
-                                    }
+                                    }*/
                                 }
                                 else
                                 {
@@ -969,11 +979,8 @@ namespace FFXIVTheMovie.ParserV3
         private static bool BNpcHackUsed = false;
         private void BNpcHack()
         {
-            //since we are not spawning bnpcs, move its credit to another entry and hope it's the one that suppose to do the spawning.
-            //if u want to implement the quest manually based on the generated code, do not run this method.
-            
-            //return;
-
+            if (!UseBNpcHack)
+                return;
             HashSet<string> processedVars = new HashSet<string>();
             foreach (var seq in seqList)
             {
@@ -1724,11 +1731,11 @@ namespace FFXIVTheMovie.ParserV3
                         if ((sub.Element & (LuaScene.SceneElement.CutScene | LuaScene.SceneElement.FadeIn)) > 0)
                             nextGroup.SceneList.Add(sub);
                     }
-                    else if (tmpList.Count > 1 && scene.ShouldCastAction)
+                    /*else if (tmpList.Count > 1 && scene.ShouldCastAction)
                     {
                         var sub = tmpList[1];
                         nextGroup.SceneList.Add(sub);
-                    }
+                    }*/
                 }
                 sceneGroupList.Add(nextGroup);
                 foreach (var s in nextGroup.SceneList)

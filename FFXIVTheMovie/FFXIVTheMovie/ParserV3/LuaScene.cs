@@ -198,6 +198,11 @@ namespace FFXIVTheMovie.ParserV3
                                 }
                             }
                         }
+                        else if ((element & SceneElement.Talk) > 0 && f.VarName != varTarget && f.VarName.Contains(":CreateCharacter("))
+                        {
+                            f.IsKeyFunction = true;
+                            result.Element |= SceneElement.CreateCharacterTalk;
+                        }
                         else if ((element & SceneElement.TargetCanMove) == 0)
                         {
                             f.IsKeyFunction = true;
@@ -223,11 +228,11 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         result.Element |= SceneElement.TargetCanMove;
                     }
-                    if (f.FuncName == "SetSceneEndRollback")
+                    /*(if (f.FuncName == "SetSceneEndRollback")
                     {
                         result.ShouldCastAction = true;
                         f.IsKeyFunction = true;
-                    }
+                    }*/
                 }
                 if (result.Element == SceneElement.None && result.Type != SceneType.Normal)
                 {
@@ -308,7 +313,7 @@ namespace FFXIVTheMovie.ParserV3
         public SceneElement Element;
         public Dictionary<string, object> ParamTable = new Dictionary<string, object>();
         public string Identity = "unknown";
-        public bool ShouldCastAction = false;
+        //public bool ShouldCastAction = false;
         public bool IsIdentityCompatible(string id)
         {
             return id == "unknown" || this.Identity == "unknown" || this.Identity == id;
@@ -350,13 +355,14 @@ namespace FFXIVTheMovie.ParserV3
             SetWeddingFestivalParam = 1 << 20,
             ENpcBind = 1 << 21,
             ReturnTrue = 1 << 22,
+            CreateCharacterTalk = 1 << 23,
 
             Basic = 1 << 31
         }
 
         public override string ToString()
         {
-            return $"{SceneFunctionName}: {Type}({Element}){(ShouldCastAction ? ", ActionCast" : "")}, id={Identity}";
+            return $"{SceneFunctionName}: {Type}({Element}), id={Identity}";
         }
 
         private LuaScene(int sceneNum)
