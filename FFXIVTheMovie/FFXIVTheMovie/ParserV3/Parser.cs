@@ -15,6 +15,7 @@ namespace FFXIVTheMovie.ParserV3
         public static readonly bool CppOutputExtraInfo = false;
         public static readonly bool UseBNpcHack = true;
         public static readonly bool UseGroundAoeEventItemHack = true;
+        public static readonly bool StrictThreePointThreeAPI = false;
 
         string questId;
         string outputFolder;
@@ -875,8 +876,15 @@ namespace FFXIVTheMovie.ParserV3
                                         var zone = privateInstanceEntranceTable[keyForPrivate];
                                         if (zone > 0)
                                         {
-                                            outputCpp.Add($"{(hasIf ? "  " : "")}      player.enterPredefinedPrivateInstance( {privateInstanceEntranceTable[keyForPrivate]} );");
-                                            //outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to enter private zone {privateInstanceEntranceTable[keyForPrivate]}.\" );");
+                                            if (!StrictThreePointThreeAPI)
+                                            {
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      player.enterPredefinedPrivateInstance( {privateInstanceEntranceTable[keyForPrivate]} );");
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Enter private instance detected, replacing with dummy code since StrictThreePointThreeAPI is true.");
+                                                outputCpp.Add($"{(hasIf ? "  " : "")}      playerMgr().sendUrgent( player, \"Missing function to enter private zone {privateInstanceEntranceTable[keyForPrivate]}.\" );");
+                                            }
                                         }
                                         else
                                         {
@@ -891,6 +899,11 @@ namespace FFXIVTheMovie.ParserV3
                                     {
                                         var dst = warpTable[keyForWarp];
                                         bool fallback = dst.Item6.ToLower() == "true";
+                                        if (fallback && StrictThreePointThreeAPI)
+                                        {
+                                            fallback = false;
+                                            Console.WriteLine("Warp with zone name detected, ignore showing zone name since StrictThreePointThreeAPI is true.");
+                                        }
                                         outputCpp.Add($"{(hasIf ? "  " : "")}      {(fallback ? "//" : "")}warpMgr().requestMoveTerritory( player, Common::WarpType::WARP_TYPE_NORMAL, teriMgr().getZoneByTerritoryTypeId( {dst.Item1} )->getGuId(), {{ {dst.Item2}, {dst.Item3}, {dst.Item4} }}, {dst.Item5} );");
                                         if (fallback)
                                         {

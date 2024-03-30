@@ -14,6 +14,41 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "StmBda706":
+                    {
+                        result.Add("PRIVATE_SCENE11", "727");
+                        result.Add("PRIVATE_SCENE13", "727");
+                        result.Add("SCENE_14", null);
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "6|2");
+                        result.Add("_ACTOR10", "B");
+                        result.Add("_ACTOR10B", "6|2");
+                        result.Add("_ACTOR19", "B");
+                        result.Add("_ACTOR19B", "6|2");
+                        result.Add("_ACTOR15", "B");
+                        result.Add("_ACTOR15B", "6|2");
+                        break;
+                    }
+                case "StmBda704":
+                    {
+                        result.Add("_ACTOR15", "B");
+                        result.Add("_ACTOR15B", "4|2");
+                        result.Add("_ACTOR19", "B");
+                        result.Add("_ACTOR19B", "4|2");
+                        result.Add("_ACTOR20", "B");
+                        result.Add("_ACTOR20B", "4|2");
+                        break;
+                    }
+                case "StmBda703":
+                    {
+                        result.Add("WARP_SCENE16", "621|757.462|70|443.541|0.57|false");
+                        break;
+                    }
+                case "StmBda702":
+                    {
+                        result.Add("WARP_SCENE16", "621|68.5|45.411|770|-1.86|false");
+                        break;
+                    }
                 case "StmBda612":
                     {
                         result.Add("_ACTOR7", "B");
@@ -1385,6 +1420,7 @@ namespace FFXIVTheMovie.ParserV3
                     {
                         result.Add("SCENE_20", "actor5");
                         result.Add("SCENE_28", "HAKURO");
+                        result.Add("WARP_SCENE28", "621|555.83|162|70|1.555|false");
                         break;
                     }
                 case "StmBda502":
