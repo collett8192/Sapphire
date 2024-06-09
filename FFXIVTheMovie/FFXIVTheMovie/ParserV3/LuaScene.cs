@@ -167,7 +167,7 @@ namespace FFXIVTheMovie.ParserV3
                             var textArg = f.ArgList.FirstOrDefault(a => a.Contains($"{varFramework}.TEXT_"));
                             if (textArg != null)
                             {
-                                if (f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.SPEAK_NONE" && f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.LIP_TYPE_NONE")
+                                if (f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.TALK_SHAPE_LINKSHELL" && f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.SPEAK_NONE" && f.ArgList[f.ArgList.Count - 1] != $"{varFramework}.LIP_TYPE_NONE")
                                 {
                                     result.Element |= SceneElement.TargetCanMove;
                                     var text = textArg.ExpandLocalVar(localVarTable).GetStringBetween($"{varFramework}.", null);
