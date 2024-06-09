@@ -14,6 +14,36 @@ namespace FFXIVTheMovie.ParserV3
             var result = new Dictionary<string, string>();
             switch (questId)
             {
+                case "StmBdb111":
+                    {
+                        result.Add("PRIVATE_SCENE6", "737");
+                        result.Add("PRIVATE_SCENE14", "737");
+                        result.Add("PRIVATE_SCENE16", "737");
+                        result.Add("PRIVATE_SCENE18", "737");
+                        break;
+                    }
+                case "StmBdb105":
+                    {
+                        result.Add("PRIVATE_RESONATORIUMGUARD", "738");
+                        result.Add("_ACTOR8", "B");
+                        result.Add("_ACTOR8B", "3|2");
+                        break;
+                    }
+                case "StmBdb103":
+                    {
+                        result.Add("IGNORE_SEQ4", "");
+                        break;
+                    }
+                case "StmBdb102":
+                    {
+                        result.Add("_ACTOR2", "B");
+                        result.Add("_ACTOR2B", "1|2");
+                        result.Add("_ACTOR3", "B");
+                        result.Add("_ACTOR3B", "1|2");
+                        result.Add("_ACTOR4", "B");
+                        result.Add("_ACTOR4B", "1|2");
+                        break;
+                    }
                 case "StmBda706":
                     {
                         result.Add("PRIVATE_SCENE11", "727");
