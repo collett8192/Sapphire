@@ -392,7 +392,7 @@ namespace Sapphire::Network::Packets
     ReqPlaceHousingItem = 0x02D4, // updated 5.58 hotfix
     BuildPresetHandler = 0x0223, // updated 5.58 hotfix
 
-    SayEventHandler = 0xF12C, // updated 5.35 hotfix
+    SayEventHandler = 0x164, // updated 5.58 hotfix
     TalkEventHandler = 0x0387, // updated 5.58 hotfix
     EmoteEventHandler = 0x00B0, // updated 5.58 hotfix
     WithinRangeEventHandler = 0x02B6, // updated 5.58 hotfix

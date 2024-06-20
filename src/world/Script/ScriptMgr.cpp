@@ -221,6 +221,38 @@ bool Sapphire::Scripting::ScriptMgr::onTalk( Entity::Player& player, uint64_t ac
   }
 }
 
+bool Sapphire::Scripting::ScriptMgr::onSay( Entity::Player& player, uint64_t actorId, uint32_t eventId )
+{
+  auto script = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::EventScript >( eventId );
+  if( script )
+  {
+    script->onSay( eventId, player, actorId );
+    return true;
+  }
+  else
+  {
+    auto threePointOhScript = m_nativeScriptMgr->getScript< Sapphire::ScriptAPI::QuestScript >( eventId );
+    if( threePointOhScript )
+    {
+      auto& eventMgr = Common::Service< World::Manager::EventMgr >::ref();
+      auto actor = eventMgr.mapEventActorToRealActor( static_cast< uint32_t >( actorId ) );
+      auto quest = eventMgr.getPlayerQuestDataFromEventId( player, eventId );
+      auto newQuest = false;
+      if( quest.getId() == 0 )
+      {
+        quest.setId( static_cast< uint16_t >( eventId & 0x0000FFFF ) );
+        newQuest = true;
+      }
+      auto copy = quest;
+      threePointOhScript->onSay( quest, player, actor == 0 ? actorId : actor, 0 );
+      if( quest != copy && quest.getSeq() > 0 && ( newQuest || player.hasQuest( quest.getId() ) ) )
+        player.updateQuest( quest );
+      return true;
+    }
+  }
+  return false;
+}
+
 bool Sapphire::Scripting::ScriptMgr::onEnterTerritory( Entity::Player& player, uint32_t eventId,
                                                        uint16_t param1, uint16_t param2 )
 {
