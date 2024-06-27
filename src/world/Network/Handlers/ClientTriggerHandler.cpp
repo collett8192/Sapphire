@@ -78,8 +78,8 @@ void Sapphire::Network::GameConnection::clientTriggerHandler( const Packets::FFX
   const auto param4 = packet.data().param4;
   const auto param5 = packet.data().param5;
 
-  Logger::debug( "[{0}] Incoming action: {1:X} ( p1:{2:X} p2:{3:X} p3:{4:X} )",
-                 m_pSession->getId(), commandId, param1, param2, param3 );
+  Logger::debug( "[{0}] Incoming action: {1:X} ( p1:{2:X} p11:{3:X} p12:{4:X} p2:{5:X} p3:{6:X} p4:{7:X} p5:{8:X})",
+                 m_pSession->getId(), commandId, param1, param11, param12, param2, param3, param4, param5 );
 
   //Logger::Log(LoggingSeverity::debug, "[" + std::to_string(m_pSession->getId()) + "] " + pInPacket->toString());
 
